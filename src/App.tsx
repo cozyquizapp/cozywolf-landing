@@ -73,7 +73,7 @@ function detectInitialLang(): Lang {
 
 export default function App() {
   const [lang, setLang] = useState<Lang>('de');
-  const [slogan, setSlogan] = useState(TRANSLATIONS.de.slogans[0]);
+  const [slogan, setSlogan] = useState<string>(TRANSLATIONS.de.slogans[0]);
 
   useEffect(() => {
     const initial = detectInitialLang();
