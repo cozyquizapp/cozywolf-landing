@@ -103,7 +103,7 @@ export default function App() {
           <p style={paragraph}>
             <strong style={{ color: '#F1F5F9' }}>Quarter Quiz</strong> ist eine
             moderierte Live-Quiz-Show für Bars, Kioske, Firmenfeiern,
-            Geburtstage, Tagungen — überall dort, wo 8–20 Leute zusammenkommen
+            Geburtstage, Tagungen — überall dort, wo Menschen zusammenkommen
             und einen Abend mit Tiefgang und Lachen wollen.
           </p>
           <p style={paragraph}>
