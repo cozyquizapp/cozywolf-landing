@@ -1,18 +1,99 @@
 import { useEffect, useState } from 'react';
 
-const SLOGANS = [
-  'Das Quiz für den Kiosk um die Ecke',
-  'Vier Teams. Ein Grid. Null Gnade.',
-  'Live. Laut. Lokal.',
-  'Wissen, Glück und ein bisschen Chaos.',
-];
+type Lang = 'de' | 'en';
+
+const TRANSLATIONS = {
+  de: {
+    slogans: [
+      'Das Quiz für den Kiosk um die Ecke',
+      'Vier Teams. Ein Grid. Null Gnade.',
+      'Live. Laut. Lokal.',
+      'Wissen, Glück und ein bisschen Chaos.',
+    ],
+    byCozywolf: 'by cozywolf',
+    chips: ['🏆 Live-Quiz-Show', '📱 Teams spielen am Handy', '🎬 Individuelle Fragen'],
+    partnersTitle: '🎤 Für Veranstalter & Partner',
+    partnersP1a: ' ist eine moderierte Live-Quiz-Show für Bars, Kioske, Firmenfeiern, Geburtstage, Tagungen — überall dort, wo Menschen zusammenkommen und einen Abend mit Tiefgang und Lachen wollen.',
+    partnersP2: 'Ihr braucht nur einen Beamer oder großen Bildschirm. Ich bringe die Technik, die Fragen und die Moderation mit. Die Teams spielen mit ihrem eigenen Handy — keine App nötig, einfach QR-Code scannen und los geht\'s.',
+    f1Title: 'Maßgeschneidert',
+    f1Body: 'Fragen zum Anlass, zum Betrieb, zum Geburtstagskind — auf Wunsch mit Insidern und Fotos.',
+    f2Title: '6 Kategorien',
+    f2Body: 'Schätzchen, Mu-Cho, 10-von-10, Bunte Tüte (Top-5, Imposter, Reihenfolge, Karte), Picture-This — nie dieselbe Runde zweimal.',
+    f3Title: 'Plug & Play',
+    f3Body: 'Ich komme eine Stunde vor Beginn, stelle auf, und in 90 Minuten ist alles gelaufen.',
+    f4Title: 'Bis 5 Teams',
+    f4Body: 'Von der kleinen Runde bis zur ausgebuchten Bar — 2 bis 5 Teams.',
+    nextTitle: '📅 Nächstes Event',
+    nextBig: 'Bald verfügbar',
+    nextSub: 'Termine für öffentliche Quiz-Abende werden hier und auf Instagram angekündigt.',
+    contactTitle: '💌 Quiz buchen oder Hallo sagen',
+    contactP: 'Lust auf einen Quiz-Abend bei euch? Schreibt mir — gerne mit Datum, ungefährer Teamzahl und dem Anlass. Ich melde mich schnellstmöglich mit Details & Preisen.',
+    emailLabel: 'E-Mail',
+    instaLabel: 'Instagram',
+    footnote: 'Teams, die auf einer laufenden Veranstaltung spielen, erhalten den Beitritts-Link direkt vom Moderator.',
+  },
+  en: {
+    slogans: [
+      'The quiz for the corner store crowd.',
+      'Four teams. One grid. No mercy.',
+      'Live. Loud. Local.',
+      'Knowledge, luck, and a little chaos.',
+    ],
+    byCozywolf: 'by cozywolf',
+    chips: ['🏆 Live quiz show', '📱 Teams play on their phones', '🎬 Custom questions'],
+    partnersTitle: '🎤 For hosts & partners',
+    partnersP1a: ' is a hosted live quiz show for bars, corner shops, company parties, birthdays, conferences — anywhere people come together for an evening of laughs and a bit of depth.',
+    partnersP2: 'All you need is a projector or big screen. I bring the tech, the questions, and the hosting. Teams play on their own phones — no app required, just scan a QR code and off you go.',
+    f1Title: 'Tailor-made',
+    f1Body: 'Questions about the occasion, the venue, the birthday person — with inside jokes and photos on request.',
+    f2Title: '6 categories',
+    f2Body: 'Guess-That, Mu-Cho, 10-of-10, Mixed Bag (Top-5, Imposter, Order, Map), Picture-This — never the same round twice.',
+    f3Title: 'Plug & play',
+    f3Body: 'I arrive an hour before start, set everything up, and 90 minutes later it\'s all done.',
+    f4Title: 'Up to 5 teams',
+    f4Body: 'From a cozy round to a packed bar — 2 to 5 teams.',
+    nextTitle: '📅 Next event',
+    nextBig: 'Coming soon',
+    nextSub: 'Dates for public quiz nights will be announced here and on Instagram.',
+    contactTitle: '💌 Book a quiz or say hello',
+    contactP: 'Want a quiz night at your place? Drop me a line — ideally with a date, rough team count, and the occasion. I\'ll get back to you quickly with details & pricing.',
+    emailLabel: 'Email',
+    instaLabel: 'Instagram',
+    footnote: 'Teams playing at a live event receive the join link directly from the host.',
+  },
+} as const;
+
+function detectInitialLang(): Lang {
+  if (typeof window === 'undefined') return 'de';
+  const stored = window.localStorage.getItem('cw-lang');
+  if (stored === 'de' || stored === 'en') return stored;
+  const browser = window.navigator.language?.toLowerCase() ?? '';
+  return browser.startsWith('de') ? 'de' : 'en';
+}
 
 export default function App() {
-  const [slogan, setSlogan] = useState(SLOGANS[0]);
+  const [lang, setLang] = useState<Lang>('de');
+  const [slogan, setSlogan] = useState(TRANSLATIONS.de.slogans[0]);
 
   useEffect(() => {
-    setSlogan(SLOGANS[Math.floor(Math.random() * SLOGANS.length)]);
+    const initial = detectInitialLang();
+    setLang(initial);
   }, []);
+
+  useEffect(() => {
+    const pool = TRANSLATIONS[lang].slogans;
+    setSlogan(pool[Math.floor(Math.random() * pool.length)]);
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = lang;
+    }
+  }, [lang]);
+
+  const t = TRANSLATIONS[lang];
+
+  const switchLang = (next: Lang) => {
+    setLang(next);
+    try { window.localStorage.setItem('cw-lang', next); } catch {}
+  };
 
   return (
     <div style={{
@@ -30,6 +111,9 @@ export default function App() {
           'radial-gradient(circle at 80% 70%, rgba(59,130,246,0.10) 0%, transparent 35%),' +
           'radial-gradient(circle at 50% 90%, rgba(234,88,12,0.08) 0%, transparent 40%)',
       }} />
+
+      {/* Language switcher — top right */}
+      <LangSwitcher lang={lang} onChange={switchLang} />
 
       <div style={{
         position: 'relative', zIndex: 2,
@@ -71,7 +155,7 @@ export default function App() {
               textTransform: 'uppercase',
               fontWeight: 700,
             }}>
-              by cozywolf
+              {t.byCozywolf}
             </div>
           </div>
 
@@ -91,50 +175,31 @@ export default function App() {
             display: 'flex', flexWrap: 'wrap', gap: 14, justifyContent: 'center',
             fontSize: 14, color: '#94a3b8', fontWeight: 700,
           }}>
-            <Chip>🏆 Live-Quiz-Show</Chip>
-            <Chip>📱 Teams spielen am Handy</Chip>
-            <Chip>🎬 Individuelle Fragen</Chip>
+            {t.chips.map((c) => <Chip key={c}>{c}</Chip>)}
           </div>
         </section>
 
         {/* What is it / For Partners */}
         <section style={cardStyle}>
-          <SectionTitle>🎤 Für Veranstalter &amp; Partner</SectionTitle>
+          <SectionTitle>{t.partnersTitle}</SectionTitle>
           <p style={paragraph}>
-            <strong style={{ color: '#F1F5F9' }}>Quarter Quiz</strong> ist eine
-            moderierte Live-Quiz-Show für Bars, Kioske, Firmenfeiern,
-            Geburtstage, Tagungen — überall dort, wo Menschen zusammenkommen
-            und einen Abend mit Tiefgang und Lachen wollen.
+            <strong style={{ color: '#F1F5F9' }}>Quarter Quiz</strong>{t.partnersP1a}
           </p>
           <p style={paragraph}>
-            Ihr braucht nur einen Beamer oder großen Bildschirm. Ich bringe
-            die Technik, die Fragen und die Moderation mit. Die Teams spielen
-            mit ihrem eigenen Handy — keine App nötig, einfach QR-Code
-            scannen und los geht's.
+            {t.partnersP2}
           </p>
 
           <div style={featureGrid}>
-            <Feature emoji="🎯" title="Maßgeschneidert">
-              Fragen zum Anlass, zum Betrieb, zum Geburtstagskind — auf Wunsch
-              mit Insidern und Fotos.
-            </Feature>
-            <Feature emoji="🎮" title="6 Kategorien">
-              Schätzchen, Mu-Cho, 10-von-10, Bunte Tüte (Top-5, Imposter,
-              Reihenfolge, Karte), Picture-This — nie dieselbe Runde zweimal.
-            </Feature>
-            <Feature emoji="⚡" title="Plug &amp; Play">
-              Ich komme eine Stunde vor Beginn, stelle auf, und in 90 Minuten
-              ist alles gelaufen.
-            </Feature>
-            <Feature emoji="🏟️" title="Bis 5 Teams">
-              Von der kleinen Runde bis zur ausgebuchten Bar — 2 bis 5 Teams.
-            </Feature>
+            <Feature emoji="🎯" title={t.f1Title}>{t.f1Body}</Feature>
+            <Feature emoji="🎮" title={t.f2Title}>{t.f2Body}</Feature>
+            <Feature emoji="⚡" title={t.f3Title}>{t.f3Body}</Feature>
+            <Feature emoji="🏟️" title={t.f4Title}>{t.f4Body}</Feature>
           </div>
         </section>
 
         {/* Next Event */}
         <section style={{ ...cardStyle, textAlign: 'center' }}>
-          <SectionTitle>📅 Nächstes Event</SectionTitle>
+          <SectionTitle>{t.nextTitle}</SectionTitle>
           <div style={{
             padding: '28px 20px', borderRadius: 18,
             background: 'linear-gradient(135deg, rgba(245,158,11,0.12), rgba(249,115,22,0.08))',
@@ -144,35 +209,32 @@ export default function App() {
               fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 900,
               color: '#FBBF24', letterSpacing: '0.02em',
             }}>
-              Bald verfügbar
+              {t.nextBig}
             </div>
             <div style={{ marginTop: 10, fontSize: 15, color: '#cbd5e1', fontWeight: 600 }}>
-              Termine für öffentliche Quiz-Abende werden hier und auf Instagram
-              angekündigt.
+              {t.nextSub}
             </div>
           </div>
         </section>
 
         {/* Contact */}
         <section style={cardStyle}>
-          <SectionTitle>💌 Quiz buchen oder Hallo sagen</SectionTitle>
+          <SectionTitle>{t.contactTitle}</SectionTitle>
           <p style={paragraph}>
-            Lust auf einen Quiz-Abend bei euch? Schreibt mir — gerne mit
-            Datum, ungefährer Teamzahl und dem Anlass. Ich melde mich
-            schnellstmöglich mit Details &amp; Preisen.
+            {t.contactP}
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 8 }}>
             <ContactRow
               href="mailto:cozyquiz.app@gmail.com"
               emoji="📧"
-              label="E-Mail"
+              label={t.emailLabel}
               value="cozyquiz.app@gmail.com"
             />
             <ContactRow
               href="https://instagram.com/cozywolf.events"
               emoji="📸"
-              label="Instagram"
+              label={t.instaLabel}
               value="@cozywolf.events"
             />
           </div>
@@ -183,8 +245,7 @@ export default function App() {
           textAlign: 'center', fontSize: 12, color: '#475569',
           maxWidth: 600, margin: '0 auto', lineHeight: 1.6,
         }}>
-          Teams, die auf einer laufenden Veranstaltung spielen, erhalten den
-          Beitritts-Link direkt vom Moderator.
+          {t.footnote}
         </div>
       </div>
 
@@ -195,6 +256,45 @@ export default function App() {
         }
       `}</style>
     </div>
+  );
+}
+
+function LangSwitcher({ lang, onChange }: { lang: Lang; onChange: (l: Lang) => void }) {
+  return (
+    <div style={{
+      position: 'absolute', top: 18, right: 18, zIndex: 10,
+      display: 'flex', gap: 2,
+      padding: 4, borderRadius: 999,
+      background: 'rgba(255,255,255,0.04)',
+      border: '1px solid rgba(255,255,255,0.08)',
+      backdropFilter: 'blur(8px)',
+    }}>
+      <LangBtn active={lang === 'de'} onClick={() => onChange('de')}>DE</LangBtn>
+      <LangBtn active={lang === 'en'} onClick={() => onChange('en')}>EN</LangBtn>
+    </div>
+  );
+}
+
+function LangBtn({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        padding: '6px 14px',
+        borderRadius: 999,
+        border: 'none',
+        cursor: 'pointer',
+        fontFamily: 'inherit',
+        fontSize: 13,
+        fontWeight: 800,
+        letterSpacing: '0.08em',
+        background: active ? 'rgba(245,158,11,0.9)' : 'transparent',
+        color: active ? '#0b0d14' : '#cbd5e1',
+        transition: 'background 0.15s, color 0.15s',
+      }}
+    >
+      {children}
+    </button>
   );
 }
 
