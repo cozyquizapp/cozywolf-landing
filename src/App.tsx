@@ -145,7 +145,7 @@ export default function App() {
               WebkitTextFillColor: 'transparent',
               letterSpacing: '-0.02em',
             }}>
-              Quarter Quiz
+              CozyQuiz
             </h1>
             <div style={{
               fontSize: 'clamp(14px, 1.8vw, 18px)',
@@ -183,7 +183,7 @@ export default function App() {
         <section style={cardStyle}>
           <SectionTitle>{t.partnersTitle}</SectionTitle>
           <p style={paragraph}>
-            <strong style={{ color: '#F1F5F9' }}>Quarter Quiz</strong>{t.partnersP1a}
+            <strong style={{ color: '#F1F5F9' }}>CozyQuiz</strong>{t.partnersP1a}
           </p>
           <p style={paragraph}>
             {t.partnersP2}
