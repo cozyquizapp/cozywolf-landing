@@ -73,7 +73,7 @@ function detectInitialLang(): Lang {
   return browser.startsWith('de') ? 'de' : 'en';
 }
 
-const EMAIL = 'cozyquiz.app@gmail.com';
+const EMAIL = 'hallo@cozywolf.de';
 const INSTA_URL = 'https://instagram.com/cozywolf.events';
 const INSTA_HANDLE = '@cozywolf.events';
 
