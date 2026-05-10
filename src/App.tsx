@@ -247,9 +247,9 @@ export default function App() {
             <span style={{ opacity: 0.4 }}>·</span>
             <a href={INSTA_URL} target="_blank" rel="noopener noreferrer" style={footerLink}>{INSTA_HANDLE}</a>
             <span style={{ opacity: 0.4 }}>·</span>
-            <a href="#" style={footerLink}>{t.footerImprint}</a>
+            <a href="/impressum" style={footerLink}>{t.footerImprint}</a>
             <span style={{ opacity: 0.4 }}>·</span>
-            <a href="#" style={footerLink}>{t.footerPrivacy}</a>
+            <a href="/datenschutz" style={footerLink}>{t.footerPrivacy}</a>
           </div>
         </footer>
       </div>
