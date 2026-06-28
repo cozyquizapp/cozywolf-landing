@@ -72,27 +72,85 @@
     [data-mfloat], [data-micon], [data-mlive] { animation: none !important; }
   }
 
-  /* ===== Mobile: swap the pinned scroll-experience for a calm native-scroll page ===== */
+  /* ===== Mobile: native-scroll page, 4 full-height scroll-snap sections ===== */
   @media (max-width: 720px) {
     [data-scrollwrap] { display: none !important; }
     [data-stage] { display: none !important; }
-    [data-mobile-app] { display: block !important; }
-  }
+    [data-mobile-app] { display: block !important; padding-top: 0 !important; }
 
-  /* ===== Mobile footer: logo block on top, links as a left-aligned wrapping row ===== */
-  @media (max-width: 640px) {
-    footer[data-footer] { flex-direction: column !important; align-items: flex-start !important; gap: 14px !important; }
-    footer[data-footer] [data-footer-links] { justify-content: flex-start !important; row-gap: 8px !important; }
+    /* the page is the snap container */
+    html { scroll-snap-type: y mandatory; }
 
-    /* answers stack into one column — bigger targets, natural A→B→C→D order */
+    /* each of the 4 parts = exactly one mobile viewport */
+    [data-msnap], [data-msnap-last] {
+      min-height: 100svh; min-height: 100dvh;
+      scroll-snap-align: start; scroll-snap-stop: always;
+      box-sizing: border-box;
+    }
+    /* sections 1–3: content distributed across the full height (no dead space) */
+    [data-msnap] {
+      display: flex; flex-direction: column; justify-content: space-between;
+      padding-top: 88px !important; padding-bottom: 26px !important;
+    }
+    /* how: heading on top, the 3 step cards fill the rest evenly */
+    [data-msnap="how"] [data-how-head] { flex: none; }
+    [data-msnap="how"] [data-steps] { flex: 1 1 auto !important; justify-content: space-evenly !important; }
+
+    /* section 4 = letzte Frage (fills) + slim footer pinned at the very bottom */
+    [data-msnap-last] { display: flex !important; flex-direction: column; }
+    [data-catch] {
+      flex: 1 1 auto !important; min-height: 0 !important;
+      justify-content: center !important;
+      padding: 84px 20px 18px !important;
+    }
     [data-catch-answers] { grid-template-columns: 1fr !important; gap: 10px !important; }
-    /* clear the fixed header so the question never tucks behind it */
-    [data-catch] { padding-top: 132px !important; }
-    /* bottom CTA is redundant on mobile — the header keeps "Quiz buchen" pinned */
     [data-endcta] { display: none !important; }
-    /* header: logo alone on mobile so DE/EN, sound, Insta + CTA have room */
+
+    /* slim, single-line footer */
+    footer[data-footer] {
+      flex: none !important; flex-wrap: nowrap !important;
+      padding: 11px 16px !important; gap: 12px !important;
+    }
+    footer[data-footer] > div:first-child { gap: 9px !important; }
+    footer[data-footer] img { width: 32px !important; height: 32px !important; }
+    footer[data-footer] > div:first-child > div > span:first-child { font-size: 15px !important; }
+    footer[data-footer] > div:first-child > div > span:last-child { font-size: 12px !important; margin-left: 6px !important; }
+    footer[data-footer] [data-footer-links] { gap: 16px !important; flex: none !important; white-space: nowrap !important; font-size: 13px !important; }
+
+    /* header: logo alone so flags + sound + insta + CTA have room */
     [data-topbar] [data-wordmark] { display: none !important; }
-    [data-topbar] { gap: 10px !important; }
+    [data-topbar] { gap: 9px !important; }
+
+    /* hero compaction so board + copy + CTA fit one screen */
+    [data-msnap="hero"] { padding-top: 76px !important; padding-bottom: 14px !important; }
+    [data-msnap="hero"] h1 { font-size: 32px !important; }
+    [data-msnap="hero"] [data-mhero] p { margin-top: 12px !important; font-size: 15px !important; }
+    [data-msnap="hero"] [data-mlivebar] { margin-top: 12px !important; }
+    [data-msnap="hero"] [data-mfloat] { transform: rotateX(38deg) rotateZ(-3deg) scale(.84) !important; }
+
+    /* ===== bigger content fills each section (instead of dead gaps) ===== */
+    /* how: step cards grow to fill height, larger type */
+    [data-msnap="how"] [data-how-head] h2 { margin-bottom: 18px !important; }
+    [data-msnap="how"] [data-steps] { flex: 1 1 auto !important; gap: 12px !important; }
+    [data-msnap="how"] [data-step] { flex: 1 1 0 !important; padding: 20px 22px !important; }
+    [data-msnap="how"] [data-num] { font-size: 58px !important; }
+    [data-msnap="how"] [data-st] { font-size: 21px !important; }
+    [data-msnap="how"] [data-sb] { font-size: 15px !important; line-height: 1.45 !important; }
+
+    /* cats: deck fills the height, bigger cards + icons */
+    [data-msnap="cats"] [data-deck] { flex: 1 1 auto !important; align-items: stretch !important; padding-top: 14px !important; padding-bottom: 14px !important; }
+    [data-msnap="cats"] [data-deck-card] { display: flex !important; flex-direction: column !important; flex-basis: 85% !important; }
+    [data-msnap="cats"] [data-cstage] { flex: 1 1 auto !important; height: auto !important; place-items: center !important; }
+    [data-msnap="cats"] [data-cat-icon] { width: 178px !important; height: 178px !important; }
+    [data-msnap="cats"] [data-deck-card] h3 { font-size: 32px !important; }
+    [data-msnap="cats"] [data-dtag] { font-size: 16px !important; }
+
+    /* catch: left-aligned, larger so it fills the screen */
+    [data-catch] > div:last-child { text-align: left !important; }
+    [data-catch-card] { padding: 22px !important; }
+    [data-catch-card] > div:nth-child(2) { font-size: 23px !important; margin-bottom: 16px !important; }
+    [data-catch-answers] button { font-size: 17px !important; padding: 15px 16px !important; }
+    [data-catch-answers] button > span:first-child { width: 27px !important; height: 27px !important; font-size: 14px !important; }
   }
 </style>
 </helmet>
@@ -129,10 +187,10 @@
       <span data-wordmark style="font-weight:900; font-size:clamp(18px,1.7vw,22px); letter-spacing:.01em;">CozyQuiz</span>
     </div>
     <div style="display:flex; align-items:center; gap:12px;">
-      <button data-lang aria-label="Sprache / Language" style-hover="background:rgba(255,255,255,.12)" style="appearance:none; cursor:pointer; height:42px; padding:0 14px; display:flex; align-items:center; gap:6px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); color:#fff; font-family:inherit; font-weight:800; font-size:13px; letter-spacing:.06em; transition:all .2s;"><span data-lang-de>DE</span><span style="opacity:.35;">·</span><span data-lang-en style="opacity:.4;">EN</span></button>
+      <button data-lang aria-label="Sprache / Language" style-hover="background:rgba(255,255,255,.12)" style="appearance:none; cursor:pointer; height:42px; padding:0 14px; display:flex; align-items:center; gap:6px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); color:#fff; font-family:inherit; font-weight:800; font-size:13px; letter-spacing:.06em; transition:all .2s;"><span data-lang-de style="display:flex;"><svg width="23" height="16" viewBox="0 0 24 17" style="display:block; border-radius:3px; box-shadow:0 0 0 1px rgba(255,255,255,.18);"><rect width="24" height="17" fill="#000"></rect><rect y="5.67" width="24" height="5.67" fill="#DD0000"></rect><rect y="11.33" width="24" height="5.67" fill="#FFCE00"></rect></svg></span><span data-lang-en style="display:flex; opacity:.4;"><svg width="23" height="16" viewBox="0 0 60 30" style="display:block; border-radius:3px; box-shadow:0 0 0 1px rgba(255,255,255,.18);"><rect width="60" height="30" fill="#012169"></rect><g stroke="#fff" stroke-width="6"><path d="M0,0 L60,30"></path><path d="M60,0 L0,30"></path></g><g stroke="#C8102E" stroke-width="3"><path d="M0,0 L60,30"></path><path d="M60,0 L0,30"></path></g><rect x="25" width="10" height="30" fill="#fff"></rect><rect y="10" width="60" height="10" fill="#fff"></rect><rect x="27" width="6" height="30" fill="#C8102E"></rect><rect y="12" width="60" height="6" fill="#C8102E"></rect></svg></span></button>
       <button data-sound aria-label="Sound an/aus" style-hover="background:rgba(255,255,255,.12)" style="appearance:none; cursor:pointer; width:42px; height:42px; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); color:#fff; font-size:17px; transition:all .2s;">🔇</button>
       <a href="https://instagram.com/cozywolf.events" target="_blank" rel="noopener" aria-label="CozyWolf auf Instagram" style-hover="background:rgba(255,255,255,.12)" style="appearance:none; cursor:pointer; width:42px; height:42px; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); color:#fff; transition:all .2s; text-decoration:none;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
-      <a href="mailto:hallo@cozywolf.de" style="display:inline-flex; align-items:center; gap:8px; background:#EC4899; color:#1a0a14; font-weight:900; font-size:clamp(13px,1.2vw,15px); text-decoration:none; padding:11px 20px; border-radius:999px; box-shadow:0 0 22px rgba(236,72,153,.5);">Quiz buchen</a>
+      <a href="mailto:hallo@cozywolf.de" style="display:inline-flex; align-items:center; gap:8px; background:#EC4899; color:#1a0a14; font-weight:900; font-size:clamp(13px,1.2vw,15px); text-decoration:none; padding:11px 20px; border-radius:999px; box-shadow:0 0 22px rgba(236,72,153,.5); white-space:nowrap;">Quiz buchen</a>
     </div>
   </div>
 
@@ -188,7 +246,7 @@
       <!-- 1: how -->
       <div data-chapter="1" style="position:absolute; left:clamp(20px,5vw,80px); top:50%; transform:translateY(-44%); opacity:0; z-index:25; max-width:min(440px,86vw); transition:opacity .6s, transform .6s;">
         <div style="font-weight:800; font-size:clamp(12px,1.2vw,14px); color:#EC4899; letter-spacing:.12em; text-transform:uppercase; margin-bottom:14px;">So funktioniert's</div>
-        <h2 style="margin:0 0 22px; font-weight:900; font-size:clamp(30px,3.6vw,46px); letter-spacing:-.02em; line-height:1.02;">Quiz trifft<br>Spielbrett.</h2>
+        <h2 style="margin:0 0 22px; font-weight:900; font-size:clamp(30px,3.6vw,46px); letter-spacing:-.02em; line-height:1.02;">Quiz trifft Spielbrett.</h2>
         <div style="display:flex; flex-direction:column; gap:14px;">
           <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
             <div style="display:flex; gap:14px; align-items:flex-start;">
@@ -248,7 +306,7 @@
                 <div style="position:absolute; right:8px; top:-42px; font-weight:900; font-style:italic; font-size:172px; line-height:1; color:#14B8A6; opacity:.08; pointer-events:none;">03</div>
                 <div style="position:relative; flex:none; width:116px; height:116px; display:grid; place-items:center;">
                   <div style="position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:112px; height:112px; border-radius:50%; background:radial-gradient(circle, rgba(20,184,166,.55), transparent 70%); filter:blur(7px); animation:cz-catglow 4s ease-in-out infinite;"></div>
-                  <img src="assets/cat-stimmts.png" alt="" style="position:relative; width:104px; height:104px; object-fit:contain; filter:drop-shadow(0 14px 20px rgba(0,0,0,.5)); animation:cz-catfloat 5s ease-in-out infinite;">
+                  <img src="assets/cat-10v10.png" alt="" style="position:relative; width:104px; height:104px; object-fit:contain; filter:drop-shadow(0 14px 20px rgba(0,0,0,.5)); animation:cz-catfloat 5s ease-in-out infinite;">
                 </div>
                 <div style="position:relative; min-width:0;">
                   <div style="font-weight:800; font-size:11px; color:#14B8A6; letter-spacing:.1em;">KATEGORIE 03 · WETTEN</div>
@@ -318,11 +376,11 @@
   <div data-mobile-app style="display:none; position:relative; z-index:40; background:#0a0712; padding-top:74px;">
 
     <!-- hero -->
-    <section style="position:relative; padding:24px 18px 36px; background:radial-gradient(120% 70% at 70% 0%, #2a1444 0%, #120c1f 50%, #0a0712 100%); overflow:hidden;">
+    <section data-msnap="hero" style="position:relative; padding:24px 18px 36px; background:radial-gradient(120% 70% at 70% 0%, #2a1444 0%, #120c1f 50%, #0a0712 100%); overflow:hidden;">
       <div style="position:absolute; top:-6%; right:-14%; width:70vw; height:46vh; background:radial-gradient(circle, rgba(236,72,153,.26), transparent 62%); pointer-events:none; animation:cz-mglow 7s ease-in-out infinite;"></div>
       <div data-members style="position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:0;"></div>
-      <div data-mhero style="position:relative;">         <div data-mhero-it style="display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); color:#e6c6f5; font-weight:800; font-size:12px; padding:6px 13px; border-radius:999px; margin-bottom:18px;"><span data-mlive style="width:7px; height:7px; border-radius:50%; background:#EC4899; animation:cz-mpulse 1.8s ease-in-out infinite;"></span> Live-Quizshow für Gruppen</div>
-        <h1 data-mhero-it style="margin:0; font-weight:900; font-size:46px; line-height:.94; letter-spacing:-.02em;">Hol dir<br>das <span style="color:#EC4899;">Feld.</span></h1>
+      <div data-mhero style="position:relative;">         <div data-mhero-it style="font-weight:800; font-size:12px; color:#EC4899; letter-spacing:.12em; text-transform:uppercase; margin-bottom:12px;">Live-Quizshow für Gruppen</div>
+        <h1 data-mhero-it style="margin:0; font-weight:900; font-size:32px; line-height:1.05; letter-spacing:-.02em;">Hol dir das <span style="color:#EC4899;">Feld.</span></h1>
         <p data-mhero-it style="margin:16px 0 0; font-size:16px; line-height:1.5; color:#c4c8da; font-weight:600;">Die moderierte Quiz-Show, in der Teams um die meisten Felder spielen. Jede richtige Antwort sichert ein Feld.</p>
       </div>
       <!-- static conquered board snapshot -->
@@ -353,9 +411,11 @@
     <!-- (facts folded into hero stats above) -->
 
     <!-- how it works -->
-    <section id="m-how" style="padding:48px 18px; background:#0d0a18;">
+    <section id="m-how" data-msnap="how" style="padding:48px 18px; background:#0d0a18;">
+      <div data-how-head>
       <div style="font-weight:800; font-size:12px; color:#EC4899; letter-spacing:.12em; text-transform:uppercase; margin-bottom:10px;">So funktioniert's</div>
-      <h2 style="margin:0 0 26px; font-weight:900; font-size:28px; letter-spacing:-.02em; line-height:1.05;">Quiz trifft<br>Spielbrett.</h2>
+      <h2 style="margin:0 0 26px; font-weight:900; font-size:32px; letter-spacing:-.02em; line-height:1.05;">Quiz trifft Spielbrett.</h2>
+      </div>
       <div data-steps style="position:relative; display:flex; flex-direction:column; gap:12px;">
         <sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
           <div data-step style="position:relative; overflow:hidden; display:flex; align-items:center; gap:20px; padding:24px 22px; border-radius:22px; background:linear-gradient(135deg, rgba(236,72,153,.14), rgba(255,255,255,.015)); border:1px solid rgba(236,72,153,.16); box-shadow:0 14px 40px rgba(0,0,0,.3); opacity:0; transform:translateY(24px) scale(.97); transition:opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);">
@@ -368,10 +428,10 @@
     </section>
 
     <!-- categories: one clean section per scroll -->
-    <section id="m-cats" style="padding:44px 0 24px; background:#0a0712; overflow:hidden;">
+    <section id="m-cats" data-msnap="cats" style="padding:44px 0 24px; background:#0a0712; overflow:hidden;">
       <div data-reveal style="padding:0 18px; opacity:0; transform:translateY(18px); transition:opacity .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1);">
         <div style="font-weight:800; font-size:12px; color:#EC4899; letter-spacing:.12em; text-transform:uppercase; margin-bottom:10px;">Fünf Kategorien</div>
-        <h2 style="margin:0 0 6px; font-weight:900; font-size:28px; letter-spacing:-.02em;">Für jeden was dabei.</h2>
+        <h2 style="margin:0 0 6px; font-weight:900; font-size:32px; letter-spacing:-.02em; line-height:1.05;">Für jeden was dabei.</h2>
         <p style="margin:0 0 6px; font-size:14px; color:#9aa0b5; font-weight:600;">Wisch dich durch, jede spielt sich selbst vor.</p>
       </div>
 
@@ -406,13 +466,17 @@
 
   </div>
 
+  <!-- ====== SECTION 4 (mobile snap unit): letzte Frage + schmaler Footer ====== -->
+  <div data-msnap-last style="display:contents;">
   <!-- ====== THE CATCH: one real question → booking (normal flow, tapping is natural here) ====== -->
   <section data-catch style="position:relative; z-index:40; min-height:calc(100dvh - 100px); display:flex; flex-direction:column; justify-content:flex-start; background:radial-gradient(120% 90% at 50% 0%, #1a1030 0%, #0a0712 60%); padding:clamp(100px,13vh,140px) clamp(20px,5vw,40px) clamp(22px,3vw,34px); overflow:hidden;">
     <div style="position:absolute; top:-10%; left:50%; transform:translateX(-50%); width:70vmax; height:50vmax; background:radial-gradient(circle, rgba(236,72,153,.14), transparent 60%); pointer-events:none;"></div>
     <div style="position:relative; max-width:560px; margin:0 auto; text-align:center;">
-      <div style="display:inline-flex; align-items:center; gap:7px; font-weight:800; font-size:clamp(11px,1.2vw,13px); color:#ffb3d4; letter-spacing:.14em; text-transform:uppercase; margin-bottom:18px; padding:7px 15px; border-radius:999px; background:rgba(236,72,153,.12); border:1px solid rgba(236,72,153,.3);"><span style="width:6px; height:6px; border-radius:50%; background:#EC4899; box-shadow:0 0 10px #EC4899;"></span> Eine letzte Frage</div>
-      <h2 style="margin:0 0 8px; font-weight:900; font-size:clamp(21px,2.5vw,33px); letter-spacing:-.02em; line-height:1.04;">Würdest <span style="color:#EC4899;">du</span> gewinnen?</h2>
+      <div data-catch-intro style="overflow:hidden;">
+      <div style="font-weight:800; font-size:12px; color:#EC4899; letter-spacing:.12em; text-transform:uppercase; margin-bottom:12px;">Probier's aus</div>
+      <h2 style="margin:0 0 8px; font-weight:900; font-size:32px; letter-spacing:-.02em; line-height:1.05;">Würdest <span style="color:#EC4899;">du</span> gewinnen?</h2>
       <p style="margin:0 0 18px; font-size:clamp(15px,1.6vw,17px); color:#b9bdd0; font-weight:600;">Eine echte CozyQuiz-Frage. Tipp deine Antwort.</p>
+      </div>
 
       <!-- the question card -->
       <div data-catch-card style="text-align:left; position:relative; overflow:hidden; border-radius:22px; padding:clamp(16px,2.6vw,24px); background:linear-gradient(165deg, #241836, #100a1e); border:1.5px solid rgba(236,72,153,.3); box-shadow:0 40px 90px rgba(0,0,0,.55), 0 0 55px rgba(236,72,153,.18), inset 0 1px 0 rgba(255,255,255,.07);">
@@ -424,13 +488,6 @@
           <div style="flex:1; min-width:0;">
             <div data-cclabel style="font-weight:800; font-size:12px; color:#EC4899; letter-spacing:.08em;">MU-CHO · ALLGEMEINWISSEN</div>
             <div data-ccsub style="font-weight:700; font-size:11px; color:#8a8fa6; margin-top:2px;">Live · eine Frage, ein Feld</div>
-          </div>
-          <div style="flex:none; position:relative; width:52px; height:52px;">
-            <svg viewBox="0 0 52 52" style="width:52px; height:52px; transform:rotate(-90deg);">
-              <circle cx="26" cy="26" r="22" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="4"></circle>
-              <circle data-catch-ring cx="26" cy="26" r="22" fill="none" stroke="#EC4899" stroke-width="4" stroke-linecap="round" stroke-dasharray="138.2" stroke-dashoffset="0" style="filter:drop-shadow(0 0 5px rgba(236,72,153,.7));"></circle>
-            </svg>
-            <div data-catch-count style="position:absolute; inset:0; display:grid; place-items:center; font-weight:900; font-size:17px; color:#fff;">12</div>
           </div>
         </div>
         <div style="font-weight:900; font-size:clamp(18px,2.2vw,23px); line-height:1.22; margin-bottom:15px;">Welche Stadt war noch nie Hauptstadt von Deutschland?</div>
@@ -461,9 +518,9 @@
   <footer data-footer style="position:relative; z-index:40; background:#0a0712; border-top:1px solid rgba(236,72,153,.16); padding:clamp(18px,2.4vw,28px) clamp(20px,5vw,80px); display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
     <div style="display:flex; align-items:center; gap:12px;">
       <img src="assets/cozywolf-logo.png" alt="CozyWolf" style="width:44px; height:44px; border-radius:50%;">
-      <div>
-        <div style="font-weight:900; font-size:18px;">CozyQuiz</div>
-        <div style="font-size:13px; color:#9aa0b5; font-weight:700;">by cozywolf</div>
+      <div style="white-space:nowrap;">
+        <span style="font-weight:900; font-size:17px;">CozyQuiz</span>
+        <span style="font-size:13px; color:#9aa0b5; font-weight:700; margin-left:6px;">by cozywolf</span>
       </div>
     </div>
     <div data-footer-links style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; justify-content:flex-end; font-size:14px; color:#9aa0b5; font-weight:700;">
@@ -471,6 +528,7 @@
       <a href="/datenschutz" style="color:#9aa0b5; text-decoration:none;">Datenschutz</a>
     </div>
   </footer>
+  </div>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
@@ -516,7 +574,7 @@ class Component extends DCLogic {
       { key: 'schaetzchen', n: '02', type: 'SCHÄTZEN', name: 'Schätzchen', color: '#f3c367',
         icon: 'assets/cat-schaetzchen.png', tagline: 'Schätzen statt wissen, am nächsten dran gewinnt.' },
       { key: 'stimmts', n: '03', type: 'WETTEN', name: '10 von 10', color: '#72ac78',
-        icon: 'assets/cat-stimmts.png', tagline: 'Drei Aussagen, eine stimmt. Wie viel wettet ihr?' },
+        icon: 'assets/cat-10v10.png', tagline: 'Drei Aussagen, eine stimmt. Wie viel wettet ihr?' },
       { key: 'cheese', n: '04', type: 'BILDERRÄTSEL', name: 'Schau mal!', color: '#e2a9f1',
         icon: 'assets/cat-cheese.png', tagline: 'Ein Bild erscheint. Wer erkennt es zuerst?' },
       { key: 'buntetuete', n: '05', type: 'GRABBELKISTE', name: 'Bunte Tüte', color: '#d85f58',
@@ -677,23 +735,23 @@ class Component extends DCLogic {
       // hint
       ['[data-hint] span:first-child', 'Scroll & play along'],
       // mobile hero
-      ['[data-mhero] [data-mhero-it]:nth-child(1)', '<span data-mlive style="width:7px; height:7px; border-radius:50%; background:#EC4899; animation:cz-mpulse 1.8s ease-in-out infinite;"></span> Live quiz show for groups', true],
-      ['[data-mhero] [data-mhero-it]:nth-child(2)', 'Claim<br>the <span style="color:#EC4899;">field.</span>', true],
+      ['[data-mhero] [data-mhero-it]:nth-child(1)', 'Live quiz show for groups'],
+      ['[data-mhero] [data-mhero-it]:nth-child(2)', 'Claim the <span style="color:#EC4899;">field.</span>', true],
       ['[data-mhero] [data-mhero-it]:nth-child(3)', 'The hosted quiz show where teams compete for the most fields. Every correct answer claims a field.'],
       ['[data-mfields]', 'fields claimed'],
       ['[data-mprinc]', 'Whoever holds the largest <span style="color:#EC4899;">connected</span> territory at the end wins.', true],
       ['[data-mobile-app] a[href^="mailto"]', 'Book a quiz →'],
       // mobile how
-      ['#m-how > div:first-child', 'How it works'],
-      ['#m-how h2', 'Quiz meets<br>game board.', true],
+      ['#m-how [data-how-head] > div:first-child', 'How it works'],
+      ['#m-how h2', 'Quiz meets game board.'],
       // mobile categories
       ['#m-cats [data-reveal] > div:first-child', 'Five categories'],
       ['#m-cats h2', 'Something for everyone.'],
       ['#m-cats [data-reveal] p', 'Swipe through — each one shows itself off.'],
       // catch
-      ['[data-catch] > div:last-child > div:first-child', '<span style="width:6px; height:6px; border-radius:50%; background:#EC4899; box-shadow:0 0 10px #EC4899;"></span> One last question', true],
+      ['[data-catch] [data-catch-intro] > div:first-child', 'Try it out'],
       ['[data-catch] h2', 'Would <span style="color:#EC4899;">you</span> win?', true],
-      ['[data-catch] > div:last-child > p', 'A real CozyQuiz question. Tap your answer.'],
+      ['[data-catch] [data-catch-intro] > p', 'A real CozyQuiz question. Tap your answer.'],
       ['[data-cclabel]', 'MU-CHO · GENERAL KNOWLEDGE'],
       ['[data-ccsub]', 'Live · one question, one field'],
       ['[data-catch-card] > div:nth-child(2)', 'Which city was never the capital of Germany?'],
@@ -1350,6 +1408,12 @@ class Component extends DCLogic {
     ans.forEach(a => a.addEventListener('click', () => {
       if (done) return;
       done = true;
+      const intro = root.querySelector('[data-catch-intro]');
+      if (intro) {
+        intro.style.maxHeight = intro.offsetHeight + 'px';
+        intro.style.transition = 'max-height .55s cubic-bezier(.16,1,.3,1), opacity .4s ease, margin-bottom .55s ease';
+        requestAnimationFrame(() => { intro.style.maxHeight = '0px'; intro.style.opacity = '0'; intro.style.marginBottom = '0'; });
+      }
       if (this._catchTimer) this._catchTimer.pause();
       if (this._catchInt) clearInterval(this._catchInt);
       const ok = a.hasAttribute('data-correct');
