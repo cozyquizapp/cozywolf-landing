@@ -18,21 +18,27 @@
     </div>
   </noscript>
 <style>
-/* 2026-06-28 Landing-Politur (cozywolf.de) */
-/* Letzte Frage-Section global kompakter -> am Scroll-Ende Frage + Footer sichtbar,
-   nichts wird oben vom fixen Header abgeschnitten */
-section[data-catch]{ padding-top:clamp(18px,3.5vh,46px) !important; padding-bottom:clamp(12px,2vh,22px) !important; }
-section[data-catch] h2{ font-size:clamp(24px,3vw,38px) !important; margin-bottom:8px !important; line-height:1.05 !important; }
-section[data-catch] > div > p{ margin-bottom:14px !important; }
+/* 2026-06-28 Landing-Politur (cozywolf.de) — letzte Frage-Section sitzt am Scroll-Ende
+   automatisch komplett UNTER dem fixen Blur-Header; Footer direkt darunter. */
+section[data-catch]{
+  box-sizing:border-box !important;
+  min-height:calc(100dvh - 118px) !important;          /* 118px ~ Footer-Hoehe Desktop */
+  display:flex !important; flex-direction:column !important; justify-content:center !important;
+  padding-top:clamp(98px,12vh,118px) !important;       /* >= Header-Hoehe -> Inhalt unter dem Header */
+  padding-bottom:18px !important;
+}
+section[data-catch] h2{ font-size:clamp(23px,2.9vw,38px) !important; margin-bottom:8px !important; line-height:1.05 !important; }
+section[data-catch] > div > p{ margin-bottom:13px !important; font-size:clamp(13px,1.5vw,16px) !important; }
 [data-catch-card]{ padding:clamp(14px,1.8vw,22px) !important; }
-[data-catch-card] > div:first-child{ margin-bottom:13px !important; }
+[data-catch-card] > div:first-child{ margin-bottom:12px !important; }
 [data-catch-answers]{ gap:10px !important; }
-[data-catch-ans]{ padding:13px 14px !important; }
+[data-catch-ans]{ padding:12px 14px !important; }
 @media (max-width:640px){
-  section[data-catch] h2{ font-size:24px !important; }
-  [data-catch-ans]{ padding:11px 12px !important; }
-  footer{ flex-direction:column !important; align-items:flex-start !important; gap:14px !important; }
-  footer > div:last-child{ justify-content:flex-start !important; gap:12px 16px !important; }
+  section[data-catch]{ min-height:calc(100dvh - 188px) !important; padding-top:84px !important; padding-bottom:12px !important; }
+  section[data-catch] h2{ font-size:23px !important; }
+  [data-catch-ans]{ padding:10px 12px !important; }
+  footer{ flex-direction:column !important; align-items:flex-start !important; gap:13px !important; }
+  footer > div:last-child{ justify-content:flex-start !important; gap:10px 16px !important; }
 }
 </style>
 </head>
