@@ -17,6 +17,22 @@
       This page requires JavaScript to display.
     </div>
   </noscript>
+<style>
+/* 2026-06-28 Mobile-Politur (cozywolf.de Landing) */
+@media (max-width: 640px){
+  /* Letzte Frage-Section + Karte kompakter -> am Scroll-Ende schneidet oben nichts mittendrin ab */
+  section[data-catch]{ padding-top:14px !important; padding-bottom:14px !important; }
+  section[data-catch] h2{ font-size:27px !important; margin-bottom:6px !important; }
+  section[data-catch] > div > p{ margin-bottom:12px !important; font-size:14px !important; }
+  [data-catch-card]{ padding:15px !important; border-radius:20px !important; }
+  [data-catch-card] > div:first-child{ margin-bottom:12px !important; }
+  [data-catch-answers]{ gap:9px !important; }
+  [data-catch-ans]{ padding:11px 12px !important; }
+  /* Footer: Logo-Block + Links untereinander, linksbuendig (Logo in der Ecke) */
+  footer{ flex-direction:column !important; align-items:flex-start !important; gap:14px !important; }
+  footer > div:last-child{ justify-content:flex-start !important; gap:14px 16px !important; }
+}
+</style>
 </head>
 <body>
   <div id="__bundler_thumbnail">
