@@ -23,6 +23,21 @@
 <meta name="ext-resource-dependency" content="assets/av-eule.png">
 <meta name="ext-resource-dependency" content="assets/av-katze.png">
 <meta name="ext-resource-dependency" content="assets/av-adler.png">
+<meta name="ext-resource-dependency" content="assets/og-cover.png">
+<title>CozyQuiz — Live-Quiz für Events | Erobere das Feld</title>
+<meta name="description" content="Das Live-Quiz für Events: Beamer als Bühne, Handy als Buzzer, jede richtige Antwort erobert ein Feld. Jetzt CozyQuiz buchen.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CozyQuiz">
+<meta property="og:title" content="CozyQuiz — Erobere das Feld. Live-Quiz für Events.">
+<meta property="og:description" content="Beamer als Bühne, Handy als Buzzer, jede Frage ein Feld. Das Live-Quiz für eure Events.">
+<meta property="og:url" content="https://cozywolf.de/">
+<meta property="og:image" content="https://cozywolf.de/assets/og-cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CozyQuiz — Erobere das Feld. Live-Quiz für Events.">
+<meta name="twitter:description" content="Beamer als Bühne, Handy als Buzzer, jede Frage ein Feld.">
+<meta name="twitter:image" content="https://cozywolf.de/assets/og-cover.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -64,11 +79,20 @@
     [data-mobile-app] { display: block !important; }
   }
 
-  /* ===== Mobile footer: stack logo block + links left-aligned ===== */
+  /* ===== Mobile footer: logo block on top, links as a left-aligned wrapping row ===== */
   @media (max-width: 640px) {
-    footer[data-footer] { flex-direction: column !important; align-items: flex-start !important; gap: 16px !important; }
-    footer[data-footer] [data-footer-links] { flex-direction: column !important; align-items: flex-start !important; justify-content: flex-start !important; gap: 9px !important; }
-    footer[data-footer] [data-footer-links] > span { display: none !important; }
+    footer[data-footer] { flex-direction: column !important; align-items: flex-start !important; gap: 14px !important; }
+    footer[data-footer] [data-footer-links] { justify-content: flex-start !important; row-gap: 8px !important; }
+
+    /* answers stack into one column — bigger targets, natural A→B→C→D order */
+    [data-catch-answers] { grid-template-columns: 1fr !important; gap: 10px !important; }
+    /* clear the fixed header so the question never tucks behind it */
+    [data-catch] { padding-top: 132px !important; }
+    /* bottom CTA is redundant on mobile — the header keeps "Quiz buchen" pinned */
+    [data-endcta] { display: none !important; }
+    /* header: logo alone on mobile so DE/EN, sound, Insta + CTA have room */
+    [data-topbar] [data-wordmark] { display: none !important; }
+    [data-topbar] { gap: 10px !important; }
   }
 </style>
 </helmet>
@@ -99,14 +123,15 @@
   </template>
 
   <!-- top bar -->
-  <div data-topbar style="position:fixed; top:0; left:0; right:0; z-index:70; display:flex; align-items:center; justify-content:space-between; padding:clamp(16px,2.4vw,26px) clamp(18px,3vw,44px); background:linear-gradient(180deg, rgba(8,6,15,.94) 0%, rgba(8,6,15,.78) 52%, rgba(8,6,15,0) 100%); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);">
+  <div data-topbar style="position:fixed; top:0; left:0; right:0; z-index:70; display:flex; align-items:center; justify-content:space-between; gap:clamp(16px,4vw,32px); padding:clamp(16px,2.4vw,26px) clamp(18px,3vw,44px); background:linear-gradient(180deg, rgba(8,6,15,.94) 0%, rgba(8,6,15,.78) 52%, rgba(8,6,15,0) 100%); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);">
     <div style="display:flex; align-items:center; gap:11px;">
       <img src="assets/cozywolf-logo.png" alt="CozyWolf" style="width:clamp(38px,3.4vw,46px); height:clamp(38px,3.4vw,46px); border-radius:50%; filter:drop-shadow(0 0 12px rgba(236,72,153,.6));">
-      <span style="font-weight:900; font-size:clamp(18px,1.7vw,22px); letter-spacing:.01em;">CozyQuiz</span>
+      <span data-wordmark style="font-weight:900; font-size:clamp(18px,1.7vw,22px); letter-spacing:.01em;">CozyQuiz</span>
     </div>
     <div style="display:flex; align-items:center; gap:12px;">
       <button data-lang aria-label="Sprache / Language" style-hover="background:rgba(255,255,255,.12)" style="appearance:none; cursor:pointer; height:42px; padding:0 14px; display:flex; align-items:center; gap:6px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); color:#fff; font-family:inherit; font-weight:800; font-size:13px; letter-spacing:.06em; transition:all .2s;"><span data-lang-de>DE</span><span style="opacity:.35;">·</span><span data-lang-en style="opacity:.4;">EN</span></button>
       <button data-sound aria-label="Sound an/aus" style-hover="background:rgba(255,255,255,.12)" style="appearance:none; cursor:pointer; width:42px; height:42px; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); color:#fff; font-size:17px; transition:all .2s;">🔇</button>
+      <a href="https://instagram.com/cozywolf.events" target="_blank" rel="noopener" aria-label="CozyWolf auf Instagram" style-hover="background:rgba(255,255,255,.12)" style="appearance:none; cursor:pointer; width:42px; height:42px; display:grid; place-items:center; border-radius:50%; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); color:#fff; transition:all .2s; text-decoration:none;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></a>
       <a href="mailto:hallo@cozywolf.de" style="display:inline-flex; align-items:center; gap:8px; background:#EC4899; color:#1a0a14; font-weight:900; font-size:clamp(13px,1.2vw,15px); text-decoration:none; padding:11px 20px; border-radius:999px; box-shadow:0 0 22px rgba(236,72,153,.5);">Quiz buchen</a>
     </div>
   </div>
@@ -425,8 +450,8 @@
         </div>
       </div>
 
-      <!-- persistent end CTA -->
-      <div style="margin-top:18px; display:flex; justify-content:center;">
+      <!-- persistent end CTA (hidden on mobile — header CTA is always visible there) -->
+      <div data-endcta style="margin-top:18px; display:flex; justify-content:center;">
         <a href="mailto:hallo@cozywolf.de" style="display:inline-flex; align-items:center; gap:8px; background:#EC4899; color:#1a0a14; font-weight:900; font-size:clamp(16px,1.7vw,18px); text-decoration:none; padding:16px 32px; border-radius:999px; box-shadow:0 0 34px rgba(236,72,153,.6);">Quiz buchen →</a>
       </div>
     </div>
@@ -444,10 +469,6 @@
     <div data-footer-links style="display:flex; align-items:center; gap:16px; flex-wrap:wrap; justify-content:flex-end; font-size:14px; color:#9aa0b5; font-weight:700;">
       <a href="/impressum" style="color:#9aa0b5; text-decoration:none;">Impressum</a>
       <a href="/datenschutz" style="color:#9aa0b5; text-decoration:none;">Datenschutz</a>
-      <span style="opacity:.45;">·</span>
-      <a href="mailto:hallo@cozywolf.de" style="color:#9aa0b5; text-decoration:none;">hallo@cozywolf.de</a>
-      <span style="opacity:.45;">·</span>
-      <a href="https://instagram.com/cozywolf.events" target="_blank" rel="noopener" style="color:#9aa0b5; text-decoration:none;">@cozywolf.events</a>
     </div>
   </footer>
 </div>
