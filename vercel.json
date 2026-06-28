@@ -1,9 +1,8 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/impressum", "destination": "/index.html" },
-    { "source": "/datenschutz", "destination": "/index.html" },
-    { "source": "/", "destination": "/_landing.html" },
-    { "source": "/(.*)", "destination": "/_landing.html" }
+    { "source": "/impressum", "destination": "/app.html" },
+    { "source": "/datenschutz", "destination": "/app.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
