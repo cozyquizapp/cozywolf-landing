@@ -4,6 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
+<style id="cz-readability">
+/* 2026-07-05 Lesbarkeit (Wolf): Kapitel-Texte liegen ueberm animierten
+   Spielbrett — dort brach der Kontrast weg. Linksseitiger Scrim dunkelt nur die
+   Textzone ab (Brett rechts bleibt frei), hellerer Fliesstext + leichter Schatten.
+   Reiner CSS-Zusatz, Bundle-Inhalt unangetastet. */
+[data-chapter]::before{
+  content:''; position:absolute; z-index:-1; pointer-events:none;
+  left:-40px; right:-8px; top:-30px; bottom:-30px; border-radius:26px;
+  background:radial-gradient(125% 120% at 0% 50%,
+     rgba(9,6,18,.88) 0%, rgba(9,6,18,.68) 38%, rgba(9,6,18,.30) 62%, transparent 82%);
+  filter:blur(9px);
+}
+[data-chapter] p{ color:#eaecf5 !important; }
+[data-chapter] h2, [data-chapter] p{ text-shadow:0 1px 14px rgba(8,5,16,.78); }
+</style>
 </head>
 <body>
 <template id="__bundler_thumbnail">
