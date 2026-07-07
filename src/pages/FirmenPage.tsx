@@ -8,6 +8,7 @@ import { OrganizerFacts } from '../components/OrganizerFacts';
 import { FactionTeaser } from '../components/FactionTeaser';
 import { BarRaceTeaser } from '../components/BarRaceTeaser';
 import { AwardsTeaser } from '../components/AwardsTeaser';
+import { PriceNote } from '../components/PriceNote';
 
 const C = {
   de: {
@@ -30,7 +31,6 @@ const C = {
     f3B: 'Am Ende wird die Sieger-Fraktion gekrönt, dazu gibt es kleine Auszeichnungen, etwa für die schnellste oder treffsicherste Fraktion.',
     occTitle: 'Passt zu',
     occ: ['Firmenevents', 'Weihnachtsfeiern', 'Sommerfeste', 'Team-Tage', 'Vereinsfeste', 'Jubiläen'],
-    priceNote: 'Preis auf Anfrage. Ich richte den Abend auf eure Gruppengröße und euren Anlass aus.',
     cta: 'Für euer Team anfragen',
   },
   en: {
@@ -53,7 +53,6 @@ const C = {
     f3B: 'At the end the winning faction is crowned, plus small awards, for example for the fastest or sharpest faction.',
     occTitle: 'A good fit for',
     occ: ['Company events', 'Christmas parties', 'Summer parties', 'Team days', 'Club celebrations', 'Anniversaries'],
-    priceNote: 'Price on request. I tailor the evening to your group size and occasion.',
     cta: 'Request for your team',
   },
 };
@@ -99,7 +98,7 @@ export default function FirmenPage() {
             }}>{o}</span>
           ))}
         </div>
-        <p style={{ margin: '0 auto 22px', maxWidth: 560, fontSize: 16, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{c.priceNote}</p>
+        <PriceNote />
         <Btn href={anfrageMailto(lang)}>{c.cta}</Btn>
       </Section>
     </Layout>

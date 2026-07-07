@@ -3,6 +3,7 @@
 import { BRAND, EMAIL, INSTA_URL, INSTA_HANDLE, anfrageMailto } from '../brand';
 import { useLang } from '../lang';
 import { Layout, Section, Btn, PageHero } from '../Layout';
+import { PriceNote } from '../components/PriceNote';
 
 const C = {
   de: {
@@ -41,6 +42,7 @@ export default function KontaktPage() {
           <a href={INSTA_URL} target="_blank" rel="noopener noreferrer" style={{
             fontSize: 15, color: BRAND.pinkSoft, fontWeight: 700, textDecoration: 'none',
           }}>📸 {c.insta} · {INSTA_HANDLE}</a>
+          <PriceNote />
         </div>
       </Section>
     </Layout>

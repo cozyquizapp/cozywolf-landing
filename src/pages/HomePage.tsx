@@ -10,6 +10,7 @@ import { CategoryStrip } from '../components/CategoryStrip';
 import { MiniQuiz } from '../components/MiniQuiz';
 import { MiniGrid, MiniBars } from '../components/ModeMinis';
 import { FaqSection } from '../components/FaqSection';
+import { PriceNote } from '../components/PriceNote';
 
 const C = {
   de: {
@@ -118,7 +119,7 @@ export default function HomePage() {
           background: 'rgba(255,255,255,0.03)', border: `1px solid rgba(${BRAND.pinkRgb},0.18)`,
         }}>
           <img src="/assets/johannes.jpg" alt="Johannes" style={{
-            width: 132, height: 132, borderRadius: '50%', objectFit: 'cover', flexShrink: 0,
+            width: 132, height: 132, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center 22%', flexShrink: 0,
             border: `3px solid rgba(${BRAND.pinkRgb},0.5)`,
           }} />
           <div style={{ flex: 1, minWidth: 240 }}>
@@ -139,7 +140,8 @@ export default function HomePage() {
           border: `1.5px solid rgba(${BRAND.pinkRgb},0.3)`,
         }}>
           <h2 style={{ margin: '0 0 12px', fontFamily: FONT_DISPLAY, fontSize: 'clamp(26px, 3.4vw, 40px)', fontWeight: 800, color: '#F1F5F9' }}>{c.ctaTitle}</h2>
-          <p style={{ margin: '0 auto 22px', maxWidth: 560, fontSize: 17, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{c.ctaBody}</p>
+          <p style={{ margin: '0 auto 16px', maxWidth: 560, fontSize: 17, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{c.ctaBody}</p>
+          <PriceNote />
           <Btn href={anfrageMailto(lang)}>{d.ctaBook}</Btn>
         </div>
       </Section>

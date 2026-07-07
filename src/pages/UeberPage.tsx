@@ -4,6 +4,7 @@ import { BRAND, anfrageMailto } from '../brand';
 import { useLang } from '../lang';
 import { t } from '../i18n';
 import { Layout, Section, Btn, PageHero } from '../Layout';
+import { PriceNote } from '../components/PriceNote';
 
 const C = {
   de: {
@@ -36,7 +37,7 @@ export default function UeberPage() {
       <Section style={{ paddingTop: 0 }}>
         <div style={{ maxWidth: 760, margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
           <img src="/assets/johannes.jpg" alt="Johannes" style={{
-            width: 180, height: 180, borderRadius: '50%', objectFit: 'cover',
+            width: 180, height: 180, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center 22%',
             border: `4px solid rgba(${BRAND.pinkRgb},0.5)`,
             boxShadow: `0 12px 36px rgba(${BRAND.pinkRgb},0.25)`,
           }} />
@@ -45,6 +46,7 @@ export default function UeberPage() {
               <p key={i} style={{ margin: 0, fontSize: 17, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.7, textAlign: 'center' }}>{p}</p>
             ))}
           </div>
+          <PriceNote />
           <Btn href={anfrageMailto(lang)}>{d.ctaBook}</Btn>
         </div>
       </Section>

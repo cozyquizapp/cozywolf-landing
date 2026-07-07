@@ -5,6 +5,7 @@ import { useLang } from '../lang';
 import { Layout, Section, Btn, PageHero } from '../Layout';
 import { OrganizerFacts } from '../components/OrganizerFacts';
 import { GridMock } from '../components/GridMock';
+import { PriceNote } from '../components/PriceNote';
 
 const C = {
   de: {
@@ -90,6 +91,7 @@ export default function FeiernPage() {
             }}>{o}</span>
           ))}
         </div>
+        <PriceNote />
         <Btn href={anfrageMailto(lang)}>{c.cta}</Btn>
       </Section>
     </Layout>
