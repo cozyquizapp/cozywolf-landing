@@ -1,7 +1,12 @@
 {
   "rewrites": [
     { "source": "/impressum", "destination": "/app.html" },
-    { "source": "/datenschutz", "destination": "/app.html" }
+    { "source": "/datenschutz", "destination": "/app.html" },
+    { "source": "/firmen", "destination": "/app.html" },
+    { "source": "/locations", "destination": "/app.html" },
+    { "source": "/feiern", "destination": "/app.html" },
+    { "source": "/ueber", "destination": "/app.html" },
+    { "source": "/kontakt", "destination": "/app.html" }
   ],
   "headers": [
     {
