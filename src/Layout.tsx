@@ -212,7 +212,19 @@ export function Section({ children, style }: { children: ReactNode; style?: Reac
 
 export function PageHero({ eyebrow, title, sub }: { eyebrow?: string; title: string; sub?: string }) {
   return (
-    <Section style={{ textAlign: 'center', paddingBottom: 'clamp(24px, 4vh, 48px)' }}>
+    <Section style={{ textAlign: 'center', paddingBottom: 'clamp(24px, 4vh, 48px)', position: 'relative' }}>
+      <style>{`
+        @keyframes cwHeroGlow { 0%,100% { opacity: 0.7; transform: translateX(-50%) scale(1); } 50% { opacity: 1; transform: translateX(-50%) scale(1.08); } }
+        @media (prefers-reduced-motion: reduce) { .cw-hero-glow { animation: none !important; } }
+      `}</style>
+      <div className="cw-hero-glow" aria-hidden style={{
+        position: 'absolute', top: '-6%', left: '50%', transform: 'translateX(-50%)',
+        width: 'min(760px, 92%)', height: 'clamp(200px, 34vh, 380px)', pointerEvents: 'none', zIndex: 0,
+        background: `radial-gradient(ellipse 60% 100% at 50% 30%, rgba(${BRAND.pinkRgb},0.20), rgba(${BRAND.pinkRgb},0.06) 45%, transparent 72%)`,
+        filter: 'blur(6px)',
+        animation: 'cwHeroGlow 7s ease-in-out infinite',
+      }} />
+      <div style={{ position: 'relative', zIndex: 1 }}>
       {eyebrow && (
         <div style={{
           fontSize: 13, fontWeight: 900, letterSpacing: '0.16em', textTransform: 'uppercase',
@@ -229,6 +241,7 @@ export function PageHero({ eyebrow, title, sub }: { eyebrow?: string; title: str
           color: BRAND.inkSoft, fontWeight: 600, lineHeight: 1.55,
         }}>{sub}</p>
       )}
+      </div>
     </Section>
   );
 }

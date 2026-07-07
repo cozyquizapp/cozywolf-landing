@@ -7,6 +7,7 @@ import { Layout, Section, Btn, PageHero } from '../Layout';
 import { OrganizerFacts } from '../components/OrganizerFacts';
 import { FactionTeaser } from '../components/FactionTeaser';
 import { BarRaceTeaser } from '../components/BarRaceTeaser';
+import { AwardsTeaser } from '../components/AwardsTeaser';
 
 const C = {
   de: {
@@ -79,6 +80,8 @@ export default function FirmenPage() {
       <FactionTeaser />
 
       <BarRaceTeaser />
+
+      <AwardsTeaser />
 
       <Section>
         <h2 style={secTitle}>{c.flowTitle}</h2>

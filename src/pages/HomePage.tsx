@@ -8,6 +8,7 @@ import { Layout, Section, Btn, PageHero } from '../Layout';
 import { OrganizerFacts } from '../components/OrganizerFacts';
 import { CategoryStrip } from '../components/CategoryStrip';
 import { MiniQuiz } from '../components/MiniQuiz';
+import { MiniGrid, MiniBars } from '../components/ModeMinis';
 
 const C = {
   de: {
@@ -83,8 +84,8 @@ export default function HomePage() {
       <Section>
         <SecTitle>{c.modesTitle}</SecTitle>
         <div style={twoCol}>
-          <ModeCard title={c.mode1T} body={c.mode1B} accent={BRAND.pink} />
-          <ModeCard title={c.mode2T} body={c.mode2B} accent={BRAND.magenta} />
+          <ModeCard title={c.mode1T} body={c.mode1B} accent={BRAND.pink} visual={<MiniGrid />} />
+          <ModeCard title={c.mode2T} body={c.mode2B} accent={BRAND.magenta} visual={<MiniBars />} />
         </div>
       </Section>
 
@@ -150,15 +151,16 @@ function SecTitle({ children }: { children: React.ReactNode }) {
   }}>{children}</h2>;
 }
 
-function ModeCard({ title, body, accent }: { title: string; body: string; accent: string }) {
+function ModeCard({ title, body, accent, visual }: { title: string; body: string; accent: string; visual?: React.ReactNode }) {
   return (
     <div style={{
       padding: 'clamp(22px, 2.6vw, 32px)', borderRadius: 20,
       background: 'rgba(255,255,255,0.03)', border: `1px solid ${accent}44`,
-      display: 'flex', flexDirection: 'column', gap: 10,
+      display: 'flex', flexDirection: 'column', gap: 12,
     }}>
       <div style={{ fontSize: 22, fontWeight: 900, color: accent }}>{title}</div>
-      <div style={{ fontSize: 16, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{body}</div>
+      <div style={{ fontSize: 16, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6, flex: 1 }}>{body}</div>
+      {visual && <div style={{ marginTop: 4 }}>{visual}</div>}
     </div>
   );
 }
