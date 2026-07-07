@@ -1,5 +1,6 @@
 {
   "rewrites": [
+    { "source": "/", "destination": "/app.html" },
     { "source": "/impressum", "destination": "/app.html" },
     { "source": "/datenschutz", "destination": "/app.html" },
     { "source": "/firmen", "destination": "/app.html" },
