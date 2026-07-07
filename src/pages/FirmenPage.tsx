@@ -16,7 +16,7 @@ const C = {
   de: {
     eyebrow: 'Für Firmen & Teams',
     title: 'Ein Team-Event, bei dem alle mitspielen.',
-    sub: 'Eure Abteilungen oder Tische treten als Fraktionen gegeneinander an. Jeder trägt bei, keiner sitzt raus. Ideal für 30 bis 100 Personen.',
+    sub: 'Eure Abteilungen oder Tische treten als Fraktionen gegeneinander an. Jeder spielt mit, niemand bleibt außen vor. Ideal für 30 bis 100 Personen.',
     valuesTitle: 'Warum das für Teams funktioniert',
     v1T: 'Fraktionen statt Einzelkampf',
     v1B: 'Jedes Handy schließt sich einer Fraktion an. Ihr spielt als Gruppe gegen die anderen, das klassische „wir gegen die", das Teams zusammenschweißt.',
@@ -38,7 +38,7 @@ const C = {
   en: {
     eyebrow: 'For companies & teams',
     title: 'A team event where everyone plays.',
-    sub: 'Your departments or tables compete as factions. Everyone contributes, nobody sits out. Ideal from about 30 to 100 people.',
+    sub: 'Your departments or tables compete as factions. Everyone plays, nobody is left out. Ideal for 30 to 100 people.',
     valuesTitle: 'Why this works for teams',
     v1T: 'Factions, not solo play',
     v1B: 'Every phone joins a faction. You play as a group against the others, the classic us versus them that brings teams together.',
