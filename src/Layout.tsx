@@ -3,7 +3,7 @@
 // bleiben. Navigation läuft über echte <a>-Links (Full-Page-Loads) — Vercel
 // leitet jede Route auf die SPA, React rendert per Pfad die passende Seite.
 import { useState, type ReactNode } from 'react';
-import { BRAND, FONT_DISPLAY, FONT_BODY, EMAIL, INSTA_URL, INSTA_HANDLE, WONKY_URL } from './brand';
+import { BRAND, FONT_DISPLAY, FONT_BODY, EMAIL, INSTA_URL, INSTA_HANDLE } from './brand';
 import { useLang, setLang, type Lang } from './lang';
 import { usePath } from './pathContext';
 import { t } from './i18n';
@@ -168,8 +168,6 @@ function SiteFooter({ lang }: { lang: Lang }) {
           <a href="/impressum" style={footerLinkMuted}>{d.footerImprint}</a>
           <span style={dot}>·</span>
           <a href="/datenschutz" style={footerLinkMuted}>{d.footerPrivacy}</a>
-          <span style={dot}>·</span>
-          <a href={WONKY_URL} target="_blank" rel="noopener noreferrer" style={footerLinkMuted}>{d.footerWonky}</a>
         </div>
       </div>
     </footer>
@@ -233,8 +231,8 @@ export function PageHero({ eyebrow, title, sub }: { eyebrow?: string; title: str
         }}>{eyebrow}</div>
       )}
       <h1 style={{
-        margin: 0, fontSize: 'clamp(34px, 6vw, 60px)', fontWeight: 900, lineHeight: 1.05,
-        color: '#F1F5F9', letterSpacing: '-0.02em', textWrap: 'balance',
+        margin: 0, fontFamily: FONT_DISPLAY, fontSize: 'clamp(36px, 6.2vw, 64px)', fontWeight: 800, lineHeight: 1.02,
+        color: '#F1F5F9', letterSpacing: '-0.015em', textWrap: 'balance',
       }}>{title}</h1>
       {sub && (
         <p style={{

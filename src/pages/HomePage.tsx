@@ -9,6 +9,7 @@ import { OrganizerFacts } from '../components/OrganizerFacts';
 import { CategoryStrip } from '../components/CategoryStrip';
 import { MiniQuiz } from '../components/MiniQuiz';
 import { MiniGrid, MiniBars } from '../components/ModeMinis';
+import { FaqSection } from '../components/FaqSection';
 
 const C = {
   de: {
@@ -78,6 +79,21 @@ export default function HomePage() {
         <Btn href="#mini" variant="secondary">{c.ctaTry}</Btn>
       </Section>
 
+      {/* Zielgruppen zuerst: Veranstalter ordnet sich sofort ein */}
+      <Section style={{ paddingTop: 'clamp(24px, 4vh, 48px)' }}>
+        <SecTitle>{c.audTitle}</SecTitle>
+        <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))' }}>
+          {audiences.map(a => (
+            <a key={a.href} href={a.href} style={teaserCard}>
+              <div style={{ fontSize: 30 }} aria-hidden>{a.icon}</div>
+              <div style={{ fontSize: 20, fontWeight: 900, color: BRAND.pink }}>{a.title}</div>
+              <div style={{ fontSize: 15, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.5, flex: 1 }}>{a.body}</div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: BRAND.pinkSoft }}>{c.audMore} →</div>
+            </a>
+          ))}
+        </div>
+      </Section>
+
       <OrganizerFacts />
 
       {/* Zwei Modi */}
@@ -93,21 +109,6 @@ export default function HomePage() {
 
       {/* Mini-Quiz (Vorgeschmack, ersetzt den frueheren toten Ausprobieren-Link) */}
       <div id="mini"><MiniQuiz /></div>
-
-      {/* Zielgruppen */}
-      <Section>
-        <SecTitle>{c.audTitle}</SecTitle>
-        <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))' }}>
-          {audiences.map(a => (
-            <a key={a.href} href={a.href} style={teaserCard}>
-              <div style={{ fontSize: 30 }} aria-hidden>{a.icon}</div>
-              <div style={{ fontSize: 20, fontWeight: 900, color: BRAND.pink }}>{a.title}</div>
-              <div style={{ fontSize: 15, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.5, flex: 1 }}>{a.body}</div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: BRAND.pinkSoft }}>{c.audMore} →</div>
-            </a>
-          ))}
-        </div>
-      </Section>
 
       {/* Johannes-Teaser */}
       <Section>
@@ -127,6 +128,8 @@ export default function HomePage() {
           </div>
         </div>
       </Section>
+
+      <FaqSection />
 
       {/* Kontakt-CTA */}
       <Section style={{ textAlign: 'center' }}>
