@@ -5,6 +5,7 @@ import { BRAND, anfrageMailto } from '../brand';
 import { useLang } from '../lang';
 import { Layout, Section, Btn, PageHero } from '../Layout';
 import { OrganizerFacts } from '../components/OrganizerFacts';
+import { FactionTeaser } from '../components/FactionTeaser';
 
 const C = {
   de: {
@@ -73,6 +74,8 @@ export default function FirmenPage() {
         <h2 style={secTitle}>{c.valuesTitle}</h2>
         <CardGrid items={values} />
       </Section>
+
+      <FactionTeaser />
 
       <Section>
         <h2 style={secTitle}>{c.flowTitle}</h2>

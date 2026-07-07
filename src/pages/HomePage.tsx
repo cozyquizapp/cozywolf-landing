@@ -6,6 +6,7 @@ import { useLang } from '../lang';
 import { t } from '../i18n';
 import { Layout, Section, Btn, PageHero } from '../Layout';
 import { OrganizerFacts } from '../components/OrganizerFacts';
+import { CategoryStrip } from '../components/CategoryStrip';
 
 const C = {
   de: {
@@ -85,6 +86,8 @@ export default function HomePage() {
           <ModeCard title={c.mode2T} body={c.mode2B} accent={BRAND.magenta} />
         </div>
       </Section>
+
+      <CategoryStrip />
 
       {/* Zielgruppen */}
       <Section>
