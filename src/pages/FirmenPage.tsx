@@ -9,6 +9,7 @@ import { FactionTeaser } from '../components/FactionTeaser';
 import { BarRaceTeaser } from '../components/BarRaceTeaser';
 import { AwardsTeaser } from '../components/AwardsTeaser';
 import { PriceNote } from '../components/PriceNote';
+import { StatsBand } from '../components/StatsBand';
 
 const C = {
   de: {
@@ -75,6 +76,8 @@ export default function FirmenPage() {
         <h2 style={secTitle}>{c.valuesTitle}</h2>
         <CardGrid items={values} />
       </Section>
+
+      <StatsBand />
 
       <FactionTeaser />
 

@@ -11,6 +11,7 @@ import { MiniQuiz } from '../components/MiniQuiz';
 import { MiniGrid, MiniBars } from '../components/ModeMinis';
 import { FaqSection } from '../components/FaqSection';
 import { PriceNote } from '../components/PriceNote';
+import { StatsBand } from '../components/StatsBand';
 
 const C = {
   de: {
@@ -74,7 +75,9 @@ export default function HomePage() {
   ];
   return (
     <Layout>
-      <PageHero eyebrow={c.eyebrow} title={c.title} sub={c.sub} />
+      <PageHero eyebrow={c.eyebrow} title={c.title} sub={c.sub}
+        visual={<img src="/logo.png" alt="" width={148} height={148} style={{ width: '100%', height: 'auto', filter: `drop-shadow(0 8px 24px rgba(${BRAND.pinkRgb},0.45))` }} />}
+      />
       <Section style={{ paddingTop: 0, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
         <Btn href={anfrageMailto(lang)}>{d.ctaBook}</Btn>
         <Btn href="#mini" variant="secondary">{c.ctaTry}</Btn>
@@ -105,6 +108,8 @@ export default function HomePage() {
           <ModeCard title={c.mode2T} body={c.mode2B} accent={BRAND.magenta} visual={<MiniBars />} />
         </div>
       </Section>
+
+      <StatsBand />
 
       <CategoryStrip />
 

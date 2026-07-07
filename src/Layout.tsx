@@ -209,12 +209,13 @@ export function Section({ children, style }: { children: ReactNode; style?: Reac
   );
 }
 
-export function PageHero({ eyebrow, title, sub }: { eyebrow?: string; title: string; sub?: string }) {
+export function PageHero({ eyebrow, title, sub, visual }: { eyebrow?: string; title: string; sub?: string; visual?: ReactNode }) {
   return (
     <Section style={{ textAlign: 'center', paddingBottom: 'clamp(24px, 4vh, 48px)', position: 'relative' }}>
       <style>{`
         @keyframes cwHeroGlow { 0%,100% { opacity: 0.7; transform: translateX(-50%) scale(1); } 50% { opacity: 1; transform: translateX(-50%) scale(1.08); } }
-        @media (prefers-reduced-motion: reduce) { .cw-hero-glow { animation: none !important; } }
+        @keyframes cwHeroFloat { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-10px) rotate(2deg); } }
+        @media (prefers-reduced-motion: reduce) { .cw-hero-glow, .cw-hero-visual { animation: none !important; } }
       `}</style>
       <div className="cw-hero-glow" aria-hidden style={{
         position: 'absolute', top: '-6%', left: '50%', transform: 'translateX(-50%)',
@@ -224,6 +225,12 @@ export function PageHero({ eyebrow, title, sub }: { eyebrow?: string; title: str
         animation: 'cwHeroGlow 7s ease-in-out infinite',
       }} />
       <div style={{ position: 'relative', zIndex: 1 }}>
+      {visual && (
+        <div className="cw-hero-visual" aria-hidden style={{
+          margin: '0 auto clamp(14px, 2vh, 22px)', width: 'clamp(96px, 12vw, 148px)',
+          animation: 'cwHeroFloat 6s ease-in-out infinite',
+        }}>{visual}</div>
+      )}
       {eyebrow && (
         <div style={{
           fontSize: 13, fontWeight: 900, letterSpacing: '0.16em', textTransform: 'uppercase',
