@@ -2,8 +2,8 @@
 // Plus geteilte UI-Primitive (Btn, Section, PageHero), damit die Seiten DRY
 // bleiben. Navigation läuft über echte <a>-Links (Full-Page-Loads) — Vercel
 // leitet jede Route auf die SPA, React rendert per Pfad die passende Seite.
-import type { ReactNode } from 'react';
-import { BRAND, FONT_DISPLAY, FONT_BODY, EMAIL, INSTA_URL, INSTA_HANDLE, PLAY_URL, WONKY_URL } from './brand';
+import { useState, type ReactNode } from 'react';
+import { BRAND, FONT_DISPLAY, FONT_BODY, EMAIL, INSTA_URL, INSTA_HANDLE, WONKY_URL } from './brand';
 import { useLang, setLang, type Lang } from './lang';
 import { usePath } from './pathContext';
 import { t } from './i18n';
@@ -40,17 +40,25 @@ export function Layout({ children }: { children: ReactNode }) {
 function NavBar({ lang }: { lang: Lang }) {
   const d = t(lang);
   const path = usePath();
+  const [open, setOpen] = useState(false);
+  const links = NAV_LINKS(d);
   return (
     <header style={{
       position: 'sticky', top: 0, zIndex: 50,
-      background: 'rgba(10,8,20,0.72)',
+      background: 'rgba(10,8,20,0.78)',
       backdropFilter: 'blur(12px)',
       borderBottom: `1px solid rgba(${BRAND.pinkRgb},0.14)`,
     }}>
+      <style>{`
+        @media (max-width: 780px) {
+          .cw-desktop-links { display: none !important; }
+          .cw-burger { display: inline-flex !important; }
+        }
+      `}</style>
       <nav style={{
         maxWidth: 1120, margin: '0 auto',
         padding: '12px 20px',
-        display: 'flex', alignItems: 'center', gap: 18, flexWrap: 'wrap',
+        display: 'flex', alignItems: 'center', gap: 14,
       }}>
         <a href="/" style={{
           display: 'inline-flex', alignItems: 'center', gap: 10,
@@ -64,8 +72,8 @@ function NavBar({ lang }: { lang: Lang }) {
           }}>CozyWolf</span>
         </a>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
-          {NAV_LINKS(d).map(l => {
+        <div className="cw-desktop-links" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          {links.map(l => {
             const active = path === l.href;
             return (
               <a key={l.href} href={l.href} style={{
@@ -80,7 +88,40 @@ function NavBar({ lang }: { lang: Lang }) {
         </div>
 
         <LangSwitch lang={lang} />
+
+        <button
+          className="cw-burger"
+          onClick={() => setOpen(o => !o)}
+          aria-label={open ? 'Menü schließen' : 'Menü öffnen'}
+          aria-expanded={open}
+          style={{
+            display: 'none', alignItems: 'center', justifyContent: 'center',
+            width: 40, height: 40, borderRadius: 12, cursor: 'pointer',
+            border: `1px solid rgba(${BRAND.pinkRgb},0.28)`, background: `rgba(${BRAND.pinkRgb},0.10)`,
+            color: BRAND.pink, fontSize: 20, fontFamily: 'inherit', lineHeight: 1,
+          }}
+        >{open ? '✕' : '☰'}</button>
       </nav>
+
+      {open && (
+        <div style={{
+          borderTop: `1px solid rgba(${BRAND.pinkRgb},0.14)`,
+          padding: '8px 16px 14px',
+          display: 'flex', flexDirection: 'column', gap: 2,
+        }}>
+          {links.map(l => {
+            const active = path === l.href;
+            return (
+              <a key={l.href} href={l.href} onClick={() => setOpen(false)} style={{
+                padding: '12px 14px', borderRadius: 12,
+                textDecoration: 'none', fontSize: 16, fontWeight: 800,
+                color: active ? BRAND.pink : BRAND.inkSoft,
+                background: active ? `rgba(${BRAND.pinkRgb},0.12)` : 'transparent',
+              }}>{l.label}</a>
+            );
+          })}
+        </div>
+      )}
     </header>
   );
 }
@@ -112,33 +153,23 @@ function SiteFooter({ lang }: { lang: Lang }) {
       marginTop: 40,
     }}>
       <div style={{
-        maxWidth: 1120, margin: '0 auto', padding: '32px 20px 40px',
-        display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'center',
+        maxWidth: 1120, margin: '0 auto', padding: '26px 20px 30px',
+        display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center',
         textAlign: 'center',
       }}>
-        <div style={{
-          fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 20,
-          letterSpacing: '0.04em', textTransform: 'uppercase', color: BRAND.pink,
-        }}>CozyWolf</div>
-        <div style={{ color: BRAND.inkSoft, fontSize: 15, fontWeight: 600 }}>{d.footerTagline}</div>
-
-        <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center', fontSize: 14 }}>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', fontSize: 14 }}>
           <a href={`mailto:${EMAIL}`} style={footerLink}>{EMAIL}</a>
           <span style={dot}>·</span>
           <a href={INSTA_URL} target="_blank" rel="noopener noreferrer" style={footerLink}>{INSTA_HANDLE}</a>
-          <span style={dot}>·</span>
-          <a href={PLAY_URL} target="_blank" rel="noopener noreferrer" style={footerLink}>play.cozyquiz.app</a>
         </div>
-
-        <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center', fontSize: 13 }}>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', fontSize: 13 }}>
           <a href="/impressum" style={footerLinkMuted}>{d.footerImprint}</a>
           <span style={dot}>·</span>
           <a href="/datenschutz" style={footerLinkMuted}>{d.footerPrivacy}</a>
           <span style={dot}>·</span>
           <a href={WONKY_URL} target="_blank" rel="noopener noreferrer" style={footerLinkMuted}>{d.footerWonky}</a>
         </div>
-
-        <div style={{ color: BRAND.muted, fontSize: 12, marginTop: 4 }}>{d.footerMade} · 2026</div>
+        <div style={{ color: BRAND.muted, fontSize: 12, marginTop: 2 }}>{d.footerMade} · 2026</div>
       </div>
     </footer>
   );
