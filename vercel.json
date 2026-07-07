@@ -1,13 +1,12 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/app.html" },
-    { "source": "/impressum", "destination": "/app.html" },
-    { "source": "/datenschutz", "destination": "/app.html" },
-    { "source": "/firmen", "destination": "/app.html" },
-    { "source": "/locations", "destination": "/app.html" },
-    { "source": "/feiern", "destination": "/app.html" },
-    { "source": "/ueber", "destination": "/app.html" },
-    { "source": "/kontakt", "destination": "/app.html" }
+    { "source": "/impressum", "destination": "/index.html" },
+    { "source": "/datenschutz", "destination": "/index.html" },
+    { "source": "/firmen", "destination": "/index.html" },
+    { "source": "/locations", "destination": "/index.html" },
+    { "source": "/feiern", "destination": "/index.html" },
+    { "source": "/ueber", "destination": "/index.html" },
+    { "source": "/kontakt", "destination": "/index.html" }
   ],
   "headers": [
     {
@@ -18,12 +17,6 @@
     },
     {
       "source": "/index.html",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
-      ]
-    },
-    {
-      "source": "/support.js",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
       ]
