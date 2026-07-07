@@ -5,14 +5,14 @@ import { BRAND } from '../brand';
 import { useLang } from '../lang';
 import { Section } from '../Layout';
 
-type Row = { name: string; nameEn: string; color: string; emblem: string; val: number };
+type Row = { slug: string; name: string; nameEn: string; color: string; val: number };
 
 const ROWS: Row[] = [
-  { name: 'Risiko',        nameEn: 'All In',      color: '#EF4444', emblem: '🔥', val: 42 },
-  { name: 'Allwissen',     nameEn: 'Know-It-All', color: '#FACC15', emblem: '⭐', val: 38 },
-  { name: 'Bauchgefühl',   nameEn: 'Gut Feeling', color: '#F97316', emblem: '🌀', val: 31 },
-  { name: 'Improvisation', nameEn: 'Wing It',     color: '#3B82F6', emblem: '🎲', val: 27 },
-  { name: 'Feierabend',    nameEn: 'Happy Hour',  color: '#14B8A6', emblem: '🍺', val: 19 },
+  { slug: 'risiko',        name: 'Risiko',        nameEn: 'All In',      color: '#EF4444', val: 42 },
+  { slug: 'allwissen',     name: 'Allwissen',     nameEn: 'Know-It-All', color: '#FACC15', val: 38 },
+  { slug: 'bauchgefuehl',  name: 'Bauchgefühl',   nameEn: 'Gut Feeling', color: '#F97316', val: 31 },
+  { slug: 'improvisation', name: 'Improvisation', nameEn: 'Wing It',     color: '#3B82F6', val: 27 },
+  { slug: 'feierabend',    name: 'Feierabend',    nameEn: 'Happy Hour',  color: '#14B8A6', val: 19 },
 ];
 
 export function BarRaceTeaser() {
@@ -39,12 +39,14 @@ export function BarRaceTeaser() {
           return (
             <div key={r.name} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{
-                flexShrink: 0, width: 40, height: 40, borderRadius: '50%',
-                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
+                flexShrink: 0, width: 42, height: 42, borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
                 background: `radial-gradient(circle at 34% 28%, ${r.color}, ${r.color}bb 65%)`,
                 boxShadow: `0 3px 10px ${r.color}66, inset 0 -3px 6px rgba(0,0,0,0.25)`,
                 border: '2px solid rgba(255,255,255,0.3)',
-              }} aria-hidden>{r.emblem}</div>
+              }} aria-hidden>
+                <img src={`/assets/emblem-${r.slug}.png`} alt="" width={26} height={26} style={{ width: 26, height: 26, objectFit: 'contain' }} />
+              </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 5 }}>
                   <span style={{ fontSize: 15, fontWeight: 900, color: '#F1F5F9' }}>

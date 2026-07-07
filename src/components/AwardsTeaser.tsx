@@ -5,12 +5,12 @@ import { BRAND } from '../brand';
 import { useLang } from '../lang';
 import { Section } from '../Layout';
 
-const WINNER = { name: 'Risiko', nameEn: 'All In', color: '#EF4444', emblem: '🔥', de: 'Alles oder nichts.', en: 'All or nothing.' };
+const WINNER = { slug: 'risiko', name: 'Risiko', nameEn: 'All In', color: '#EF4444', de: 'Alles oder nichts.', en: 'All or nothing.' };
 
 const AWARDS = [
-  { icon: '⚡', color: '#FACC15', emblem: '⭐', name: 'Allwissen',     nameEn: 'Know-It-All', de: 'Schnellstes Team',     en: 'Fastest team' },
-  { icon: '🎯', color: '#F97316', emblem: '🌀', name: 'Bauchgefühl',   nameEn: 'Gut Feeling', de: 'Treffsicherstes Team', en: 'Sharpest team' },
-  { icon: '🔥', color: '#3B82F6', emblem: '🎲', name: 'Improvisation', nameEn: 'Wing It',     de: 'Beste Aufholjagd',     en: 'Best comeback' },
+  { award: 'award-speedy',       color: '#FACC15', slug: 'allwissen',     name: 'Allwissen',     nameEn: 'Know-It-All', de: 'Schnellstes Team',     en: 'Fastest team' },
+  { award: 'award-sharpshooter', color: '#F97316', slug: 'bauchgefuehl',  name: 'Bauchgefühl',   nameEn: 'Gut Feeling', de: 'Treffsicherstes Team', en: 'Sharpest team' },
+  { award: 'award-underdog',     color: '#3B82F6', slug: 'improvisation', name: 'Improvisation', nameEn: 'Wing It',     de: 'Beste Aufholjagd',     en: 'Best comeback' },
 ];
 
 export function AwardsTeaser() {
@@ -38,12 +38,13 @@ export function AwardsTeaser() {
         <div style={{ position: 'relative' }}>
           <span aria-hidden style={{ position: 'absolute', top: -26, left: '50%', transform: 'translateX(-50%) rotate(-8deg)', fontSize: 34, animation: 'cwCrownFloat 3s ease-in-out infinite' }}>👑</span>
           <div style={{
-            width: 104, height: 104, borderRadius: '50%',
-            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48,
-            background: `radial-gradient(circle at 34% 28%, ${WINNER.color}, ${WINNER.color}bb 62%, ${WINNER.color}88)`,
-            boxShadow: `0 0 44px ${WINNER.color}88, inset 0 -8px 16px rgba(0,0,0,0.25)`,
-            border: '3px solid rgba(255,255,255,0.4)',
-          }}>{WINNER.emblem}</div>
+            width: 120, height: 120,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: `radial-gradient(circle, ${WINNER.color}44, transparent 68%)`,
+          }}>
+            <img src={`/assets/crest-${WINNER.slug}.png`} alt="" width={120} height={120}
+              style={{ width: '100%', height: '100%', objectFit: 'contain', filter: `drop-shadow(0 0 24px ${WINNER.color}aa)` }} />
+          </div>
         </div>
         <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#e9c46a' }}>
           {de ? 'Champions der Arena' : 'Arena champions'}
@@ -61,16 +62,19 @@ export function AwardsTeaser() {
             background: 'rgba(255,255,255,0.03)', border: `1px solid ${a.color}44`,
             animation: `cwRise 0.5s ease ${i * 0.1}s both`,
           }}>
-            <div style={{ fontSize: 26 }} aria-hidden>{a.icon}</div>
+            <img src={`/assets/${a.award}.png`} alt="" width={40} height={40} aria-hidden
+              style={{ width: 40, height: 40, objectFit: 'contain', flexShrink: 0, filter: `drop-shadow(0 2px 6px ${a.color}66)` }} />
             <div style={{ minWidth: 0 }}>
               <div style={{ fontSize: 12, fontWeight: 800, opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.06em', color: BRAND.inkSoft }}>{de ? a.de : a.en}</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 4 }}>
                 <span aria-hidden style={{
                   width: 26, height: 26, borderRadius: '50%', flexShrink: 0,
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 14,
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                   background: `radial-gradient(circle at 34% 28%, ${a.color}, ${a.color}bb 65%)`,
                   border: '1.5px solid rgba(255,255,255,0.3)',
-                }}>{a.emblem}</span>
+                }}>
+                  <img src={`/assets/emblem-${a.slug}.png`} alt="" width={16} height={16} style={{ width: 16, height: 16, objectFit: 'contain' }} />
+                </span>
                 <span style={{ fontSize: 16, fontWeight: 900, color: a.color }}>{de ? a.name : a.nameEn}</span>
               </div>
             </div>

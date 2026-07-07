@@ -10,7 +10,7 @@
 
 const PLACEHOLDER_MODE = true;
 const NAME_PLACEHOLDER = '{Vor- und Nachname folgt mit Gewerbe-Anmeldung}';
-const ADDRESS_PLACEHOLDER = '{Straße Hausnummer\nPLZ Stadt — folgt mit Gewerbe-Anmeldung}';
+const ADDRESS_PLACEHOLDER = '{Straße Hausnummer\nPLZ Stadt, folgt mit Gewerbe-Anmeldung}';
 const EMAIL = 'hallo@cozywolf.de';
 
 const BRAND = {
@@ -86,20 +86,20 @@ function Impressum() {
         Die Europäische Kommission stellt eine Plattform zur
         Online-Streitbeilegung (OS) bereit:{' '}
         <A href="https://ec.europa.eu/consumers/odr/">https://ec.europa.eu/consumers/odr/</A>.
-        Unsere E-Mail-Adresse findest du oben.
+        Meine E-Mail-Adresse findest du oben.
       </P>
 
       <H2>Verbraucherstreitbeilegung / Universalschlichtungsstelle</H2>
       <P>
-        Wir sind nicht bereit oder verpflichtet, an Streitbeilegungs­verfahren
+        Ich bin nicht bereit oder verpflichtet, an Streitbeilegungs­verfahren
         vor einer Verbraucherschlichtungsstelle teilzunehmen.
       </P>
 
       <H2>Haftung für Inhalte</H2>
       <P>
-        Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG für eigene Inhalte
+        Als Diensteanbieter bin ich gemäß § 7 Abs. 1 DDG für eigene Inhalte
         auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach
-        §§ 8 bis 10 DDG sind wir als Diensteanbieter jedoch nicht verpflichtet,
+        §§ 8 bis 10 DDG bin ich als Diensteanbieter jedoch nicht verpflichtet,
         übermittelte oder gespeicherte fremde Informationen zu überwachen oder
         nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit
         hinweisen.
@@ -107,8 +107,8 @@ function Impressum() {
 
       <H2>Haftung für Links</H2>
       <P>
-        Unser Angebot enthält Links zu externen Websites Dritter, auf deren
-        Inhalte wir keinen Einfluss haben. Deshalb können wir für diese
+        Mein Angebot enthält Links zu externen Websites Dritter, auf deren
+        Inhalte ich keinen Einfluss habe. Deshalb kann ich für diese
         fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der
         verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber
         der Seiten verantwortlich.
@@ -153,9 +153,9 @@ function Datenschutz() {
 
       <H2>3. Lokaler Speicher (localStorage)</H2>
       <P>
-        Wir speichern in deinem Browser ausschließlich deine Sprach-Auswahl
+        Ich speichere in deinem Browser ausschließlich deine Sprach-Auswahl
         (DE/EN). Diese Information verlässt dein Gerät nicht. Rechtsgrundlage:
-        § 25 Abs. 2 Nr. 2 TDDDG (technisch erforderlich) — daher kein
+        § 25 Abs. 2 Nr. 2 TDDDG (technisch erforderlich). Deshalb ist kein
         Cookie-Banner nötig.
       </P>
 
@@ -163,7 +163,7 @@ function Datenschutz() {
       <P>
         Auf dieser Seite befinden sich Verlinkungen zu Instagram (Meta
         Platforms Ireland Ltd.) und play.cozyquiz.app. Beim Klick verlässt
-        du diese Seite — es gelten die Datenschutzerklärungen der Zielseiten.
+        du diese Seite. Es gelten die Datenschutzerklärungen der Zielseiten.
       </P>
 
       <H2>5. Schriftfonts (Google Fonts)</H2>

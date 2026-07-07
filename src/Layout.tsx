@@ -153,8 +153,8 @@ function SiteFooter({ lang }: { lang: Lang }) {
       marginTop: 40,
     }}>
       <div style={{
-        maxWidth: 1120, margin: '0 auto', padding: '26px 20px 30px',
-        display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center',
+        maxWidth: 1120, margin: '0 auto', padding: '22px 20px 26px',
+        display: 'flex', flexDirection: 'column', gap: 7, alignItems: 'center',
         textAlign: 'center',
       }}>
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', fontSize: 14 }}>
@@ -162,14 +162,15 @@ function SiteFooter({ lang }: { lang: Lang }) {
           <span style={dot}>·</span>
           <a href={INSTA_URL} target="_blank" rel="noopener noreferrer" style={footerLink}>{INSTA_HANDLE}</a>
         </div>
-        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', fontSize: 13 }}>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center', fontSize: 12.5, color: BRAND.muted }}>
+          <span>{d.footerMade}</span>
+          <span style={dot}>·</span>
           <a href="/impressum" style={footerLinkMuted}>{d.footerImprint}</a>
           <span style={dot}>·</span>
           <a href="/datenschutz" style={footerLinkMuted}>{d.footerPrivacy}</a>
           <span style={dot}>·</span>
           <a href={WONKY_URL} target="_blank" rel="noopener noreferrer" style={footerLinkMuted}>{d.footerWonky}</a>
         </div>
-        <div style={{ color: BRAND.muted, fontSize: 12, marginTop: 2 }}>{d.footerMade} · 2026</div>
       </div>
     </footer>
   );
