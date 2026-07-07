@@ -25,8 +25,7 @@ export const EMAIL = 'hallo@cozywolf.de';
 export const INSTA_URL = 'https://instagram.com/cozywolf.events';
 export const INSTA_HANDLE = '@cozywolf.events';
 export const PLAY_URL = 'https://play.cozyquiz.app';
-// TODO(Wolf): echte Wonky-Guess-URL eintragen (separates Repo cozyquizapp/wonkyguess).
-export const WONKY_URL = 'https://wonkyguess.cozywolf.de';
+export const WONKY_URL = 'https://wonkyguess.fun';
 
 // Vorausgefuellter Anfrage-Mailto (Betreff + Body-Geruest), an CTAs wiederverwendet.
 export function anfrageMailto(lang: 'de' | 'en'): string {
