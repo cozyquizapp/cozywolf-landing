@@ -1,12 +1,13 @@
 // Startseite: Marke → Produkt (ein Abend, zwei Modi) → Veranstalter-Fakten →
 // 3 Zielgruppen-Einstiege → Johannes-Teaser → Kontakt.
 // Erste Fassung (Stufe 1/2). Redaktion: Ich-Form, keine Gedankenstriche.
-import { BRAND, FONT_DISPLAY, anfrageMailto, PLAY_URL } from '../brand';
+import { BRAND, FONT_DISPLAY, anfrageMailto } from '../brand';
 import { useLang } from '../lang';
 import { t } from '../i18n';
 import { Layout, Section, Btn, PageHero } from '../Layout';
 import { OrganizerFacts } from '../components/OrganizerFacts';
 import { CategoryStrip } from '../components/CategoryStrip';
+import { MiniQuiz } from '../components/MiniQuiz';
 
 const C = {
   de: {
@@ -73,7 +74,7 @@ export default function HomePage() {
       <PageHero eyebrow={c.eyebrow} title={c.title} sub={c.sub} />
       <Section style={{ paddingTop: 0, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
         <Btn href={anfrageMailto(lang)}>{d.ctaBook}</Btn>
-        <Btn href={PLAY_URL} variant="secondary">{c.ctaTry}</Btn>
+        <Btn href="#mini" variant="secondary">{c.ctaTry}</Btn>
       </Section>
 
       <OrganizerFacts />
@@ -88,6 +89,9 @@ export default function HomePage() {
       </Section>
 
       <CategoryStrip />
+
+      {/* Mini-Quiz (Vorgeschmack, ersetzt den frueheren toten Ausprobieren-Link) */}
+      <div id="mini"><MiniQuiz /></div>
 
       {/* Zielgruppen */}
       <Section>
