@@ -10,15 +10,16 @@ import { BarRaceTeaser } from '../components/BarRaceTeaser';
 import { AwardsTeaser } from '../components/AwardsTeaser';
 import { PriceNote } from '../components/PriceNote';
 import { StatsBand } from '../components/StatsBand';
+import { FlowTimeline } from '../components/FlowTimeline';
 
 const C = {
   de: {
     eyebrow: 'Für Firmen & Teams',
     title: 'Ein Team-Event, bei dem alle mitspielen.',
-    sub: 'Eure Abteilungen oder Tische treten als Fraktionen gegeneinander an. Jeder trägt bei, keiner sitzt raus. Ideal ab etwa 30 bis 100 Personen.',
+    sub: 'Eure Abteilungen oder Tische treten als Fraktionen gegeneinander an. Jeder trägt bei, keiner sitzt raus. Ideal für 30 bis 100 Personen.',
     valuesTitle: 'Warum das für Teams funktioniert',
     v1T: 'Fraktionen statt Einzelkampf',
-    v1B: 'Jedes Handy schließt sich einer Fraktion an. Ihr spielt als Gruppe gegen die anderen, das klassische wir gegen die, das Teams zusammenschweißt.',
+    v1B: 'Jedes Handy schließt sich einer Fraktion an. Ihr spielt als Gruppe gegen die anderen, das klassische „wir gegen die", das Teams zusammenschweißt.',
     v2T: 'Fair für ungleiche Teams',
     v2B: 'Gewertet wird die Trefferquote, nicht die reine Anzahl. Eine kleine Abteilung kann eine große schlagen. Niemand ist von vornherein im Nachteil.',
     v3T: 'Spannung bis zum Schluss',
@@ -87,7 +88,7 @@ export default function FirmenPage() {
 
       <Section>
         <h2 style={secTitle}>{c.flowTitle}</h2>
-        <CardGrid items={flow} />
+        <FlowTimeline steps={flow} />
       </Section>
 
       <Section style={{ textAlign: 'center' }}>
