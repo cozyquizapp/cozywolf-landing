@@ -1,5 +1,5 @@
 // Für private Feiern: CozyQuiz-Erober-Modus, entspannter Ton. Ideal für Runden
-// bis etwa 30 Personen. Redaktion: Ich-Form, keine Gedankenstriche.
+// bis zu 30 Personen. Redaktion: Ich-Form, keine Gedankenstriche.
 import { BRAND, anfrageMailto } from '../brand';
 import { useLang } from '../lang';
 import { Layout, Section, Btn, PageHero } from '../Layout';
@@ -12,7 +12,7 @@ const C = {
   de: {
     eyebrow: 'Für private Feiern',
     title: 'Ein gemütlicher Quiz-Abend für deine Feier.',
-    sub: 'Geburtstag, Freundeskreis oder einfach ein netter Abend. Ihr spielt in kleinen Teams und erobert Runde für Runde das Spielfeld. Ideal für Runden bis etwa 30 Personen.',
+    sub: 'Geburtstag, Freundeskreis oder einfach ein netter Abend. Ihr spielt in kleinen Teams und erobert Runde für Runde das Spielfeld. Ideal für Runden bis zu 30 Personen.',
     pointsTitle: 'Warum das Spaß macht',
     p1T: 'Für jede Runde etwas',
     p1B: 'Fünf verschiedene Fragetypen, quer durch die Themen. Es gibt immer eine Kategorie, in der du glänzt.',
@@ -34,7 +34,7 @@ const C = {
   en: {
     eyebrow: 'For private parties',
     title: 'A cozy quiz night for your celebration.',
-    sub: 'Birthday, friends, or just a nice evening. You play in small teams and conquer the board round by round. Ideal for rounds up to about 30 people.',
+    sub: 'Birthday, friends, or just a nice evening. You play in small teams and conquer the board round by round. Ideal for rounds up to 30 people.',
     pointsTitle: 'Why it is fun',
     p1T: 'Something for every round',
     p1B: 'Five different question types across all topics. There is always a category where you shine.',

@@ -4,13 +4,13 @@
 import { BRAND, FONT_DISPLAY } from '../brand';
 import { useLang } from '../lang';
 
-type Stat = { num: string; de: string; en: string };
+type Stat = { numDe: string; numEn: string; de: string; en: string };
 
 const DEFAULT: Stat[] = [
-  { num: 'bis 100', de: 'Gäste pro Abend', en: 'guests per night' },
-  { num: '5', de: 'Fragetypen', en: 'question types' },
-  { num: '8', de: 'Fraktionen', en: 'factions' },
-  { num: '90-120', de: 'Minuten Programm', en: 'minutes of show' },
+  { numDe: 'bis zu 100', numEn: 'up to 100', de: 'Gäste pro Abend', en: 'guests per night' },
+  { numDe: '5', numEn: '5', de: 'Fragetypen', en: 'question types' },
+  { numDe: '8', numEn: '8', de: 'Fraktionen', en: 'factions' },
+  { numDe: '90 bis 120', numEn: '90 to 120', de: 'Minuten Programm', en: 'minutes of show' },
 ];
 
 export function StatsBand({ items = DEFAULT }: { items?: Stat[] }) {
@@ -35,7 +35,7 @@ export function StatsBand({ items = DEFAULT }: { items?: Stat[] }) {
               fontFamily: FONT_DISPLAY, fontWeight: 800, letterSpacing: '-0.01em',
               fontSize: 'clamp(34px, 4.6vw, 58px)', lineHeight: 1,
               color: BRAND.pink, textShadow: `0 4px 24px rgba(${BRAND.pinkRgb},0.35)`,
-            }}>{s.num}</span>
+            }}>{de ? s.numDe : s.numEn}</span>
             <span style={{
               fontSize: 'clamp(12px, 1.4vw, 15px)', fontWeight: 800, letterSpacing: '0.08em',
               textTransform: 'uppercase', color: 'rgba(226,232,240,0.72)',

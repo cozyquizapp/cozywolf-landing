@@ -35,7 +35,7 @@ const de: Dict = {
   reUncomplicatedB: 'Deine Gäste scannen einen QR-Code und spielen am eigenen Handy. Keine App, keine Installation.',
   rePrepT: 'Du bereitest nichts vor',
   rePrepB: 'Ich bringe Beamer und Sound mit und baue alles auf. Du brauchst nur eine Projektionsfläche und WLAN für deine Gäste.',
-  reScaleT: 'Von kleiner Runde bis 100 Personen',
+  reScaleT: 'Von kleiner Runde bis zu 100 Personen',
   reScaleB: 'Kleine Gruppen erobern das Spielfeld, große Gruppen treten in Fraktionen gegeneinander an. Der Abend passt sich an.',
   reDurationT: 'Rund 90 bis 120 Minuten',
   reDurationB: 'Ein kompletter Quiz-Abend mit mehreren Runden. Länge stimmen wir vorher auf euren Anlass ab.',

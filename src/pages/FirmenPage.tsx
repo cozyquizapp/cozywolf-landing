@@ -102,7 +102,7 @@ export default function FirmenPage() {
             }}>{o}</span>
           ))}
         </div>
-        <PriceNote />
+        <PriceNote address="ihr" />
         <Btn href={anfrageMailto(lang)}>{c.cta}</Btn>
       </Section>
     </Layout>
