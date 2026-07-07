@@ -6,6 +6,7 @@ import { useLang } from '../lang';
 import { Layout, Section, Btn, PageHero } from '../Layout';
 import { OrganizerFacts } from '../components/OrganizerFacts';
 import { FactionTeaser } from '../components/FactionTeaser';
+import { BarRaceTeaser } from '../components/BarRaceTeaser';
 
 const C = {
   de: {
@@ -76,6 +77,8 @@ export default function FirmenPage() {
       </Section>
 
       <FactionTeaser />
+
+      <BarRaceTeaser />
 
       <Section>
         <h2 style={secTitle}>{c.flowTitle}</h2>
