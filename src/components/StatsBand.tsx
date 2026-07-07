@@ -7,7 +7,7 @@ import { useLang } from '../lang';
 type Stat = { numDe: string; numEn: string; de: string; en: string };
 
 const DEFAULT: Stat[] = [
-  { numDe: 'bis zu 100', numEn: 'up to 100', de: 'Gäste pro Abend', en: 'guests per night' },
+  { numDe: 'bis zu 100', numEn: 'up to 100', de: 'Gäste pro Event', en: 'guests per event' },
   { numDe: '5', numEn: '5', de: 'Fragetypen', en: 'question types' },
   { numDe: '8', numEn: '8', de: 'Fraktionen', en: 'factions' },
   { numDe: '90 bis 120', numEn: '90 to 120', de: 'Minuten Programm', en: 'minutes of show' },

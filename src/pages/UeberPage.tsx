@@ -14,7 +14,7 @@ const C = {
     p1: 'Angefangen hat alles mit selbstgebauten Quizzen für Familie und Freunde, erst mit Präsentationstools wie Prezi und Canva. Irgendwann reichten mir die fertigen Tools nicht mehr, und ich habe meine eigene App entwickelt. Daraus ist CozyWolf geworden: die App, die Marke und der Abend, den ich selbst moderiere.',
     p2: 'Ein CozyWolf-Abend ist für alle, die Spaß an Quizzen haben. Unterhaltsame, interessante Fragen quer durch viele Kategorien sorgen dafür, dass für jeden was dabei ist, und jeder mal glänzen kann.',
     p3: 'Ich bringe alles selbst mit und baue es auf. Du sollst dich um nichts kümmern müssen, außer darum, dabei zu sein.',
-    cta: 'Abend anfragen',
+    cta: 'Quiz anfragen',
   },
   en: {
     eyebrow: 'About me',
@@ -23,7 +23,7 @@ const C = {
     p1: 'It all started with home-made quizzes for family and friends, first with presentation tools like Prezi and Canva. At some point the ready-made tools were not enough, so I built my own app. That became CozyWolf: the app, the brand and the evening I host myself.',
     p2: 'A CozyWolf evening is for anyone who enjoys a quiz. Entertaining, interesting questions across many categories mean there is something for everyone, and everyone gets a moment to shine.',
     p3: 'I bring everything myself and set it up. You should not have to worry about anything except being there.',
-    cta: 'Request an evening',
+    cta: 'Request a quiz',
   },
 };
 

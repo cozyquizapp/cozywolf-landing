@@ -10,7 +10,7 @@ import { MiniGrid, MiniBars } from '../components/ModeMinis';
 const C = {
   de: {
     eyebrow: 'Für Locations',
-    title: 'Ein Quiz-Abend, der deine Gäste bringt.',
+    title: 'Ein Quiz-Abend, der dir Gäste bringt.',
     sub: 'Café, Bar oder Pub: ein wiederkehrender Abend, der an einem sonst ruhigen Wochentag Leute reinholt und zum Wiederkommen bringt.',
     valueTitle: 'Was es deiner Location bringt',
     v1T: 'Volles Haus am ruhigen Tag',
@@ -70,7 +70,7 @@ const C = {
       { i: '⚡', t: 'Large groups as factions' },
       { i: '📍', t: 'Pub night, full house, event' },
     ],
-    noteT: 'We work out the terms together',
+    noteT: 'I work out the terms with you',
     noteB: 'For venues I set the right format and terms together with you. If you run a venue and are interested, drop me a line and I will find something that works for you.',
     cta: 'Interested? Write me',
   },

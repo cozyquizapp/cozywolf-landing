@@ -31,10 +31,10 @@ export const WONKY_URL = 'https://wonkyguess.fun';
 export function anfrageMailto(lang: 'de' | 'en'): string {
   const subject = lang === 'de' ? 'Quiz-Anfrage' : 'Quiz booking request';
   const body = lang === 'de'
-    ? ['Hi Johannes,', '', 'ich hätte Interesse an einem Quiz-Abend.', '',
+    ? ['Hi Johannes,', '', 'ich hätte Interesse an einem Quiz-Event.', '',
        'Anlass: ', 'Ungefähre Personenzahl: ', 'Wunsch-Datum/Zeitraum: ',
        'Ort: ', '', 'Viele Grüße'].join('\n')
-    : ['Hi Johannes,', '', "I'd like to book a quiz night.", '',
+    : ['Hi Johannes,', '', "I'd like to book a quiz.", '',
        'Occasion: ', 'Approx. number of people: ', 'Preferred date/timeframe: ',
        'Location: ', '', 'Best'].join('\n');
   return `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;

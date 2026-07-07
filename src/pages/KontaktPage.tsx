@@ -8,7 +8,7 @@ import { PriceNote } from '../components/PriceNote';
 const C = {
   de: {
     eyebrow: 'Kontakt',
-    title: 'Lass uns über deinen Abend reden.',
+    title: 'Lass uns über dein Event reden.',
     sub: 'Schreib mir kurz zum Anlass, zur ungefähren Personenzahl und zum Wunsch-Zeitraum. Ich melde mich mit einem Vorschlag.',
     write: 'Anfrage schreiben',
     or: 'oder direkt an',
@@ -16,7 +16,7 @@ const C = {
   },
   en: {
     eyebrow: 'Contact',
-    title: 'Let us talk about your evening.',
+    title: 'Let us talk about your event.',
     sub: 'Send me a short note about the occasion, rough number of people and preferred timeframe. I will come back with a suggestion.',
     write: 'Write a request',
     or: 'or directly to',

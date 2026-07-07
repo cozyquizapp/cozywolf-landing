@@ -23,7 +23,7 @@ export function AwardsTeaser() {
       `}</style>
       <h2 style={secTitle}>{de ? 'Und am Ende wird gekrönt' : 'And in the end, a crowning'}</h2>
       <p style={{ margin: '0 auto clamp(24px, 3.5vh, 40px)', maxWidth: 620, textAlign: 'center', fontSize: 17, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>
-        {de ? 'Die Sieger-Fraktion wird gefeiert, dazu gibt es kleine Auszeichnungen. Wer sie holt, entscheidet sich erst am Ende des Abends.'
+        {de ? 'Die Sieger-Fraktion wird gefeiert, dazu gibt es kleine Auszeichnungen. Wer sie holt, entscheidet sich erst ganz am Ende.'
             : 'The winning faction is celebrated, with a few small awards. Who takes them is only decided at the very end.'}
       </p>
 

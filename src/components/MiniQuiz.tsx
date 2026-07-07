@@ -56,7 +56,7 @@ export function MiniQuiz() {
       <style>{`@keyframes cwNoteIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }`}</style>
       <h2 style={secTitle}>{de ? 'Probier eine Runde' : 'Try a round'}</h2>
       <p style={{ margin: '0 auto clamp(20px, 3vh, 30px)', maxWidth: 560, textAlign: 'center', fontSize: 16, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>
-        {de ? 'Drei kleine Fragen als Vorgeschmack. Beim echten Abend spielt ihr am Handy gegeneinander.'
+        {de ? 'Drei kleine Fragen als Vorgeschmack. Beim echten Quiz-Event spielt ihr am Handy gegeneinander.'
             : 'Three little questions as a taste. At the real event you play against each other on your phones.'}
       </p>
 
@@ -73,8 +73,8 @@ export function MiniQuiz() {
               {de ? `${correctCount} von ${quiz.length} richtig` : `${correctCount} of ${quiz.length} correct`}
             </div>
             <p style={{ margin: 0, maxWidth: 420, fontSize: 16, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>
-              {de ? 'Und das war nur ein winziger Vorgeschmack. Der echte Abend hat fünf Fragetypen, Teams und jede Menge Überraschungen.'
-                  : 'And that was just a tiny taste. The real evening has five question types, teams and plenty of surprises.'}
+              {de ? 'Und das war nur ein winziger Vorgeschmack. Das echte Quiz-Event hat fünf Fragetypen, Teams und jede Menge Überraschungen.'
+                  : 'And that was just a tiny taste. The real event has five question types, teams and plenty of surprises.'}
             </p>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginTop: 4 }}>
               <Btn href={anfrageMailto(lang)}>{de ? 'Quiz anfragen' : 'Request a quiz'}</Btn>
