@@ -17,7 +17,7 @@ const C = {
   de: {
     eyebrow: 'Live-Quiz-Abende',
     title: 'stay cozy. stay curious.',
-    sub: 'Der gemütlichste Wettkampf, den deine Runde je hatte. Ich bringe die Fragen, ihr die gute Laune, von klein bis zu 100 Personen.',
+    sub: 'Der gemütlichste Quiz-Abend, den ihr je hattet. Ich bringe die Fragen, ihr die gute Laune.',
     modesTitle: 'Ein Abend, zwei Spielarten',
     mode1T: 'CozyQuiz: erobern',
     mode1B: 'Für Runden bis zu 30 Personen. Jedes Team beantwortet Fragen und erobert Felder auf dem Spielfeld. Wissen trifft ein bisschen Taktik.',
@@ -41,7 +41,7 @@ const C = {
   en: {
     eyebrow: 'Live quiz nights',
     title: 'stay cozy. stay curious.',
-    sub: 'The coziest contest your crew has ever had. I bring the questions, you bring the fun, from a small round up to 100.',
+    sub: 'The coziest quiz night you have ever had. I bring the questions, you bring the fun.',
     modesTitle: 'One evening, two ways to play',
     mode1T: 'CozyQuiz: conquer',
     mode1B: 'For rounds up to 30 people. Each team answers questions and conquers cells on the board. Knowledge meets a bit of tactics.',
