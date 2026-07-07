@@ -5,6 +5,7 @@
 import type { ReactNode } from 'react';
 import { BRAND, FONT_DISPLAY, FONT_BODY, EMAIL, INSTA_URL, INSTA_HANDLE, PLAY_URL, WONKY_URL } from './brand';
 import { useLang, setLang, type Lang } from './lang';
+import { usePath } from './pathContext';
 import { t } from './i18n';
 
 const NAV_LINKS = (d: ReturnType<typeof t>) => [
@@ -14,10 +15,6 @@ const NAV_LINKS = (d: ReturnType<typeof t>) => [
   { href: '/ueber', label: d.navUeber },
   { href: '/kontakt', label: d.navKontakt },
 ];
-
-function currentPath(): string {
-  return typeof window !== 'undefined' ? window.location.pathname.replace(/\/+$/, '') || '/' : '/';
-}
 
 export function Layout({ children }: { children: ReactNode }) {
   const lang = useLang();
@@ -42,7 +39,7 @@ export function Layout({ children }: { children: ReactNode }) {
 
 function NavBar({ lang }: { lang: Lang }) {
   const d = t(lang);
-  const path = currentPath();
+  const path = usePath();
   return (
     <header style={{
       position: 'sticky', top: 0, zIndex: 50,
