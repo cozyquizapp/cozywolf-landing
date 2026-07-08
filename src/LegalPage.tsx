@@ -165,16 +165,13 @@ function Datenschutz() {
         du diese Seite. Es gelten die Datenschutzerklärungen der Zielseiten.
       </P>
 
-      <H2>5. Schriftfonts (Google Fonts)</H2>
+      <H2>5. Schriftarten</H2>
       <P>
-        Diese Seite nutzt die Schriftart „Nunito" via Google Fonts. Beim
-        ersten Aufruf wird die Schriftart von Servern von Google LLC
-        (1600 Amphitheatre Parkway, Mountain View, CA 94043, USA) geladen,
-        um eine konsistente Darstellung zu gewährleisten. Dabei wird deine
-        IP-Adresse an Google übermittelt. Rechtsgrundlage: Art. 6 Abs. 1
-        lit. f DSGVO (berechtigtes Interesse an einheitlicher
-        Schriftdarstellung). Google ist nach dem EU-US Data Privacy
-        Framework zertifiziert.
+        Diese Seite nutzt die Schriftarten „Nunito" und „League Spartan".
+        Diese werden lokal von unserem eigenen Server ausgeliefert (selbst
+        gehostet) und nicht von externen Diensten wie Google Fonts nachgeladen.
+        Es wird dabei keine Verbindung zu Google-Servern aufgebaut und keine
+        IP-Adresse an Dritte übermittelt.
       </P>
 
       <H2>6. Deine Rechte</H2>
