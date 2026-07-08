@@ -46,11 +46,19 @@ function kindLabel(type: Round['type'], de: boolean): string {
   if (type === 'distribute') return '10 von 10';
   return 'Mu-Cho';
 }
+// Echte App-Kategorie-Farben (frontend/src/categoryColors.ts der App):
 function kindColor(type: Round['type']): string {
-  if (type === 'estimate') return '#3B82F6';   // blau
-  if (type === 'image') return '#22C55E';       // gruen
-  if (type === 'distribute') return '#FACC15';  // gold
-  return '#FA4BA3';                             // pink (Mu-Cho)
+  if (type === 'estimate') return '#f3c367';    // Schaetzchen (gelb)
+  if (type === 'image') return '#e2a9f1';        // Cheese/Schau-mal (lavendel)
+  if (type === 'distribute') return '#72ac78';   // Punktlandung/10-von-10 (gruen)
+  return '#9fbfd3';                             // Mu-Cho (blau)
+}
+// Kategorie-Icon (cat-*.webp in public/assets, wie in der App)
+function kindIcon(type: Round['type']): string {
+  if (type === 'estimate') return 'cat-schaetzchen';
+  if (type === 'image') return 'cat-cheese';
+  if (type === 'distribute') return 'cat-10v10';
+  return 'cat-mucho';
 }
 
 export function MiniQuiz() {
@@ -175,9 +183,13 @@ export function MiniQuiz() {
                 {de ? `Runde ${idx + 1} von ${quiz.length}` : `Round ${idx + 1} of ${quiz.length}`}
               </span>
               <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: 7,
                 fontSize: 12, fontWeight: 900, letterSpacing: '0.05em', textTransform: 'uppercase',
-                color: accent, background: `${accent}1f`, border: `1px solid ${accent}66`, padding: '4px 11px', borderRadius: 999,
-              }}>{kindLabel(round.type, de)}</span>
+                color: accent, background: `${accent}22`, border: `1px solid ${accent}66`, padding: '4px 11px 4px 7px', borderRadius: 999,
+              }}>
+                <img src={`/assets/${kindIcon(round.type)}.webp`} alt="" width={20} height={20} style={{ width: 20, height: 20, objectFit: 'contain' }} />
+                {kindLabel(round.type, de)}
+              </span>
             </div>
 
             {round.type === 'image' && (
