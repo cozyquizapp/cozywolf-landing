@@ -202,7 +202,7 @@ export function Btn({ href, children, variant = 'primary' }: {
     ? { ...base, background: 'linear-gradient(135deg, #CE1C6F, #AB0055)', color: '#fff', border: '1.5px solid rgba(255,255,255,0.18)' }
     : { ...base, background: `rgba(${BRAND.pinkRgb},0.10)`, color: BRAND.pinkSoft, border: `1.5px solid rgba(${BRAND.pinkRgb},0.40)` };
   return (
-    <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined} style={style}>
+    <a className="cw-btn" href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined} style={style}>
       {children}
     </a>
   );

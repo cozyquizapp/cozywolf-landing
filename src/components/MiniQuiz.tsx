@@ -121,7 +121,7 @@ export function MiniQuiz() {
               <div aria-live="polite" style={{ marginTop: 16, animation: 'cwNoteIn 0.35s ease both' }}>
                 <p style={{ margin: '0 0 16px', fontSize: 15, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{q.note}</p>
                 <div style={{ textAlign: 'center' }}>
-                  <button onClick={next} style={nextBtn}>
+                  <button onClick={next} className="cw-btn" style={nextBtn}>
                     {isLast ? (de ? 'Ergebnis' : 'Result') : (de ? 'Nächste Frage' : 'Next question')} →
                   </button>
                 </div>

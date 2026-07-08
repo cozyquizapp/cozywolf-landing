@@ -35,6 +35,17 @@ body {
   top: 12px;
 }
 
+/* Button-Feder: sanftes Anheben beim Hover, echtes Druck-Feedback beim Klick.
+   Ruhiges Award-Easing, kein Zappeln. Reduced-Motion neutralisiert es unten. */
+.cw-btn {
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, filter 0.2s ease;
+  will-change: transform;
+}
+@media (hover: hover) {
+  .cw-btn:hover { transform: translateY(-2px) scale(1.03); filter: brightness(1.05); }
+}
+.cw-btn:active { transform: translateY(0) scale(0.97); transition-duration: 0.08s; }
+
 /* Reduced Motion: auto-startende Animationen (z.B. schwebende Krone) aus (WCAG 2.3.3/2.2.2) */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

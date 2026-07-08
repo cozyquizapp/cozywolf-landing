@@ -25,8 +25,15 @@ export function FactionTeaser() {
     <Section>
       <style>{`
         @keyframes cwFactionIn { from { opacity: 0; transform: translateY(14px) scale(0.96); } to { opacity: 1; transform: none; } }
-        .cw-faction { transition: transform 0.18s ease, border-color 0.18s ease; }
-        .cw-faction:hover { transform: translateY(-4px); }
+        .cw-faction { transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), border-color 0.25s ease, box-shadow 0.25s ease; }
+        .cw-faction-crest { transition: transform 0.28s cubic-bezier(0.22,1,0.36,1), filter 0.28s ease; }
+        .cw-faction-motto { transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22,1,0.36,1); }
+        @media (hover: hover) {
+          .cw-faction-motto { opacity: 0; transform: translateY(6px); }
+          .cw-faction:hover { transform: translateY(-6px); box-shadow: 0 16px 34px rgba(0,0,0,0.36); }
+          .cw-faction:hover .cw-faction-crest { transform: scale(1.1) translateY(-2px); }
+          .cw-faction:hover .cw-faction-motto { opacity: 1; transform: none; }
+        }
       `}</style>
       <h2 style={secTitle}>{de ? 'Wählt eure Fraktion' : 'Pick your faction'}</h2>
       <p style={{ margin: '0 auto clamp(24px, 3.5vh, 40px)', maxWidth: 640, textAlign: 'center', fontSize: 17, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>
@@ -43,7 +50,7 @@ export function FactionTeaser() {
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, textAlign: 'center',
             animation: `cwFactionIn 0.5s cubic-bezier(0.16,1,0.3,1) ${i * 0.06}s both`,
           }}>
-            <div style={{
+            <div className="cw-faction-crest" style={{
               width: 86, height: 86, position: 'relative',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
@@ -55,7 +62,7 @@ export function FactionTeaser() {
                 style={{ position: 'relative', width: '100%', height: '100%', objectFit: 'contain', filter: `drop-shadow(0 4px 10px ${f.color}66)` }} />
             </div>
             <div style={{ fontSize: 18, fontWeight: 900, color: '#F1F5F9' }}>{de ? f.name : f.nameEn}</div>
-            <div style={{ fontSize: 14, fontWeight: 700, fontStyle: 'italic', color: f.color }}>„{de ? f.de : f.en}"</div>
+            <div className="cw-faction-motto" style={{ minHeight: 20, fontSize: 14, fontWeight: 700, fontStyle: 'italic', color: f.color }}>„{de ? f.de : f.en}"</div>
           </div>
         ))}
       </div>

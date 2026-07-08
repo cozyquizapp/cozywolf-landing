@@ -105,7 +105,7 @@ export function ContactForm() {
       )}
 
       <div style={{ textAlign: 'center', marginTop: 20 }}>
-        <button type="submit" disabled={status === 'sending'} style={submitBtn}>
+        <button type="submit" className="cw-btn" disabled={status === 'sending'} style={submitBtn}>
           {status === 'sending' ? L.sending : L.send}
         </button>
       </div>
