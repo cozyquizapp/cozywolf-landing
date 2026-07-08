@@ -154,6 +154,9 @@ export function MiniQuiz() {
 
       <div style={{
         maxWidth: 560, margin: '0 auto',
+        // Stabile Mindesthoehe: verhindert dass die Karte (und damit der Inhalt
+        // darunter) beim Runden-/Ergebnis-Wechsel stark kollabiert.
+        minHeight: 440, boxSizing: 'border-box',
         padding: 'clamp(22px, 3vw, 34px)', borderRadius: 24,
         background: 'rgba(255,255,255,0.03)', border: `1.5px solid ${accent}55`,
         boxShadow: `0 16px 40px rgba(0,0,0,0.35), 0 0 40px ${accent}22`,
@@ -237,16 +240,17 @@ export function MiniQuiz() {
                       border: `1.5px solid ${imgDone ? (imgCorrect ? '#22C55E' : '#EF4444') : accent + '88'}`,
                       borderRadius: 14, padding: '13px 16px', outline: 'none',
                     }} />
-                  {imgDone && (
-                    <div style={{ marginTop: 12, textAlign: 'center', fontSize: 16, fontWeight: 800, color: imgCorrect ? '#86EFAC' : '#FCA5A5' }}>
-                      {imgCorrect ? (de ? 'Richtig!' : 'Correct!') : (de ? `Lösung: ${round.answer}` : `Answer: ${round.answer}`)}
-                    </div>
-                  )}
-                  {!imgDone && (
-                    <div style={{ textAlign: 'center', marginTop: 16 }}>
+                  {/* Fixer Slot: Submit-Button ODER Ergebnis-Text belegen gleich viel
+                      Hoehe → beim Abgeben springt darunter nichts. */}
+                  <div style={{ minHeight: 58, marginTop: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {imgDone ? (
+                      <div style={{ textAlign: 'center', fontSize: 16, fontWeight: 800, color: imgCorrect ? '#86EFAC' : '#FCA5A5' }}>
+                        {imgCorrect ? (de ? 'Richtig!' : 'Correct!') : (de ? `Lösung: ${round.answer}` : `Answer: ${round.answer}`)}
+                      </div>
+                    ) : (
                       <button onClick={submitImage} disabled={!imgValid} className="cw-btn" style={{ ...nextBtn, opacity: imgValid ? 1 : 0.45, cursor: imgValid ? 'pointer' : 'default' }}>{de ? 'Antwort abgeben' : 'Submit answer'}</button>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -264,16 +268,16 @@ export function MiniQuiz() {
                       }} />
                     <span style={{ fontSize: 16, fontWeight: 800, color: BRAND.inkSoft }}>{round.unit}</span>
                   </div>
-                  {estDone && (
-                    <div style={{ marginTop: 14, textAlign: 'center', fontSize: 16, fontWeight: 800, color: Math.abs(guessNum - round.answer) <= round.tolerance ? '#86EFAC' : '#FCA5A5' }}>
-                      {de ? `Richtig: ${round.answer} ${round.unit} · deine Schätzung: ${guessNum}` : `Answer: ${round.answer} ${round.unit} · your guess: ${guessNum}`}
-                    </div>
-                  )}
-                  {!estDone && (
-                    <div style={{ textAlign: 'center', marginTop: 16 }}>
+                  {/* Fixer Slot (wie oben) gegen Layout-Sprung beim Abgeben. */}
+                  <div style={{ minHeight: 58, marginTop: 14, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {estDone ? (
+                      <div style={{ textAlign: 'center', fontSize: 16, fontWeight: 800, color: Math.abs(guessNum - round.answer) <= round.tolerance ? '#86EFAC' : '#FCA5A5' }}>
+                        {de ? `Richtig: ${round.answer} ${round.unit} · deine Schätzung: ${guessNum}` : `Answer: ${round.answer} ${round.unit} · your guess: ${guessNum}`}
+                      </div>
+                    ) : (
                       <button onClick={submitEstimate} disabled={!guessValid} className="cw-btn" style={{ ...nextBtn, opacity: guessValid ? 1 : 0.45, cursor: guessValid ? 'pointer' : 'default' }}>{de ? 'Schätzung abgeben' : 'Lock in guess'}</button>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -306,27 +310,37 @@ export function MiniQuiz() {
                       );
                     })}
                   </div>
-                  {!distDone && (
-                    <div style={{ textAlign: 'center', marginTop: 16 }}>
+                  {/* Fixer Slot: reserviert die Button-Hoehe auch nach dem Abgeben. */}
+                  <div style={{ minHeight: 58, marginTop: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {!distDone && (
                       <button onClick={submitDistribute} disabled={distTotal !== 10} className="cw-btn" style={{ ...nextBtn, opacity: distTotal !== 10 ? 0.45 : 1, cursor: distTotal !== 10 ? 'default' : 'pointer' }}>
                         {de ? 'Punkte abgeben' : 'Lock in points'}
                       </button>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               )}
             </div>
 
-            {revealed && (
-              <div aria-live="polite" style={{ marginTop: 16, animation: 'cwNoteIn 0.35s ease both' }}>
-                <p style={{ margin: '0 0 16px', fontSize: 15, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{round.note}</p>
-                <div style={{ textAlign: 'center' }}>
-                  <button onClick={next} className="cw-btn" style={nextBtn}>
-                    {isLast ? (de ? 'Ergebnis' : 'Result') : (de ? 'Nächste Runde' : 'Next round')} →
-                  </button>
-                </div>
+            {/* Erklaerung + Weiter-Button: IMMER gerendert, vor dem Abgeben nur
+                unsichtbar (visibility:hidden) — reserviert exakt den Platz pro
+                Runde, damit beim Beantworten der Inhalt darunter nicht springt. */}
+            <div
+              aria-live="polite"
+              aria-hidden={!revealed}
+              style={{
+                marginTop: 16,
+                visibility: revealed ? 'visible' : 'hidden',
+                animation: revealed ? 'cwNoteIn 0.35s ease both' : undefined,
+              }}
+            >
+              <p style={{ margin: '0 0 16px', fontSize: 15, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{round.note}</p>
+              <div style={{ textAlign: 'center' }}>
+                <button onClick={next} className="cw-btn" style={nextBtn} tabIndex={revealed ? 0 : -1}>
+                  {isLast ? (de ? 'Ergebnis' : 'Result') : (de ? 'Nächste Runde' : 'Next round')} →
+                </button>
               </div>
-            )}
+            </div>
           </>
         )}
       </div>
