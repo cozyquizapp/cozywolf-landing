@@ -1,41 +1,57 @@
-// Mini-Quiz direkt auf der Seite: echter Vorgeschmack mit VIER Spielarten
-// (Mu-Cho antippen / Schätzchen Zahl schätzen / Schau-mal Bild / 10 von 10
-// Punkte verteilen), spiegelt die Kategorien der App. Fragen im "Now I Know"-
-// Stil (ueberraschend, Aha). Rein Client-interaktiv, SSR-sicher: prerendert die
-// erste Runde statisch. Vanille-Bild: Foto Forest & Kim Starr, CC BY 3.0.
+// Mini-Quiz direkt auf der Seite: echter Vorgeschmack mit VIER Spielarten, die
+// die App-Kategorien spiegeln, jede mit eigener Mechanik UND Kategorie-Farbe:
+//   Mu-Cho (antippen, pink) · Schätzchen (Zahl eintippen, blau) ·
+//   Schau-mal (Bild + Antwort eintippen, grün) · 10 von 10 (Punkte verteilen, gold).
+// Fragen im "Now I Know"-Stil (ueberraschend, Aha). Rein Client-interaktiv,
+// SSR-sicher: prerendert die erste Runde statisch. Vanille-Foto: Forest & Kim
+// Starr, CC BY 3.0 (Bildnachweis im Impressum).
 import { useState } from 'react';
 import { BRAND } from '../brand';
 import { Icon } from './Icon';
 import { useLang } from '../lang';
 import { Section, Btn } from '../Layout';
 
-type ChoiceR = { type: 'choice' | 'image'; q: string; img?: string; options: string[]; correct: number; note: string };
-type EstimateR = { type: 'estimate'; q: string; unit: string; min: number; max: number; step: number; answer: number; tolerance: number; note: string };
+type ChoiceR = { type: 'choice'; q: string; options: string[]; correct: number; note: string };
+type ImageR = { type: 'image'; q: string; img: string; accept: string[]; answer: string; note: string };
+type EstimateR = { type: 'estimate'; q: string; unit: string; answer: number; tolerance: number; note: string };
 type DistributeR = { type: 'distribute'; q: string; options: string[]; correctSet: number[]; note: string };
-type Round = ChoiceR | EstimateR | DistributeR;
+type Round = ChoiceR | ImageR | EstimateR | DistributeR;
 
 const QUIZ: Record<'de' | 'en', Round[]> = {
   de: [
     { type: 'choice', q: 'Was wurde zuerst gegründet?', options: ['Google', 'YouTube', 'Netflix', 'Facebook'], correct: 2,
       note: 'Netflix (1997) gab es schon vor Google (1998), Facebook (2004) und YouTube (2005), damals noch als DVD-Versand per Post.' },
-    { type: 'estimate', q: 'Wie viele Minuten dauerte der kürzeste Krieg der Geschichte?', unit: 'Minuten', min: 0, max: 120, step: 1, answer: 38, tolerance: 15,
+    { type: 'estimate', q: 'Wie viele Minuten dauerte der kürzeste Krieg der Geschichte?', unit: 'Minuten', answer: 38, tolerance: 15,
       note: 'Rund 38 Minuten: der Anglo-Sansibar-Krieg von 1896. Nach dem Beschuss des Palastes war die Sache erledigt.' },
-    { type: 'image', q: 'Welches Gewürz wächst hier?', img: '/assets/quiz-vanille.webp', options: ['Grüne Bohnen', 'Vanille', 'Chili', 'Spargel'], correct: 1,
+    { type: 'image', q: 'Welches Gewürz wächst hier?', img: '/assets/quiz-vanille.webp', accept: ['vanille', 'vanilla'], answer: 'Vanille',
       note: 'Vanilleschoten! Vanille ist die Frucht einer Orchidee, die einzige essbare unter den Orchideen, und darum nach Safran das teuerste Gewürz.' },
-    { type: 'distribute', q: 'Welche waren (oder sind) mal olympische Disziplin? Verteile 10 Punkte auf die, bei denen du sicher bist.', options: ['Tauziehen', 'Kunstwettbewerbe', 'Schach', 'Sportklettern', 'Darts'], correctSet: [0, 1, 3],
-      note: 'Tauziehen (1900–1920), Kunstwettbewerbe in Malerei und Dichtung (1912–1948) und Sportklettern (seit 2021) waren oder sind olympisch. Schach und Darts nie.' },
+    { type: 'distribute', q: 'Welche waren (oder sind) mal olympische Disziplin? Verteile 10 Punkte auf die, bei denen du sicher bist.', options: ['Tauziehen', 'Kunstwettbewerbe', 'Darts'], correctSet: [0, 1],
+      note: 'Tauziehen war 1900–1920 olympisch, und Kunstwettbewerbe in Malerei und Dichtung sogar 1912–1948. Darts dagegen nie.' },
   ],
   en: [
     { type: 'choice', q: 'Which was founded first?', options: ['Google', 'YouTube', 'Netflix', 'Facebook'], correct: 2,
       note: 'Netflix (1997) came before Google (1998), Facebook (2004) and YouTube (2005), back then as a DVD-by-mail service.' },
-    { type: 'estimate', q: 'How many minutes did the shortest war in history last?', unit: 'minutes', min: 0, max: 120, step: 1, answer: 38, tolerance: 15,
+    { type: 'estimate', q: 'How many minutes did the shortest war in history last?', unit: 'minutes', answer: 38, tolerance: 15,
       note: 'About 38 minutes: the Anglo-Zanzibar War of 1896. Once the palace was shelled, it was over.' },
-    { type: 'image', q: 'Which spice grows here?', img: '/assets/quiz-vanille.webp', options: ['Green beans', 'Vanilla', 'Chili', 'Asparagus'], correct: 1,
+    { type: 'image', q: 'Which spice grows here?', img: '/assets/quiz-vanille.webp', accept: ['vanilla', 'vanille'], answer: 'Vanilla',
       note: 'Vanilla pods! Vanilla is the fruit of an orchid, the only edible one, which is why after saffron it is the priciest spice.' },
-    { type: 'distribute', q: 'Which were (or are) Olympic disciplines? Spread 10 points on the ones you are sure about.', options: ['Tug of war', 'Art competitions', 'Chess', 'Sport climbing', 'Darts'], correctSet: [0, 1, 3],
-      note: 'Tug of war (1900–1920), art competitions in painting and poetry (1912–1948) and sport climbing (since 2021) were or are Olympic. Chess and darts never.' },
+    { type: 'distribute', q: 'Which were (or are) Olympic disciplines? Spread 10 points on the ones you are sure about.', options: ['Tug of war', 'Art competitions', 'Darts'], correctSet: [0, 1],
+      note: 'Tug of war was Olympic in 1900–1920, and art competitions in painting and poetry even 1912–1948. Darts never was.' },
   ],
 };
+
+function kindLabel(type: Round['type'], de: boolean): string {
+  if (type === 'estimate') return de ? 'Schätzchen' : 'Estimate';
+  if (type === 'image') return 'Schau-mal';
+  if (type === 'distribute') return '10 von 10';
+  return 'Mu-Cho';
+}
+function kindColor(type: Round['type']): string {
+  if (type === 'estimate') return '#3B82F6';   // blau
+  if (type === 'image') return '#22C55E';       // gruen
+  if (type === 'distribute') return '#FACC15';  // gold
+  return '#FA4BA3';                             // pink (Mu-Cho)
+}
 
 export function MiniQuiz() {
   const lang = useLang();
@@ -47,27 +63,42 @@ export function MiniQuiz() {
   const [confetti, setConfetti] = useState<Piece[] | null>(null);
   // Runden-spezifischer Zustand
   const [picked, setPicked] = useState<number | null>(null);
-  const [guess, setGuess] = useState(50);
+  const [guessInput, setGuessInput] = useState('');
   const [estDone, setEstDone] = useState(false);
+  const [imgInput, setImgInput] = useState('');
+  const [imgDone, setImgDone] = useState(false);
   const [pts, setPts] = useState<number[]>([]);
   const [distDone, setDistDone] = useState(false);
 
   const round = quiz[idx];
   const isLast = idx === quiz.length - 1;
+  const accent = done ? BRAND.pink : kindColor(round.type);
   const revealed =
-    round.type === 'estimate' ? estDone : round.type === 'distribute' ? distDone : picked != null;
+    round.type === 'estimate' ? estDone
+      : round.type === 'distribute' ? distDone
+        : round.type === 'image' ? imgDone
+          : picked != null;
 
   const celebrate = () => { setConfetti(makeConfetti()); window.setTimeout(() => setConfetti(null), 1200); };
 
   const pick = (i: number) => {
-    if (picked != null || round.type === 'estimate' || round.type === 'distribute') return;
+    if (round.type !== 'choice' || picked != null) return;
     setPicked(i);
     if (i === round.correct) { setCorrectCount(c => c + 1); celebrate(); }
   };
+  const guessNum = parseInt(guessInput, 10);
+  const guessValid = guessInput.trim() !== '' && !Number.isNaN(guessNum);
   const submitEstimate = () => {
-    if (round.type !== 'estimate' || estDone) return;
+    if (round.type !== 'estimate' || estDone || !guessValid) return;
     setEstDone(true);
-    if (Math.abs(guess - round.answer) <= round.tolerance) { setCorrectCount(c => c + 1); celebrate(); }
+    if (Math.abs(guessNum - round.answer) <= round.tolerance) { setCorrectCount(c => c + 1); celebrate(); }
+  };
+  const imgValid = imgInput.trim().length >= 2;
+  const imgCorrect = round.type === 'image' && round.accept.some(a => imgInput.trim().toLowerCase().includes(a));
+  const submitImage = () => {
+    if (round.type !== 'image' || imgDone || !imgValid) return;
+    setImgDone(true);
+    if (imgCorrect) { setCorrectCount(c => c + 1); celebrate(); }
   };
   const distTotal = pts.reduce((a, b) => a + b, 0);
   const submitDistribute = () => {
@@ -89,8 +120,8 @@ export function MiniQuiz() {
   };
 
   const resetFor = (r: Round) => {
-    setPicked(null); setEstDone(false); setDistDone(false);
-    if (r.type === 'estimate') setGuess(Math.round((r.min + r.max) / 2));
+    setPicked(null); setEstDone(false); setDistDone(false); setImgDone(false);
+    setGuessInput(''); setImgInput('');
     if (r.type === 'distribute') setPts(new Array(r.options.length).fill(0));
   };
   const next = () => {
@@ -116,8 +147,9 @@ export function MiniQuiz() {
       <div style={{
         maxWidth: 560, margin: '0 auto',
         padding: 'clamp(22px, 3vw, 34px)', borderRadius: 24,
-        background: 'rgba(255,255,255,0.03)', border: `1.5px solid rgba(${BRAND.pinkRgb},0.24)`,
-        boxShadow: `0 16px 40px rgba(0,0,0,0.35), 0 0 32px rgba(${BRAND.pinkRgb},0.10)`,
+        background: 'rgba(255,255,255,0.03)', border: `1.5px solid ${accent}55`,
+        boxShadow: `0 16px 40px rgba(0,0,0,0.35), 0 0 40px ${accent}22`,
+        transition: 'border-color 0.45s ease, box-shadow 0.45s ease',
       }}>
         {done ? (
           <div role="status" aria-live="polite" style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
@@ -138,16 +170,17 @@ export function MiniQuiz() {
           </div>
         ) : (
           <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
-              <span style={{ fontSize: 13, fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: BRAND.pink }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14, gap: 10 }}>
+              <span style={{ fontSize: 13, fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: accent }}>
                 {de ? `Runde ${idx + 1} von ${quiz.length}` : `Round ${idx + 1} of ${quiz.length}`}
               </span>
-              <span style={{ fontSize: 12, fontWeight: 800, letterSpacing: '0.06em', textTransform: 'uppercase', color: 'rgba(226,232,240,0.5)' }}>
-                {kindLabel(round.type, de)}
-              </span>
+              <span style={{
+                fontSize: 12, fontWeight: 900, letterSpacing: '0.05em', textTransform: 'uppercase',
+                color: accent, background: `${accent}1f`, border: `1px solid ${accent}66`, padding: '4px 11px', borderRadius: 999,
+              }}>{kindLabel(round.type, de)}</span>
             </div>
 
-            {round.type === 'image' && round.img && (
+            {round.type === 'image' && (
               <img src={round.img} alt="" style={{ width: '100%', height: 'auto', maxHeight: 260, objectFit: 'cover', borderRadius: 14, marginBottom: 16, border: '1px solid rgba(255,255,255,0.08)' }} />
             )}
 
@@ -156,7 +189,7 @@ export function MiniQuiz() {
             <div style={{ position: 'relative' }}>
               {confetti && <ConfettiLayer pieces={confetti} />}
 
-              {(round.type === 'choice' || round.type === 'image') && (
+              {round.type === 'choice' && (
                 <div style={{ display: 'grid', gap: 10 }}>
                   {round.options.map((opt, i) => {
                     const isCorrect = i === round.correct;
@@ -180,27 +213,53 @@ export function MiniQuiz() {
                 </div>
               )}
 
+              {round.type === 'image' && (
+                <div>
+                  <input type="text" value={imgInput} disabled={imgDone}
+                    placeholder={de ? 'Antwort eintippen…' : 'Type your answer…'} aria-label={round.q}
+                    onChange={(e) => setImgInput(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') submitImage(); }}
+                    style={{
+                      width: '100%', fontFamily: 'inherit', fontSize: 17, fontWeight: 700, color: BRAND.ink,
+                      background: 'rgba(255,255,255,0.05)',
+                      border: `1.5px solid ${imgDone ? (imgCorrect ? '#22C55E' : '#EF4444') : accent + '88'}`,
+                      borderRadius: 14, padding: '13px 16px', outline: 'none',
+                    }} />
+                  {imgDone && (
+                    <div style={{ marginTop: 12, textAlign: 'center', fontSize: 16, fontWeight: 800, color: imgCorrect ? '#86EFAC' : '#FCA5A5' }}>
+                      {imgCorrect ? (de ? 'Richtig!' : 'Correct!') : (de ? `Lösung: ${round.answer}` : `Answer: ${round.answer}`)}
+                    </div>
+                  )}
+                  {!imgDone && (
+                    <div style={{ textAlign: 'center', marginTop: 16 }}>
+                      <button onClick={submitImage} disabled={!imgValid} className="cw-btn" style={{ ...nextBtn, opacity: imgValid ? 1 : 0.45, cursor: imgValid ? 'pointer' : 'default' }}>{de ? 'Antwort abgeben' : 'Submit answer'}</button>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {round.type === 'estimate' && (
                 <div>
-                  <div style={{ textAlign: 'center', marginBottom: 10 }}>
-                    <span style={{ fontSize: 34, fontWeight: 900, color: BRAND.pink }}>{guess}</span>
-                    <span style={{ fontSize: 15, fontWeight: 800, color: BRAND.inkSoft, marginLeft: 8 }}>{round.unit}</span>
-                  </div>
-                  <input type="range" min={round.min} max={round.max} step={round.step} value={guess}
-                    disabled={estDone} onChange={(e) => setGuess(Number(e.target.value))}
-                    aria-label={round.q}
-                    style={{ width: '100%', accentColor: BRAND.pink, cursor: estDone ? 'default' : 'pointer' }} />
-                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'rgba(226,232,240,0.5)', fontWeight: 700, marginTop: 2 }}>
-                    <span>{round.min}</span><span>{round.max}</span>
+                  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: 10 }}>
+                    <input type="number" inputMode="numeric" value={guessInput} disabled={estDone}
+                      placeholder="?" aria-label={round.q}
+                      onChange={(e) => setGuessInput(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === 'Enter') submitEstimate(); }}
+                      style={{
+                        width: 150, textAlign: 'center', fontFamily: 'inherit', fontSize: 30, fontWeight: 900,
+                        color: accent, background: 'rgba(255,255,255,0.05)', border: `1.5px solid ${accent}88`,
+                        borderRadius: 14, padding: '8px 12px', outline: 'none',
+                      }} />
+                    <span style={{ fontSize: 16, fontWeight: 800, color: BRAND.inkSoft }}>{round.unit}</span>
                   </div>
                   {estDone && (
-                    <div style={{ marginTop: 14, textAlign: 'center', fontSize: 16, fontWeight: 800, color: Math.abs(guess - round.answer) <= round.tolerance ? '#86EFAC' : '#FCA5A5' }}>
-                      {de ? `Richtig: ${round.answer} ${round.unit} · deine Schätzung: ${guess}` : `Answer: ${round.answer} ${round.unit} · your guess: ${guess}`}
+                    <div style={{ marginTop: 14, textAlign: 'center', fontSize: 16, fontWeight: 800, color: Math.abs(guessNum - round.answer) <= round.tolerance ? '#86EFAC' : '#FCA5A5' }}>
+                      {de ? `Richtig: ${round.answer} ${round.unit} · deine Schätzung: ${guessNum}` : `Answer: ${round.answer} ${round.unit} · your guess: ${guessNum}`}
                     </div>
                   )}
                   {!estDone && (
                     <div style={{ textAlign: 'center', marginTop: 16 }}>
-                      <button onClick={submitEstimate} className="cw-btn" style={nextBtn}>{de ? 'Schätzung abgeben' : 'Lock in guess'}</button>
+                      <button onClick={submitEstimate} disabled={!guessValid} className="cw-btn" style={{ ...nextBtn, opacity: guessValid ? 1 : 0.45, cursor: guessValid ? 'pointer' : 'default' }}>{de ? 'Schätzung abgeben' : 'Lock in guess'}</button>
                     </div>
                   )}
                 </div>
@@ -209,7 +268,7 @@ export function MiniQuiz() {
               {round.type === 'distribute' && (
                 <div>
                   <div style={{ textAlign: 'center', fontSize: 14, fontWeight: 800, color: BRAND.inkSoft, marginBottom: 12 }}>
-                    {de ? `Punkte übrig: ` : `Points left: `}<span style={{ color: BRAND.pink, fontSize: 18 }}>{10 - distTotal}</span>
+                    {de ? `Punkte übrig: ` : `Points left: `}<span style={{ color: accent, fontSize: 18 }}>{10 - distTotal}</span>
                   </div>
                   <div style={{ display: 'grid', gap: 10 }}>
                     {round.options.map((opt, i) => {
@@ -227,7 +286,7 @@ export function MiniQuiz() {
                           {!distDone && (
                             <button onClick={() => addPt(i, -1)} disabled={(pts[i] || 0) === 0} aria-label="minus" style={stepBtn((pts[i] || 0) === 0)}>−</button>
                           )}
-                          <span style={{ minWidth: 22, textAlign: 'center', fontSize: 17, fontWeight: 900, color: (pts[i] || 0) > 0 ? BRAND.pink : 'rgba(226,232,240,0.4)' }}>{pts[i] || 0}</span>
+                          <span style={{ minWidth: 22, textAlign: 'center', fontSize: 17, fontWeight: 900, color: (pts[i] || 0) > 0 ? accent : 'rgba(226,232,240,0.4)' }}>{pts[i] || 0}</span>
                           {!distDone && (
                             <button onClick={() => addPt(i, 1)} disabled={distTotal >= 10} aria-label="plus" style={stepBtn(distTotal >= 10)}>+</button>
                           )}
@@ -261,13 +320,6 @@ export function MiniQuiz() {
       </div>
     </Section>
   );
-}
-
-function kindLabel(type: Round['type'], de: boolean): string {
-  if (type === 'estimate') return de ? 'Schätzchen' : 'Estimate';
-  if (type === 'image') return 'Schau-mal';
-  if (type === 'distribute') return '10 von 10';
-  return 'Mu-Cho';
 }
 
 type Piece = { left: number; dx: number; dy: number; r: number; delay: number; color: string };
