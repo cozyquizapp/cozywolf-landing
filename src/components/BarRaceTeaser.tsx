@@ -4,6 +4,7 @@
 import { BRAND } from '../brand';
 import { useLang } from '../lang';
 import { Section } from '../Layout';
+import { Icon } from './Icon';
 
 type Row = { slug: string; name: string; nameEn: string; color: string; val: number };
 
@@ -50,7 +51,7 @@ export function BarRaceTeaser() {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 5 }}>
                   <span style={{ fontSize: 15, fontWeight: 900, color: '#F1F5F9' }}>
-                    {leader && <span aria-hidden style={{ marginRight: 6 }}>👑</span>}
+                    {leader && <span aria-hidden style={{ marginRight: 6, display: 'inline-flex', verticalAlign: 'middle' }}><Icon name="krone" size={18} /></span>}
                     {de ? r.name : r.nameEn}
                   </span>
                   <span style={{ fontSize: 14, fontWeight: 900, color: r.color, fontVariantNumeric: 'tabular-nums' }}>{r.val}</span>

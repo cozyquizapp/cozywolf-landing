@@ -7,6 +7,7 @@ import { Layout, Section, Btn, PageHero } from '../Layout';
 import { SplitRow } from '../components/SplitRow';
 import { MiniGrid, MiniBars } from '../components/ModeMinis';
 import { OrganizerFacts } from '../components/OrganizerFacts';
+import { Icon } from '../components/Icon';
 
 const C = {
   de: {
@@ -26,17 +27,17 @@ const C = {
     m1Title: 'Das Erober-Grid',
     m1Body: 'Kleine Teams erobern Feld für Feld das Spielfeld. Gemütlich und taktisch, ideal für überschaubare Runden.',
     m1Info: [
-      { i: '👥', t: 'Bis zu 30 Gäste' },
-      { i: '🧩', t: 'Kleine Teams, Erober-Modus' },
-      { i: '📍', t: 'Café, kleine Bar, ruhiger Abend' },
+      { i: 'team', t: 'Bis zu 30 Gäste' },
+      { i: 'puzzle', t: 'Kleine Teams, Erober-Modus' },
+      { i: 'pub', t: 'Café, kleine Bar, ruhiger Abend' },
     ],
     m2Eyebrow: 'CozyArena',
     m2Title: 'Das Fraktions-Rennen',
     m2Body: 'Alle schließen sich zu Fraktionen zusammen und kämpfen Frage für Frage um die Führung. Laut und mitreißend, für volle Häuser.',
     m2Info: [
-      { i: '👥', t: 'Bis zu 100 Gäste' },
-      { i: '⚡', t: 'Große Gruppen als Fraktionen' },
-      { i: '📍', t: 'Pub-Abend, volles Haus, Event' },
+      { i: 'team', t: 'Bis zu 100 Gäste' },
+      { i: 'energie', t: 'Große Gruppen als Fraktionen' },
+      { i: 'pub', t: 'Pub-Abend, volles Haus, Event' },
     ],
     noteT: 'Konditionen arbeite ich mit dir aus',
     noteB: 'Für Locations lege ich das passende Format und die Konditionen mit dir zusammen fest. Wenn du eine Location hast und Interesse, schreib mir kurz, dann finde ich mit dir etwas, das für dich funktioniert.',
@@ -59,17 +60,17 @@ const C = {
     m1Title: 'The conquer board',
     m1Body: 'Small teams claim the board cell by cell. Cozy and tactical, ideal for manageable rounds.',
     m1Info: [
-      { i: '👥', t: 'Up to 30 guests' },
-      { i: '🧩', t: 'Small teams, conquer mode' },
-      { i: '📍', t: 'Café, small bar, quiet night' },
+      { i: 'team', t: 'Up to 30 guests' },
+      { i: 'puzzle', t: 'Small teams, conquer mode' },
+      { i: 'pub', t: 'Café, small bar, quiet night' },
     ],
     m2Eyebrow: 'CozyArena',
     m2Title: 'The faction race',
     m2Body: 'Everyone joins a faction and races for the lead question by question. Loud and gripping, for full houses.',
     m2Info: [
-      { i: '👥', t: 'Up to 100 guests' },
-      { i: '⚡', t: 'Large groups as factions' },
-      { i: '📍', t: 'Pub night, full house, event' },
+      { i: 'team', t: 'Up to 100 guests' },
+      { i: 'energie', t: 'Large groups as factions' },
+      { i: 'pub', t: 'Pub night, full house, event' },
     ],
     noteT: 'I work out the terms with you',
     noteB: 'For venues I set the right format and terms together with you. If you run a venue and are interested, drop me a line and I will find something that works for you.',
@@ -157,11 +158,7 @@ function ModeText({ eyebrow, title, body, info, accent }: {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 9, marginTop: 4 }}>
         {info.map((it, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 11, fontSize: 15, fontWeight: 700, color: BRAND.inkSoft }}>
-            <span aria-hidden style={{
-              width: 30, height: 30, flexShrink: 0, borderRadius: 9, fontSize: 15,
-              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-              background: `${accent}1f`, border: `1px solid ${accent}44`,
-            }}>{it.i}</span>
+            <Icon name={it.i} size={30} />
             {it.t}
           </div>
         ))}

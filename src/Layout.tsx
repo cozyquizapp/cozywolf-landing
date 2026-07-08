@@ -7,6 +7,7 @@ import { BRAND, FONT_DISPLAY, FONT_BODY, EMAIL, INSTA_URL, INSTA_HANDLE } from '
 import { useLang, setLang, type Lang } from './lang';
 import { usePath } from './pathContext';
 import { t } from './i18n';
+import { Icon } from './components/Icon';
 
 const NAV_LINKS = (d: ReturnType<typeof t>) => [
   { href: '/firmen', label: d.navFirmen },
@@ -194,7 +195,9 @@ function SiteFooter({ lang }: { lang: Lang }) {
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', fontSize: 14 }}>
           <a href={`mailto:${EMAIL}`} style={footerLink}>{EMAIL}</a>
           <span style={dot}>·</span>
-          <a href={INSTA_URL} target="_blank" rel="noopener noreferrer" style={footerLink}>{INSTA_HANDLE}</a>
+          <a href={INSTA_URL} target="_blank" rel="noopener noreferrer" style={{ ...footerLink, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            <Icon name="instagram" size={18} alt="" />{INSTA_HANDLE}
+          </a>
         </div>
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center', fontSize: 12.5, color: BRAND.muted }}>
           <span>{d.footerMade}</span>

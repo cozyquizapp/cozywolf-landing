@@ -10,6 +10,7 @@ import { CategoryStrip } from '../components/CategoryStrip';
 import { MiniQuiz } from '../components/MiniQuiz';
 import { MiniGrid, MiniBars } from '../components/ModeMinis';
 import { GridEmblem, ArenaEmblem } from '../components/ModeEmblems';
+import { Icon } from '../components/Icon';
 import { FaqSection } from '../components/FaqSection';
 import { PriceNote } from '../components/PriceNote';
 import { StatsBand } from '../components/StatsBand';
@@ -104,9 +105,9 @@ export default function HomePage() {
   const c = C[lang];
   const d = t(lang);
   const audiences = [
-    { href: '/firmen', title: c.audFirmenT, body: c.audFirmenB, icon: '🏢' },
-    { href: '/feiern', title: c.audFeiernT, body: c.audFeiernB, icon: '🎉' },
-    { href: '/locations', title: c.audLocationsT, body: c.audLocationsB, icon: '🍻' },
+    { href: '/firmen', title: c.audFirmenT, body: c.audFirmenB, icon: 'firma' },
+    { href: '/feiern', title: c.audFeiernT, body: c.audFeiernB, icon: 'feier' },
+    { href: '/locations', title: c.audLocationsT, body: c.audLocationsB, icon: 'pub' },
   ];
   return (
     <Layout>
@@ -124,7 +125,7 @@ export default function HomePage() {
         <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))' }}>
           {audiences.map(a => (
             <a key={a.href} href={a.href} style={teaserCard}>
-              <div style={{ fontSize: 30 }} aria-hidden>{a.icon}</div>
+              <Icon name={a.icon} size={48} />
               <div style={{ fontSize: 20, fontWeight: 900, color: BRAND.pink }}>{a.title}</div>
               <div style={{ fontSize: 15, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.5, flex: 1 }}>{a.body}</div>
               <div style={{ fontSize: 14, fontWeight: 800, color: BRAND.pinkSoft }}>{c.audMore} →</div>

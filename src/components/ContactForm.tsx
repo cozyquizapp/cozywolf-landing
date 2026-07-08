@@ -4,6 +4,7 @@
 // Mailto zurueck, damit nichts ins Leere laeuft. SSR-sicher (rein Client-State).
 import { useState } from 'react';
 import { BRAND, EMAIL, FORMSPREE_ID, FORMSPREE_ACTIVE } from '../brand';
+import { Icon } from './Icon';
 import { useLang } from '../lang';
 
 type Status = 'idle' | 'sending' | 'ok' | 'error';
@@ -68,7 +69,7 @@ export function ContactForm() {
   if (status === 'ok') {
     return (
       <div role="status" style={cardBase}>
-        <div style={{ fontSize: 40 }} aria-hidden>🎉</div>
+        <div style={{ display: 'flex', justifyContent: 'center' }}><Icon name="feier" size={52} /></div>
         <div style={{ fontSize: 22, fontWeight: 900, color: '#F1F5F9', marginTop: 8 }}>{L.okT}</div>
         <p style={{ margin: '10px 0 0', color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{L.okB}</p>
       </div>

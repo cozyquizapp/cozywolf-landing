@@ -3,6 +3,7 @@
 // interaktiv (useState), SSR-sicher: prerendert die erste Frage statisch.
 import { useState } from 'react';
 import { BRAND } from '../brand';
+import { Icon } from './Icon';
 import { useLang } from '../lang';
 import { Section, Btn } from '../Layout';
 
@@ -77,7 +78,9 @@ export function MiniQuiz() {
       }}>
         {done ? (
           <div role="status" aria-live="polite" style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-            <div style={{ fontSize: 44 }} aria-hidden>{correctCount === quiz.length ? '🏆' : correctCount >= 2 ? '🎉' : '🙂'}</div>
+            <div style={{ display: 'flex', justifyContent: 'center', minHeight: 52 }} aria-hidden>
+              {correctCount === quiz.length ? <Icon name="trophae" size={52} /> : correctCount >= 2 ? <Icon name="feier" size={52} /> : <span style={{ fontSize: 44 }}>🙂</span>}
+            </div>
             <div style={{ fontSize: 24, fontWeight: 900, color: '#F1F5F9' }}>
               {de ? `${correctCount} von ${quiz.length} richtig` : `${correctCount} of ${quiz.length} correct`}
             </div>

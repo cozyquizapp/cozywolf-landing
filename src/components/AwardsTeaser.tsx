@@ -2,6 +2,7 @@
 // gekrönt, dazu die 3 Fraktions-Awards. Teasert das Finale, ohne den Ausgang zu
 // spoilern (Beispiel-Fraktionen). SSR-sicher, sanfte Einblendung.
 import { BRAND } from '../brand';
+import { Icon } from './Icon';
 import { useLang } from '../lang';
 import { Section } from '../Layout';
 
@@ -36,7 +37,7 @@ export function AwardsTeaser() {
         border: `1.5px solid ${WINNER.color}55`,
       }}>
         <div style={{ position: 'relative' }}>
-          <span aria-hidden style={{ position: 'absolute', top: -26, left: '50%', transform: 'translateX(-50%) rotate(-8deg)', fontSize: 34, animation: 'cwCrownFloat 3s ease-in-out infinite' }}>👑</span>
+          <span aria-hidden style={{ position: 'absolute', top: -30, left: '50%', transform: 'translateX(-50%) rotate(-8deg)', animation: 'cwCrownFloat 3s ease-in-out infinite' }}><Icon name="krone" size={40} /></span>
           <div style={{
             width: 120, height: 120,
             display: 'flex', alignItems: 'center', justifyContent: 'center',

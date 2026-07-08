@@ -7,16 +7,17 @@ import { BRAND } from '../brand';
 import { useLang } from '../lang';
 import { t } from '../i18n';
 import { Section } from '../Layout';
+import { Icon } from './Icon';
 
 export function OrganizerFacts({ compact = false }: { compact?: boolean }) {
   const d = t(useLang());
   const facts = [
-    { icon: '📱', title: d.reUncomplicatedT, body: d.reUncomplicatedB },
-    { icon: '🎒', title: d.rePrepT, body: d.rePrepB },
-    { icon: '👥', title: d.reScaleT, body: d.reScaleB },
-    { icon: '⏱️', title: d.reDurationT, body: d.reDurationB },
-    { icon: '🎤', title: d.reHostT, body: d.reHostB },
-    { icon: '📍', title: d.reRegionT, body: d.reRegionB },
+    { icon: 'handy', title: d.reUncomplicatedT, body: d.reUncomplicatedB },
+    { icon: 'aufbau', title: d.rePrepT, body: d.rePrepB },
+    { icon: 'team', title: d.reScaleT, body: d.reScaleB },
+    { icon: 'dauer', title: d.reDurationT, body: d.reDurationB },
+    { icon: 'moderation', title: d.reHostT, body: d.reHostB },
+    { icon: 'standort', title: d.reRegionT, body: d.reRegionB },
   ];
   return (
     <Section style={compact ? { paddingTop: 'clamp(24px, 4vh, 48px)' } : undefined}>
@@ -36,7 +37,7 @@ export function OrganizerFacts({ compact = false }: { compact?: boolean }) {
             border: `1px solid rgba(${BRAND.pinkRgb},0.18)`,
             display: 'flex', flexDirection: 'column', gap: 8,
           }}>
-            <div style={{ fontSize: 30, lineHeight: 1 }} aria-hidden>{f.icon}</div>
+            <Icon name={f.icon} size={44} />
             <div style={{ fontSize: 19, fontWeight: 900, color: BRAND.pink, letterSpacing: '-0.01em' }}>{f.title}</div>
             <div style={{ fontSize: 15, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.55 }}>{f.body}</div>
           </div>
