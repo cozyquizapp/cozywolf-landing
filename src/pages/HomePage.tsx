@@ -15,8 +15,8 @@ import { StatsBand } from '../components/StatsBand';
 
 const C = {
   de: {
-    eyebrow: 'Live-Quiz-Events',
-    title: 'stay cozy. stay curious.',
+    eyebrow: 'stay cozy. stay curious.',
+    title: 'Live-Quiz-Events, die eure Gruppe zusammenbringen.',
     sub: 'Das gemütlichste Quiz, das ihr je gespielt habt. Ich bringe die Fragen, ihr die gute Laune.',
     modesTitle: 'Ein Quiz, zwei Spielarten',
     mode1T: 'CozyQuiz: das Feld',
@@ -36,7 +36,7 @@ const C = {
     audFirmenT: 'Firma oder Team?',
     audFirmenB: 'Team-Event, bei dem Abteilungen oder Tische als Fraktionen gegeneinander antreten.',
     audFeiernT: 'Private Feier?',
-    audFeiernB: 'Geburtstag oder Freundeskreis, entspannte Runde mit dem Erober-Modus.',
+    audFeiernB: 'Geburtstag oder Freundeskreis, entspannte Runde, bei der ihr das Spielfeld erobert.',
     audLocationsT: 'Café, Bar oder Pub?',
     audLocationsB: 'Ein wiederkehrender Quiz-Abend, der Gäste anzieht und wiederkommen lässt.',
     audMore: 'Mehr erfahren',
@@ -56,8 +56,8 @@ const C = {
     ctaTry: 'Quiz ausprobieren',
   },
   en: {
-    eyebrow: 'Live quiz events',
-    title: 'stay cozy. stay curious.',
+    eyebrow: 'stay cozy. stay curious.',
+    title: 'Live quiz events that bring your group together.',
     sub: 'The coziest quiz you have ever played. I bring the questions, you bring the fun.',
     modesTitle: 'One quiz, two ways to play',
     mode1T: 'CozyQuiz: the board',
@@ -77,7 +77,7 @@ const C = {
     audFirmenT: 'Company or team?',
     audFirmenB: 'A team event where departments or tables compete as factions.',
     audFeiernT: 'Private party?',
-    audFeiernB: 'Birthday or friends, a relaxed round with the conquer mode.',
+    audFeiernB: 'Birthday or friends, a relaxed round where you conquer the board.',
     audLocationsT: 'Café, bar or pub?',
     audLocationsB: 'A recurring quiz night that brings your guests in and keeps them.',
     audMore: 'Learn more',
@@ -109,7 +109,7 @@ export default function HomePage() {
   ];
   return (
     <Layout>
-      <PageHero eyebrow={c.eyebrow} title={c.title} sub={c.sub}
+      <PageHero eyebrow={c.eyebrow} eyebrowLower title={c.title} sub={c.sub}
         visual={<img src="/logo.webp" alt="" width={148} height={148} fetchPriority="high" style={{ width: '100%', height: 'auto', filter: `drop-shadow(0 8px 24px rgba(${BRAND.pinkRgb},0.45))` }} />}
       />
       <Section style={{ paddingTop: 0, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>

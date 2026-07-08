@@ -217,7 +217,7 @@ export function Section({ children, style }: { children: ReactNode; style?: Reac
   );
 }
 
-export function PageHero({ eyebrow, title, sub, visual }: { eyebrow?: string; title: string; sub?: string; visual?: ReactNode }) {
+export function PageHero({ eyebrow, eyebrowLower, title, sub, visual }: { eyebrow?: string; eyebrowLower?: boolean; title: string; sub?: string; visual?: ReactNode }) {
   return (
     <Section style={{ textAlign: 'center', paddingBottom: 'clamp(24px, 4vh, 48px)', position: 'relative' }}>
       <style>{`
@@ -241,8 +241,10 @@ export function PageHero({ eyebrow, title, sub, visual }: { eyebrow?: string; ti
       )}
       {eyebrow && (
         <div style={{
-          fontSize: 13, fontWeight: 900, letterSpacing: '0.16em', textTransform: 'uppercase',
-          color: BRAND.pink, marginBottom: 14,
+          fontWeight: 900, color: BRAND.pink, marginBottom: 14,
+          fontSize: eyebrowLower ? 16 : 13,
+          letterSpacing: eyebrowLower ? '0.01em' : '0.16em',
+          textTransform: eyebrowLower ? 'none' : 'uppercase',
         }}>{eyebrow}</div>
       )}
       <h1 style={{
