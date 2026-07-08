@@ -10,7 +10,7 @@ const OG_IMG = `${BASE}/assets/og-cover.png`;
 
 // Route -> Titel + Beschreibung (Deutsch = Prerender-Default).
 const META = {
-  '/':            { t: 'CozyWolf, Live-Quiz-Events in Hamburg', d: 'Moderierte Live-Quiz-Events für Firmen, private Feiern und Locations. Deine Gäste spielen am Handy, ich bringe alles mit und moderiere selbst.' },
+  '/':            { t: 'CozyWolf, Live-Quiz-Events in Hamburg', d: 'Moderierte Live-Quiz-Events für Firmen, private Feiern und Locations. Alle spielen am eigenen Handy, ich bringe alles mit und moderiere selbst.' },
   '/firmen':      { t: 'CozyWolf für Firmen und Teams', d: 'Ein Team-Event, bei dem eure Abteilungen als Fraktionen gegeneinander antreten. Faire Wertung, bis etwa 100 Personen, in Hamburg und Umland.' },
   '/feiern':      { t: 'CozyWolf für private Feiern', d: 'Ein gemütlicher Quiz-Abend für Geburtstag und Freundeskreis. Kleine Teams erobern das Spielfeld, ich moderiere den ganzen Abend.' },
   '/locations':   { t: 'CozyWolf für Locations', d: 'Ein wiederkehrender Quiz-Abend für Café, Bar oder Pub, der Gäste an ruhigen Tagen bringt und zum Wiederkommen bewegt.' },
