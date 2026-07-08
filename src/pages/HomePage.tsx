@@ -20,7 +20,7 @@ import { StatsBand } from '../components/StatsBand';
 const C = {
   de: {
     eyebrow: 'stay cozy. stay curious.',
-    title: 'Live-Quiz-Events, die eure Gruppe zusammenbringen.',
+    title: 'Live-Quiz-Events, die in Erinnerung bleiben.',
     sub: 'Das gemütlichste Quiz, das ihr je gespielt habt. Ich bringe die Fragen, ihr die gute Laune.',
     modesTitle: 'Ein Quiz, zwei Spielarten',
     mode1T: 'CozyQuiz: das Feld',
@@ -61,7 +61,7 @@ const C = {
   },
   en: {
     eyebrow: 'stay cozy. stay curious.',
-    title: 'Live quiz events that bring your group together.',
+    title: 'Live quiz events you will remember.',
     sub: 'The coziest quiz you have ever played. I bring the questions, you bring the fun.',
     modesTitle: 'One quiz, two ways to play',
     mode1T: 'CozyQuiz: the board',
