@@ -19,10 +19,18 @@ const C = {
     title: 'stay cozy. stay curious.',
     sub: 'Das gemütlichste Quiz, das ihr je gespielt habt. Ich bringe die Fragen, ihr die gute Laune.',
     modesTitle: 'Ein Quiz, zwei Spielarten',
-    mode1T: 'CozyQuiz: erobern',
+    mode1T: 'CozyQuiz: das Feld',
     mode1B: 'Für Runden bis zu 30 Personen. Jedes Team beantwortet Fragen und erobert Felder auf dem Spielfeld. Wissen trifft ein bisschen Taktik.',
-    mode2T: 'Cozy Arena: Fraktionen',
+    mode2T: 'Cozy Arena: das Rennen',
     mode2B: 'Für große Gruppen bis zu 100 Personen. Alle schließen sich zu Fraktionen zusammen und kämpfen Frage für Frage um die Führung. Fair gewertet, egal wie groß ein Team ist.',
+    whyTitle: 'Warum CozyWolf?',
+    why: [
+      'Kein PowerPoint-Quiz, sondern ein eigenes Spielkonzept',
+      'Live moderiert, kein Automat',
+      'Strategie statt reinem Abfragen',
+      'Jede Runde verändert das Spielfeld',
+      'Spannung bis zur letzten Frage',
+    ],
     audTitle: 'Für welchen Anlass?',
     audFirmenT: 'Firma oder Team?',
     audFirmenB: 'Team-Event, bei dem Abteilungen oder Tische als Fraktionen gegeneinander antreten.',
@@ -32,7 +40,8 @@ const C = {
     audLocationsB: 'Ein wiederkehrender Quiz-Abend, der Gäste anzieht und wiederkommen lässt.',
     audMore: 'Mehr erfahren',
     hostT: 'Wer moderiert?',
-    hostB: 'Ich bin Johannes, Pädagoge und Moderator. Ich baue Quizze, bei denen jede Gruppe mitkommt und jeder mal glänzt.',
+    hostB: 'Ich bin Johannes und sorge dafür, dass euer Quiz rund läuft: Aufbau, Technik und Moderation kommen von mir, ihr müsst euch um nichts kümmern. Ich baue Quizze, bei denen jede Gruppe Spaß hat und jeder etwas mitnimmt.',
+    hostChips: ['Persönliche Moderation vor Ort', 'Für Gruppen von 10 bis 100 Personen', 'Individuell auf euer Event abgestimmt'],
     hostCta: 'Über mich',
     ctaTitle: 'Lust auf ein Quiz?',
     ctaBody: 'Schreib mir kurz zum Anlass und zur ungefähren Personenzahl, dann melde ich mich mit einem Vorschlag.',
@@ -43,10 +52,18 @@ const C = {
     title: 'stay cozy. stay curious.',
     sub: 'The coziest quiz you have ever played. I bring the questions, you bring the fun.',
     modesTitle: 'One quiz, two ways to play',
-    mode1T: 'CozyQuiz: conquer',
+    mode1T: 'CozyQuiz: the board',
     mode1B: 'For rounds up to 30 people. Each team answers questions and conquers cells on the board. Knowledge meets a bit of tactics.',
-    mode2T: 'Cozy Arena: factions',
+    mode2T: 'Cozy Arena: the race',
     mode2B: 'For large groups up to 100 people. Everyone joins a faction and races for the lead question by question. Scored fairly, no matter how big a team is.',
+    whyTitle: 'Why CozyWolf?',
+    why: [
+      'No PowerPoint quiz, a game concept of its own',
+      'Live hosted, not automated',
+      'Strategy, not just recall',
+      'Every round reshapes the board',
+      'Tension until the very last question',
+    ],
     audTitle: 'For which occasion?',
     audFirmenT: 'Company or team?',
     audFirmenB: 'A team event where departments or tables compete as factions.',
@@ -56,7 +73,8 @@ const C = {
     audLocationsB: 'A recurring quiz night that brings your guests in and keeps them.',
     audMore: 'Learn more',
     hostT: 'Who hosts?',
-    hostB: 'I am Johannes, an educator and host. I build quizzes where every group keeps up and everyone gets a moment to shine.',
+    hostB: 'I am Johannes, and I make sure your quiz runs smoothly: setup, tech and hosting all come from me, so you do not have to worry about a thing. I build quizzes where every group has fun and everyone takes something away.',
+    hostChips: ['Personal hosting, on site', 'For groups of 10 to 100', 'Tailored to your event'],
     hostCta: 'About me',
     ctaTitle: 'Up for a quiz?',
     ctaBody: 'Drop me a line about the occasion and rough number of people, and I will come back with a suggestion.',
@@ -109,6 +127,32 @@ export default function HomePage() {
         </div>
       </Section>
 
+      {/* Warum CozyWolf — Differenzierung gegen 08/15-Eventquiz */}
+      <Section>
+        <SecTitle>{c.whyTitle}</SecTitle>
+        <div style={{
+          maxWidth: 760, margin: '0 auto',
+          display: 'grid', gap: 'clamp(12px, 1.6vw, 16px)',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
+        }}>
+          {c.why.map((w, i) => (
+            <div key={i} style={{
+              display: 'flex', alignItems: 'center', gap: 14,
+              padding: '15px 18px', borderRadius: 14,
+              background: 'rgba(255,255,255,0.03)', border: `1px solid rgba(${BRAND.pinkRgb},0.16)`,
+            }}>
+              <span aria-hidden style={{
+                flexShrink: 0, width: 26, height: 26, borderRadius: '50%',
+                display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 15, fontWeight: 900, color: BRAND.pink,
+                background: `rgba(${BRAND.pinkRgb},0.14)`,
+              }}>✓</span>
+              <span style={{ fontSize: 15.5, fontWeight: 700, color: BRAND.ink, lineHeight: 1.4 }}>{w}</span>
+            </div>
+          ))}
+        </div>
+      </Section>
+
       <StatsBand />
 
       <CategoryStrip />
@@ -130,6 +174,14 @@ export default function HomePage() {
           <div style={{ flex: 1, minWidth: 240 }}>
             <h2 style={{ margin: '0 0 10px', fontSize: 'clamp(24px, 3vw, 34px)', fontWeight: 900, color: '#F1F5F9' }}>{c.hostT}</h2>
             <p style={{ margin: '0 0 16px', fontSize: 16, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{c.hostB}</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8, margin: '0 0 20px' }}>
+              {c.hostChips.map((chip, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 15, fontWeight: 700, color: BRAND.ink }}>
+                  <span aria-hidden style={{ color: BRAND.pink, fontSize: 16, fontWeight: 900 }}>✓</span>
+                  {chip}
+                </div>
+              ))}
+            </div>
             <Btn href="/ueber" variant="secondary">{c.hostCta}</Btn>
           </div>
         </div>

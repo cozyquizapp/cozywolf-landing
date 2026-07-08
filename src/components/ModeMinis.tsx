@@ -3,12 +3,17 @@
 // (Cozy-Arena-Rennen, echte Fraktions-Embleme). Rein dekorativ, SSR-sicher,
 // damit man die echten Spielarten schon auf der Startseite sieht.
 
-// owner-Index (0/1) + Avatar-Slug pro erobertem Feld (echte cozy3d-Avatare).
-const GRID_TEAMS = ['#EC4899', '#3B82F6'];
-const GP: ({ o: number; av: string } | null)[][] = [
-  [{ o: 0, av: 'fuchs' }, { o: 0, av: 'katze' }, null, { o: 1, av: 'baer' }, { o: 1, av: 'eule' }],
-  [{ o: 0, av: 'baer' },  { o: 0, av: 'eule' },  null, { o: 1, av: 'fuchs' }, null],
-  [null, { o: 0, av: 'katze' }, null, { o: 1, av: 'eule' }, { o: 1, av: 'baer' }],
+// App-realistisch: eine Team-FARBE = EIN Avatar (nicht pro Feld gemischt).
+// Jedes Team hat Farbe + festen Avatar; die Zellen speichern nur den Team-Index.
+const GRID_TEAMS = [
+  { color: '#EC4899', av: 'fuchs' },
+  { color: '#3B82F6', av: 'eule' },
+  { color: '#10B981', av: 'baer' },
+];
+const GP: (number | null)[][] = [
+  [0, 0, null, 1, 1],
+  [2, 0, null, 1, null],
+  [2, 2, null, 1, 1],
 ];
 const GCOLS = GP[0].length, GROWS = GP.length, GGAP = 6;
 
@@ -18,12 +23,13 @@ export function MiniGrid() {
       display: 'grid', gridTemplateColumns: `repeat(${GCOLS}, 1fr)`, gap: GGAP,
       maxWidth: 210, margin: '2px auto 0',
     }}>
-      {GP.flatMap((row, r) => row.map((cell, c) => {
+      {GP.flatMap((row, r) => row.map((o, c) => {
         const idx = r * GCOLS + c;
-        if (cell == null) return <div key={idx} style={{ aspectRatio: '1/1', borderRadius: 5, background: 'rgba(255,255,255,0.05)' }} />;
-        const col = GRID_TEAMS[cell.o];
-        const right = c + 1 < GCOLS && GP[r][c + 1]?.o === cell.o;
-        const down = r + 1 < GROWS && GP[r + 1][c]?.o === cell.o;
+        if (o == null) return <div key={idx} style={{ aspectRatio: '1/1', borderRadius: 5, background: 'rgba(255,255,255,0.05)' }} />;
+        const team = GRID_TEAMS[o];
+        const col = team.color;
+        const right = c + 1 < GCOLS && GP[r][c + 1] === o;
+        const down = r + 1 < GROWS && GP[r + 1][c] === o;
         return (
           <div key={idx} style={{
             position: 'relative', aspectRatio: '1/1', borderRadius: 7,
@@ -31,7 +37,7 @@ export function MiniGrid() {
             background: `radial-gradient(circle at 34% 28%, ${col}dd, ${col}aa 72%)`,
             boxShadow: `0 2px 6px ${col}55`,
           }}>
-            <img src={`/assets/av-${cell.av}.png`} alt="" width={26} height={26} style={{ width: '78%', height: '78%', objectFit: 'contain' }} />
+            <img src={`/assets/av-${team.av}.png`} alt="" width={26} height={26} style={{ width: '78%', height: '78%', objectFit: 'contain' }} />
             {right && <span aria-hidden style={{ position: 'absolute', right: -GGAP, top: '50%', transform: 'translateY(-50%)', width: GGAP + 4, height: '44%', background: col, borderRadius: 2, zIndex: -1 }} />}
             {down && <span aria-hidden style={{ position: 'absolute', bottom: -GGAP, left: '50%', transform: 'translateX(-50%)', height: GGAP + 4, width: '44%', background: col, borderRadius: 2, zIndex: -1 }} />}
           </div>
