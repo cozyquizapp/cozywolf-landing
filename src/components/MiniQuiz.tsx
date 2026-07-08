@@ -21,8 +21,8 @@ const QUIZ: Record<'de' | 'en', Round[]> = {
   de: [
     { type: 'choice', q: 'Was wurde zuerst gegründet?', options: ['Google', 'YouTube', 'Netflix', 'Facebook'], correct: 2,
       note: 'Netflix (1997) gab es schon vor Google (1998), Facebook (2004) und YouTube (2005), damals noch als DVD-Versand per Post.' },
-    { type: 'estimate', q: 'Wie viele Minuten dauerte der kürzeste Krieg der Geschichte?', unit: 'Minuten', answer: 38, tolerance: 15,
-      note: 'Rund 38 Minuten: der Anglo-Sansibar-Krieg von 1896. Nach dem Beschuss des Palastes war die Sache erledigt.' },
+    { type: 'estimate', q: 'Wie viele Stufen hat der Eiffelturm bis ganz nach oben?', unit: 'Stufen', answer: 1665, tolerance: 300,
+      note: '1.665 Stufen bis zur Spitze. Bis zur zweiten Etage sind es 674, den Rest fährt sonst der Aufzug. Die meisten schätzen viel zu niedrig.' },
     { type: 'image', q: 'Welches Gewürz wächst hier?', img: '/assets/quiz-vanille.webp', accept: ['vanille', 'vanilla'], answer: 'Vanille',
       note: 'Vanilleschoten! Vanille ist die Frucht einer Orchidee, die einzige essbare unter den Orchideen, und darum nach Safran das teuerste Gewürz.' },
     { type: 'distribute', q: 'Welche waren (oder sind) mal olympische Disziplin? Verteile 10 Punkte auf die, bei denen du sicher bist.', options: ['Tauziehen', 'Kunstwettbewerbe', 'Darts'], correctSet: [0, 1],
@@ -31,8 +31,8 @@ const QUIZ: Record<'de' | 'en', Round[]> = {
   en: [
     { type: 'choice', q: 'Which was founded first?', options: ['Google', 'YouTube', 'Netflix', 'Facebook'], correct: 2,
       note: 'Netflix (1997) came before Google (1998), Facebook (2004) and YouTube (2005), back then as a DVD-by-mail service.' },
-    { type: 'estimate', q: 'How many minutes did the shortest war in history last?', unit: 'minutes', answer: 38, tolerance: 15,
-      note: 'About 38 minutes: the Anglo-Zanzibar War of 1896. Once the palace was shelled, it was over.' },
+    { type: 'estimate', q: 'How many steps does the Eiffel Tower have to the very top?', unit: 'steps', answer: 1665, tolerance: 300,
+      note: '1,665 steps to the top. It is 674 to the second floor, the rest is normally by lift. Most people guess far too low.' },
     { type: 'image', q: 'Which spice grows here?', img: '/assets/quiz-vanille.webp', accept: ['vanilla', 'vanille'], answer: 'Vanilla',
       note: 'Vanilla pods! Vanilla is the fruit of an orchid, the only edible one, which is why after saffron it is the priciest spice.' },
     { type: 'distribute', q: 'Which were (or are) Olympic disciplines? Spread 10 points on the ones you are sure about.', options: ['Tug of war', 'Art competitions', 'Darts'], correctSet: [0, 1],
