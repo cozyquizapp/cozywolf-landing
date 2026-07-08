@@ -119,6 +119,14 @@ function Impressum() {
         diesen Seiten unterliegen dem deutschen Urheberrecht. Beiträge
         Dritter sind als solche gekennzeichnet.
       </P>
+
+      <H2>Bildnachweis</H2>
+      <P>
+        Foto der Vanillepflanze im Mini-Quiz: Forest &amp; Kim Starr,
+        lizenziert unter{' '}
+        <a href="https://creativecommons.org/licenses/by/3.0/deed.de" target="_blank" rel="noopener noreferrer" style={{ color: BRAND.pink, fontWeight: 700 }}>CC BY 3.0</a>,
+        über Wikimedia Commons. Übrige Illustrationen und Icons: CozyWolf.
+      </P>
     </article>
   );
 }
