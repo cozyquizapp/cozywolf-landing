@@ -1,4 +1,4 @@
-// Für Firmen & Teams: Cozy Arena als Held (Gruppen ab ~30 bis ~100), faire
+// Für Firmen & Teams: CozyArena als Held (Gruppen ab ~30 bis ~100), faire
 // Wertung, Teambuilding, Ablauf, Anlässe. Veranstalter-Fakten prominent oben.
 // Preis auf Anfrage. Redaktion: Ich-Form, keine Gedankenstriche.
 import { BRAND } from '../brand';

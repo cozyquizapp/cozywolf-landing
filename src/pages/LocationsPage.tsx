@@ -29,7 +29,7 @@ const C = {
       { i: '🧩', t: 'Kleine Teams, Erober-Modus' },
       { i: '📍', t: 'Café, kleine Bar, ruhiger Abend' },
     ],
-    m2Eyebrow: 'Cozy Arena',
+    m2Eyebrow: 'CozyArena',
     m2Title: 'Das Fraktions-Rennen',
     m2Body: 'Alle schließen sich zu Fraktionen zusammen und kämpfen Frage für Frage um die Führung. Laut und mitreißend, für volle Häuser.',
     m2Info: [
@@ -62,7 +62,7 @@ const C = {
       { i: '🧩', t: 'Small teams, conquer mode' },
       { i: '📍', t: 'Café, small bar, quiet night' },
     ],
-    m2Eyebrow: 'Cozy Arena',
+    m2Eyebrow: 'CozyArena',
     m2Title: 'The faction race',
     m2Body: 'Everyone joins a faction and races for the lead question by question. Loud and gripping, for full houses.',
     m2Info: [

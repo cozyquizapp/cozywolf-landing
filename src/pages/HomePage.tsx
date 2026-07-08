@@ -21,7 +21,7 @@ const C = {
     modesTitle: 'Ein Quiz, zwei Spielarten',
     mode1T: 'CozyQuiz: das Feld',
     mode1B: 'Für Runden bis zu 30 Personen. Jedes Team beantwortet Fragen und erobert Felder auf dem Spielfeld. Wissen trifft ein bisschen Taktik.',
-    mode2T: 'Cozy Arena: das Rennen',
+    mode2T: 'CozyArena: das Rennen',
     mode2B: 'Für große Gruppen bis zu 100 Personen. Alle schließen sich zu Fraktionen zusammen und kämpfen Frage für Frage um die Führung. Fair gewertet, egal wie groß ein Team ist.',
     whyTitle: 'Warum CozyWolf?',
     why: [
@@ -62,7 +62,7 @@ const C = {
     modesTitle: 'One quiz, two ways to play',
     mode1T: 'CozyQuiz: the board',
     mode1B: 'For rounds up to 30 people. Each team answers questions and conquers cells on the board. Knowledge meets a bit of tactics.',
-    mode2T: 'Cozy Arena: the race',
+    mode2T: 'CozyArena: the race',
     mode2B: 'For large groups up to 100 people. Everyone joins a faction and races for the lead question by question. Scored fairly, no matter how big a team is.',
     whyTitle: 'Why CozyWolf?',
     why: [
