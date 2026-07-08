@@ -65,6 +65,20 @@ body {
   .cw-mb-crown { animation: cwCrownBob 2.4s ease-in-out infinite; }
 }
 
+/* Sticky-Mobile-CTA: gleitet unten hoch, nur auf schmalen Screens */
+.cw-sticky-cta {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+  display: none; justify-content: center;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
+  transform: translateY(130%);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  background: linear-gradient(to top, rgba(10, 8, 20, 0.92), rgba(10, 8, 20, 0.6) 55%, transparent);
+}
+.cw-sticky-cta[data-show="true"] { transform: translateY(0); }
+.cw-sticky-cta a { pointer-events: auto; }
+@media (max-width: 780px) { .cw-sticky-cta { display: flex; } }
+
 /* Reduced Motion: auto-startende Animationen (z.B. schwebende Krone) aus (WCAG 2.3.3/2.2.2) */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

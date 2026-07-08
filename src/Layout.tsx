@@ -37,6 +37,7 @@ export function Layout({ children }: { children: ReactNode }) {
       <NavBar lang={lang} />
       <main id="main" style={{ flex: 1, width: '100%' }}>{children}</main>
       <SiteFooter lang={lang} />
+      <StickyMobileCta lang={lang} />
     </div>
   );
 }
@@ -149,6 +150,31 @@ function LangSwitch({ lang }: { lang: Lang }) {
           transition: 'background 0.15s, color 0.15s',
         }}>{l.toUpperCase()}</button>
       ))}
+    </div>
+  );
+}
+
+// Sticky-CTA nur mobil: gleitet nach dem Hero hoch, auf /kontakt ausgeblendet.
+function StickyMobileCta({ lang }: { lang: Lang }) {
+  const path = usePath();
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setShow(window.scrollY > 520);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+  if (path === '/kontakt') return null;
+  return (
+    <div className="cw-sticky-cta" data-show={show} aria-hidden={!show}>
+      <a href="/kontakt" className="cw-btn" tabIndex={show ? 0 : -1} style={{
+        display: 'inline-flex', alignItems: 'center', gap: 8,
+        padding: '14px 30px', borderRadius: 999, textDecoration: 'none',
+        fontWeight: 900, fontSize: 16, color: '#fff',
+        background: 'linear-gradient(135deg, #CE1C6F, #AB0055)',
+        border: '1.5px solid rgba(255,255,255,0.18)',
+        boxShadow: `0 10px 30px rgba(${BRAND.pinkRgb},0.4), 0 4px 12px rgba(0,0,0,0.4)`,
+      }}>{lang === 'de' ? 'Quiz anfragen' : 'Request a quiz'}</a>
     </div>
   );
 }

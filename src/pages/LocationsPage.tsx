@@ -6,6 +6,7 @@ import { useLang } from '../lang';
 import { Layout, Section, Btn, PageHero } from '../Layout';
 import { SplitRow } from '../components/SplitRow';
 import { MiniGrid, MiniBars } from '../components/ModeMinis';
+import { OrganizerFacts } from '../components/OrganizerFacts';
 
 const C = {
   de: {
@@ -112,6 +113,8 @@ export default function LocationsPage() {
           </SplitRow>
         </div>
       </Section>
+
+      <OrganizerFacts compact />
 
       <Section style={{ paddingTop: 0 }}>
         <div style={{
