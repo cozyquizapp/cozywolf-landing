@@ -1,7 +1,7 @@
 // Startseite: Marke → Produkt (ein Abend, zwei Modi) → Veranstalter-Fakten →
 // 3 Zielgruppen-Einstiege → Johannes-Teaser → Kontakt.
 // Erste Fassung (Stufe 1/2). Redaktion: Ich-Form, keine Gedankenstriche.
-import { BRAND, FONT_DISPLAY, anfrageMailto } from '../brand';
+import { BRAND, FONT_DISPLAY } from '../brand';
 import { useLang } from '../lang';
 import { t } from '../i18n';
 import { Layout, Section, Btn, PageHero } from '../Layout';
@@ -113,7 +113,7 @@ export default function HomePage() {
         visual={<img src="/logo.webp" alt="" width={148} height={148} fetchPriority="high" style={{ width: '100%', height: 'auto', filter: `drop-shadow(0 8px 24px rgba(${BRAND.pinkRgb},0.45))` }} />}
       />
       <Section style={{ paddingTop: 0, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-        <Btn href={anfrageMailto(lang)}>{d.ctaBook}</Btn>
+        <Btn href="/kontakt">{d.ctaBook}</Btn>
         <Btn href="#mini" variant="secondary">{c.ctaTry}</Btn>
       </Section>
 
@@ -221,7 +221,7 @@ export default function HomePage() {
           <h2 style={{ margin: '0 0 12px', fontFamily: FONT_DISPLAY, fontSize: 'clamp(26px, 3.4vw, 40px)', fontWeight: 800, color: '#F1F5F9' }}>{c.ctaTitle}</h2>
           <p style={{ margin: '0 auto 16px', maxWidth: 560, fontSize: 17, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{c.ctaBody}</p>
           <PriceNote />
-          <Btn href={anfrageMailto(lang)}>{d.ctaBook}</Btn>
+          <Btn href="/kontakt">{d.ctaBook}</Btn>
         </div>
       </Section>
     </Layout>

@@ -1,7 +1,7 @@
 // Für Locations (Café/Bar/Pub, wiederkehrende Events). Nutzen für den Wirt +
 // die zwei Modi mit Rahmeninfos (Location waehlt je nach Groesse/Stil) +
 // ehrlicher Konditionen-Hinweis (KEIN Dead-End). Ich-Form, keine Gedankenstriche.
-import { BRAND, anfrageMailto } from '../brand';
+import { BRAND } from '../brand';
 import { useLang } from '../lang';
 import { Layout, Section, Btn, PageHero } from '../Layout';
 import { SplitRow } from '../components/SplitRow';
@@ -122,7 +122,7 @@ export default function LocationsPage() {
         }}>
           <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: BRAND.pink, marginBottom: 12 }}>{c.noteT}</div>
           <p style={{ margin: '0 auto 24px', fontSize: 16, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.65 }}>{c.noteB}</p>
-          <Btn href={anfrageMailto(lang)}>{c.cta}</Btn>
+          <Btn href="/kontakt">{c.cta}</Btn>
         </div>
       </Section>
     </Layout>

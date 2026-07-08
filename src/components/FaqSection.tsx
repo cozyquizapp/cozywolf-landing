@@ -1,7 +1,7 @@
 // FAQ-Block: nimmt die typischen Einwaende eines Erstkunden vorweg (Technik,
 // Installation, Gruppengroesse, Dauer, Anfahrt, Preis). Native <details>, damit
 // es ohne JS/SSR-sicher auf- und zuklappt. Ich-Form, keine Gedankenstriche.
-import { BRAND, anfrageMailto } from '../brand';
+import { BRAND } from '../brand';
 import { useLang } from '../lang';
 import { Section } from '../Layout';
 
@@ -17,7 +17,7 @@ export function FaqSection() {
         { q: 'Für wie viele Personen funktioniert das?', a: 'Von der kleinen Runde bis zu 100 Personen. Kleine Gruppen erobern das Spielfeld, große Gruppen treten als Fraktionen an. Das Format passt sich an.' },
         { q: 'Wie lange dauert ein Quiz-Event?', a: 'Meist 90 bis 120 Minuten mit mehreren Runden. Die genaue Länge stimme ich vorher mit dir auf deinen Anlass ab.' },
         { q: 'Wie weit fährst du?', a: 'Ich bin in Hamburg und im Umland unterwegs. Für weiter entfernte Anfragen melde dich einfach kurz, meist lässt sich etwas einrichten.' },
-        { q: 'Was kostet das?', a: (<>Der Preis richtet sich nach Personenzahl und Anlass. Schreib mir kurz, worum es geht, dann bekommst du von mir ein faires Angebot. <a href={anfrageMailto(lang)} style={{ color: BRAND.pink, fontWeight: 800, textDecoration: 'none' }}>Anfrage schreiben</a>.</>) },
+        { q: 'Was kostet das?', a: (<>Der Preis richtet sich nach Personenzahl und Anlass. Schreib mir kurz, worum es geht, dann bekommst du von mir ein faires Angebot. <a href="/kontakt" style={{ color: BRAND.pink, fontWeight: 800, textDecoration: 'none' }}>Anfrage schreiben</a>.</>) },
       ]
     : [
         { q: 'Do I need my own tech?', a: 'No. I bring the projector and sound myself. You only need a free wall or a screen, power, and WiFi for your guests.' },
@@ -25,7 +25,7 @@ export function FaqSection() {
         { q: 'How many people does it work for?', a: 'From a small round up to 100 people. Small groups conquer the board, large groups play as factions. The format adapts.' },
         { q: 'How long does a quiz event take?', a: 'Usually 90 to 120 minutes across several rounds. I agree the exact length with you beforehand to fit your occasion.' },
         { q: 'How far do you travel?', a: 'I am based in and around Hamburg. For requests further out, just get in touch and we will find a way.' },
-        { q: 'What does it cost?', a: (<>The price depends on the number of people and the occasion. Drop me a line about your event and I will come back with a fair offer. <a href={anfrageMailto(lang)} style={{ color: BRAND.pink, fontWeight: 800, textDecoration: 'none' }}>Send a request</a>.</>) },
+        { q: 'What does it cost?', a: (<>The price depends on the number of people and the occasion. Drop me a line about your event and I will come back with a fair offer. <a href="/kontakt" style={{ color: BRAND.pink, fontWeight: 800, textDecoration: 'none' }}>Send a request</a>.</>) },
       ];
 
   return (

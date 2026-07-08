@@ -1,7 +1,7 @@
 // Für Firmen & Teams: Cozy Arena als Held (Gruppen ab ~30 bis ~100), faire
 // Wertung, Teambuilding, Ablauf, Anlässe. Veranstalter-Fakten prominent oben.
 // Preis auf Anfrage. Redaktion: Ich-Form, keine Gedankenstriche.
-import { BRAND, anfrageMailto } from '../brand';
+import { BRAND } from '../brand';
 import { useLang } from '../lang';
 import { Layout, Section, Btn, PageHero } from '../Layout';
 import { OrganizerFacts } from '../components/OrganizerFacts';
@@ -68,7 +68,7 @@ export default function FirmenPage() {
     <Layout>
       <PageHero eyebrow={c.eyebrow} title={c.title} sub={c.sub} />
       <Section style={{ paddingTop: 0, textAlign: 'center' }}>
-        <Btn href={anfrageMailto(lang)}>{c.cta}</Btn>
+        <Btn href="/kontakt">{c.cta}</Btn>
       </Section>
 
       <OrganizerFacts compact />
@@ -103,7 +103,7 @@ export default function FirmenPage() {
           ))}
         </div>
         <PriceNote address="ihr" />
-        <Btn href={anfrageMailto(lang)}>{c.cta}</Btn>
+        <Btn href="/kontakt">{c.cta}</Btn>
       </Section>
     </Layout>
   );

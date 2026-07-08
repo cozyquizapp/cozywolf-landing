@@ -27,6 +27,13 @@ export const INSTA_HANDLE = '@cozywolf.events';
 export const PLAY_URL = 'https://play.cozyquiz.app';
 export const WONKY_URL = 'https://wonkyguess.fun';
 
+// Formspree-Form-ID fuers Kontaktformular. Anlegen auf formspree.io -> neue Form
+// -> die ID (der Teil nach /f/ in der Endpoint-URL) hier eintragen. Solange der
+// Platzhalter steht, faellt das Formular sauber auf einen vorausgefuellten
+// Mailto zurueck (funktioniert also auch schon vor dem Formspree-Setup).
+export const FORMSPREE_ID = 'REPLACE_ME';
+export const FORMSPREE_ACTIVE = (FORMSPREE_ID as string) !== 'REPLACE_ME';
+
 // Vorausgefuellter Anfrage-Mailto (Betreff + Body-Geruest), an CTAs wiederverwendet.
 export function anfrageMailto(lang: 'de' | 'en'): string {
   const subject = lang === 'de' ? 'Quiz-Anfrage' : 'Quiz booking request';

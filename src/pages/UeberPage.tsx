@@ -1,6 +1,6 @@
 // Über / Wer moderiert: Johannes als Person, pädagogischer Blick, Foto.
 // Erste Fassung (Stufe 1/4). Ich-Form.
-import { BRAND, anfrageMailto } from '../brand';
+import { BRAND } from '../brand';
 import { useLang } from '../lang';
 import { t } from '../i18n';
 import { Layout, Section, Btn, PageHero } from '../Layout';
@@ -47,7 +47,7 @@ export default function UeberPage() {
             ))}
           </div>
           <PriceNote />
-          <Btn href={anfrageMailto(lang)}>{d.ctaBook}</Btn>
+          <Btn href="/kontakt">{d.ctaBook}</Btn>
         </div>
       </Section>
     </Layout>

@@ -1,9 +1,10 @@
 // Kontakt / Anfrage: vorausgefüllter Mailto + sichtbare, kopierbare Mail.
 // Erste Fassung (Stufe 1/6). Ich-Form.
-import { BRAND, EMAIL, INSTA_URL, INSTA_HANDLE, anfrageMailto } from '../brand';
+import { BRAND, EMAIL, INSTA_URL, INSTA_HANDLE } from '../brand';
 import { useLang } from '../lang';
-import { Layout, Section, Btn, PageHero } from '../Layout';
+import { Layout, Section, PageHero } from '../Layout';
 import { PriceNote } from '../components/PriceNote';
+import { ContactForm } from '../components/ContactForm';
 
 const C = {
   de: {
@@ -31,11 +32,11 @@ export default function KontaktPage() {
     <Layout>
       <PageHero eyebrow={c.eyebrow} title={c.title} sub={c.sub} />
       <Section style={{ paddingTop: 0 }}>
+        <ContactForm />
         <div style={{
-          maxWidth: 560, margin: '0 auto', textAlign: 'center',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20,
+          maxWidth: 560, margin: '22px auto 0', textAlign: 'center',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12,
         }}>
-          <Btn href={anfrageMailto(lang)}>{c.write}</Btn>
           <div style={{ fontSize: 15, color: BRAND.muted, fontWeight: 600 }}>
             {c.or} <a href={`mailto:${EMAIL}`} style={{ color: BRAND.pink, fontWeight: 800, textDecoration: 'none' }}>{EMAIL}</a>
           </div>

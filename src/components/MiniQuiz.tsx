@@ -2,7 +2,7 @@
 // Auflösung), ersetzt den frueheren toten "Quiz ausprobieren"-Link. Rein Client-
 // interaktiv (useState), SSR-sicher: prerendert die erste Frage statisch.
 import { useState } from 'react';
-import { BRAND, anfrageMailto } from '../brand';
+import { BRAND } from '../brand';
 import { useLang } from '../lang';
 import { Section, Btn } from '../Layout';
 
@@ -77,7 +77,7 @@ export function MiniQuiz() {
                   : 'And that was just a tiny taste. The real event has five question types, teams and plenty of surprises.'}
             </p>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginTop: 4 }}>
-              <Btn href={anfrageMailto(lang)}>{de ? 'Quiz anfragen' : 'Request a quiz'}</Btn>
+              <Btn href="/kontakt">{de ? 'Quiz anfragen' : 'Request a quiz'}</Btn>
               <button onClick={restart} style={ghostBtn}>{de ? 'Nochmal' : 'Again'}</button>
             </div>
           </div>

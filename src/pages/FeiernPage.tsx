@@ -1,6 +1,6 @@
 // Für private Feiern: CozyQuiz-Erober-Modus, entspannter Ton. Ideal für Runden
 // bis zu 30 Personen. Redaktion: Ich-Form, keine Gedankenstriche.
-import { BRAND, anfrageMailto } from '../brand';
+import { BRAND } from '../brand';
 import { useLang } from '../lang';
 import { Layout, Section, Btn, PageHero } from '../Layout';
 import { OrganizerFacts } from '../components/OrganizerFacts';
@@ -64,7 +64,7 @@ export default function FeiernPage() {
     <Layout>
       <PageHero eyebrow={c.eyebrow} title={c.title} sub={c.sub} />
       <Section style={{ paddingTop: 0, textAlign: 'center' }}>
-        <Btn href={anfrageMailto(lang)}>{c.cta}</Btn>
+        <Btn href="/kontakt">{c.cta}</Btn>
       </Section>
 
       <Section>
@@ -93,7 +93,7 @@ export default function FeiernPage() {
           ))}
         </div>
         <PriceNote />
-        <Btn href={anfrageMailto(lang)}>{c.cta}</Btn>
+        <Btn href="/kontakt">{c.cta}</Btn>
       </Section>
     </Layout>
   );
