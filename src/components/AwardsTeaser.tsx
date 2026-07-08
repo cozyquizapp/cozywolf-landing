@@ -21,7 +21,7 @@ export function AwardsTeaser() {
         @keyframes cwCrownFloat { 0%,100% { transform: translateX(-50%) translateY(0) rotate(-8deg); } 50% { transform: translateX(-50%) translateY(-6px) rotate(-8deg); } }
         @keyframes cwRise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
       `}</style>
-      <h2 style={secTitle}>{de ? 'Und am Ende wird gekrönt' : 'And in the end, a crowning'}</h2>
+      <h2 style={secTitle}>{de ? 'Und am Ende wird gekrönt' : 'And in the end, someone gets crowned'}</h2>
       <p style={{ margin: '0 auto clamp(24px, 3.5vh, 40px)', maxWidth: 620, textAlign: 'center', fontSize: 17, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>
         {de ? 'Die Sieger-Fraktion wird gefeiert, dazu gibt es kleine Auszeichnungen. Wer sie holt, entscheidet sich erst ganz am Ende.'
             : 'The winning faction is celebrated, with a few small awards. Who takes them is only decided at the very end.'}

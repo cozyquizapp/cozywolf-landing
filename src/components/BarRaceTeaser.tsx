@@ -25,7 +25,7 @@ export function BarRaceTeaser() {
       <p style={{ margin: '0 auto clamp(22px, 3vh, 34px)', maxWidth: 620, textAlign: 'center', fontSize: 17, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>
         {de
           ? 'Nach jeder Frage wächst der Balken eurer Fraktion. Wer vorne liegt, trägt die Krone, bis ihn jemand überholt. Bis zur letzten Frage bleibt es offen.'
-          : 'After each question your faction’s bar grows. Whoever leads wears the crown, until someone overtakes. It stays open until the last question.'}
+          : "After each question your faction's bar grows. Whoever leads wears the crown, until someone overtakes. It stays open until the last question."}
       </p>
 
       <div style={{
