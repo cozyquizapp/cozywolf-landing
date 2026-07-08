@@ -7,11 +7,11 @@ import { Section } from '../Layout';
 type Cat = { img: string; de: string; en: string; deB: string; enB: string };
 
 const CATS: Cat[] = [
-  { img: '/assets/cat-mucho.png',      de: 'Mu-Cho',     en: 'Mu-Cho',     deB: 'Wähle die richtige Antwort.',        enB: 'Pick the right answer.' },
-  { img: '/assets/cat-schaetzchen.png',de: 'Schätzchen', en: 'Close Call', deB: 'Wer schätzt am nächsten dran?',      enB: 'Who guesses closest?' },
-  { img: '/assets/cat-cheese.png',     de: 'Schau-mal',  en: 'Look-See',   deB: 'Was ist auf dem Bild?',              enB: 'What is in the picture?' },
-  { img: '/assets/cat-10v10.png',      de: '10 von 10',  en: '10 of 10',   deB: 'Verteilt eure Punkte klug.',         enB: 'Distribute your points wisely.' },
-  { img: '/assets/cat-buntetuete.png', de: 'Bunte Tüte', en: 'Mixed Bag',  deB: 'Immer eine Überraschung.',           enB: 'Always a surprise.' },
+  { img: '/assets/cat-mucho.webp',      de: 'Mu-Cho',     en: 'Mu-Cho',     deB: 'Wähle die richtige Antwort.',        enB: 'Pick the right answer.' },
+  { img: '/assets/cat-schaetzchen.webp',de: 'Schätzchen', en: 'Close Call', deB: 'Wer schätzt am nächsten dran?',      enB: 'Who guesses closest?' },
+  { img: '/assets/cat-cheese.webp',     de: 'Schau-mal',  en: 'Look-See',   deB: 'Was ist auf dem Bild?',              enB: 'What is in the picture?' },
+  { img: '/assets/cat-10v10.webp',      de: '10 von 10',  en: '10 of 10',   deB: 'Verteilt eure Punkte klug.',         enB: 'Distribute your points wisely.' },
+  { img: '/assets/cat-buntetuete.webp', de: 'Bunte Tüte', en: 'Mixed Bag',  deB: 'Immer eine Überraschung.',           enB: 'Always a surprise.' },
 ];
 
 export function CategoryStrip() {
@@ -30,7 +30,7 @@ export function CategoryStrip() {
             background: 'rgba(255,255,255,0.03)', border: `1px solid rgba(${BRAND.pinkRgb},0.16)`,
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, textAlign: 'center',
           }}>
-            <img src={c.img} alt="" aria-hidden width={72} height={72}
+            <img src={c.img} alt="" aria-hidden loading="lazy" decoding="async" width={72} height={72}
               style={{ objectFit: 'contain', filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.4))' }} />
             <div style={{ fontSize: 17, fontWeight: 900, color: BRAND.pink }}>{de ? c.de : c.en}</div>
             <div style={{ fontSize: 14, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.5 }}>{de ? c.deB : c.enB}</div>

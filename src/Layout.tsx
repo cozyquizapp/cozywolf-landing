@@ -68,7 +68,7 @@ function NavBar({ lang }: { lang: Lang }) {
           display: 'inline-flex', alignItems: 'center', gap: 10,
           textDecoration: 'none', marginRight: 'auto',
         }}>
-          <img src="/logo.png" alt="" width={34} height={34}
+          <img src="/logo.webp" alt="" width={34} height={34}
             style={{ objectFit: 'contain', filter: `drop-shadow(0 2px 8px rgba(${BRAND.pinkRgb},0.4))` }} />
           <span style={{
             fontFamily: FONT_DISPLAY, fontWeight: 800, fontSize: 22,

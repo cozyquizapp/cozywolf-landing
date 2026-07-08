@@ -51,7 +51,7 @@ export function FactionTeaser() {
                 position: 'absolute', inset: '8%', borderRadius: '50%',
                 background: `radial-gradient(circle, ${f.color}55, transparent 70%)`, filter: 'blur(4px)',
               }} />
-              <img src={`/assets/crest-${f.slug}.png`} alt="" width={86} height={86}
+              <img src={`/assets/crest-${f.slug}.webp`} alt="" loading="lazy" decoding="async" width={86} height={86}
                 style={{ position: 'relative', width: '100%', height: '100%', objectFit: 'contain', filter: `drop-shadow(0 4px 10px ${f.color}66)` }} />
             </div>
             <div style={{ fontSize: 18, fontWeight: 900, color: '#F1F5F9' }}>{de ? f.name : f.nameEn}</div>

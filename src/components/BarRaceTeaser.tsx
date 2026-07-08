@@ -45,7 +45,7 @@ export function BarRaceTeaser() {
                 boxShadow: `0 3px 10px ${r.color}66, inset 0 -3px 6px rgba(0,0,0,0.25)`,
                 border: '2px solid rgba(255,255,255,0.3)',
               }} aria-hidden>
-                <img src={`/assets/emblem-${r.slug}.png`} alt="" width={26} height={26} style={{ width: 26, height: 26, objectFit: 'contain' }} />
+                <img src={`/assets/emblem-${r.slug}.webp`} alt="" loading="lazy" decoding="async" width={26} height={26} style={{ width: 26, height: 26, objectFit: 'contain' }} />
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 5 }}>

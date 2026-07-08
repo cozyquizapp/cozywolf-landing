@@ -42,7 +42,7 @@ export function AwardsTeaser() {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             background: `radial-gradient(circle, ${WINNER.color}44, transparent 68%)`,
           }}>
-            <img src={`/assets/crest-${WINNER.slug}.png`} alt="" width={120} height={120}
+            <img src={`/assets/crest-${WINNER.slug}.webp`} alt="" loading="lazy" decoding="async" width={120} height={120}
               style={{ width: '100%', height: '100%', objectFit: 'contain', filter: `drop-shadow(0 0 24px ${WINNER.color}aa)` }} />
           </div>
         </div>
@@ -62,7 +62,7 @@ export function AwardsTeaser() {
             background: 'rgba(255,255,255,0.03)', border: `1px solid ${a.color}44`,
             animation: `cwRise 0.5s ease ${i * 0.1}s both`,
           }}>
-            <img src={`/assets/${a.award}.png`} alt="" width={40} height={40} aria-hidden
+            <img src={`/assets/${a.award}.webp`} alt="" loading="lazy" decoding="async" width={40} height={40} aria-hidden
               style={{ width: 40, height: 40, objectFit: 'contain', flexShrink: 0, filter: `drop-shadow(0 2px 6px ${a.color}66)` }} />
             <div style={{ minWidth: 0 }}>
               <div style={{ fontSize: 12, fontWeight: 800, opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.06em', color: BRAND.inkSoft }}>{de ? a.de : a.en}</div>
@@ -73,7 +73,7 @@ export function AwardsTeaser() {
                   background: `radial-gradient(circle at 34% 28%, ${a.color}, ${a.color}bb 65%)`,
                   border: '1.5px solid rgba(255,255,255,0.3)',
                 }}>
-                  <img src={`/assets/emblem-${a.slug}.png`} alt="" width={16} height={16} style={{ width: 16, height: 16, objectFit: 'contain' }} />
+                  <img src={`/assets/emblem-${a.slug}.webp`} alt="" loading="lazy" decoding="async" width={16} height={16} style={{ width: 16, height: 16, objectFit: 'contain' }} />
                 </span>
                 <span style={{ fontSize: 16, fontWeight: 900, color: a.color }}>{de ? a.name : a.nameEn}</span>
               </div>

@@ -37,7 +37,7 @@ export function MiniGrid() {
             background: `radial-gradient(circle at 34% 28%, ${col}dd, ${col}aa 72%)`,
             boxShadow: `0 2px 6px ${col}55`,
           }}>
-            <img src={`/assets/av-${team.av}.png`} alt="" width={26} height={26} style={{ width: '78%', height: '78%', objectFit: 'contain' }} />
+            <img src={`/assets/av-${team.av}.webp`} alt="" width={26} height={26} style={{ width: '78%', height: '78%', objectFit: 'contain' }} />
             {right && <span aria-hidden style={{ position: 'absolute', right: -GGAP, top: '50%', transform: 'translateY(-50%)', width: GGAP + 4, height: '44%', background: col, borderRadius: 2, zIndex: -1 }} />}
             {down && <span aria-hidden style={{ position: 'absolute', bottom: -GGAP, left: '50%', transform: 'translateX(-50%)', height: GGAP + 4, width: '44%', background: col, borderRadius: 2, zIndex: -1 }} />}
           </div>
@@ -64,7 +64,7 @@ export function MiniBars() {
             background: `radial-gradient(circle at 34% 28%, ${b.color}, ${b.color}bb 65%)`,
             border: '1.5px solid rgba(255,255,255,0.3)',
           }}>
-            <img src={`/assets/emblem-${b.slug}.png`} alt="" width={16} height={16} style={{ width: 16, height: 16, objectFit: 'contain' }} />
+            <img src={`/assets/emblem-${b.slug}.webp`} alt="" width={16} height={16} style={{ width: 16, height: 16, objectFit: 'contain' }} />
           </span>
           <div style={{ flex: 1, height: 10, borderRadius: 999, background: 'rgba(255,255,255,0.07)', overflow: 'hidden' }}>
             <div style={{ height: '100%', width: `${b.pct}%`, borderRadius: 999, background: `linear-gradient(90deg, ${b.color}, ${b.color}cc)`, boxShadow: `0 0 8px ${b.color}66` }} />

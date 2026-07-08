@@ -8,10 +8,10 @@ import { Section } from '../Layout';
 
 type Team = { color: string; avatar: string; de: string; en: string };
 const TEAMS: Team[] = [
-  { color: '#EC4899', avatar: '/assets/av-fuchs.png', de: 'Google sei Dank', en: 'Google Says Yes' },
-  { color: '#3B82F6', avatar: '/assets/av-eule.png',  de: 'Eulen-Spiegel',   en: 'Owl-Knowing' },
-  { color: '#22C55E', avatar: '/assets/av-baer.png',  de: 'Wissens-Wölfe',   en: 'The Wolf Pack' },
-  { color: '#FACC15', avatar: '/assets/av-katze.png', de: 'Käse-Kenner',     en: 'Cheese Wizards' },
+  { color: '#EC4899', avatar: '/assets/av-fuchs.webp', de: 'Google sei Dank', en: 'Google Says Yes' },
+  { color: '#3B82F6', avatar: '/assets/av-eule.webp',  de: 'Eulen-Spiegel',   en: 'Owl-Knowing' },
+  { color: '#22C55E', avatar: '/assets/av-baer.webp',  de: 'Wissens-Wölfe',   en: 'The Wolf Pack' },
+  { color: '#FACC15', avatar: '/assets/av-katze.webp', de: 'Käse-Kenner',     en: 'Cheese Wizards' },
 ];
 
 // null = freies Feld
@@ -86,7 +86,7 @@ export function GridMock() {
               {/* Gap-Fueller: volle Kantenlaenge -> nahtloser Block statt duenner Brueckenbalken */}
               {nRight && <span aria-hidden style={{ position: 'absolute', right: -GAP - 1, top: 0, bottom: 0, width: GAP + 2, background: team.color, zIndex: 0 }} />}
               {nBottom && <span aria-hidden style={{ position: 'absolute', bottom: -GAP - 1, left: 0, right: 0, height: GAP + 2, background: team.color, zIndex: 0 }} />}
-              <img src={team.avatar} alt="" aria-hidden style={{
+              <img src={team.avatar} alt="" aria-hidden loading="lazy" decoding="async" style={{
                 position: 'relative', zIndex: 1, width: '78%', height: '78%', objectFit: 'contain',
                 filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.4))',
               }} />
@@ -98,7 +98,7 @@ export function GridMock() {
       <div style={{ display: 'flex', gap: 'clamp(14px, 2.5vw, 26px)', flexWrap: 'wrap', justifyContent: 'center', marginTop: 22 }}>
         {TEAMS.map((team, i) => (
           <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 9, fontSize: 15, fontWeight: 800, color: team.color }}>
-            <img src={team.avatar} alt="" aria-hidden width={26} height={26} style={{ objectFit: 'contain' }} />
+            <img src={team.avatar} alt="" aria-hidden loading="lazy" decoding="async" width={26} height={26} style={{ objectFit: 'contain' }} />
             {de ? team.de : team.en}
           </span>
         ))}

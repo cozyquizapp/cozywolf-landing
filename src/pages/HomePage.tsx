@@ -110,7 +110,7 @@ export default function HomePage() {
   return (
     <Layout>
       <PageHero eyebrow={c.eyebrow} title={c.title} sub={c.sub}
-        visual={<img src="/logo.png" alt="" width={148} height={148} style={{ width: '100%', height: 'auto', filter: `drop-shadow(0 8px 24px rgba(${BRAND.pinkRgb},0.45))` }} />}
+        visual={<img src="/logo.webp" alt="" width={148} height={148} fetchPriority="high" style={{ width: '100%', height: 'auto', filter: `drop-shadow(0 8px 24px rgba(${BRAND.pinkRgb},0.45))` }} />}
       />
       <Section style={{ paddingTop: 0, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
         <Btn href={anfrageMailto(lang)}>{d.ctaBook}</Btn>
