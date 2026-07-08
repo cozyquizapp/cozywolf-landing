@@ -41,8 +41,15 @@ const C = {
     audMore: 'Mehr erfahren',
     hostT: 'Wer moderiert?',
     hostB: 'Ich bin Johannes und sorge dafür, dass euer Quizabend rund läuft. Von Aufbau über Technik bis zur Moderation übernehme ich alles, ihr könnt euch entspannt zurücklehnen und den Abend genießen. Mein Ziel: ein Quiz, bei dem jede Gruppe mitfiebert, gemeinsam lacht und gerne bis zur letzten Frage dabei bleibt.',
-    hostChips: ['Persönliche Moderation vor Ort', 'Für Gruppen von 10 bis 100 Personen', 'Individuell auf euer Event abgestimmt'],
-    hostCta: 'Über mich',
+    hostChips: [
+      'Persönliche Moderation vor Ort',
+      'Für Gruppen von 10 bis 100 Personen',
+      'Individuell auf eure Gruppe abgestimmt',
+      'Fragen und Ablauf passend zu eurem Event',
+      'Flexibel für Firmenfeiern, Vereine und private Events',
+    ],
+    hostRole: 'Gründer & Quizmaster',
+    hostCta: 'Lern mich kennen',
     ctaTitle: 'Lust auf ein Quiz?',
     ctaBody: 'Schreib mir kurz zum Anlass und zur ungefähren Personenzahl, dann melde ich mich mit einem Vorschlag.',
     ctaTry: 'Quiz ausprobieren',
@@ -74,8 +81,15 @@ const C = {
     audMore: 'Learn more',
     hostT: 'Who hosts?',
     hostB: 'I am Johannes, and I make sure your quiz night runs smoothly. From setup and tech to hosting, I take care of everything, so you can sit back and enjoy the evening. My goal: a quiz where every group cheers along, laughs together and happily stays in until the very last question.',
-    hostChips: ['Personal hosting, on site', 'For groups of 10 to 100', 'Tailored to your event'],
-    hostCta: 'About me',
+    hostChips: [
+      'Personal hosting, on site',
+      'For groups of 10 to 100',
+      'Tailored to your group',
+      'Questions and flow to match your event',
+      'Flexible for company parties, clubs and private events',
+    ],
+    hostRole: 'Founder & quizmaster',
+    hostCta: 'Get to know me',
     ctaTitle: 'Up for a quiz?',
     ctaBody: 'Drop me a line about the occasion and rough number of people, and I will come back with a suggestion.',
     ctaTry: 'Try the quiz',
@@ -167,10 +181,16 @@ export default function HomePage() {
           padding: 'clamp(24px, 3vw, 40px)', borderRadius: 24,
           background: 'rgba(255,255,255,0.03)', border: `1px solid rgba(${BRAND.pinkRgb},0.18)`,
         }}>
-          <img src="/assets/johannes.jpg" alt="Johannes" style={{
-            width: 132, height: 132, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center 22%', flexShrink: 0,
-            border: `3px solid rgba(${BRAND.pinkRgb},0.5)`,
-          }} />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, flexShrink: 0 }}>
+            <img src="/assets/johannes.jpg" alt="Johannes" style={{
+              width: 156, height: 156, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center 22%',
+              border: `3px solid rgba(${BRAND.pinkRgb},0.5)`,
+            }} />
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: 17, fontWeight: 900, color: '#F1F5F9' }}>Johannes</div>
+              <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.04em', color: BRAND.pinkSoft }}>{c.hostRole}</div>
+            </div>
+          </div>
           <div style={{ flex: 1, minWidth: 240 }}>
             <h2 style={{ margin: '0 0 10px', fontSize: 'clamp(24px, 3vw, 34px)', fontWeight: 900, color: '#F1F5F9' }}>{c.hostT}</h2>
             <p style={{ margin: '0 0 16px', fontSize: 16, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{c.hostB}</p>
