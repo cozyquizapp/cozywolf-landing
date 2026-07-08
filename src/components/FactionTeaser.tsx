@@ -28,7 +28,7 @@ export function FactionTeaser() {
         .cw-faction { transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), border-color 0.25s ease, box-shadow 0.25s ease; }
         .cw-faction-crest { transition: transform 0.28s cubic-bezier(0.22,1,0.36,1), filter 0.28s ease; }
         .cw-faction-motto { transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22,1,0.36,1); }
-        @media (hover: hover) {
+        @media (hover: hover) and (pointer: fine) {
           .cw-faction-motto { opacity: 0; transform: translateY(6px); }
           .cw-faction:hover { transform: translateY(-6px); box-shadow: 0 16px 34px rgba(0,0,0,0.36); }
           .cw-faction:hover .cw-faction-crest { transform: scale(1.1) translateY(-2px); }

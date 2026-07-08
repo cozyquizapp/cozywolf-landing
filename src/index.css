@@ -46,6 +46,25 @@ body {
 }
 .cw-btn:active { transform: translateY(0) scale(0.97); transition-duration: 0.08s; }
 
+/* Lebendige Produkt-Minis (Home-Modus-Karten): Grid fuellt sich Feld fuer Feld,
+   Balken rennen + ueberholen, sanfte Endlos-Schleife. Basiszustand (ohne
+   Animation) = fertig sichtbar, damit Reduced-Motion + Crawler alles sehen. */
+@keyframes cwGridClaim {
+  0% { transform: scale(0.2); opacity: 0; }
+  6% { transform: scale(1.12); opacity: 1; }
+  11% { transform: scale(1); }
+  82% { opacity: 1; transform: scale(1); }
+  93% { opacity: 0.1; transform: scale(0.8); }
+  100% { opacity: 0; transform: scale(0.2); }
+}
+@keyframes cwBarRace { 0% { width: 0; } 26% { width: var(--w); } 84% { width: var(--w); } 100% { width: 0; } }
+@keyframes cwCrownBob { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-3px) rotate(-6deg); } }
+@media (prefers-reduced-motion: no-preference) {
+  .cw-mg-cell { animation: cwGridClaim 5s ease-in-out infinite; animation-delay: var(--d, 0s); }
+  .cw-mb-fill { animation: cwBarRace 4.5s cubic-bezier(0.4, 0, 0.2, 1) infinite; animation-delay: var(--d, 0s); }
+  .cw-mb-crown { animation: cwCrownBob 2.4s ease-in-out infinite; }
+}
+
 /* Reduced Motion: auto-startende Animationen (z.B. schwebende Krone) aus (WCAG 2.3.3/2.2.2) */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

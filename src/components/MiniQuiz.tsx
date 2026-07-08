@@ -36,13 +36,19 @@ export function MiniQuiz() {
   const [correctCount, setCorrectCount] = useState(0);
   const [done, setDone] = useState(false);
 
+  const [confetti, setConfetti] = useState<Piece[] | null>(null);
+
   const q = quiz[idx];
   const isLast = idx === quiz.length - 1;
 
   const pick = (i: number) => {
     if (picked != null) return;
     setPicked(i);
-    if (i === q.correct) setCorrectCount(c => c + 1);
+    if (i === q.correct) {
+      setCorrectCount(c => c + 1);
+      setConfetti(makeConfetti());
+      window.setTimeout(() => setConfetti(null), 1200);
+    }
   };
   const next = () => {
     if (isLast) { setDone(true); return; }
@@ -53,7 +59,10 @@ export function MiniQuiz() {
 
   return (
     <Section>
-      <style>{`@keyframes cwNoteIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }`}</style>
+      <style>{`
+        @keyframes cwNoteIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        @keyframes cwConfetti { 0% { transform: translate(0,0) rotate(0); opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) rotate(var(--r)); opacity: 0; } }
+      `}</style>
       <h2 style={secTitle}>{de ? 'Probier eine Runde' : 'Try a round'}</h2>
       <p style={{ margin: '0 auto clamp(20px, 3vh, 30px)', maxWidth: 560, textAlign: 'center', fontSize: 16, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>
         {de ? 'Drei kleine Fragen als Vorgeschmack. Beim echten Quiz-Event spielt ihr am Handy gegeneinander.'
@@ -90,7 +99,8 @@ export function MiniQuiz() {
             </div>
             <div style={{ fontSize: 'clamp(20px, 2.6vw, 26px)', fontWeight: 900, color: '#F1F5F9', lineHeight: 1.3, marginBottom: 18 }}>{q.q}</div>
 
-            <div style={{ display: 'grid', gap: 10 }}>
+            <div style={{ display: 'grid', gap: 10, position: 'relative' }}>
+              {confetti && <ConfettiLayer pieces={confetti} />}
               {q.options.map((opt, i) => {
                 const revealed = picked != null;
                 const isCorrect = i === q.correct;
@@ -131,6 +141,33 @@ export function MiniQuiz() {
         )}
       </div>
     </Section>
+  );
+}
+
+type Piece = { left: number; dx: number; dy: number; r: number; delay: number; color: string };
+const CONFETTI_COLORS = ['#FA4BA3', '#AB0055', '#22C55E', '#FACC15', '#3B82F6', '#F97316'];
+function makeConfetti(): Piece[] {
+  return Array.from({ length: 16 }, (_, i) => ({
+    left: 30 + Math.random() * 40,
+    dx: (Math.random() - 0.5) * 240,
+    dy: 60 + Math.random() * 160,
+    r: (Math.random() - 0.5) * 540,
+    delay: Math.random() * 80,
+    color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+  }));
+}
+function ConfettiLayer({ pieces }: { pieces: Piece[] }) {
+  return (
+    <div aria-hidden style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'visible', zIndex: 5 }}>
+      {pieces.map((p, i) => (
+        <span key={i} style={{
+          position: 'absolute', top: 0, left: `${p.left}%`, width: 8, height: 8,
+          background: p.color, borderRadius: i % 2 ? '50%' : '2px',
+          ['--dx' as string]: `${p.dx}px`, ['--dy' as string]: `${p.dy}px`, ['--r' as string]: `${p.r}deg`,
+          animation: `cwConfetti 1s cubic-bezier(0.2,0.7,0.3,1) ${p.delay}ms forwards`,
+        }} />
+      ))}
+    </div>
   );
 }
 

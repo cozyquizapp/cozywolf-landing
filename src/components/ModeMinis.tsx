@@ -31,11 +31,12 @@ export function MiniGrid() {
         const right = c + 1 < GCOLS && GP[r][c + 1] === o;
         const down = r + 1 < GROWS && GP[r + 1][c] === o;
         return (
-          <div key={idx} style={{
+          <div key={idx} className="cw-mg-cell" style={{
             position: 'relative', aspectRatio: '1/1', borderRadius: 7,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             background: `radial-gradient(circle at 34% 28%, ${col}dd, ${col}aa 72%)`,
             boxShadow: `0 2px 6px ${col}55`,
+            ['--d' as string]: `${(r + c) * 0.13}s`,
           }}>
             <img src={`/assets/av-${team.av}.webp`} alt="" width={26} height={26} style={{ width: '78%', height: '78%', objectFit: 'contain' }} />
             {right && <span aria-hidden style={{ position: 'absolute', right: -GGAP, top: '50%', transform: 'translateY(-50%)', width: GGAP + 4, height: '44%', background: col, borderRadius: 2, zIndex: -1 }} />}
@@ -67,9 +68,13 @@ export function MiniBars() {
             <img src={`/assets/emblem-${b.slug}.webp`} alt="" width={16} height={16} style={{ width: 16, height: 16, objectFit: 'contain' }} />
           </span>
           <div style={{ flex: 1, height: 10, borderRadius: 999, background: 'rgba(255,255,255,0.07)', overflow: 'hidden' }}>
-            <div style={{ height: '100%', width: `${b.pct}%`, borderRadius: 999, background: `linear-gradient(90deg, ${b.color}, ${b.color}cc)`, boxShadow: `0 0 8px ${b.color}66` }} />
+            <div className="cw-mb-fill" style={{
+              height: '100%', width: `${b.pct}%`, borderRadius: 999,
+              background: `linear-gradient(90deg, ${b.color}, ${b.color}cc)`, boxShadow: `0 0 8px ${b.color}66`,
+              ['--w' as string]: `${b.pct}%`, ['--d' as string]: `${(BARS.length - 1 - i) * 0.28}s`,
+            }} />
           </div>
-          {b.crown && <span aria-hidden style={{ fontSize: 14 }}>👑</span>}
+          {b.crown && <span aria-hidden className="cw-mb-crown" style={{ fontSize: 14, display: 'inline-block' }}>👑</span>}
         </div>
       ))}
     </div>
