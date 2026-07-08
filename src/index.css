@@ -76,6 +76,15 @@ body {
   .cw-mb-crown { animation: cwCrownBob 2.4s ease-in-out infinite; }
 }
 
+/* Modus-Embleme (Home): Wappen schweben ueber der Arena (Bob, versetzt),
+   Avatar landet in seiner Grid-Kachel (Pop). Basis = fertig sichtbar. */
+@keyframes cwEmblemBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes cwTileLand { 0% { transform: scale(0.3); } 55% { transform: scale(1.12); } 72% { transform: scale(1); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: no-preference) {
+  .cw-emblem-float { animation: cwEmblemBob 3s ease-in-out infinite; animation-delay: var(--fd, 0s); }
+  .cw-emblem-tile { animation: cwTileLand 4.5s ease-in-out infinite; }
+}
+
 /* Sticky-Mobile-CTA: gleitet unten hoch, nur auf schmalen Screens */
 .cw-sticky-cta {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;

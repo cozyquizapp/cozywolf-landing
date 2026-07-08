@@ -9,6 +9,7 @@ import { OrganizerFacts } from '../components/OrganizerFacts';
 import { CategoryStrip } from '../components/CategoryStrip';
 import { MiniQuiz } from '../components/MiniQuiz';
 import { MiniGrid, MiniBars } from '../components/ModeMinis';
+import { GridEmblem, ArenaEmblem } from '../components/ModeEmblems';
 import { FaqSection } from '../components/FaqSection';
 import { PriceNote } from '../components/PriceNote';
 import { StatsBand } from '../components/StatsBand';
@@ -138,8 +139,8 @@ export default function HomePage() {
       <Section>
         <SecTitle>{c.modesTitle}</SecTitle>
         <div style={twoCol}>
-          <ModeCard title={c.mode1T} body={c.mode1B} accent={BRAND.pink} visual={<MiniGrid />} />
-          <ModeCard title={c.mode2T} body={c.mode2B} accent={BRAND.magenta} visual={<MiniBars />} />
+          <ModeCard title={c.mode1T} body={c.mode1B} accent={BRAND.pink} emblem={<GridEmblem />} visual={<MiniGrid />} />
+          <ModeCard title={c.mode2T} body={c.mode2B} accent={BRAND.magenta} emblem={<ArenaEmblem />} visual={<MiniBars />} />
         </div>
       </Section>
 
@@ -235,13 +236,14 @@ function SecTitle({ children }: { children: React.ReactNode }) {
   }}>{children}</h2>;
 }
 
-function ModeCard({ title, body, accent, visual }: { title: string; body: string; accent: string; visual?: React.ReactNode }) {
+function ModeCard({ title, body, accent, visual, emblem }: { title: string; body: string; accent: string; visual?: React.ReactNode; emblem?: React.ReactNode }) {
   return (
     <div style={{
       padding: 'clamp(22px, 2.6vw, 32px)', borderRadius: 20,
       background: 'rgba(255,255,255,0.03)', border: `1px solid ${accent}44`,
       display: 'flex', flexDirection: 'column', gap: 12,
     }}>
+      {emblem && <div style={{ marginBottom: 2 }}>{emblem}</div>}
       <div style={{ fontSize: 22, fontWeight: 900, color: accent === BRAND.magenta ? BRAND.pinkSoft : accent }}>{title}</div>
       <div style={{ fontSize: 16, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6, flex: 1 }}>{body}</div>
       {visual && <div style={{ marginTop: 4 }}>{visual}</div>}
