@@ -13,7 +13,7 @@ export function FaqSection() {
   const items: QA[] = de
     ? [
         { q: 'Brauche ich eigene Technik?', a: 'Nein. Ich bringe Beamer und Sound selbst mit. Du brauchst nur eine freie Wand oder einen Bildschirm, Strom und WLAN für deine Gäste.' },
-        { q: 'Müssen meine Gäste etwas installieren?', a: 'Nichts. Alle scannen einen QR-Code und spielen direkt im Browser am eigenen Handy. Keine App, kein Login.' },
+        { q: 'Müssen meine Gäste etwas installieren?', a: 'Nichts. Alle scannen einen QR-Code und spielen direkt im Browser am Handy. Keine App, kein Login.' },
         { q: 'Für wie viele Personen funktioniert das?', a: 'Von der kleinen Runde bis zu 100 Personen. Kleine Gruppen erobern das Spielfeld, große Gruppen treten als Fraktionen an. Das Format passt sich an.' },
         { q: 'Wie lange dauert ein Quiz-Event?', a: 'Meist 90 bis 120 Minuten mit mehreren Runden. Die genaue Länge stimme ich vorher mit dir auf deinen Anlass ab.' },
         { q: 'Wie weit fährst du?', a: 'Ich bin in Hamburg und im Umland unterwegs. Für weiter entfernte Anfragen melde dich einfach kurz, meist lässt sich etwas einrichten.' },
@@ -21,7 +21,7 @@ export function FaqSection() {
       ]
     : [
         { q: 'Do I need my own tech?', a: 'No. I bring the projector and sound myself. You only need a free wall or a screen, power, and WiFi for your guests.' },
-        { q: 'Do my guests have to install anything?', a: 'Nothing. Everyone scans a QR code and plays right in the browser on their own phone. No app, no login.' },
+        { q: 'Do my guests have to install anything?', a: 'Nothing. Everyone scans a QR code and plays right in the browser on a phone. No app, no login.' },
         { q: 'How many people does it work for?', a: 'From a small round up to 100 people. Small groups conquer the board, large groups play as factions. The format adapts.' },
         { q: 'How long does a quiz event take?', a: 'Usually 90 to 120 minutes across several rounds. I agree the exact length with you beforehand to fit your occasion.' },
         { q: 'How far do you travel?', a: 'I am based in and around Hamburg. For requests further out, just get in touch and we will find a way.' },

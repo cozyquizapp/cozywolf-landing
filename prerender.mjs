@@ -12,7 +12,7 @@ const OG_IMG = `${BASE}/assets/og-cover.png`;
 // Route -> Titel + Beschreibung (Deutsch = Prerender-Default). Titel keyword-nah
 // (Hamburg + Suchbegriffe) fuer die Haupt-Zielgruppen-Seiten.
 const META = {
-  '/':            { t: 'CozyWolf, Live-Quiz-Events in Hamburg', d: 'Moderierte Live-Quiz-Events für Firmen, private Feiern und Locations. Alle spielen am eigenen Handy, ich bringe alles mit und moderiere selbst.' },
+  '/':            { t: 'CozyWolf, Live-Quiz-Events in Hamburg', d: 'Moderierte Live-Quiz-Events für Firmen, private Feiern und Locations. Alle spielen am Handy, ich bringe alles mit und moderiere selbst.' },
   '/firmen':      { t: 'Teamevent-Quiz für Firmen in Hamburg | CozyWolf', d: 'Ein Team-Event, bei dem eure Abteilungen als Fraktionen gegeneinander antreten. Faire Wertung, bis etwa 100 Personen, in Hamburg und Umland.' },
   '/feiern':      { t: 'Quiz für Geburtstag & private Feiern | CozyWolf Hamburg', d: 'Ein gemütlicher Quiz-Abend für Geburtstag und Freundeskreis. Kleine Teams erobern das Spielfeld, ich moderiere den ganzen Abend.' },
   '/locations':   { t: 'Kneipenquiz für Bars & Pubs in Hamburg | CozyWolf', d: 'Ein wiederkehrender Quiz-Abend für Café, Bar oder Pub, der Gäste an ruhigen Tagen bringt und zum Wiederkommen bewegt.' },
@@ -43,7 +43,7 @@ const ORG_LD = {
 // dort hier mitpflegen (Rich-Result "Haeufige Fragen").
 const FAQ = [
   ['Brauche ich eigene Technik?', 'Nein. Ich bringe Beamer und Sound selbst mit. Du brauchst nur eine freie Wand oder einen Bildschirm, Strom und WLAN für deine Gäste.'],
-  ['Müssen meine Gäste etwas installieren?', 'Nichts. Alle scannen einen QR-Code und spielen direkt im Browser am eigenen Handy. Keine App, kein Login.'],
+  ['Müssen meine Gäste etwas installieren?', 'Nichts. Alle scannen einen QR-Code und spielen direkt im Browser am Handy. Keine App, kein Login.'],
   ['Für wie viele Personen funktioniert das?', 'Von der kleinen Runde bis zu 100 Personen. Kleine Gruppen erobern das Spielfeld, große Gruppen treten als Fraktionen an. Das Format passt sich an.'],
   ['Wie lange dauert ein Quiz-Event?', 'Meist 90 bis 120 Minuten mit mehreren Runden. Die genaue Länge stimme ich vorher mit dir auf deinen Anlass ab.'],
   ['Wie weit fährst du?', 'Ich bin in Hamburg und im Umland unterwegs. Für weiter entfernte Anfragen melde dich einfach kurz, meist lässt sich etwas einrichten.'],
