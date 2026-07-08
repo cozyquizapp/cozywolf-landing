@@ -27,6 +27,7 @@ const C = {
     why: [
       'Kein PowerPoint-Quiz, sondern ein eigenes Spielkonzept',
       'Live moderiert, kein Automat',
+      'Handverlesene Fragen mit Aha-Effekt',
       'Strategie statt reinem Abfragen',
       'Jede Runde verändert das Spielfeld',
       'Spannung bis zur letzten Frage',
@@ -67,6 +68,7 @@ const C = {
     why: [
       'No PowerPoint quiz, a game concept of its own',
       'Live hosted, not automated',
+      'Hand-picked questions with an aha moment',
       'Strategy, not just recall',
       'Every round reshapes the board',
       'Tension until the very last question',
