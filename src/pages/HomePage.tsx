@@ -32,7 +32,7 @@ const C = {
     audLocationsB: 'Ein wiederkehrender Quiz-Abend, der Gäste anzieht und wiederkommen lässt.',
     audMore: 'Mehr erfahren',
     hostT: 'Wer moderiert?',
-    hostB: 'Ich bin Johannes, Pädagoge und Moderator. Ich baue Quizze, bei denen jede Runde mitkommt und jeder mal glänzt.',
+    hostB: 'Ich bin Johannes, Pädagoge und Moderator. Ich baue Quizze, bei denen jede Gruppe mitkommt und jeder mal glänzt.',
     hostCta: 'Über mich',
     ctaTitle: 'Lust auf ein Quiz?',
     ctaBody: 'Schreib mir kurz zum Anlass und zur ungefähren Personenzahl, dann melde ich mich mit einem Vorschlag.',
