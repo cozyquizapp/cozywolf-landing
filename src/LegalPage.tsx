@@ -4,13 +4,12 @@
  * Standalone-Component (kein react-router-dom — wir nutzen pathname-basierte
  * Logik im App.tsx). Brand-themed, Mobile-First.
  *
- * Stand 2026-05-10: Placeholder-Modus aktiv — Klar-Name + Anschrift werden
- * mit Gewerbe-Anmeldung ergänzt. Banner oben kommuniziert das transparent.
+ * Stand 2026-07-08: echte Anbieterkennzeichnung (aus wonky guess uebernommen).
  */
 
-const PLACEHOLDER_MODE = true;
-const NAME_PLACEHOLDER = '{Vor- und Nachname folgt mit Gewerbe-Anmeldung}';
-const ADDRESS_PLACEHOLDER = '{Straße Hausnummer\nPLZ Stadt, folgt mit Gewerbe-Anmeldung}';
+const PLACEHOLDER_MODE = false;
+const NAME_PLACEHOLDER = 'Johannes Wolf';
+const ADDRESS_PLACEHOLDER = 'Mählstr. 9b\n22523 Hamburg';
 const EMAIL = 'hallo@cozywolf.de';
 
 const BRAND = {
