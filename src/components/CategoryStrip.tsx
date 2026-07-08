@@ -3,6 +3,7 @@
 import { BRAND } from '../brand';
 import { useLang } from '../lang';
 import { Section } from '../Layout';
+import { Reveal } from './Reveal';
 
 type Cat = { img: string; de: string; en: string; deB: string; enB: string };
 
@@ -23,20 +24,20 @@ export function CategoryStrip() {
         {de ? 'Quer durch die Themen und Spielarten. Keine Runde fühlt sich gleich an, und jeder findet seine Kategorie.'
             : 'Across all topics and styles. No round feels the same, and everyone finds their category.'}
       </p>
-      <div style={{ display: 'grid', gap: 14, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))' }}>
+      <Reveal stagger style={{ display: 'grid', gap: 14, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))' }}>
         {CATS.map(c => (
-          <div key={c.de} style={{
+          <div key={c.de} className="cw-card" style={{
             padding: 'clamp(16px, 2vw, 22px)', borderRadius: 18,
             background: 'rgba(255,255,255,0.03)', border: `1px solid rgba(${BRAND.pinkRgb},0.16)`,
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, textAlign: 'center',
           }}>
-            <img src={c.img} alt="" aria-hidden loading="lazy" decoding="async" width={72} height={72}
+            <img className="cw-card__icon" src={c.img} alt="" aria-hidden loading="lazy" decoding="async" width={72} height={72}
               style={{ objectFit: 'contain', filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.4))' }} />
             <div style={{ fontSize: 17, fontWeight: 900, color: BRAND.pink }}>{de ? c.de : c.en}</div>
             <div style={{ fontSize: 14, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.5 }}>{de ? c.deB : c.enB}</div>
           </div>
         ))}
-      </div>
+      </Reveal>
     </Section>
   );
 }

@@ -8,6 +8,7 @@ import { SplitRow } from '../components/SplitRow';
 import { MiniGrid, MiniBars } from '../components/ModeMinis';
 import { OrganizerFacts } from '../components/OrganizerFacts';
 import { Icon } from '../components/Icon';
+import { Reveal } from '../components/Reveal';
 
 const C = {
   de: {
@@ -87,9 +88,9 @@ export default function LocationsPage() {
       <PageHero eyebrow={c.eyebrow} title={c.title} sub={c.sub} />
 
       <Section style={{ paddingTop: 0 }}>
-        <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))' }}>
+        <Reveal stagger style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))' }}>
           {values.map((v, i) => (
-            <div key={i} style={{
+            <div key={i} className="cw-card" style={{
               padding: 'clamp(20px, 2.4vw, 28px)', borderRadius: 20,
               background: 'rgba(255,255,255,0.03)', border: `1px solid rgba(${BRAND.pinkRgb},0.18)`,
               display: 'flex', flexDirection: 'column', gap: 8,
@@ -98,7 +99,7 @@ export default function LocationsPage() {
               <div style={{ fontSize: 15, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{v.b}</div>
             </div>
           ))}
-        </div>
+        </Reveal>
       </Section>
 
       {/* Zwei Modi als Split-Layout — Location waehlt je nach Groesse/Stil */}

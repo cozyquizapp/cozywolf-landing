@@ -7,12 +7,15 @@ import { OrganizerFacts } from '../components/OrganizerFacts';
 import { GridMock } from '../components/GridMock';
 import { PriceNote } from '../components/PriceNote';
 import { FlowTimeline } from '../components/FlowTimeline';
+import { Reveal } from '../components/Reveal';
 
 const C = {
   de: {
     eyebrow: 'Für private Feiern',
     title: 'Ein gemütlicher Quiz-Abend für deine Feier.',
     sub: 'Geburtstag, Freundeskreis oder einfach ein netter Abend. Ihr spielt in kleinen Teams und erobert Runde für Runde das Spielfeld. Ideal für Runden bis zu 30 Personen.',
+    celebT: 'Feiern und mitraten, ganz entspannt.',
+    celebB: 'Alle spielen am eigenen Handy mit, keiner sitzt daneben. Ihr lacht, ihr rätselt, und am Ende wird der Sieger gefeiert.',
     pointsTitle: 'Warum das Spaß macht',
     p1T: 'Für jede Runde etwas',
     p1B: 'Fünf verschiedene Fragetypen, quer durch die Themen. Es gibt immer eine Kategorie, in der du glänzt.',
@@ -35,6 +38,8 @@ const C = {
     eyebrow: 'For private parties',
     title: 'A cozy quiz night for your celebration.',
     sub: 'Birthday, friends, or just a nice evening. You play in small teams and conquer the board round by round. Ideal for rounds up to 30 people.',
+    celebT: 'Celebrate and play, all relaxed.',
+    celebB: 'Everyone joins on their own phone, nobody sits out. You laugh, you puzzle, and in the end you celebrate the winner.',
     pointsTitle: 'Why it is fun',
     p1T: 'Something for every round',
     p1B: 'Five different question types across all topics. There is always a category where you shine.',
@@ -65,6 +70,24 @@ export default function FeiernPage() {
       <PageHero eyebrow={c.eyebrow} title={c.title} sub={c.sub} />
       <Section style={{ paddingTop: 0, textAlign: 'center' }}>
         <Btn href="/kontakt">{c.cta}</Btn>
+      </Section>
+
+      {/* Warme Signature-Band mit Party-Wolf: emotionaler Anker der Feiern-Seite */}
+      <Section>
+        <Reveal style={{
+          display: 'flex', alignItems: 'center', gap: 'clamp(18px, 4vw, 40px)', flexWrap: 'wrap',
+          justifyContent: 'center', textAlign: 'left',
+          maxWidth: 900, margin: '0 auto', padding: 'clamp(22px, 3.5vw, 40px)', borderRadius: 26,
+          background: `radial-gradient(ellipse at 20% 20%, rgba(${BRAND.pinkRgb},0.16), transparent 60%), rgba(255,255,255,0.03)`,
+          border: `1.5px solid rgba(${BRAND.pinkRgb},0.28)`,
+        }}>
+          <img className="cw-mb-crown" src="/assets/wolf-party.webp" alt="" aria-hidden width={168} height={168}
+            style={{ width: 'clamp(120px, 22vw, 168px)', height: 'auto', flexShrink: 0, filter: `drop-shadow(0 10px 26px rgba(${BRAND.pinkRgb},0.4))` }} />
+          <div style={{ flex: 1, minWidth: 240 }}>
+            <h2 style={{ margin: 0, fontSize: 'clamp(22px, 3vw, 32px)', fontWeight: 900, color: '#F1F5F9', letterSpacing: '-0.01em', textWrap: 'balance' }}>{c.celebT}</h2>
+            <p style={{ margin: '12px 0 0', fontSize: 16, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{c.celebB}</p>
+          </div>
+        </Reveal>
       </Section>
 
       <Section>
@@ -101,9 +124,9 @@ export default function FeiernPage() {
 
 function CardGrid({ items }: { items: { t: string; b: string }[] }) {
   return (
-    <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))' }}>
+    <Reveal stagger style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))' }}>
       {items.map((v, i) => (
-        <div key={i} style={{
+        <div key={i} className="cw-card" style={{
           padding: 'clamp(20px, 2.4vw, 28px)', borderRadius: 20,
           background: 'rgba(255,255,255,0.03)', border: `1px solid rgba(${BRAND.pinkRgb},0.18)`,
           display: 'flex', flexDirection: 'column', gap: 8,
@@ -112,7 +135,7 @@ function CardGrid({ items }: { items: { t: string; b: string }[] }) {
           <div style={{ fontSize: 15, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{v.b}</div>
         </div>
       ))}
-    </div>
+    </Reveal>
   );
 }
 

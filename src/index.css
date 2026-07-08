@@ -96,6 +96,32 @@ body {
   .cw-emblem-tile { animation: cwTileLand 4.5s ease-in-out infinite; }
 }
 
+/* Scroll-Reveal (mobil + desktop): sanftes Fade + Aufsteigen beim Eintreten in
+   den Viewport. Klassen werden per JS gesetzt (Reveal.tsx) -> Basis ohne JS =
+   sichtbar (Crawler/no-JS-sicher). Ruhiges Award-Easing. */
+.cw-reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+.cw-reveal.cw-in { opacity: 1; transform: none; }
+/* Stagger: die direkten Kinder gleiten nacheinander ein */
+.cw-stagger > * { opacity: 0; transform: translateY(16px); transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1), transform 0.55s cubic-bezier(0.22, 1, 0.36, 1); }
+.cw-stagger.cw-in > * { opacity: 1; transform: none; }
+.cw-stagger.cw-in > *:nth-child(1) { transition-delay: 0s; }
+.cw-stagger.cw-in > *:nth-child(2) { transition-delay: 0.07s; }
+.cw-stagger.cw-in > *:nth-child(3) { transition-delay: 0.14s; }
+.cw-stagger.cw-in > *:nth-child(4) { transition-delay: 0.21s; }
+.cw-stagger.cw-in > *:nth-child(5) { transition-delay: 0.28s; }
+.cw-stagger.cw-in > *:nth-child(6) { transition-delay: 0.35s; }
+
+/* Dezenter Karten-Hover (nur echte Zeiger/Desktop): sanftes Anheben + Rand-Glow.
+   Auf Touch passiert nichts (dort uebernimmt das Scroll-Reveal). */
+.cw-card { transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.28s ease, box-shadow 0.28s ease; }
+.cw-card__icon { transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
+@media (hover: hover) and (pointer: fine) {
+  .cw-card:hover { transform: translateY(-5px); border-color: rgba(250, 75, 163, 0.5); box-shadow: 0 16px 34px rgba(0, 0, 0, 0.32); }
+  .cw-card:hover .cw-card__icon { transform: scale(1.09) translateY(-2px); }
+  .cw-card:hover .cw-card__arrow { transform: translateX(4px); }
+}
+.cw-card__arrow { transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1); display: inline-block; }
+
 /* Sticky-Mobile-CTA: gleitet unten hoch, nur auf schmalen Screens */
 .cw-sticky-cta {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;

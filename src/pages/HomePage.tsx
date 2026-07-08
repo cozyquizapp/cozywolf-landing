@@ -11,6 +11,8 @@ import { MiniQuiz } from '../components/MiniQuiz';
 import { MiniGrid, MiniBars } from '../components/ModeMinis';
 import { GridEmblem, ArenaEmblem } from '../components/ModeEmblems';
 import { Icon } from '../components/Icon';
+import { Reveal } from '../components/Reveal';
+import { SeasonalHint } from '../components/SeasonalHint';
 import { FaqSection } from '../components/FaqSection';
 import { PriceNote } from '../components/PriceNote';
 import { StatsBand } from '../components/StatsBand';
@@ -114,6 +116,7 @@ export default function HomePage() {
       <PageHero eyebrow={c.eyebrow} eyebrowLower title={c.title} sub={c.sub}
         visual={<img src="/logo.webp" alt="" width={148} height={148} fetchPriority="high" style={{ width: '100%', height: 'auto', filter: `drop-shadow(0 8px 24px rgba(${BRAND.pinkRgb},0.45))` }} />}
       />
+      <SeasonalHint />
       <Section style={{ paddingTop: 0, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
         <Btn href="/kontakt">{d.ctaBook}</Btn>
         <Btn href="#mini" variant="secondary">{c.ctaTry}</Btn>
@@ -122,16 +125,16 @@ export default function HomePage() {
       {/* Zielgruppen zuerst: Veranstalter ordnet sich sofort ein */}
       <Section style={{ paddingTop: 'clamp(24px, 4vh, 48px)' }}>
         <SecTitle>{c.audTitle}</SecTitle>
-        <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))' }}>
+        <Reveal stagger style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))' }}>
           {audiences.map(a => (
-            <a key={a.href} href={a.href} style={teaserCard}>
-              <Icon name={a.icon} size={48} />
+            <a key={a.href} href={a.href} className="cw-card" style={teaserCard}>
+              <span className="cw-card__icon" style={{ display: 'inline-flex' }}><Icon name={a.icon} size={48} /></span>
               <div style={{ fontSize: 20, fontWeight: 900, color: BRAND.pink }}>{a.title}</div>
               <div style={{ fontSize: 15, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.5, flex: 1 }}>{a.body}</div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: BRAND.pinkSoft }}>{c.audMore} →</div>
+              <div style={{ fontSize: 14, fontWeight: 800, color: BRAND.pinkSoft }}>{c.audMore} <span className="cw-card__arrow">→</span></div>
             </a>
           ))}
-        </div>
+        </Reveal>
       </Section>
 
       <OrganizerFacts />
@@ -139,16 +142,16 @@ export default function HomePage() {
       {/* Zwei Modi */}
       <Section>
         <SecTitle>{c.modesTitle}</SecTitle>
-        <div style={twoCol}>
+        <Reveal stagger style={twoCol}>
           <ModeCard title={c.mode1T} body={c.mode1B} accent={BRAND.pink} emblem={<GridEmblem />} visual={<MiniGrid />} />
           <ModeCard title={c.mode2T} body={c.mode2B} accent={BRAND.magenta} emblem={<ArenaEmblem />} visual={<MiniBars />} />
-        </div>
+        </Reveal>
       </Section>
 
       {/* Warum CozyWolf — Differenzierung gegen 08/15-Eventquiz */}
       <Section>
         <SecTitle>{c.whyTitle}</SecTitle>
-        <div style={{
+        <Reveal stagger style={{
           maxWidth: 760, margin: '0 auto',
           display: 'grid', gap: 'clamp(12px, 1.6vw, 16px)',
           gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 320px), 1fr))',
@@ -168,7 +171,7 @@ export default function HomePage() {
               <span style={{ fontSize: 15.5, fontWeight: 700, color: BRAND.ink, lineHeight: 1.4 }}>{w}</span>
             </div>
           ))}
-        </div>
+        </Reveal>
       </Section>
 
       <StatsBand />
@@ -239,12 +242,12 @@ function SecTitle({ children }: { children: React.ReactNode }) {
 
 function ModeCard({ title, body, accent, visual, emblem }: { title: string; body: string; accent: string; visual?: React.ReactNode; emblem?: React.ReactNode }) {
   return (
-    <div style={{
+    <div className="cw-card" style={{
       padding: 'clamp(22px, 2.6vw, 32px)', borderRadius: 20,
       background: 'rgba(255,255,255,0.03)', border: `1px solid ${accent}44`,
       display: 'flex', flexDirection: 'column', gap: 12,
     }}>
-      {emblem && <div style={{ marginBottom: 2 }}>{emblem}</div>}
+      {emblem && <div className="cw-card__icon" style={{ marginBottom: 2 }}>{emblem}</div>}
       <div style={{ fontSize: 22, fontWeight: 900, color: accent === BRAND.magenta ? BRAND.pinkSoft : accent }}>{title}</div>
       <div style={{ fontSize: 16, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6, flex: 1 }}>{body}</div>
       {visual && <div style={{ marginTop: 4 }}>{visual}</div>}

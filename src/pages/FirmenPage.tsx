@@ -11,6 +11,8 @@ import { AwardsTeaser } from '../components/AwardsTeaser';
 import { PriceNote } from '../components/PriceNote';
 import { StatsBand } from '../components/StatsBand';
 import { FlowTimeline } from '../components/FlowTimeline';
+import { Reveal } from '../components/Reveal';
+import { SeasonalHint } from '../components/SeasonalHint';
 
 const C = {
   de: {
@@ -67,6 +69,7 @@ export default function FirmenPage() {
   return (
     <Layout>
       <PageHero eyebrow={c.eyebrow} title={c.title} sub={c.sub} />
+      <SeasonalHint />
       <Section style={{ paddingTop: 0, textAlign: 'center' }}>
         <Btn href="/kontakt">{c.cta}</Btn>
       </Section>
@@ -111,9 +114,9 @@ export default function FirmenPage() {
 
 function CardGrid({ items }: { items: { t: string; b: string }[] }) {
   return (
-    <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))' }}>
+    <Reveal stagger style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))' }}>
       {items.map((v, i) => (
-        <div key={i} style={{
+        <div key={i} className="cw-card" style={{
           padding: 'clamp(20px, 2.4vw, 28px)', borderRadius: 20,
           background: 'rgba(255,255,255,0.03)', border: `1px solid rgba(${BRAND.pinkRgb},0.18)`,
           display: 'flex', flexDirection: 'column', gap: 8,
@@ -122,7 +125,7 @@ function CardGrid({ items }: { items: { t: string; b: string }[] }) {
           <div style={{ fontSize: 15, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{v.b}</div>
         </div>
       ))}
-    </div>
+    </Reveal>
   );
 }
 

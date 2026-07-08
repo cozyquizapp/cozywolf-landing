@@ -8,6 +8,7 @@ import { useLang } from '../lang';
 import { t } from '../i18n';
 import { Section } from '../Layout';
 import { Icon } from './Icon';
+import { Reveal } from './Reveal';
 
 export function OrganizerFacts({ compact = false }: { compact?: boolean }) {
   const d = t(useLang());
@@ -26,23 +27,23 @@ export function OrganizerFacts({ compact = false }: { compact?: boolean }) {
         fontSize: 'clamp(26px, 3.4vw, 40px)', fontWeight: 900, color: '#F1F5F9',
         letterSpacing: '-0.01em', textWrap: 'balance',
       }}>{d.reTitle}</h2>
-      <div style={{
+      <Reveal stagger style={{
         display: 'grid', gap: 16,
         gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
       }}>
         {facts.map((f, i) => (
-          <div key={i} style={{
+          <div key={i} className="cw-card" style={{
             padding: 'clamp(18px, 2.2vw, 26px)', borderRadius: 18,
             background: 'rgba(255,255,255,0.03)',
             border: `1px solid rgba(${BRAND.pinkRgb},0.18)`,
             display: 'flex', flexDirection: 'column', gap: 8,
           }}>
-            <Icon name={f.icon} size={44} />
+            <span className="cw-card__icon" style={{ display: 'inline-flex' }}><Icon name={f.icon} size={44} /></span>
             <div style={{ fontSize: 19, fontWeight: 900, color: BRAND.pink, letterSpacing: '-0.01em' }}>{f.title}</div>
             <div style={{ fontSize: 15, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.55 }}>{f.body}</div>
           </div>
         ))}
-      </div>
+      </Reveal>
     </Section>
   );
 }
