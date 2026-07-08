@@ -53,12 +53,11 @@ export function ArenaEmblem({ size = 84 }: { size?: number }) {
 // 1 = erobert (Wolf drin), 0 = frei. Ein Feld "landet" gerade (Pop-Animation).
 // Das "C" fuer Cozy, gebaut aus dem Erober-Grid -> Modus + Marke in einem Bild.
 const C_GRID = [
-  1, 1, 1, 1,
-  1, 0, 0, 0,
-  1, 0, 0, 0,
-  1, 1, 1, 1,
+  1, 1, 1,
+  1, 0, 0,
+  1, 1, 1,
 ];
-const LAND_CELL = 3; // dieses Feld poppt gerade rein (oben rechts, Ende der C-Spitze)
+const LAND_CELL = 2; // dieses Feld poppt gerade rein (oben rechts, Spitze des C)
 // Felder im Hoodie-Blau des Wolfs (aus dem Avatar gesampelt): der pinke Wolf
 // hebt sich klar ab, statt auf Pink zu verschwimmen. Navy ist zudem Markenfarbe.
 const CELL_HI = '#2a5199';
@@ -68,8 +67,8 @@ export function GridEmblem({ size = 84 }: { size?: number }) {
   return (
     <div aria-hidden style={{
       width: size, height: size,
-      display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gridTemplateRows: 'repeat(4, 1fr)',
-      gap: size * 0.055,
+      display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gridTemplateRows: 'repeat(3, 1fr)',
+      gap: size * 0.07,
     }}>
       {C_GRID.map((t, i) => {
         if (t === 0) return <div key={i} style={{ borderRadius: size * 0.07, background: 'rgba(255,255,255,0.05)' }} />;
