@@ -1,12 +1,12 @@
 {
   "rewrites": [
-    { "source": "/impressum", "destination": "/index.html" },
-    { "source": "/datenschutz", "destination": "/index.html" },
-    { "source": "/firmen", "destination": "/index.html" },
-    { "source": "/locations", "destination": "/index.html" },
-    { "source": "/feiern", "destination": "/index.html" },
-    { "source": "/ueber", "destination": "/index.html" },
-    { "source": "/kontakt", "destination": "/index.html" }
+    { "source": "/impressum", "destination": "/impressum/index.html" },
+    { "source": "/datenschutz", "destination": "/datenschutz/index.html" },
+    { "source": "/firmen", "destination": "/firmen/index.html" },
+    { "source": "/locations", "destination": "/locations/index.html" },
+    { "source": "/feiern", "destination": "/feiern/index.html" },
+    { "source": "/ueber", "destination": "/ueber/index.html" },
+    { "source": "/kontakt", "destination": "/kontakt/index.html" }
   ],
   "headers": [
     {
@@ -19,6 +19,18 @@
       "source": "/index.html",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)\\.(js|css|woff2)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    },
+    {
+      "source": "/assets/(.*)\\.(png|jpg|jpeg|webp|svg|gif|ico)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800" }
       ]
     }
   ]

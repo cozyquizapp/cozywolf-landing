@@ -36,7 +36,7 @@ export default function UeberPage() {
       <PageHero eyebrow={c.eyebrow} title={c.title} sub={c.sub} />
       <Section style={{ paddingTop: 0 }}>
         <div style={{ maxWidth: 760, margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}>
-          <img src="/assets/johannes.jpg" alt="Johannes" style={{
+          <img src="/assets/johannes.jpg" alt="Johannes, Quizmaster von CozyWolf" style={{
             width: 180, height: 180, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center 22%',
             border: `4px solid rgba(${BRAND.pinkRgb},0.5)`,
             boxShadow: `0 12px 36px rgba(${BRAND.pinkRgb},0.25)`,

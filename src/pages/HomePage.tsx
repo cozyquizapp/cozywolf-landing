@@ -184,7 +184,7 @@ export default function HomePage() {
           background: 'rgba(255,255,255,0.03)', border: `1px solid rgba(${BRAND.pinkRgb},0.18)`,
         }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, flexShrink: 0 }}>
-            <img src="/assets/johannes.jpg" alt="Johannes" style={{
+            <img src="/assets/johannes.jpg" alt="Johannes, Quizmaster von CozyWolf" style={{
               width: 156, height: 156, borderRadius: '50%', objectFit: 'cover', objectPosition: 'center 22%',
               border: `3px solid rgba(${BRAND.pinkRgb},0.5)`,
             }} />
