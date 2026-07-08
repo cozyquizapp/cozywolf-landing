@@ -78,6 +78,13 @@ export function StatsBand({ items = DEFAULT }: { items?: Stat[] }) {
               fontFamily: FONT_DISPLAY, fontWeight: 800, letterSpacing: '-0.01em',
               fontSize: 'clamp(34px, 4.6vw, 58px)', lineHeight: 1,
               color: BRAND.pink, textShadow: `0 4px 24px rgba(${BRAND.pinkRgb},0.35)`,
+              // Fix (2026-07-08): Band-Hoehe sprang beim CountUp, weil kurze
+              // Zwischenwerte (z.B. "bis zu 0") einzeilig, der Endwert
+              // ("bis zu 100") aber zweizeilig umbrach -> Zeilenhoehe wechselte.
+              // nowrap zwingt die Zahl auf eine Zeile (konstante Hoehe),
+              // tabular-nums haelt die Ziffernbreite stabil (kein Horizontal-Zittern).
+              whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums',
+              minHeight: '1em',
             }}><CountUp text={de ? s.numDe : s.numEn} /></span>
             <span style={{
               fontSize: 'clamp(12px, 1.4vw, 15px)', fontWeight: 800, letterSpacing: '0.08em',
