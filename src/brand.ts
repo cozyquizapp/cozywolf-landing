@@ -31,7 +31,7 @@ export const WONKY_URL = 'https://wonkyguess.fun';
 // -> die ID (der Teil nach /f/ in der Endpoint-URL) hier eintragen. Solange der
 // Platzhalter steht, faellt das Formular sauber auf einen vorausgefuellten
 // Mailto zurueck (funktioniert also auch schon vor dem Formspree-Setup).
-export const FORMSPREE_ID = 'REPLACE_ME';
+export const FORMSPREE_ID = 'mykqabqa';
 export const FORMSPREE_ACTIVE = (FORMSPREE_ID as string) !== 'REPLACE_ME';
 
 // Vorausgefuellter Anfrage-Mailto (Betreff + Body-Geruest), an CTAs wiederverwendet.
