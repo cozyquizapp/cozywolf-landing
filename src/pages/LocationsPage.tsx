@@ -148,7 +148,7 @@ function ModeText({ eyebrow, title, body, info, accent }: {
 }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-      <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: '0.14em', textTransform: 'uppercase', color: accent }}>{eyebrow}</div>
+      <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: '0.14em', textTransform: 'uppercase', color: accent === BRAND.magenta ? BRAND.pinkSoft : accent }}>{eyebrow}</div>
       <h3 style={{ margin: 0, fontSize: 'clamp(24px, 3vw, 34px)', fontWeight: 900, color: '#F1F5F9', letterSpacing: '-0.01em' }}>{title}</h3>
       <p style={{ margin: 0, fontSize: 16, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{body}</p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 9, marginTop: 4 }}>

@@ -67,7 +67,7 @@ export function MiniQuiz() {
         boxShadow: `0 16px 40px rgba(0,0,0,0.35), 0 0 32px rgba(${BRAND.pinkRgb},0.10)`,
       }}>
         {done ? (
-          <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+          <div role="status" aria-live="polite" style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
             <div style={{ fontSize: 44 }} aria-hidden>{correctCount === quiz.length ? '🏆' : correctCount >= 2 ? '🎉' : '🙂'}</div>
             <div style={{ fontSize: 24, fontWeight: 900, color: '#F1F5F9' }}>
               {de ? `${correctCount} von ${quiz.length} richtig` : `${correctCount} of ${quiz.length} correct`}
@@ -118,7 +118,7 @@ export function MiniQuiz() {
             </div>
 
             {picked != null && (
-              <div style={{ marginTop: 16, animation: 'cwNoteIn 0.35s ease both' }}>
+              <div aria-live="polite" style={{ marginTop: 16, animation: 'cwNoteIn 0.35s ease both' }}>
                 <p style={{ margin: '0 0 16px', fontSize: 15, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{q.note}</p>
                 <div style={{ textAlign: 'center' }}>
                   <button onClick={next} style={nextBtn}>
@@ -140,7 +140,7 @@ const secTitle: React.CSSProperties = {
 };
 const nextBtn: React.CSSProperties = {
   padding: '11px 24px', borderRadius: 999, border: '1.5px solid rgba(255,255,255,0.18)',
-  background: `linear-gradient(135deg, ${BRAND.pink}, ${BRAND.magenta})`, color: '#fff',
+  background: 'linear-gradient(135deg, #CE1C6F, #AB0055)', color: '#fff',
   fontFamily: 'inherit', fontWeight: 900, fontSize: 15, cursor: 'pointer',
 };
 const ghostBtn: React.CSSProperties = {

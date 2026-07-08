@@ -242,7 +242,7 @@ function ModeCard({ title, body, accent, visual }: { title: string; body: string
       background: 'rgba(255,255,255,0.03)', border: `1px solid ${accent}44`,
       display: 'flex', flexDirection: 'column', gap: 12,
     }}>
-      <div style={{ fontSize: 22, fontWeight: 900, color: accent }}>{title}</div>
+      <div style={{ fontSize: 22, fontWeight: 900, color: accent === BRAND.magenta ? BRAND.pinkSoft : accent }}>{title}</div>
       <div style={{ fontSize: 16, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6, flex: 1 }}>{body}</div>
       {visual && <div style={{ marginTop: 4 }}>{visual}</div>}
     </div>

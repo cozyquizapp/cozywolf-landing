@@ -21,7 +21,7 @@ const BRAND = {
 
 export default function LegalPage({ doc }: { doc: 'impressum' | 'datenschutz' }) {
   return (
-    <div style={{
+    <main style={{
       minHeight: '100vh',
       background:
         `radial-gradient(ellipse at 22% 28%, rgba(${BRAND.pinkRgb},0.18) 0%, transparent 55%),` +
@@ -63,7 +63,7 @@ export default function LegalPage({ doc }: { doc: 'impressum' | 'datenschutz' })
 
         {doc === 'impressum' ? <Impressum /> : <Datenschutz />}
       </div>
-    </div>
+    </main>
   );
 }
 

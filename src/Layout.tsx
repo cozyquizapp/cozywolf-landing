@@ -2,7 +2,7 @@
 // Plus geteilte UI-Primitive (Btn, Section, PageHero), damit die Seiten DRY
 // bleiben. Navigation läuft über echte <a>-Links (Full-Page-Loads) — Vercel
 // leitet jede Route auf die SPA, React rendert per Pfad die passende Seite.
-import { useState, type ReactNode } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { BRAND, FONT_DISPLAY, FONT_BODY, EMAIL, INSTA_URL, INSTA_HANDLE } from './brand';
 import { useLang, setLang, type Lang } from './lang';
 import { usePath } from './pathContext';
@@ -18,6 +18,9 @@ const NAV_LINKS = (d: ReturnType<typeof t>) => [
 
 export function Layout({ children }: { children: ReactNode }) {
   const lang = useLang();
+  // <html lang> mit der tatsaechlich gerenderten Sprache synchron halten
+  // (auto-detektiertes EN beim ersten Laden, nicht nur beim Toggle). WCAG 3.1.1
+  useEffect(() => { document.documentElement.lang = lang; }, [lang]);
   return (
     <div style={{
       minHeight: '100vh',
@@ -30,8 +33,9 @@ export function Layout({ children }: { children: ReactNode }) {
       fontFamily: FONT_BODY,
       display: 'flex', flexDirection: 'column',
     }}>
+      <a href="#main" className="cw-skip">{lang === 'de' ? 'Zum Inhalt springen' : 'Skip to content'}</a>
       <NavBar lang={lang} />
-      <main style={{ flex: 1, width: '100%' }}>{children}</main>
+      <main id="main" style={{ flex: 1, width: '100%' }}>{children}</main>
       <SiteFooter lang={lang} />
     </div>
   );
@@ -76,7 +80,7 @@ function NavBar({ lang }: { lang: Lang }) {
           {links.map(l => {
             const active = path === l.href;
             return (
-              <a key={l.href} href={l.href} style={{
+              <a key={l.href} href={l.href} aria-current={active ? 'page' : undefined} style={{
                 padding: '7px 12px', borderRadius: 999,
                 textDecoration: 'none', fontSize: 14, fontWeight: 800,
                 color: active ? BRAND.pink : BRAND.inkSoft,
@@ -94,6 +98,7 @@ function NavBar({ lang }: { lang: Lang }) {
           onClick={() => setOpen(o => !o)}
           aria-label={open ? 'Menü schließen' : 'Menü öffnen'}
           aria-expanded={open}
+          aria-controls="cw-mobile-menu"
           style={{
             display: 'none', alignItems: 'center', justifyContent: 'center',
             width: 40, height: 40, borderRadius: 12, cursor: 'pointer',
@@ -104,7 +109,7 @@ function NavBar({ lang }: { lang: Lang }) {
       </nav>
 
       {open && (
-        <div style={{
+        <div id="cw-mobile-menu" style={{
           borderTop: `1px solid rgba(${BRAND.pinkRgb},0.14)`,
           padding: '8px 16px 14px',
           display: 'flex', flexDirection: 'column', gap: 2,
@@ -112,7 +117,7 @@ function NavBar({ lang }: { lang: Lang }) {
           {links.map(l => {
             const active = path === l.href;
             return (
-              <a key={l.href} href={l.href} onClick={() => setOpen(false)} style={{
+              <a key={l.href} href={l.href} onClick={() => setOpen(false)} aria-current={active ? 'page' : undefined} style={{
                 padding: '12px 14px', borderRadius: 12,
                 textDecoration: 'none', fontSize: 16, fontWeight: 800,
                 color: active ? BRAND.pink : BRAND.inkSoft,
@@ -133,8 +138,11 @@ function LangSwitch({ lang }: { lang: Lang }) {
       background: 'rgba(255,255,255,0.04)', border: `1px solid rgba(${BRAND.pinkRgb},0.20)`,
     }}>
       {(['de', 'en'] as Lang[]).map(l => (
-        <button key={l} onClick={() => setLang(l)} style={{
-          padding: '5px 12px', borderRadius: 999, border: 'none', cursor: 'pointer',
+        <button key={l} onClick={() => setLang(l)}
+          aria-pressed={lang === l}
+          aria-label={l === 'de' ? 'Auf Deutsch umschalten' : 'Switch to English'}
+          style={{
+          padding: '8px 13px', borderRadius: 999, border: 'none', cursor: 'pointer',
           fontFamily: 'inherit', fontSize: 12, fontWeight: 800, letterSpacing: '0.06em',
           background: lang === l ? BRAND.pink : 'transparent',
           color: lang === l ? BRAND.bg : BRAND.inkSoft,
@@ -191,7 +199,7 @@ export function Btn({ href, children, variant = 'primary' }: {
     letterSpacing: '0.01em',
   };
   const style: React.CSSProperties = variant === 'primary'
-    ? { ...base, background: `linear-gradient(135deg, ${BRAND.pink}, ${BRAND.magenta})`, color: '#fff', border: '1.5px solid rgba(255,255,255,0.18)' }
+    ? { ...base, background: 'linear-gradient(135deg, #CE1C6F, #AB0055)', color: '#fff', border: '1.5px solid rgba(255,255,255,0.18)' }
     : { ...base, background: `rgba(${BRAND.pinkRgb},0.10)`, color: BRAND.pinkSoft, border: `1.5px solid rgba(${BRAND.pinkRgb},0.40)` };
   return (
     <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined} style={style}>

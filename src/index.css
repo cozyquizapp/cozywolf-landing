@@ -9,3 +9,38 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Sichtbarer Fokus-Ring, hoher Kontrast auf dunklem UI (WCAG 2.4.7/2.4.13) */
+:focus-visible {
+  outline: 2px solid #FFC7E4;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip-Link: nur bei Tastatur-Fokus sichtbar (WCAG 2.4.1) */
+.cw-skip {
+  position: absolute;
+  left: 12px;
+  top: -56px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #FA4BA3;
+  color: #0A0814;
+  font-weight: 900;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+.cw-skip:focus {
+  top: 12px;
+}
+
+/* Reduced Motion: auto-startende Animationen (z.B. schwebende Krone) aus (WCAG 2.3.3/2.2.2) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
