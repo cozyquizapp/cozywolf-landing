@@ -18,7 +18,7 @@ export function TestTeamForm() {
     ? {
         name: 'Dein Name', stadt: 'Stadt / Region', stadtPh: 'z. B. Hamburg',
         email: 'E-Mail für die Antwort',
-        groesse: 'Wie viele seid ihr?', g34: '3–4 Leute', g2: 'Zu zweit', gmehr: 'Mehr als 4',
+        groesse: 'Wie viele seid ihr?', g812: '8–12 Leute', g57: '5–7 Leute', gmehr: 'Mehr als 12', gunklar: 'Weiß ich noch nicht',
         termin: 'Wann würde es passen?', terminPh: 'z. B. ein Freitag im Dezember, abends',
         nachricht: 'Noch was? (optional)', nachrichtPh: 'Location im Kopf? Fragen? Immer her damit.',
         send: 'Als Test-Team anmelden', sending: 'Senden …',
@@ -29,7 +29,7 @@ export function TestTeamForm() {
     : {
         name: 'Your name', stadt: 'City / region', stadtPh: 'e.g. Bremen',
         email: 'Email for my reply',
-        groesse: 'How many are you?', g34: '3–4 people', g2: 'Just two', gmehr: 'More than 4',
+        groesse: 'How many are you?', g812: '8–12 people', g57: '5–7 people', gmehr: 'More than 12', gunklar: 'Not sure yet',
         termin: 'When would work?', terminPh: 'e.g. a Friday evening in December',
         nachricht: 'Anything else? (optional)', nachrichtPh: 'A venue in mind? Questions? Fire away.',
         send: 'Sign up as a test team', sending: 'Sending …',
@@ -89,10 +89,12 @@ export function TestTeamForm() {
           <input id="tt-stadt" name="stadt" type="text" required placeholder={L.stadtPh} style={inp} />
         </Field>
         <Field label={L.groesse} htmlFor="tt-groesse">
-          <select id="tt-groesse" name="groesse" defaultValue={L.g34} style={{ ...inp, appearance: 'none' }}>
-            <option>{L.g34}</option>
-            <option>{L.g2}</option>
-            <option>{L.gmehr}</option>
+          <select id="tt-groesse" name="groesse" defaultValue={L.g812} style={{ ...inp, appearance: 'none' }}>
+            {[L.g812, L.g57, L.gmehr, L.gunklar].map((o) => (
+              // Explizite dunkle option-Farben: das native Dropdown rendert sonst
+              // helle Schrift auf weissem OS-Hintergrund → unlesbar.
+              <option key={o} value={o} style={{ background: '#171126', color: '#F1F5F9' }}>{o}</option>
+            ))}
           </select>
         </Field>
         <Field label={L.email} htmlFor="tt-email" required reqLabel={L.req}>
