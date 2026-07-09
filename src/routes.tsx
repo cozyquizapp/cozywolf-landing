@@ -10,6 +10,7 @@ import LocationsPage from './pages/LocationsPage';
 import FeiernPage from './pages/FeiernPage';
 import UeberPage from './pages/UeberPage';
 import KontaktPage from './pages/KontaktPage';
+import TestenPage from './pages/TestenPage';
 
 export function normalizePath(p: string): string {
   return p.replace(/\/+$/, '') || '/';
@@ -24,6 +25,7 @@ function pageFor(path: string): ReactElement {
     case '/feiern': return <FeiernPage />;
     case '/ueber': return <UeberPage />;
     case '/kontakt': return <KontaktPage />;
+    case '/testen': return <TestenPage />;
     default: return <HomePage />;
   }
 }
@@ -34,4 +36,4 @@ export function AppRoot({ path }: { path: string }) {
 }
 
 /** Alle prerenderbaren Routen (für das Build-Prerender-Skript gespiegelt). */
-export const ROUTES = ['/', '/firmen', '/locations', '/feiern', '/ueber', '/kontakt', '/impressum', '/datenschutz'];
+export const ROUTES = ['/', '/firmen', '/locations', '/feiern', '/ueber', '/kontakt', '/testen', '/impressum', '/datenschutz'];

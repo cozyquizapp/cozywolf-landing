@@ -18,11 +18,15 @@ const META = {
   '/locations':   { t: 'Kneipenquiz für Bars & Pubs in Hamburg | CozyWolf', d: 'Ein wiederkehrender Quiz-Abend für Café, Bar oder Pub, der Gäste an ruhigen Tagen bringt und zum Wiederkommen bewegt.' },
   '/ueber':       { t: 'Über Johannes, CozyWolf', d: 'Ich bin Johannes, Pädagoge und Moderator. Ich entwickle und moderiere die CozyWolf-Quiz-Events selbst, mit einem guten Blick für die Gruppe.' },
   '/kontakt':     { t: 'Kontakt, CozyWolf', d: 'Frag dein Quiz-Event an. Schreib mir kurz zu Anlass, Personenzahl und Wunsch-Zeitraum, ich melde mich mit einem Vorschlag.' },
+  '/testen':      { t: 'Test-Team werden — spiel mein Quiz | CozyWolf', d: 'Ich suche Test-Teams für mein Live-Quiz. Ihr bekommt einen kompletten Quizabend gratis, ich höre euer Feedback. 3–4 Leute, in Hamburg und Umland.' },
   '/impressum':   { t: 'Impressum, CozyWolf', d: 'Impressum und Anbieterkennzeichnung von CozyWolf.' },
   '/datenschutz': { t: 'Datenschutz, CozyWolf', d: 'Datenschutzerklärung von cozywolf.de.' },
 };
 const ROUTES = Object.keys(META);
-const NOINDEX = new Set(['/impressum', '/datenschutz']);
+// /testen = Kampagnen-Landing (Reel/Insta) → prerendert für Link-Previews,
+// aber noindex, damit die zeitlich begrenzte Test-Team-Aktion nicht dauerhaft
+// im Google-Index/der Sitemap steht.
+const NOINDEX = new Set(['/impressum', '/datenschutz', '/testen']);
 
 // LocalBusiness/ProfessionalService — Local-SEO-Grundlage, auf jeder Route.
 const ORG_LD = {
