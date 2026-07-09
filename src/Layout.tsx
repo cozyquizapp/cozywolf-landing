@@ -8,6 +8,7 @@ import { useLang, setLang, type Lang } from './lang';
 import { usePath } from './pathContext';
 import { t } from './i18n';
 import { Icon } from './components/Icon';
+import { Fireflies } from './components/Fireflies';
 
 const NAV_LINKS = (d: ReturnType<typeof t>) => [
   { href: '/firmen', label: d.navFirmen },
@@ -254,6 +255,8 @@ export function PageHero({ eyebrow, eyebrowLower, title, sub, visual }: { eyebro
         @keyframes cwHeroFloat { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-10px) rotate(2deg); } }
         @media (prefers-reduced-motion: reduce) { .cw-hero-glow, .cw-hero-visual { animation: none !important; } }
       `}</style>
+      {/* Ambient-Fireflies hinter dem Hero — dezente Marken-Atmosphäre wie in der App. */}
+      <Fireflies />
       <div className="cw-hero-glow" aria-hidden style={{
         position: 'absolute', top: '-6%', left: '50%', transform: 'translateX(-50%)',
         width: 'min(760px, 92%)', height: 'clamp(200px, 34vh, 380px)', pointerEvents: 'none', zIndex: 0,
