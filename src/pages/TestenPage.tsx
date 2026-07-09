@@ -15,6 +15,7 @@ const C = {
     offerTitle: 'Euer Quizabend? Geht aufs Haus.',
     offerBody: 'Ihr bekommt einen kompletten, moderierten Quizabend — kostenlos. Dafür sagt ihr mir ehrlich, was Spaß gemacht hat und was noch hakt.',
     scarcity: 'Nur 5 Test-Teams',
+    region: 'Aktuell nur in Hamburg + Umland',
     stepsTitle: 'So läuft\'s',
     steps: [
       { n: '1', t: 'Anmelden', b: 'Kurz das Formular ausfüllen — Name, Stadt, wann es passt.' },
@@ -34,6 +35,7 @@ const C = {
     offerTitle: 'Your quiz night? On the house.',
     offerBody: 'You get a full, hosted quiz night — free. In return you tell me honestly what was fun and what still needs work.',
     scarcity: 'Only 5 test teams',
+    region: 'Currently Hamburg + surroundings only',
     stepsTitle: 'How it works',
     steps: [
       { n: '1', t: 'Sign up', b: 'Fill in the short form — name, city, when it suits you.' },
@@ -82,6 +84,9 @@ export default function TestenPage() {
             <span style={{ width: 8, height: 8, borderRadius: '50%', background: BRAND.pink, boxShadow: `0 0 10px ${BRAND.pink}` }} />
             {c.scarcity}
           </span>
+          <div style={{ marginTop: 12, fontSize: 13.5, fontWeight: 700, color: BRAND.muted, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            <span aria-hidden>📍</span>{c.region}
+          </div>
         </div>
       </Section>
 
