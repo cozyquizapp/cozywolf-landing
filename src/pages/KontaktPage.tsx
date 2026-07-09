@@ -14,6 +14,10 @@ const C = {
     write: 'Anfrage schreiben',
     or: 'oder direkt an',
     insta: 'Auf Instagram',
+    ttTag: '🐺 Test-Team gesucht',
+    ttTitle: 'Lieber gratis spielen und mithelfen?',
+    ttBody: 'Ich suche gerade ein paar Test-Teams in Hamburg. Ihr bekommt einen kompletten Quizabend aufs Haus — dafür sagt ihr mir ehrlich, was hakt.',
+    ttCta: 'Test-Team werden',
   },
   en: {
     eyebrow: 'Contact',
@@ -22,6 +26,10 @@ const C = {
     write: 'Write a request',
     or: 'or directly to',
     insta: 'On Instagram',
+    ttTag: '🐺 Test teams wanted',
+    ttTitle: 'Rather play for free and help out?',
+    ttBody: 'I am looking for a few test teams in Hamburg right now. You get a full quiz night on the house — in return you tell me honestly what still needs work.',
+    ttCta: 'Become a test team',
   },
 };
 
@@ -45,6 +53,33 @@ export default function KontaktPage() {
           }}>📸 {c.insta} · {INSTA_HANDLE}</a>
           <PriceNote />
         </div>
+
+        {/* Test-Team-Teaser — die /testen-Kampagne ist bewusst nicht in der Nav,
+            aber wer auf Kontakt landet, soll das Gratis-Angebot sehen. */}
+        <a href="/testen" style={{
+          display: 'block', textDecoration: 'none',
+          maxWidth: 560, margin: '32px auto 0',
+          padding: 'clamp(20px, 3vw, 30px)', borderRadius: 22, textAlign: 'center',
+          background: `radial-gradient(ellipse 90% 100% at 50% 0%, rgba(${BRAND.pinkRgb},0.15), rgba(255,255,255,0.03) 72%)`,
+          border: `1.5px solid rgba(${BRAND.pinkRgb},0.32)`,
+          boxShadow: `0 14px 40px rgba(0,0,0,0.32), 0 0 34px rgba(${BRAND.pinkRgb},0.10)`,
+        }}>
+          <span style={{
+            display: 'inline-block', fontSize: 12, fontWeight: 900, letterSpacing: '0.14em',
+            textTransform: 'uppercase', color: BRAND.pink, marginBottom: 10,
+          }}>{c.ttTag}</span>
+          <div style={{ fontSize: 'clamp(20px, 3.4vw, 26px)', fontWeight: 900, color: '#F1F5F9', lineHeight: 1.15, textWrap: 'balance' }}>
+            {c.ttTitle}
+          </div>
+          <p style={{ margin: '10px auto 16px', maxWidth: 440, color: BRAND.inkSoft, fontSize: 15, fontWeight: 500, lineHeight: 1.55 }}>
+            {c.ttBody}
+          </p>
+          <span className="cw-btn" style={{
+            display: 'inline-block', padding: '12px 26px', borderRadius: 999,
+            background: `linear-gradient(135deg, ${BRAND.pink}, ${BRAND.magenta})`,
+            color: '#fff', fontWeight: 900, fontSize: 15,
+          }}>{c.ttCta} →</span>
+        </a>
       </Section>
     </Layout>
   );
