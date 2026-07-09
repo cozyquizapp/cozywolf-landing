@@ -19,7 +19,7 @@ const C = {
     stepsTitle: 'So läuft\'s',
     steps: [
       { n: '1', t: 'Anmelden', b: 'Kurz das Formular ausfüllen — Name, Stadt, wann es passt.' },
-      { n: '2', t: 'Termin finden', b: 'Ich melde mich mit einem Vorschlag. Bei euch, in eurem Café oder wo ihr wollt.' },
+      { n: '2', t: 'Termin finden', b: 'Ich melde mich mit einem Vorschlag. Bei euch, im Büro oder wo ihr einen Raum mit freier Wand habt.' },
       { n: '3', t: 'Spielen & sagen', b: 'Ihr spielt einen ganzen Abend, ich schau zu und höre zu. Euer Feedback formt das Spiel.' },
     ],
     formTitle: 'Meldet euch an',
@@ -39,7 +39,7 @@ const C = {
     stepsTitle: 'How it works',
     steps: [
       { n: '1', t: 'Sign up', b: 'Fill in the short form — name, city, when it suits you.' },
-      { n: '2', t: 'Find a date', b: 'I come back with a suggestion. At your place, your café, wherever you like.' },
+      { n: '2', t: 'Find a date', b: 'I come back with a suggestion. At your place, the office, wherever you have a room with a free wall.' },
       { n: '3', t: 'Play & tell', b: 'You play a whole evening, I watch and listen. Your feedback shapes the game.' },
     ],
     formTitle: 'Sign up',
