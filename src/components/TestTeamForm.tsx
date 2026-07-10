@@ -18,7 +18,7 @@ export function TestTeamForm() {
     ? {
         name: 'Dein Name', stadt: 'Stadt / Region', stadtPh: 'z. B. Hamburg',
         email: 'E-Mail für die Antwort',
-        groesse: 'Wie viele seid ihr?', g912: '9–12 Leute', gmehr: 'Mehr als 12', gunter9: 'Weniger als 9', gunklar: 'Weiß ich noch nicht',
+        groesse: 'Wie viele seid ihr?', g610: '6–10 Leute', gmehr: 'Mehr als 10', gunter6: 'Weniger als 6', gunklar: 'Weiß ich noch nicht',
         termin: 'Wann würde es passen?', terminPh: 'z. B. ein Freitag im Dezember, abends',
         nachricht: 'Noch was? (optional)', nachrichtPh: 'Location im Kopf? Fragen? Immer her damit.',
         send: 'Als Test-Team anmelden', sending: 'Senden …',
@@ -29,7 +29,7 @@ export function TestTeamForm() {
     : {
         name: 'Your name', stadt: 'City / region', stadtPh: 'e.g. Bremen',
         email: 'Email for my reply',
-        groesse: 'How many are you?', g912: '9–12 people', gmehr: 'More than 12', gunter9: 'Fewer than 9', gunklar: 'Not sure yet',
+        groesse: 'How many are you?', g610: '6–10 people', gmehr: 'More than 10', gunter6: 'Fewer than 6', gunklar: 'Not sure yet',
         termin: 'When would work?', terminPh: 'e.g. a Friday evening in December',
         nachricht: 'Anything else? (optional)', nachrichtPh: 'A venue in mind? Questions? Fire away.',
         send: 'Sign up as a test team', sending: 'Sending …',
@@ -89,8 +89,8 @@ export function TestTeamForm() {
           <input id="tt-stadt" name="stadt" type="text" required placeholder={L.stadtPh} style={inp} />
         </Field>
         <Field label={L.groesse} htmlFor="tt-groesse">
-          <select id="tt-groesse" name="groesse" defaultValue={L.g912} style={{ ...inp, appearance: 'none' }}>
-            {[L.g912, L.gmehr, L.gunter9, L.gunklar].map((o) => (
+          <select id="tt-groesse" name="groesse" defaultValue={L.g610} style={{ ...inp, appearance: 'none' }}>
+            {[L.g610, L.gmehr, L.gunter6, L.gunklar].map((o) => (
               // Explizite dunkle option-Farben: das native Dropdown rendert sonst
               // helle Schrift auf weissem OS-Hintergrund → unlesbar.
               <option key={o} value={o} style={{ background: '#171126', color: '#F1F5F9' }}>{o}</option>
