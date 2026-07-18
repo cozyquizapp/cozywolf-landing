@@ -6,7 +6,7 @@
 // Motion: Reveal wird gar nicht erst aktiviert.
 import { useEffect, useRef, type ReactNode, type CSSProperties, type ElementType } from 'react';
 
-export function useReveal<T extends HTMLElement>(stagger = false) {
+function useReveal<T extends HTMLElement>(stagger = false) {
   const ref = useRef<T>(null);
   useEffect(() => {
     const el = ref.current;
