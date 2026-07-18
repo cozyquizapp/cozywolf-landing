@@ -12,7 +12,7 @@ const OG_IMG = `${BASE}/assets/og-cover.png`;
 // Route -> Titel + Beschreibung (Deutsch = Prerender-Default). Titel keyword-nah
 // (Hamburg + Suchbegriffe) fuer die Haupt-Zielgruppen-Seiten.
 const META = {
-  '/':            { t: 'CozyWolf, Live-Quiz-Events in Hamburg', d: 'Moderierte Live-Quiz-Events für Firmen, private Feiern und Locations. Alle spielen am Handy, ich bringe alles mit und moderiere selbst.' },
+  '/':            { t: 'CozyWolf | Live-Quiz-Events und Test-Teams in Hamburg', d: 'Live-Quiz-Events für Firmen, Feiern und Locations. Quiz anfragen, Mini-Quiz ausprobieren oder als Test-Team kostenlos mitspielen.' },
   '/firmen':      { t: 'Teamevent-Quiz für Firmen in Hamburg | CozyWolf', d: 'Ein Team-Event, bei dem eure Abteilungen als Fraktionen gegeneinander antreten. Faire Wertung, bis etwa 100 Personen, in Hamburg und Umland.' },
   '/feiern':      { t: 'Quiz für Geburtstag & private Feiern | CozyWolf Hamburg', d: 'Ein gemütlicher Quiz-Abend für Geburtstag und Freundeskreis. Kleine Teams erobern das Spielfeld, ich moderiere den ganzen Abend.' },
   '/locations':   { t: 'Kneipenquiz für Bars & Pubs in Hamburg | CozyWolf', d: 'Ein wiederkehrender Quiz-Abend für Café, Bar oder Pub, der Gäste an ruhigen Tagen bringt und zum Wiederkommen bewegt.' },

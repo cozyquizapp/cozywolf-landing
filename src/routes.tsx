@@ -1,6 +1,7 @@
 // Gemeinsame Routen-Auflösung für Client (main.tsx) und Prerender (entry-server).
 // Damit erzeugt der Build für jede Route statisches HTML mit Inhalt (SSG), sodass
 // Crawler, Link-Previews und AI-Tools die Seite ohne JavaScript lesen können.
+/* eslint-disable react-refresh/only-export-components */
 import type { ReactElement } from 'react';
 import { PathCtx } from './pathContext';
 import LegalPage from './LegalPage';

@@ -1,7 +1,7 @@
 // Saison-Hinweis (Weihnachtsfeier): erscheint NUR Okt-Dez, rein clientseitig
 // (kein Prerender -> keine SEO-Irritation ausserhalb der Saison). Dezente Band,
 // dismissbar pro Session. Wolf-Wunsch: Timing ~ab Oktober.
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useLang } from '../lang';
 import { BRAND } from '../brand';
 
@@ -9,14 +9,13 @@ const KEY = 'cw-xmas-dismissed';
 
 export function SeasonalHint() {
   const lang = useLang();
-  const [show, setShow] = useState(false);
-  useEffect(() => {
+  const [show, setShow] = useState(() => {
     const m = new Date().getMonth(); // 0=Jan ... 9=Okt, 10=Nov, 11=Dez
     const inSeason = m >= 9 && m <= 11;
     let dismissed = false;
     try { dismissed = sessionStorage.getItem(KEY) === '1'; } catch { /* ignore */ }
-    if (inSeason && !dismissed) setShow(true);
-  }, []);
+    return inSeason && !dismissed;
+  });
   if (!show) return null;
   const de = lang === 'de';
   return (
