@@ -25,6 +25,8 @@ export function TestTeamForm() {
         okT: 'Ihr seid dabei! 🐺', okB: 'Ich melde mich mit einem Terminvorschlag — meist geht das schnell. Euer Quizabend geht aufs Haus.',
         errB: 'Da ging etwas schief. Schreib mir gern direkt an',
         req: 'Pflichtfeld',
+        privacy: 'Mit dem Absenden verarbeite ich deine Angaben, um deine Anfrage zu beantworten. Mehr dazu in der',
+        privacyLink: 'Datenschutzerklärung',
       }
     : {
         name: 'Your name', stadt: 'City / region', stadtPh: 'e.g. Bremen',
@@ -36,6 +38,8 @@ export function TestTeamForm() {
         okT: "You're in! 🐺", okB: 'I will come back with a date suggestion, usually quickly. Your quiz night is on the house.',
         errB: 'Something went wrong. Feel free to write me directly at',
         req: 'Required',
+        privacy: 'By sending, I process your details to answer your request. Learn more in the',
+        privacyLink: 'Privacy Policy',
       };
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -81,12 +85,15 @@ export function TestTeamForm() {
     <form onSubmit={onSubmit} style={cardBase}>
       {/* Hidden: Betreff + Art für die Formspree-Mail */}
       <input type="hidden" name="_subject" value={de ? '🐺 Neues Test-Team!' : '🐺 New test team!'} />
+      {/* Honeypot: Formsprees natives Spam-Feld. Bots fuellen es aus, echte Nutzer
+          sehen es nicht (display:none) -> Formspree verwirft solche Submits still. */}
+      <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ display: 'none' }} />
       <div style={grid}>
         <Field label={L.name} htmlFor="tt-name" required reqLabel={L.req}>
-          <input id="tt-name" name="name" type="text" required style={inp} />
+          <input id="tt-name" name="name" type="text" maxLength={100} required style={inp} />
         </Field>
         <Field label={L.stadt} htmlFor="tt-stadt" required reqLabel={L.req}>
-          <input id="tt-stadt" name="stadt" type="text" required placeholder={L.stadtPh} style={inp} />
+          <input id="tt-stadt" name="stadt" type="text" maxLength={80} required placeholder={L.stadtPh} style={inp} />
         </Field>
         <Field label={L.groesse} htmlFor="tt-groesse">
           <select id="tt-groesse" name="groesse" defaultValue={L.g610} style={{ ...inp, appearance: 'none' }}>
@@ -98,13 +105,13 @@ export function TestTeamForm() {
           </select>
         </Field>
         <Field label={L.email} htmlFor="tt-email" required reqLabel={L.req}>
-          <input id="tt-email" name="email" type="email" required style={inp} />
+          <input id="tt-email" name="email" type="email" maxLength={150} required style={inp} />
         </Field>
         <Field label={L.termin} htmlFor="tt-termin" full>
-          <input id="tt-termin" name="termin" type="text" placeholder={L.terminPh} style={inp} />
+          <input id="tt-termin" name="termin" type="text" maxLength={120} placeholder={L.terminPh} style={inp} />
         </Field>
         <Field label={L.nachricht} htmlFor="tt-nachricht" full>
-          <textarea id="tt-nachricht" name="nachricht" rows={3} placeholder={L.nachrichtPh} style={{ ...inp, resize: 'vertical' }} />
+          <textarea id="tt-nachricht" name="nachricht" rows={3} maxLength={2000} placeholder={L.nachrichtPh} style={{ ...inp, resize: 'vertical' }} />
         </Field>
       </div>
 
@@ -119,6 +126,11 @@ export function TestTeamForm() {
           {status === 'sending' ? L.sending : L.send}
         </button>
       </div>
+
+      <p style={privacyNote}>
+        {L.privacy}{' '}
+        <a href="/datenschutz" style={{ color: BRAND.pinkSoft, fontWeight: 700 }}>{L.privacyLink}</a>.
+      </p>
     </form>
   );
 }
@@ -155,4 +167,8 @@ const submitBtn: React.CSSProperties = {
   padding: '14px 30px', borderRadius: 999, border: '1.5px solid rgba(255,255,255,0.18)',
   background: 'linear-gradient(135deg, #CE1C6F, #AB0055)', color: '#fff',
   fontFamily: 'inherit', fontWeight: 900, fontSize: 16, cursor: 'pointer',
+};
+const privacyNote: React.CSSProperties = {
+  margin: '14px auto 0', maxWidth: 440, textAlign: 'center',
+  fontSize: 12.5, lineHeight: 1.5, color: BRAND.muted, fontWeight: 500,
 };

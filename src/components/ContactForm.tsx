@@ -24,6 +24,8 @@ export function ContactForm() {
         okT: 'Danke, ist angekommen!', okB: 'Ich melde mich mit einem Vorschlag bei dir. Meist geht das schnell.',
         errB: 'Da ging etwas schief. Schreib mir gern direkt an',
         req: 'Pflichtfeld',
+        privacy: 'Mit dem Absenden verarbeite ich deine Angaben, um deine Anfrage zu beantworten. Mehr dazu in der',
+        privacyLink: 'Datenschutzerklärung',
       }
     : {
         anlass: 'Occasion', anlassPh: 'Company event, birthday, pub quiz …',
@@ -35,6 +37,8 @@ export function ContactForm() {
         okT: 'Thanks, got it!', okB: 'I will come back to you with a suggestion, usually quickly.',
         errB: 'Something went wrong. Feel free to write me directly at',
         req: 'Required',
+        privacy: 'By sending, I process your details to answer your request. Learn more in the',
+        privacyLink: 'Privacy Policy',
       };
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -78,24 +82,27 @@ export function ContactForm() {
 
   return (
     <form onSubmit={onSubmit} style={cardBase}>
+      {/* Honeypot: Formsprees natives Spam-Feld. Bots fuellen es aus, echte Nutzer
+          sehen es nicht (display:none) -> Formspree verwirft solche Submits still. */}
+      <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ display: 'none' }} />
       <div style={grid}>
         <Field label={L.anlass} htmlFor="anlass">
-          <input id="anlass" name="anlass" type="text" placeholder={L.anlassPh} style={inp} />
+          <input id="anlass" name="anlass" type="text" maxLength={120} placeholder={L.anlassPh} style={inp} />
         </Field>
         <Field label={L.personen} htmlFor="personen">
-          <input id="personen" name="personen" type="text" inputMode="numeric" placeholder={L.personenPh} style={inp} />
+          <input id="personen" name="personen" type="text" inputMode="numeric" maxLength={20} placeholder={L.personenPh} style={inp} />
         </Field>
         <Field label={L.datum} htmlFor="datum">
-          <input id="datum" name="datum" type="text" placeholder={L.datumPh} style={inp} />
+          <input id="datum" name="datum" type="text" maxLength={120} placeholder={L.datumPh} style={inp} />
         </Field>
         <Field label={L.name} htmlFor="name" required reqLabel={L.req}>
-          <input id="name" name="name" type="text" required style={inp} />
+          <input id="name" name="name" type="text" maxLength={100} required style={inp} />
         </Field>
         <Field label={L.email} htmlFor="email" required reqLabel={L.req} full>
-          <input id="email" name="email" type="email" required style={inp} />
+          <input id="email" name="email" type="email" maxLength={150} required style={inp} />
         </Field>
         <Field label={L.nachricht} htmlFor="nachricht" full>
-          <textarea id="nachricht" name="nachricht" rows={4} placeholder={L.nachrichtPh} style={{ ...inp, resize: 'vertical' }} />
+          <textarea id="nachricht" name="nachricht" rows={4} maxLength={2000} placeholder={L.nachrichtPh} style={{ ...inp, resize: 'vertical' }} />
         </Field>
       </div>
 
@@ -110,6 +117,11 @@ export function ContactForm() {
           {status === 'sending' ? L.sending : L.send}
         </button>
       </div>
+
+      <p style={privacyNote}>
+        {L.privacy}{' '}
+        <a href="/datenschutz" style={{ color: BRAND.pinkSoft, fontWeight: 700 }}>{L.privacyLink}</a>.
+      </p>
     </form>
   );
 }
@@ -146,4 +158,8 @@ const submitBtn: React.CSSProperties = {
   padding: '14px 30px', borderRadius: 999, border: '1.5px solid rgba(255,255,255,0.18)',
   background: 'linear-gradient(135deg, #CE1C6F, #AB0055)', color: '#fff',
   fontFamily: 'inherit', fontWeight: 900, fontSize: 16, cursor: 'pointer',
+};
+const privacyNote: React.CSSProperties = {
+  margin: '14px auto 0', maxWidth: 440, textAlign: 'center',
+  fontSize: 12.5, lineHeight: 1.5, color: BRAND.muted, fontWeight: 500,
 };

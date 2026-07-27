@@ -131,8 +131,11 @@ function Impressum() {
   );
 }
 
+// Fester "Stand" der Datenschutzerklaerung. Bei inhaltlichen Aenderungen anpassen.
+// (Frueher new Date() -> zeigte irrefuehrend immer das heutige Datum + SSR/Client-Mismatch.)
+const DATENSCHUTZ_STAND = '27.07.2026';
+
 function Datenschutz() {
-  const today = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
   return (
     <article>
       <H1>Datenschutzerklärung</H1>
@@ -158,7 +161,46 @@ function Datenschutz() {
         (berechtigtes Interesse am stabilen Betrieb).
       </P>
 
-      <H2>3. Lokaler Speicher (localStorage)</H2>
+      <H2>3. Kontaktformular und Kontaktaufnahme (Formspree)</H2>
+      <P>
+        Wenn du das Kontakt- oder Test-Team-Formular nutzt, verarbeite ich die
+        von dir eingegebenen Angaben (u. a. Name, E-Mail-Adresse sowie deine
+        Angaben zum Anlass, zur Personenzahl, zum Wunschtermin und deine
+        Nachricht), um deine Anfrage zu bearbeiten und dir zu antworten.
+        Rechtsgrundlage ist Art. 6 Abs. 1 lit. b DSGVO (Anbahnung bzw.
+        Durchführung eines Vertragsverhältnisses) sowie Art. 6 Abs. 1 lit. f
+        DSGVO (berechtigtes Interesse an der Beantwortung von Anfragen).
+      </P>
+      <P>
+        Der Versand läuft über den Dienst Formspree, Inc. (USA). Dabei werden
+        die Formulardaten an Server von Formspree in den USA übermittelt.
+        Grundlage der Übermittlung sind die EU-Standardvertragsklauseln
+        (Art. 46 DSGVO). Details findest du in der{' '}
+        <A href="https://formspree.io/legal/privacy-policy/">Datenschutzerklärung von Formspree</A>.
+        Deine Anfrage wird gespeichert, solange dies zur Bearbeitung
+        erforderlich ist, und anschließend gelöscht, soweit keine gesetzlichen
+        Aufbewahrungspflichten entgegenstehen.
+      </P>
+      <P>
+        Alternativ kannst du mich jederzeit direkt per E-Mail unter{' '}
+        <A href={`mailto:${EMAIL}`}>{EMAIL}</A> erreichen.
+      </P>
+
+      <H2>4. Reichweitenmessung (GoatCounter)</H2>
+      <P>
+        Zur Reichweitenmessung nutze ich GoatCounter. Der Dienst arbeitet
+        cookiefrei und bildet keine dauerhaften personenbezogenen Nutzerprofile.
+        Es werden anonymisierte Aufrufstatistiken erhoben (z. B. aufgerufene
+        Seite, Referrer, grobe Herkunft, Browsertyp); deine IP-Adresse wird nur
+        kurzzeitig verarbeitet und nicht dauerhaft gespeichert. Rechtsgrundlage
+        ist Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einer
+        datensparsamen Reichweitenmessung). Da keine Cookies gesetzt und keine
+        Endgeräte-Informationen im Sinne von § 25 TDDDG gespeichert werden, ist
+        keine Einwilligung erforderlich. Du kannst dieser Verarbeitung jederzeit
+        widersprechen (siehe Punkt 8).
+      </P>
+
+      <H2>5. Lokaler Speicher (localStorage)</H2>
       <P>
         Ich speichere in deinem Browser ausschließlich deine Sprach-Auswahl
         (DE/EN). Diese Information verlässt dein Gerät nicht. Rechtsgrundlage:
@@ -166,14 +208,14 @@ function Datenschutz() {
         Cookie-Banner nötig.
       </P>
 
-      <H2>4. Verlinkungen</H2>
+      <H2>6. Verlinkungen</H2>
       <P>
         Auf dieser Seite befinden sich Verlinkungen zu Instagram (Meta
         Platforms Ireland Ltd.) und play.cozyquiz.app. Beim Klick verlässt
         du diese Seite. Es gelten die Datenschutzerklärungen der Zielseiten.
       </P>
 
-      <H2>5. Schriftarten</H2>
+      <H2>7. Schriftarten</H2>
       <P>
         Diese Seite nutzt die Schriftarten „Nunito" und „League Spartan".
         Diese werden lokal von unserem eigenen Server ausgeliefert (selbst
@@ -182,7 +224,7 @@ function Datenschutz() {
         IP-Adresse an Dritte übermittelt.
       </P>
 
-      <H2>6. Deine Rechte</H2>
+      <H2>8. Deine Rechte</H2>
       <P>Du hast das Recht auf:</P>
       <Ul>
         <li>Auskunft (Art. 15 DSGVO)</li>
@@ -194,7 +236,7 @@ function Datenschutz() {
       </Ul>
       <P>Anfrage bitte an <A href={`mailto:${EMAIL}`}>{EMAIL}</A>.</P>
 
-      <H2>7. Beschwerderecht bei der Aufsichtsbehörde</H2>
+      <H2>9. Beschwerderecht bei der Aufsichtsbehörde</H2>
       <P>Du kannst dich jederzeit bei der zuständigen Aufsichtsbehörde beschweren:</P>
       <Pre>{[
         'Der Hamburgische Beauftragte für',
@@ -205,8 +247,8 @@ function Datenschutz() {
         'datenschutz-hamburg.de',
       ].join('\n')}</Pre>
 
-      <H2>8. Stand</H2>
-      <P>Diese Datenschutzerklärung gilt seit dem {today}.</P>
+      <H2>10. Stand</H2>
+      <P>Diese Datenschutzerklärung hat den Stand {DATENSCHUTZ_STAND}.</P>
     </article>
   );
 }
