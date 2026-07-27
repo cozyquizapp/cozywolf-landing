@@ -9,6 +9,18 @@
 @font-face { font-family: 'League Spartan'; font-style: normal; font-weight: 800; font-display: swap; src: url('/fonts/league-spartan-latin-800-normal.woff2') format('woff2'); }
 @font-face { font-family: 'League Spartan'; font-style: normal; font-weight: 900; font-display: swap; src: url('/fonts/league-spartan-latin-900-normal.woff2') format('woff2'); }
 
+:root {
+  --cw-bg: #0a0814;
+  --cw-ink: #e2e8f0;
+  --cw-ink-soft: rgba(226, 232, 240, 0.78);
+  --cw-line: rgba(255, 255, 255, 0.08);
+  --cw-surface: rgba(255, 255, 255, 0.04);
+  --cw-surface-strong: rgba(255, 255, 255, 0.06);
+  --cw-accent: #fa4ba3;
+  --cw-accent-soft: #ffc7e4;
+  --cw-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 *, *::before, *::after {
   margin: 0;
   padding: 0;
@@ -22,6 +34,7 @@ html {
   background: #0A0814;
   color-scheme: dark;
   overscroll-behavior-y: none;
+  scroll-padding-top: 92px;
 }
 
 body {
@@ -30,13 +43,25 @@ body {
   background: #0A0814;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color: var(--cw-ink);
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(250, 75, 163, 0.32);
+  color: #fff;
+}
+
+img {
+  max-width: 100%;
 }
 
 /* Sichtbarer Fokus-Ring, hoher Kontrast auf dunklem UI (WCAG 2.4.7/2.4.13) */
 :focus-visible {
-  outline: 2px solid #FFC7E4;
-  outline-offset: 2px;
+  outline: 3px solid #FFC7E4;
+  outline-offset: 3px;
   border-radius: 4px;
+  box-shadow: 0 0 0 1px rgba(10, 8, 20, 0.9);
 }
 
 /* Skip-Link: nur bei Tastatur-Fokus sichtbar (WCAG 2.4.1) */
@@ -60,13 +85,13 @@ body {
 /* Button-Feder: sanftes Anheben beim Hover, echtes Druck-Feedback beim Klick.
    Ruhiges Award-Easing, kein Zappeln. Reduced-Motion neutralisiert es unten. */
 .cw-btn {
-  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, filter 0.2s ease;
+  transition: transform 180ms var(--cw-ease-out), box-shadow 180ms var(--cw-ease-out), filter 180ms var(--cw-ease-out), border-color 180ms var(--cw-ease-out), background-color 180ms var(--cw-ease-out);
   will-change: transform;
 }
 @media (hover: hover) {
-  .cw-btn:hover { transform: translateY(-2px) scale(1.03); filter: brightness(1.05); }
+  .cw-btn:hover { transform: translateY(-2px); filter: brightness(1.04); }
 }
-.cw-btn:active { transform: translateY(0) scale(0.97); transition-duration: 0.08s; }
+.cw-btn:active { transform: translateY(0) scale(0.985); transition-duration: 0.08s; }
 
 /* Lebendige Produkt-Minis (Home-Modus-Karten): Grid fuellt sich Feld fuer Feld,
    Balken rennen + ueberholen, sanfte Endlos-Schleife. Basiszustand (ohne
@@ -113,14 +138,25 @@ body {
 
 /* Dezenter Karten-Hover (nur echte Zeiger/Desktop): sanftes Anheben + Rand-Glow.
    Auf Touch passiert nichts (dort uebernimmt das Scroll-Reveal). */
-.cw-card { transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.28s ease, box-shadow 0.28s ease; }
+.cw-card { transition: transform 0.28s var(--cw-ease-out), border-color 0.28s var(--cw-ease-out), box-shadow 0.28s var(--cw-ease-out), background-color 0.28s var(--cw-ease-out); }
 .cw-card__icon { transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1); }
 @media (hover: hover) and (pointer: fine) {
-  .cw-card:hover { transform: translateY(-5px); border-color: rgba(250, 75, 163, 0.5); box-shadow: 0 16px 34px rgba(0, 0, 0, 0.32); }
+  .cw-card:hover { transform: translateY(-6px); border-color: rgba(250, 75, 163, 0.34); box-shadow: 0 22px 44px rgba(0, 0, 0, 0.28); background: rgba(255,255,255,0.055); }
   .cw-card:hover .cw-card__icon { transform: scale(1.09) translateY(-2px); }
   .cw-card:hover .cw-card__arrow { transform: translateX(4px); }
 }
 .cw-card__arrow { transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1); display: inline-block; }
+
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(226, 232, 240, 0.42);
+}
 
 /* Sticky-Mobile-CTA: gleitet unten hoch, nur auf schmalen Screens */
 .cw-sticky-cta {
