@@ -4,6 +4,7 @@ import { BRAND, EMAIL, INSTA_URL, INSTA_HANDLE } from '../brand';
 import { useLang } from '../lang';
 import { Layout, Section, PageHero } from '../Layout';
 import { PriceNote } from '../components/PriceNote';
+import { AvailabilityNote } from '../components/AvailabilityNote';
 import { ContactForm } from '../components/ContactForm';
 
 const C = {
@@ -16,7 +17,7 @@ const C = {
     insta: 'Auf Instagram',
     ttTag: '🐺 Test-Team gesucht',
     ttTitle: 'Lieber gratis spielen und mithelfen?',
-    ttBody: 'Ich suche gerade ein paar Test-Teams in Hamburg. Ihr bekommt einen kompletten Quizabend aufs Haus — dafür sagt ihr mir ehrlich, was hakt.',
+    ttBody: 'Ich suche gerade ein paar Test-Teams in Hamburg. Ihr bekommt einen kompletten Quizabend aufs Haus, dafür sagt ihr mir ehrlich, was hakt.',
     ttCta: 'Test-Team werden',
   },
   en: {
@@ -28,7 +29,7 @@ const C = {
     insta: 'On Instagram',
     ttTag: '🐺 Test teams wanted',
     ttTitle: 'Rather play for free and help out?',
-    ttBody: 'I am looking for a few test teams in Hamburg right now. You get a full quiz night on the house — in return you tell me honestly what still needs work.',
+    ttBody: 'I am looking for a few test teams in Hamburg right now. You get a full quiz night on the house, and in return you tell me honestly what still needs work.',
     ttCta: 'Become a test team',
   },
 };
@@ -40,6 +41,7 @@ export default function KontaktPage() {
     <Layout>
       <PageHero eyebrow={c.eyebrow} title={c.title} sub={c.sub} />
       <Section style={{ paddingTop: 0 }}>
+        <div style={{ textAlign: 'center', marginBottom: 24 }}><AvailabilityNote /></div>
         <ContactForm />
         <div style={{
           maxWidth: 560, margin: '22px auto 0', textAlign: 'center',

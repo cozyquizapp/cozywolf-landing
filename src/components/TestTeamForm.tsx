@@ -22,7 +22,7 @@ export function TestTeamForm() {
         termin: 'Wann würde es passen?', terminPh: 'z. B. ein Freitag im Dezember, abends',
         nachricht: 'Noch was? (optional)', nachrichtPh: 'Location im Kopf? Fragen? Immer her damit.',
         send: 'Als Test-Team anmelden', sending: 'Senden …',
-        okT: 'Ihr seid dabei! 🐺', okB: 'Ich melde mich mit einem Terminvorschlag — meist geht das schnell. Euer Quizabend geht aufs Haus.',
+        okT: 'Ihr seid dabei! 🐺', okB: 'Ich melde mich mit einem Terminvorschlag, meist geht das schnell. Euer Quizabend geht aufs Haus.',
         errB: 'Da ging etwas schief. Schreib mir gern direkt an',
         req: 'Pflichtfeld',
         privacy: 'Mit dem Absenden verarbeite ich deine Angaben, um deine Anfrage zu beantworten. Mehr dazu in der',

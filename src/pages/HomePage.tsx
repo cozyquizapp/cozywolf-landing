@@ -13,6 +13,7 @@ import { GridEmblem, ArenaEmblem } from '../components/ModeEmblems';
 import { Icon } from '../components/Icon';
 import { Reveal } from '../components/Reveal';
 import { SeasonalHint } from '../components/SeasonalHint';
+import { AvailabilityNote } from '../components/AvailabilityNote';
 import { FaqSection } from '../components/FaqSection';
 import { PriceNote } from '../components/PriceNote';
 import { StatsBand } from '../components/StatsBand';
@@ -117,9 +118,12 @@ export default function HomePage() {
         visual={<img src="/logo.webp" alt="" width={148} height={148} fetchPriority="high" style={{ width: '100%', height: 'auto', filter: `drop-shadow(0 8px 24px rgba(${BRAND.pinkRgb},0.45))` }} />}
       />
       <SeasonalHint />
-      <Section style={{ paddingTop: 0, display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-        <Btn href="/kontakt">{d.ctaBook}</Btn>
-        <Btn href="#mini" variant="secondary">{c.ctaTry}</Btn>
+      <Section style={{ paddingTop: 0, display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Btn href="/kontakt">{d.ctaBook}</Btn>
+          <Btn href="#mini" variant="secondary">{c.ctaTry}</Btn>
+        </div>
+        <AvailabilityNote />
       </Section>
 
       {/* Zielgruppen zuerst: Veranstalter ordnet sich sofort ein */}
