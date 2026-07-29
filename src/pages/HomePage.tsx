@@ -59,6 +59,7 @@ const C = {
     ctaTitle: 'Lust auf ein Quiz?',
     ctaBody: 'Schreib mir kurz zum Anlass und zur ungefähren Personenzahl, dann melde ich mich mit einem Vorschlag.',
     ctaTry: 'Quiz ausprobieren',
+    ctaTest: 'Test-Team werden',
   },
   en: {
     eyebrow: 'stay cozy. stay curious.',
@@ -100,6 +101,7 @@ const C = {
     ctaTitle: 'Up for a quiz?',
     ctaBody: 'Drop me a line about the occasion and rough number of people, and I will come back with a suggestion.',
     ctaTry: 'Try the quiz',
+    ctaTest: 'Become a test team',
   },
 };
 
@@ -121,6 +123,7 @@ export default function HomePage() {
       <Section style={{ paddingTop: 0, display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'center' }}>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Btn href="/kontakt">{d.ctaBook}</Btn>
+          <Btn href="/testen" variant="secondary">{c.ctaTest}</Btn>
           <Btn href="#mini" variant="secondary">{c.ctaTry}</Btn>
         </div>
         <AvailabilityNote />

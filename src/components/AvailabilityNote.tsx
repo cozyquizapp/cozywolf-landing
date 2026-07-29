@@ -15,16 +15,18 @@ export function AvailabilityNote() {
   const text = de
     ? <>Nächste freie Termine <strong style={{ color: BRAND.ink, fontWeight: 900 }}>{AVAIL_DE}</strong>. Sichere dir jetzt deinen Wunschtermin.</>
     : <>Next available dates <strong style={{ color: BRAND.ink, fontWeight: 900 }}>{AVAIL_EN}</strong>. Secure your preferred slot now.</>;
+  // Emoji INLINE im Text (nicht als eigenes Flex-Kind) → bricht nicht in eine
+  // eigene Zeile ab; der ganze Block ist zentriert, egal ob 1 oder 2 Zeilen.
   return (
     <div style={{
-      maxWidth: 560, margin: '0 auto',
-      display: 'inline-flex', alignItems: 'center', gap: 10, flexWrap: 'wrap', justifyContent: 'center',
-      padding: '9px 16px', borderRadius: 999,
+      maxWidth: 520, margin: '0 auto',
+      padding: '11px 22px', borderRadius: 16, textAlign: 'center',
       background: `rgba(${BRAND.pinkRgb},0.08)`,
       border: `1px solid rgba(${BRAND.pinkRgb},0.28)`,
     }}>
-      <span aria-hidden style={{ fontSize: 15 }}>📅</span>
-      <span style={{ fontSize: 14.5, fontWeight: 700, color: BRAND.inkSoft, lineHeight: 1.4 }}>{text}</span>
+      <span style={{ fontSize: 14.5, fontWeight: 700, color: BRAND.inkSoft, lineHeight: 1.5 }}>
+        <span aria-hidden style={{ marginRight: 8 }}>📅</span>{text}
+      </span>
     </div>
   );
 }
