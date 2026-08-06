@@ -9,7 +9,7 @@ import { TestTeamForm } from '../components/TestTeamForm';
 const C = {
   de: {
     eyebrow: 'Test-Team gesucht',
-    title: 'Spiel mein Quiz, bevor es alle tun.',
+    title: 'Ein Pub-Quiz mit Spielbrett.',
     sub: 'Ich baue ein Quiz: halb Pub-Quiz, halb Strategiespiel. Gespielt wird am Handy, euer Team erobert Feld für Feld. Ich suche ein paar Teams, die es mit mir durchspielen.',
     offerTag: 'Der Deal',
     offerTitle: 'Euer Quizabend? Geht aufs Haus.',
@@ -29,7 +29,7 @@ const C = {
   },
   en: {
     eyebrow: 'Test teams wanted',
-    title: 'Play my quiz before everyone else does.',
+    title: 'A pub quiz with a game board.',
     sub: 'I am building a quiz: half pub quiz, half strategy game. You play on your phones and your team conquers the board field by field. I am looking for a few teams to play it through with me.',
     offerTag: 'The deal',
     offerTitle: 'Your quiz night? On the house.',
