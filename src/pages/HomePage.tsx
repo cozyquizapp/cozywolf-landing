@@ -123,9 +123,9 @@ export default function HomePage() {
       <SeasonalHint />
       <Section style={{ paddingTop: 0, display: 'flex', flexDirection: 'column', gap: 16, alignItems: 'center' }}>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Btn href="/kontakt">{d.ctaBook}</Btn>
-          <Btn href="/testen" variant="secondary">{c.ctaTest}</Btn>
-          <Btn href="#mini" variant="secondary">{c.ctaTry}</Btn>
+          <Btn href="/kontakt" event="cta-anfragen-home-hero">{d.ctaBook}</Btn>
+          <Btn href="/testen" variant="secondary" event="cta-testteam-home-hero">{c.ctaTest}</Btn>
+          <Btn href="#mini" variant="secondary" event="cta-miniquiz-home-hero">{c.ctaTry}</Btn>
         </div>
         <AvailabilityNote />
       </Section>
@@ -238,7 +238,7 @@ export default function HomePage() {
           <h2 style={{ margin: '0 0 12px', fontFamily: FONT_DISPLAY, fontSize: 'clamp(26px, 3.4vw, 40px)', fontWeight: 800, color: '#F1F5F9' }}>{c.ctaTitle}</h2>
           <p style={{ margin: '0 auto 16px', maxWidth: 560, fontSize: 17, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>{c.ctaBody}</p>
           <PriceNote />
-          <Btn href="/kontakt">{d.ctaBook}</Btn>
+          <Btn href="/kontakt" event="cta-anfragen-home-ende">{d.ctaBook}</Btn>
         </div>
       </Section>
     </Layout>

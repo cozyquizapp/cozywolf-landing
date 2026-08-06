@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { BRAND, EMAIL, FORMSPREE_ID, FORMSPREE_ACTIVE } from '../brand';
 import { Icon } from './Icon';
 import { useLang } from '../lang';
+import { track } from '../track';
 
 type Status = 'idle' | 'sending' | 'ok' | 'error';
 
@@ -55,6 +56,7 @@ export function ContactForm() {
         `${L.name}: ${data.get('name') || ''}`,
         '', String(data.get('nachricht') || ''),
       ].join('\n');
+      track('form-kontakt-mailto');
       window.location.href =
         `mailto:${EMAIL}?subject=${encodeURIComponent(de ? 'Quiz-Anfrage' : 'Quiz booking request')}&body=${encodeURIComponent(body)}`;
       return;
@@ -65,7 +67,7 @@ export function ContactForm() {
       const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
         method: 'POST', body: data, headers: { Accept: 'application/json' },
       });
-      if (res.ok) { setStatus('ok'); form.reset(); }
+      if (res.ok) { setStatus('ok'); form.reset(); track('form-kontakt-gesendet'); }
       else setStatus('error');
     } catch { setStatus('error'); }
   }

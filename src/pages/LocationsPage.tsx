@@ -130,7 +130,7 @@ export default function LocationsPage() {
         }}>
           <div style={{ fontSize: 13, fontWeight: 900, letterSpacing: '0.1em', textTransform: 'uppercase', color: BRAND.pink, marginBottom: 12 }}>{c.noteT}</div>
           <p style={{ margin: '0 auto 24px', fontSize: 16, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.65 }}>{c.noteB}</p>
-          <Btn href="/kontakt">{c.cta}</Btn>
+          <Btn href="/kontakt" event="cta-anfragen-locations">{c.cta}</Btn>
         </div>
       </Section>
     </Layout>

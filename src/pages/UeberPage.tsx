@@ -47,7 +47,7 @@ export default function UeberPage() {
             ))}
           </div>
           <PriceNote />
-          <Btn href="/kontakt">{d.ctaBook}</Btn>
+          <Btn href="/kontakt" event="cta-anfragen-ueber">{d.ctaBook}</Btn>
         </div>
       </Section>
     </Layout>

@@ -38,6 +38,7 @@ const ORG_LD = {
   url: BASE,
   image: OG_IMG,
   email: 'hallo@cozywolf.de',
+  priceRange: 'ab 350 €',
   areaServed: { '@type': 'City', name: 'Hamburg' },
   address: { '@type': 'PostalAddress', addressLocality: 'Hamburg', addressCountry: 'DE' },
   founder: { '@type': 'Person', name: 'Johannes' },

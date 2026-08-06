@@ -71,7 +71,7 @@ export default function FirmenPage() {
       <PageHero eyebrow={c.eyebrow} title={c.title} sub={c.sub} />
       <SeasonalHint />
       <Section style={{ paddingTop: 0, textAlign: 'center' }}>
-        <Btn href="/kontakt">{c.cta}</Btn>
+        <Btn href="/kontakt" event="cta-anfragen-firmen-hero">{c.cta}</Btn>
       </Section>
 
       <OrganizerFacts compact />
@@ -106,7 +106,7 @@ export default function FirmenPage() {
           ))}
         </div>
         <PriceNote address="ihr" />
-        <Btn href="/kontakt">{c.cta}</Btn>
+        <Btn href="/kontakt" event="cta-anfragen-firmen-ende">{c.cta}</Btn>
       </Section>
     </Layout>
   );

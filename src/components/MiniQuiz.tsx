@@ -175,7 +175,7 @@ export function MiniQuiz() {
                   : 'And that was just a tiny taste. The real event has five question types, teams and plenty of surprises.'}
             </p>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginTop: 4 }}>
-              <Btn href="/kontakt">{de ? 'Quiz anfragen' : 'Request a quiz'}</Btn>
+              <Btn href="/kontakt" event="cta-anfragen-miniquiz">{de ? 'Quiz anfragen' : 'Request a quiz'}</Btn>
               <button onClick={restart} style={ghostBtn}>{de ? 'Nochmal' : 'Again'}</button>
             </div>
           </div>

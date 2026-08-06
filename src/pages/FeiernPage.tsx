@@ -69,7 +69,7 @@ export default function FeiernPage() {
     <Layout>
       <PageHero eyebrow={c.eyebrow} title={c.title} sub={c.sub} />
       <Section style={{ paddingTop: 0, textAlign: 'center' }}>
-        <Btn href="/kontakt">{c.cta}</Btn>
+        <Btn href="/kontakt" event="cta-anfragen-feiern-hero">{c.cta}</Btn>
       </Section>
 
       {/* Warme Signature-Band mit Party-Wolf: emotionaler Anker der Feiern-Seite */}
@@ -116,7 +116,7 @@ export default function FeiernPage() {
           ))}
         </div>
         <PriceNote />
-        <Btn href="/kontakt">{c.cta}</Btn>
+        <Btn href="/kontakt" event="cta-anfragen-feiern-ende">{c.cta}</Btn>
       </Section>
     </Layout>
   );

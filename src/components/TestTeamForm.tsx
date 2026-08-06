@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { BRAND, EMAIL, FORMSPREE_ID, FORMSPREE_ACTIVE } from '../brand';
 import { Icon } from './Icon';
 import { useLang } from '../lang';
+import { track } from '../track';
 
 type Status = 'idle' | 'sending' | 'ok' | 'error';
 
@@ -56,6 +57,7 @@ export function TestTeamForm() {
         `${L.termin}: ${data.get('termin') || ''}`,
         '', String(data.get('nachricht') || ''),
       ].join('\n');
+      track('form-testteam-mailto');
       window.location.href =
         `mailto:${EMAIL}?subject=${encodeURIComponent(de ? 'Test-Team werden' : 'Test team sign-up')}&body=${encodeURIComponent(body)}`;
       return;
@@ -66,7 +68,7 @@ export function TestTeamForm() {
       const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
         method: 'POST', body: data, headers: { Accept: 'application/json' },
       });
-      if (res.ok) { setStatus('ok'); form.reset(); }
+      if (res.ok) { setStatus('ok'); form.reset(); track('form-testteam-gesendet'); }
       else setStatus('error');
     } catch { setStatus('error'); }
   }

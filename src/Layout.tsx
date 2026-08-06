@@ -7,6 +7,7 @@ import { BRAND, FONT_DISPLAY, FONT_BODY, EMAIL, INSTA_URL, INSTA_HANDLE } from '
 import { useLang, setLang, type Lang } from './lang';
 import { usePath } from './pathContext';
 import { t } from './i18n';
+import { track } from './track';
 import { Icon } from './components/Icon';
 import { Fireflies } from './components/Fireflies';
 
@@ -169,7 +170,7 @@ function StickyMobileCta({ lang }: { lang: Lang }) {
   if (path === '/kontakt') return null;
   return (
     <div className="cw-sticky-cta" data-show={show} aria-hidden={!show}>
-      <a href="/kontakt" className="cw-btn" tabIndex={show ? 0 : -1} style={{
+      <a href="/kontakt" className="cw-btn" tabIndex={show ? 0 : -1} onClick={() => track('cta-anfragen-sticky')} style={{
         display: 'inline-flex', alignItems: 'center', gap: 8,
         padding: '14px 30px', borderRadius: 999, textDecoration: 'none',
         fontWeight: 900, fontSize: 16, color: '#fff',
@@ -218,8 +219,10 @@ const dot: React.CSSProperties = { color: BRAND.muted, opacity: 0.5 };
 
 // ─── Geteilte Seiten-Primitive ────────────────────────────────────────────
 
-export function Btn({ href, children, variant = 'primary' }: {
+export function Btn({ href, children, variant = 'primary', event }: {
   href: string; children: ReactNode; variant?: 'primary' | 'secondary';
+  /** Optionaler GoatCounter-Event-Name, wird beim Klick gezaehlt (track.ts). */
+  event?: string;
 }) {
   const external = href.startsWith('http') || href.startsWith('mailto:');
   const base: React.CSSProperties = {
@@ -232,7 +235,8 @@ export function Btn({ href, children, variant = 'primary' }: {
     ? { ...base, background: 'linear-gradient(135deg, #CE1C6F, #AB0055)', color: '#fff', border: '1.5px solid rgba(255,255,255,0.18)' }
     : { ...base, background: `rgba(${BRAND.pinkRgb},0.10)`, color: BRAND.pinkSoft, border: `1.5px solid rgba(${BRAND.pinkRgb},0.40)` };
   return (
-    <a className="cw-btn" href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined} style={style}>
+    <a className="cw-btn" href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined}
+      onClick={event ? () => track(event) : undefined} style={style}>
       {children}
     </a>
   );
