@@ -21,12 +21,13 @@ const META = {
   '/testen':      { t: 'Test-Team werden — spiel mein Quiz | CozyWolf', d: 'Ich suche Test-Teams für mein Live-Quiz. Ihr bekommt einen kompletten Quizabend gratis, ich höre euer Feedback. 3–4 Leute, in Hamburg und Umland.' },
   '/impressum':   { t: 'Impressum, CozyWolf', d: 'Impressum und Anbieterkennzeichnung von CozyWolf.' },
   '/datenschutz': { t: 'Datenschutz, CozyWolf', d: 'Datenschutzerklärung von cozywolf.de.' },
+  '/404':         { t: 'Seite nicht gefunden, CozyWolf', d: 'Diese Seite gibt es nicht. Zurück zur Startseite von CozyWolf.' },
 };
 const ROUTES = Object.keys(META);
 // /testen = Kampagnen-Landing (Reel/Insta) → prerendert für Link-Previews,
 // aber noindex, damit die zeitlich begrenzte Test-Team-Aktion nicht dauerhaft
 // im Google-Index/der Sitemap steht.
-const NOINDEX = new Set(['/impressum', '/datenschutz', '/testen']);
+const NOINDEX = new Set(['/impressum', '/datenschutz', '/testen', '/404']);
 
 // LocalBusiness/ProfessionalService — Local-SEO-Grundlage, auf jeder Route.
 const ORG_LD = {
@@ -118,10 +119,18 @@ for (const route of ROUTES) {
     .replace('</head>', `${head.join('')}</head>`)
     .replace('<div id="root"></div>', `<div id="root">${render(route)}</div>`);
 
-  const dir = route === '/' ? 'dist' : path.join('dist', route);
-  fs.mkdirSync(dir, { recursive: true });
-  fs.writeFileSync(path.join(dir, 'index.html'), html);
-  console.log('prerendered', route, '->', path.join(dir, 'index.html'));
+  // /404 wird als flache Datei dist/404.html geschrieben. Vercel liefert eine
+  // 404.html im Output-Root automatisch mit Status 404 aus, wenn kein Pfad passt.
+  let out;
+  if (route === '/404') {
+    out = path.join('dist', '404.html');
+  } else {
+    const dir = route === '/' ? 'dist' : path.join('dist', route);
+    fs.mkdirSync(dir, { recursive: true });
+    out = path.join(dir, 'index.html');
+  }
+  fs.writeFileSync(out, html);
+  console.log('prerendered', route, '->', out);
 }
 
 // sitemap.xml aus den indexierbaren Routen (Legal ausgenommen).

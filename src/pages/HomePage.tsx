@@ -15,6 +15,7 @@ import { Reveal } from '../components/Reveal';
 import { SeasonalHint } from '../components/SeasonalHint';
 import { AvailabilityNote } from '../components/AvailabilityNote';
 import { FaqSection } from '../components/FaqSection';
+import { VoicesSection } from '../components/VoicesSection';
 import { PriceNote } from '../components/PriceNote';
 import { StatsBand } from '../components/StatsBand';
 
@@ -220,6 +221,10 @@ export default function HomePage() {
           </div>
         </div>
       </Section>
+
+      {/* Stimmen echter Teilnehmer. Rendert nichts, solange in
+          components/VoicesSection.tsx keine Zitate eingetragen sind. */}
+      <VoicesSection />
 
       <FaqSection />
 

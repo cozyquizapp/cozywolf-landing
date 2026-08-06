@@ -6,7 +6,8 @@
     { "source": "/locations", "destination": "/locations/index.html" },
     { "source": "/feiern", "destination": "/feiern/index.html" },
     { "source": "/ueber", "destination": "/ueber/index.html" },
-    { "source": "/kontakt", "destination": "/kontakt/index.html" }
+    { "source": "/kontakt", "destination": "/kontakt/index.html" },
+    { "source": "/testen", "destination": "/testen/index.html" }
   ],
   "headers": [
     {

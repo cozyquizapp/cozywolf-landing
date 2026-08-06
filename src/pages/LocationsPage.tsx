@@ -5,7 +5,8 @@ import { BRAND } from '../brand';
 import { useLang } from '../lang';
 import { Layout, Section, Btn, PageHero } from '../Layout';
 import { SplitRow } from '../components/SplitRow';
-import { MiniGrid, MiniBars } from '../components/ModeMinis';
+import { MiniGrid } from '../components/ModeMinis';
+import { BarRaceCard } from '../components/BarRaceTeaser';
 import { OrganizerFacts } from '../components/OrganizerFacts';
 import { Icon } from '../components/Icon';
 import { Reveal } from '../components/Reveal';
@@ -110,7 +111,9 @@ export default function LocationsPage() {
           <SplitRow visual={<ModeVisual accent={BRAND.pink}><MiniGrid /></ModeVisual>}>
             <ModeText eyebrow={c.m1Eyebrow} title={c.m1Title} body={c.m1Body} info={c.m1Info} accent={BRAND.pink} />
           </SplitRow>
-          <SplitRow flip visual={<ModeVisual accent={BRAND.magenta}><MiniBars /></ModeVisual>}>
+          {/* Race-Karte von der Firmen-Seite statt der frueheren Mini-Balken:
+              die Karte bringt Wappen, Zahlen und Krone mit und traegt sich selbst. */}
+          <SplitRow flip visual={<BarRaceCard />}>
             <ModeText eyebrow={c.m2Eyebrow} title={c.m2Title} body={c.m2Body} info={c.m2Info} accent={BRAND.magenta} />
           </SplitRow>
         </div>

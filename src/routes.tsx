@@ -11,6 +11,7 @@ import FeiernPage from './pages/FeiernPage';
 import UeberPage from './pages/UeberPage';
 import KontaktPage from './pages/KontaktPage';
 import TestenPage from './pages/TestenPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 export function normalizePath(p: string): string {
   return p.replace(/\/+$/, '') || '/';
@@ -18,6 +19,7 @@ export function normalizePath(p: string): string {
 
 function pageFor(path: string): ReactElement {
   switch (path) {
+    case '/': return <HomePage />;
     case '/impressum': return <LegalPage doc="impressum" />;
     case '/datenschutz': return <LegalPage doc="datenschutz" />;
     case '/firmen': return <FirmenPage />;
@@ -26,7 +28,8 @@ function pageFor(path: string): ReactElement {
     case '/ueber': return <UeberPage />;
     case '/kontakt': return <KontaktPage />;
     case '/testen': return <TestenPage />;
-    default: return <HomePage />;
+    // Unbekannte Pfade: echte 404-Seite statt still die Startseite (Soft-404).
+    default: return <NotFoundPage />;
   }
 }
 

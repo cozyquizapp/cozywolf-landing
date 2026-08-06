@@ -5,40 +5,21 @@
  * Logik im App.tsx). Brand-themed, Mobile-First.
  *
  * Stand 2026-07-08: echte Anbieterkennzeichnung (aus wonky guess uebernommen).
+ * Stand 2026-08-06: im Layout (Nav + Footer) statt eigener Huelle; Farben aus
+ * brand.ts (Marketing-Pink) statt lokaler Kopie mit dem alten App-Pink.
  */
+import { BRAND } from './brand';
+import { Layout } from './Layout';
 
 const PLACEHOLDER_MODE = false;
 const NAME_PLACEHOLDER = 'Johannes Wolf';
 const ADDRESS_PLACEHOLDER = 'Mählstr. 9b\n22523 Hamburg';
 const EMAIL = 'hallo@cozywolf.de';
 
-const BRAND = {
-  pink:    '#EC4899',
-  pinkRgb: '236,72,153',
-  bg:      '#0A0814',
-};
-
 export default function LegalPage({ doc }: { doc: 'impressum' | 'datenschutz' }) {
   return (
-    <main style={{
-      minHeight: '100vh',
-      background:
-        `radial-gradient(ellipse at 22% 28%, rgba(${BRAND.pinkRgb},0.18) 0%, transparent 55%),` +
-        'radial-gradient(ellipse at 78% 72%, rgba(30,42,90,0.22) 0%, transparent 55%),' +
-        `linear-gradient(180deg, #14101F 0%, ${BRAND.bg} 100%)`,
-      color: '#e2e8f0',
-      fontFamily: "'Nunito', system-ui, sans-serif",
-      padding: '32px 20px 60px',
-    }}>
-      <div style={{ maxWidth: 720, margin: '0 auto' }}>
-        <div style={{ marginBottom: 24 }}>
-          <a href="/" style={{
-            color: BRAND.pink, textDecoration: 'none',
-            fontSize: 14, fontWeight: 800,
-            display: 'inline-flex', alignItems: 'center', gap: 6,
-          }}>← Zurück</a>
-        </div>
-
+    <Layout>
+      <div style={{ maxWidth: 720, margin: '0 auto', padding: '32px 20px 60px' }}>
         {PLACEHOLDER_MODE && (
           <div style={{
             padding: '14px 18px', borderRadius: 12,
@@ -62,7 +43,7 @@ export default function LegalPage({ doc }: { doc: 'impressum' | 'datenschutz' })
 
         {doc === 'impressum' ? <Impressum /> : <Datenschutz />}
       </div>
-    </main>
+    </Layout>
   );
 }
 

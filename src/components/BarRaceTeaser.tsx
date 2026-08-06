@@ -18,19 +18,29 @@ const ROWS: Row[] = [
 
 export function BarRaceTeaser() {
   const de = useLang() === 'de';
-  const max = Math.max(...ROWS.map(r => r.val));
   return (
     <Section>
-      <style>{`@keyframes cwBarGrow { from { width: 0; } to { width: var(--cw-w); } }`}</style>
       <h2 style={secTitle}>{de ? 'Das Fraktions-Rennen' : 'The faction race'}</h2>
       <p style={{ margin: '0 auto clamp(22px, 3vh, 34px)', maxWidth: 620, textAlign: 'center', fontSize: 17, color: BRAND.inkSoft, fontWeight: 500, lineHeight: 1.6 }}>
         {de
           ? 'Nach jeder Frage wächst der Balken eurer Fraktion. Wer vorne liegt, trägt die Krone, bis ihn jemand überholt. Bis zur letzten Frage bleibt es offen.'
           : "After each question your faction's bar grows. Whoever leads wears the crown, until someone overtakes. It stays open until the last question."}
       </p>
+      <BarRaceCard />
+    </Section>
+  );
+}
 
+// Nur die Race-Karte (ohne Section/Titel), wiederverwendbar als Visual,
+// z.B. im Split-Layout der Locations-Seite.
+export function BarRaceCard() {
+  const de = useLang() === 'de';
+  const max = Math.max(...ROWS.map(r => r.val));
+  return (
+    <>
+      <style>{`@keyframes cwBarGrow { from { width: 0; } to { width: var(--cw-w); } }`}</style>
       <div style={{
-        maxWidth: 620, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 12,
+        width: '100%', maxWidth: 620, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 12,
         padding: 'clamp(16px, 2.4vw, 24px)', borderRadius: 22,
         background: 'rgba(255,255,255,0.03)', border: `1px solid rgba(${BRAND.pinkRgb},0.16)`,
       }}>
@@ -70,7 +80,7 @@ export function BarRaceTeaser() {
           );
         })}
       </div>
-    </Section>
+    </>
   );
 }
 
