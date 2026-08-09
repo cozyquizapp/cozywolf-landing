@@ -4,7 +4,7 @@
 import type { ReactElement } from 'react';
 import { PathCtx } from './pathContext';
 import LegalPage from './LegalPage';
-import HomePage from './pages/HomePage';
+import OnePage from './pages/OnePage';
 import FirmenPage from './pages/FirmenPage';
 import LocationsPage from './pages/LocationsPage';
 import FeiernPage from './pages/FeiernPage';
@@ -19,7 +19,9 @@ export function normalizePath(p: string): string {
 
 function pageFor(path: string): ReactElement {
   switch (path) {
-    case '/': return <HomePage />;
+    // Startseite ist der Rework-One-Pager (Entwurf E4). Die alte HomePage
+    // liegt noch in pages/, die Unterseiten bleiben direkt erreichbar.
+    case '/': return <OnePage />;
     case '/impressum': return <LegalPage doc="impressum" />;
     case '/datenschutz': return <LegalPage doc="datenschutz" />;
     case '/firmen': return <FirmenPage />;
