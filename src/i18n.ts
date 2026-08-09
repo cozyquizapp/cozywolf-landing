@@ -5,8 +5,7 @@ import type { Lang } from './lang';
 
 type Dict = {
   // Nav
-  navFirmen: string; navLocations: string; navFeiern: string;
-  navUeber: string; navKontakt: string;
+  navHome: string; navKontakt: string;
   // Footer
   footerTagline: string; footerImprint: string; footerPrivacy: string;
   footerWonky: string; footerMade: string;
@@ -23,8 +22,7 @@ type Dict = {
 };
 
 const de: Dict = {
-  navFirmen: 'Für Firmen', navLocations: 'Für Locations', navFeiern: 'Private Feiern',
-  navUeber: 'Über mich', navKontakt: 'Kontakt',
+  navHome: 'Startseite', navKontakt: 'Kontakt',
   footerTagline: 'Live-Quiz-Events, moderiert von mir.',
   footerImprint: 'Impressum', footerPrivacy: 'Datenschutz',
   footerWonky: 'Wonky Guess',
@@ -46,8 +44,7 @@ const de: Dict = {
 };
 
 const en: Dict = {
-  navFirmen: 'For companies', navLocations: 'For venues', navFeiern: 'Private parties',
-  navUeber: 'About me', navKontakt: 'Contact',
+  navHome: 'Home', navKontakt: 'Contact',
   footerTagline: 'Live quiz events, hosted by me.',
   footerImprint: 'Imprint', footerPrivacy: 'Privacy',
   footerWonky: 'Wonky Guess',

@@ -1155,8 +1155,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           <div data-reveal="" data-m="wall" onMouseEnter={beamStart} onMouseLeave={beamStop} onClick={beamStart}
             style={sx('position:relative;margin:0 0 44px;cursor:pointer')}>
             <div style={sx('position:relative;width:100%;aspect-ratio:16/9;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:#0d0a17')}>
-              <img src="/assets/beamer-aus.webp" loading="lazy" decoding="async" alt="" style={sx('position:absolute;inset:0;width:100%;height:100%;object-fit:cover')} />
-              <img src="/assets/beamer-an.webp" loading="lazy" decoding="async" alt="" aria-hidden="true"
+              <img src="/assets/wand.webp" loading="lazy" decoding="async" alt="" style={sx('position:absolute;inset:0;width:100%;height:100%;object-fit:cover')} />
+              <img src="/assets/wand-an.webp" loading="lazy" decoding="async" alt="" aria-hidden="true"
                 style={sx(`position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:${on ? 1 : 0};transition:opacity .9s ${EASE} ${on ? '.1s' : '.15s'}`)} />
               <div data-m="screenbox" style={sx(`position:absolute;left:29.1%;top:13.7%;width:44.7%;height:31.4%;overflow:hidden;pointer-events:none;border-radius:16px;background:${on ? '#0b0714' : 'transparent'};box-shadow:${on ? '0 0 70px rgba(255,242,250,.22),0 0 22px rgba(255,242,250,.14)' : '0 0 0 rgba(0,0,0,0)'};transition:box-shadow 1.1s ${EASE} ${on ? '.2s' : '0s'},background .45s ${EASE} ${on ? '0s' : '.35s'}`)}>
                 <div aria-hidden="true" style={sx(`position:absolute;inset:0;z-index:12;pointer-events:none;border-radius:14px;opacity:0;background:linear-gradient(160deg,#fffdfb,#ece2ea);animation:${on ? 'cwBeamOn 1.9s cubic-bezier(.4,0,.3,1) both' : 'none'};transition:opacity .8s ease`)}></div>

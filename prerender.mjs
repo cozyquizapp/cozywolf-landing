@@ -1,40 +1,42 @@
 // Build-Prerender: erzeugt fuer jede Route statisches HTML mit Inhalt (damit
 // Crawler/AI/Link-Previews ohne JavaScript lesen koennen) UND setzt pro Seite
 // eigene Meta-Titel/Beschreibung + Open-Graph/Twitter-Tags + Canonical +
-// JSON-LD (LocalBusiness/FAQPage/Person). Schreibt am Ende sitemap.xml.
+// JSON-LD (LocalBusiness/FAQPage). Schreibt am Ende sitemap.xml.
 // Laeuft nach `vite build` (Client) + `vite build --ssr` (Server).
+//
+// Die Startseite hat zwei eigenstaendige Fassungen: '/d' (Desktop) und '/m'
+// (Mobil). Beide werden per vercel.json unter '/' ausgespielt (User-Agent-
+// Weiche), deshalb zeigen Canonical und og:url beider Fassungen auf '/'.
+// dist/index.html wird nach dem Prerender geloescht, damit die Rewrites fuer
+// '/' greifen (Vercel bedient sonst die Datei aus dem Dateisystem zuerst).
 import fs from 'node:fs';
 import path from 'node:path';
 
 const BASE = 'https://cozywolf.de';
 const OG_IMG = `${BASE}/assets/og-cover.png`;
 
-// Route -> Titel + Beschreibung (Deutsch = Prerender-Default). Titel keyword-nah
-// (Hamburg + Suchbegriffe) fuer die Haupt-Zielgruppen-Seiten.
+const HOME = {
+  t: 'CozyWolf, Live-Quiz-Events in Hamburg',
+  d: 'Moderierte Live-Quiz-Events in Hamburg und Umland. Für Firmen, private Feiern und Locations. Ich bringe Beamer, Sound und Moderation mit, ab 350 € für den ganzen Abend.',
+};
+
+// Route -> Titel + Beschreibung (Deutsch = Prerender-Default) + Canonical.
 const META = {
-  '/':            { t: 'CozyWolf, Live-Quiz-Events in Hamburg', d: 'Moderierte Live-Quiz-Events in Hamburg und Umland. Für Firmen, private Feiern und Locations. Ich bringe Beamer, Sound und Moderation mit, ab 350 € für den ganzen Abend.' },
-  '/firmen':      { t: 'Teamevent-Quiz für Firmen in Hamburg | CozyWolf', d: 'Ein Team-Event, bei dem eure Abteilungen als Fraktionen gegeneinander antreten. Faire Wertung, bis etwa 100 Personen, in Hamburg und Umland.' },
-  '/feiern':      { t: 'Quiz für Geburtstag & private Feiern | CozyWolf Hamburg', d: 'Ein gemütlicher Quiz-Abend für Geburtstag und Freundeskreis. Kleine Teams erobern das Spielfeld, ich moderiere den ganzen Abend.' },
-  '/locations':   { t: 'Kneipenquiz für Bars & Pubs in Hamburg | CozyWolf', d: 'Ein wiederkehrender Quiz-Abend für Café, Bar oder Pub, der Gäste an ruhigen Tagen bringt und zum Wiederkommen bewegt.' },
-  '/ueber':       { t: 'Über Johannes, CozyWolf', d: 'Ich bin Johannes, Pädagoge und Moderator. Ich entwickle und moderiere die CozyWolf-Quiz-Events selbst, mit einem guten Blick für die Gruppe.' },
-  '/kontakt':     { t: 'Kontakt, CozyWolf', d: 'Frag dein Quiz-Event an. Schreib mir kurz zu Anlass, Personenzahl und Wunsch-Zeitraum, ich melde mich mit einem Vorschlag.' },
-  '/testen':      { t: 'Test-Team werden — spiel mein Quiz | CozyWolf', d: 'Ich suche Test-Teams für mein Live-Quiz. Ihr bekommt einen kompletten Quizabend gratis, ich höre euer Feedback. 3–4 Leute, in Hamburg und Umland.' },
+  '/d':           { ...HOME, canonical: '/' },
+  '/m':           { ...HOME, canonical: '/' },
   '/impressum':   { t: 'Impressum, CozyWolf', d: 'Impressum und Anbieterkennzeichnung von CozyWolf.' },
   '/datenschutz': { t: 'Datenschutz, CozyWolf', d: 'Datenschutzerklärung von cozywolf.de.' },
   '/404':         { t: 'Seite nicht gefunden, CozyWolf', d: 'Diese Seite gibt es nicht. Zurück zur Startseite von CozyWolf.' },
 };
 const ROUTES = Object.keys(META);
-// /testen = Kampagnen-Landing (Reel/Insta) → prerendert für Link-Previews,
-// aber noindex, damit die zeitlich begrenzte Test-Team-Aktion nicht dauerhaft
-// im Google-Index/der Sitemap steht.
-const NOINDEX = new Set(['/impressum', '/datenschutz', '/testen', '/404']);
+const NOINDEX = new Set(['/impressum', '/datenschutz', '/404']);
 
 // LocalBusiness/ProfessionalService — Local-SEO-Grundlage, auf jeder Route.
 const ORG_LD = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
   name: 'CozyWolf',
-  description: META['/'].d,
+  description: HOME.d,
   url: BASE,
   image: OG_IMG,
   email: 'hallo@cozywolf.de',
@@ -63,14 +65,6 @@ const FAQ_LD = {
     acceptedAnswer: { '@type': 'Answer', text: a },
   })),
 };
-const PERSON_LD = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: 'Johannes',
-  jobTitle: 'Moderator und Quizmaster',
-  worksFor: { '@type': 'Organization', name: 'CozyWolf' },
-  url: `${BASE}/ueber`,
-};
 
 function esc(s) {
   return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -89,10 +83,9 @@ if (!template.includes('<div id="root"></div>')) {
 
 for (const route of ROUTES) {
   const m = META[route];
-  const url = BASE + route;
+  const url = BASE + (m.canonical ?? route);
   const ld = [ORG_LD];
-  if (route === '/') ld.push(FAQ_LD);
-  if (route === '/ueber') ld.push(PERSON_LD);
+  if (route === '/d' || route === '/m') ld.push(FAQ_LD);
 
   const head = [
     `<link rel="canonical" href="${esc(url)}" />`,
@@ -126,7 +119,7 @@ for (const route of ROUTES) {
   if (route === '/404') {
     out = path.join('dist', '404.html');
   } else {
-    const dir = route === '/' ? 'dist' : path.join('dist', route);
+    const dir = path.join('dist', route);
     fs.mkdirSync(dir, { recursive: true });
     out = path.join(dir, 'index.html');
   }
@@ -134,10 +127,12 @@ for (const route of ROUTES) {
   console.log('prerendered', route, '->', out);
 }
 
-// sitemap.xml aus den indexierbaren Routen (Legal ausgenommen).
-const sm = ROUTES.filter(r => !NOINDEX.has(r))
-  .map(r => `<url><loc>${BASE}${r === '/' ? '/' : r}</loc></url>`).join('');
+// Root-Datei entfernen: '/' wird per Rewrite aus /d bzw. /m bedient.
+fs.rmSync('dist/index.html');
+console.log('dist/index.html entfernt ("/" laeuft ueber die UA-Rewrites)');
+
+// sitemap.xml: die Site ist ein One-Pager, indexierbar ist nur '/'.
 fs.writeFileSync('dist/sitemap.xml',
-  `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${sm}</urlset>`);
-console.log('sitemap.xml geschrieben:', ROUTES.length - NOINDEX.size, 'URLs');
+  `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${BASE}/</loc></url></urlset>`);
+console.log('sitemap.xml geschrieben: 1 URL');
 console.log('prerender done:', ROUTES.length, 'Routen (Meta + OG + Canonical + JSON-LD)');

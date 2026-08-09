@@ -1,52 +1,130 @@
 {
+  "redirects": [
+    {
+      "source": "/firmen",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/locations",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/feiern",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/ueber",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/kontakt",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/testen",
+      "destination": "/#anfragen",
+      "permanent": false
+    }
+  ],
   "rewrites": [
-    { "source": "/impressum", "destination": "/impressum/index.html" },
-    { "source": "/datenschutz", "destination": "/datenschutz/index.html" },
-    { "source": "/firmen", "destination": "/firmen/index.html" },
-    { "source": "/locations", "destination": "/locations/index.html" },
-    { "source": "/feiern", "destination": "/feiern/index.html" },
-    { "source": "/ueber", "destination": "/ueber/index.html" },
-    { "source": "/kontakt", "destination": "/kontakt/index.html" },
-    { "source": "/testen", "destination": "/testen/index.html" }
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": ".*Mobi.*"
+        }
+      ],
+      "destination": "/m/index.html"
+    },
+    {
+      "source": "/",
+      "destination": "/d/index.html"
+    },
+    {
+      "source": "/impressum",
+      "destination": "/impressum/index.html"
+    },
+    {
+      "source": "/datenschutz",
+      "destination": "/datenschutz/index.html"
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
-        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" },
-        { "key": "X-Frame-Options", "value": "DENY" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
       ]
     },
     {
       "source": "/",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "Vary",
+          "value": "User-Agent"
+        }
       ]
     },
     {
       "source": "/index.html",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
       ]
     },
     {
       "source": "/assets/(.*)\\.(js|css|woff2)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/assets/(.*)\\.(png|jpg|jpeg|webp|svg|gif|ico)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=604800" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800"
+        }
       ]
     },
     {
       "source": "/fonts/(.*)\\.woff2",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000"
+        }
       ]
     }
   ]

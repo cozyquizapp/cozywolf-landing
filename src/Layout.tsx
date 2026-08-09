@@ -11,12 +11,11 @@ import { track } from './track';
 import { Icon } from './components/Icon';
 import { Fireflies } from './components/Fireflies';
 
+// Die Site ist ein One-Pager: die Huelle wird nur noch von den Rechtstexten
+// und der 404-Seite genutzt, die Nav fuehrt zurueck zur Startseite.
 const NAV_LINKS = (d: ReturnType<typeof t>) => [
-  { href: '/firmen', label: d.navFirmen },
-  { href: '/locations', label: d.navLocations },
-  { href: '/feiern', label: d.navFeiern },
-  { href: '/ueber', label: d.navUeber },
-  { href: '/kontakt', label: d.navKontakt },
+  { href: '/', label: d.navHome },
+  { href: '/#anfragen', label: d.navKontakt },
 ];
 
 export function Layout({ children }: { children: ReactNode }) {
@@ -157,7 +156,7 @@ function LangSwitch({ lang }: { lang: Lang }) {
   );
 }
 
-// Sticky-CTA nur mobil: gleitet nach dem Hero hoch, auf /kontakt ausgeblendet.
+// Sticky-CTA nur mobil: gleitet nach dem Hero hoch, fuehrt zum Anfrage-Anker.
 function StickyMobileCta({ lang }: { lang: Lang }) {
   const path = usePath();
   const [show, setShow] = useState(false);
@@ -167,10 +166,10 @@ function StickyMobileCta({ lang }: { lang: Lang }) {
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-  if (path === '/kontakt') return null;
+  if (path === '/') return null;
   return (
     <div className="cw-sticky-cta" data-show={show} aria-hidden={!show}>
-      <a href="/kontakt" className="cw-btn" tabIndex={show ? 0 : -1} onClick={() => track('cta-anfragen-sticky')} style={{
+      <a href="/#anfragen" className="cw-btn" tabIndex={show ? 0 : -1} onClick={() => track('cta-anfragen-sticky')} style={{
         display: 'inline-flex', alignItems: 'center', gap: 8,
         padding: '14px 30px', borderRadius: 999, textDecoration: 'none',
         fontWeight: 900, fontSize: 16, color: '#fff',

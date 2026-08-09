@@ -49,7 +49,8 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 summary::-webkit-details-marker{display:none}
 summary{list-style:none;cursor:pointer}
 html{scroll-behavior:smooth;scroll-padding-top:88px}
-a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:2.5px solid #FFC7E4;outline-offset:3px;border-radius:8px}
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #FFC7E4;outline-offset:3px;border-radius:8px}
+:focus:not(:focus-visible){outline:none}
 [data-m=sticky]{display:none}
 .cwHovA:hover{filter:brightness(1.06)}
 .cwFaqCard:hover{background:rgba(250,75,163,.06)!important;border-color:rgba(250,75,163,.34)!important}

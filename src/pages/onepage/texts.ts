@@ -4,6 +4,10 @@
 // (dort liegen nur die geteilten Bausteine der Unterseiten).
 import type { Lang } from '../../lang';
 
+// Einzige Stelle fuer die Termin-Angabe (Handoff 0b): steckt in Hero-Zeile und
+// Formular-Hinweis beider Fassungen. Aendert sich die Verfuegbarkeit, nur hier.
+export const TERMIN_AB = { de: 'Mitte September', en: 'mid-September' } as const;
+
 export type QuoteWord = { w: string; hot?: boolean };
 
 export type ProbeDef =
@@ -85,7 +89,7 @@ const de: OnePageDict = {
     sub: 'Der gemütlichste Quizabend in Hamburg, den ihr je gespielt habt.',
     btn0: 'Gratis für Test-Teams', btn0Sub: 'Ein ganzer Abend, kostenlos',
     btn1: 'Termin anfragen', btn1Sub: 'Unverbindlich, Antwort in 24 Stunden',
-    availability: 'Hamburg und Umland · ab 350 € · Termine ab Mitte September',
+    availability: `Hamburg und Umland · ab 350 € · Termine ab ${TERMIN_AB.de}`,
     imgAlt: 'Stimmungsbild, KI-erzeugt: Gäste in einer Hamburger Bar vor der Quiz-Leinwand',
     phoneApp: 'CozyQuiz', phoneTeamA: 'Glühbirnen', phoneTeamB: 'Quiz-Mafia', phoneReady: 'Bereit',
   },
@@ -231,7 +235,7 @@ const de: OnePageDict = {
   form: {
     label: 'Anfragen', h2: 'Lust auf ein Quiz?',
     sub: 'Schreib mir kurz zum Anlass und zur ungefähren Personenzahl, dann melde ich mich mit einem Vorschlag.',
-    avail: 'Termine ab Mitte September.',
+    avail: `Termine ab ${TERMIN_AB.de}.`,
     tabEvent: 'Event anfragen', tabTest: 'Test-Team, kostenlos',
     priceBig: 'ab 350 €', priceSub: 'für den ganzen Abend',
     priceNote1: 'Moderation, Beamer, Sound und Aufbau', priceNote2: 'sind enthalten. Keine versteckten Posten.',
@@ -267,7 +271,7 @@ const en: OnePageDict = {
     sub: 'The coziest quiz night in Hamburg you’ve ever played.',
     btn0: 'Free for test teams', btn0Sub: 'A whole evening, on the house',
     btn1: 'Request a date', btn1Sub: 'No strings attached, reply within 24 hours',
-    availability: 'Hamburg and around · from €350 · dates from mid-September',
+    availability: `Hamburg and around · from €350 · dates from ${TERMIN_AB.en}`,
     imgAlt: 'Mood image, AI-generated: guests in a Hamburg bar in front of the quiz screen',
     phoneApp: 'CozyQuiz', phoneTeamA: 'Lightbulbs', phoneTeamB: 'Quiz Mafia', phoneReady: 'Ready',
   },
@@ -412,7 +416,7 @@ const en: OnePageDict = {
   form: {
     label: 'Requests', h2: 'Up for a quiz?',
     sub: 'Drop me a line about the occasion and rough headcount, and I’ll get back to you with a proposal.',
-    avail: 'Dates from mid-September.',
+    avail: `Dates from ${TERMIN_AB.en}.`,
     tabEvent: 'Request an event', tabTest: 'Test team, free',
     priceBig: 'from €350', priceSub: 'for the whole evening',
     priceNote1: 'Hosting, projector, sound and setup', priceNote2: 'are included. No hidden extras.',
