@@ -57,6 +57,7 @@ function Impressum() {
 
       <H2>Kontakt</H2>
       <P>E-Mail: <A href={`mailto:${EMAIL}`}>{EMAIL}</A></P>
+      <P>Schneller Kontaktweg: <A href="/kontakt">Kontaktformular</A></P>
 
       <H2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</H2>
       <P>{NAME_PLACEHOLDER}, Anschrift wie oben.</P>

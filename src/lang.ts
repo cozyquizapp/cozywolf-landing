@@ -13,11 +13,15 @@ function read(): Lang {
   if (typeof window === 'undefined') return 'de';
   const stored = window.localStorage.getItem(KEY);
   if (stored === 'de' || stored === 'en') return stored;
-  const nav = window.navigator.language?.toLowerCase() ?? '';
-  return nav.startsWith('de') ? 'de' : 'en';
+  // Standard ist Deutsch, unabhaengig von der Browsersprache. Englisch gibt es
+  // nur nach aktivem Klick auf den Umschalter (Livegang-Entscheidung 2026-08).
+  return 'de';
 }
 
 let current: Lang = read();
+// <html lang> auch beim initialen Laden an die gespeicherte Wahl angleichen,
+// nicht erst beim naechsten Umschalten (index.html startet statisch mit "de").
+if (typeof document !== 'undefined') document.documentElement.lang = current;
 
 export function getLang(): Lang { return current; }
 
