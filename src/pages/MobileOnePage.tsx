@@ -69,7 +69,7 @@ type MOPState = {
   guess: number; guessDone: boolean;
   pts: number[]; ptsDone: boolean;
   act: number; acts: Record<number, BoardAction>;
-  splash: boolean; count: number;
+  splash: boolean; count: number; done: boolean;
   scrolled?: boolean; menu?: boolean; fan?: boolean;
   anlass?: string;
 };
@@ -78,7 +78,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
   state: MOPState = {
     open: 'quiz', tab: 'event', formStatus: 'idle', cat: 0, picked: null,
     step: 0, hookI: 0, wallOn: false, guess: 180, guessDone: false,
-    pts: [0, 0, 0], ptsDone: false, act: -1, acts: {}, splash: false, count: 3,
+    pts: [0, 0, 0], ptsDone: false, act: -1, acts: {}, splash: false, count: 3, done: false,
   };
 
   private _io: IntersectionObserver | undefined;
@@ -195,7 +195,11 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
   // ------------------------------------------------- Fragetypen-Demo
   nextCat(delay: number) {
     clearTimeout(this._catT); clearInterval(this._cdT);
+    // Nach dem fuenften Typ endet die Demo mit einer Abschlusskarte statt
+    // still auf Frage 1 zu loopen.
+    const last = this.state.cat >= this.T.probe.cats.length - 1;
     this._catT = setTimeout(() => {
+      if (last) { this.setState({ done: true, splash: false }); return; }
       this.setState({ splash: true, count: 3 });
       this._cdT = setInterval(() => {
         if (this.state.count > 1) { this.setState(p => ({ count: p.count - 1 })); return; }
@@ -537,7 +541,18 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                 <button type="button" onClick={() => { if (s.ptsDone) return; clearTimeout(this._catT); this.setState(p => { const n = [...p.pts]; if (n[i] > 0) n[i]--; return { pts: n, ptsDone: false }; }); }}
                   style={sx('flex:none;width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#F1F5F9;font-size:19px;font-weight:900;cursor:pointer')}>−</button>
                 <span style={sx('flex:none;width:26px;text-align:center;font-size:17px;font-weight:900;color:#F1F5F9')}>{pts[i]}</span>
-                <button type="button" onClick={() => { if (s.ptsDone) return; this.setState(p => { const n = [...p.pts]; if (n.reduce((a, b) => a + b, 0) < 10) n[i]++; const fin = n.reduce((a, b) => a + b, 0) === 10; if (fin) this.nextCat(4200); return { pts: n, ptsDone: fin }; }); }}
+                <button type="button" onClick={() => {
+                  if (s.ptsDone) return;
+                  const n = [...s.pts];
+                  if (n.reduce((a, b) => a + b, 0) >= 10) return;
+                  n[i]++;
+                  const fin = n.reduce((a, b) => a + b, 0) === 10;
+                  // Weiterschalten ausserhalb des Updaters: Seiteneffekte in
+                  // setState-Updatern werden von React ggf. verworfen/doppelt
+                  // ausgefuehrt, dann loopt die Demo statt zu enden.
+                  this.setState({ pts: n, ptsDone: fin });
+                  if (fin) this.nextCat(4200);
+                }}
                   style={sx('flex:none;width:38px;height:38px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:#F1F5F9;font-size:19px;font-weight:900;cursor:pointer')}>+</button>
               </div>
             ))}
@@ -560,7 +575,25 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
         <h2 data-rv="" style={sx("margin:0 0 6px;font-family:'League Spartan',sans-serif;font-size:29px;font-weight:900;text-wrap:balance")}>{L.probe.h2}</h2>
         <p data-rv="" style={sx('margin:0 0 20px;font-size:15.5px;line-height:1.6;color:#cbd5e1;font-weight:600;text-wrap:pretty')}>{L.probe.sub}</p>
 
-        {s.splash && (
+        {s.done && (
+          <div style={sx('border-radius:26px;padding:34px 22px 28px;background:radial-gradient(ellipse at 50% 34%,rgba(250,75,163,.16),#0b0714 70%);border:1px solid rgba(250,75,163,.45);box-shadow:0 18px 44px rgba(0,0,0,.45);display:flex;flex-direction:column;align-items:center;min-height:470px;box-sizing:border-box;justify-content:center;text-align:center')}>
+            <div style={sx('display:flex;gap:10px;justify-content:center')}>
+              {L.probe.cats.map(c => (
+                <span key={c.key} style={sx(`display:block;width:44px;height:44px;background:url(${c.icon}) center/contain no-repeat;filter:drop-shadow(0 4px 14px rgba(0,0,0,.5))`)}></span>
+              ))}
+            </div>
+            <div style={sx('margin-top:18px;font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#FFC7E4')}>{L.probe.doneKicker}</div>
+            <div style={sx("margin-top:8px;font-family:'League Spartan',sans-serif;font-size:24px;font-weight:900;line-height:1.15;color:#F1F5F9;text-wrap:balance")}>{L.probe.doneTitle}</div>
+            <p style={sx('margin:12px 0 0;font-size:15px;line-height:1.6;font-weight:600;color:#cbd5e1;text-wrap:pretty')}>{L.probe.doneText}</p>
+            <a href="#anfragen" onClick={() => this.setState({ tab: 'test', formStatus: 'idle' })}
+              style={sx('margin-top:22px;display:flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;min-height:54px;padding:0 20px;border-radius:18px;background:#FA4BA3;color:#0A0814;font-weight:900;font-size:16px;box-shadow:0 10px 26px rgba(250,75,163,.28)')}>{L.probe.doneCta}</a>
+            <button type="button"
+              onClick={() => { clearTimeout(this._catT); clearInterval(this._cdT); this.setState({ done: false, splash: false, count: 3, cat: 0, picked: null, guess: 180, guessDone: false, pts: [0, 0, 0], ptsDone: false }); }}
+              style={sx('margin-top:10px;display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:999px;border:1px solid rgba(250,75,163,.34);background:transparent;color:#FFC7E4;font-weight:800;font-size:14.5px;cursor:pointer')}>{L.probe.doneAgain}</button>
+          </div>
+        )}
+
+        {!s.done && s.splash && (
           <div role="status" aria-live="polite" onClick={skip}
             style={sx(`border-radius:26px;padding:34px 22px 26px;background:radial-gradient(ellipse at 50% 34%,${N.col}22,#0b0714 70%);border:1px solid ${N.col}55;box-shadow:0 18px 44px rgba(0,0,0,.45);display:flex;flex-direction:column;align-items:center;min-height:470px;box-sizing:border-box;justify-content:center`)}>
             <span aria-hidden="true" style={sx(`flex:none;display:block;width:92px;height:92px;background:url(${N.icon}) center/contain no-repeat;filter:drop-shadow(0 6px 22px rgba(0,0,0,.5))`)}></span>
@@ -571,12 +604,12 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
           </div>
         )}
 
-        {!s.splash && (
+        {!s.done && !s.splash && (
           <div role="region" aria-live="polite"
             style={sx(`border-radius:26px;padding:18px;min-height:470px;box-sizing:border-box;background:radial-gradient(ellipse at 50% 0%,${C.col}1f,#0b0714 62%);border:1.5px solid ${C.col}66;box-shadow:0 18px 44px rgba(0,0,0,.45),0 0 26px ${C.col}22;transition:border-color .5s ease,box-shadow .5s ease,background .5s ease`)}>
             <div style={sx('display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px')}>
-              <span style={sx(`padding:6px 13px;border-radius:999px;background:${C.col}22;border:1px solid ${C.col}66;font-size:11.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:${C.col}`)}>{C.name}</span>
-              <span style={sx('font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#64748b')}>{L.probe.team}</span>
+              <span style={sx(`padding:6px 13px;border-radius:999px;background:${C.col}22;border:1px solid ${C.col}66;font-size:11.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:${C.col};white-space:nowrap;flex:none`)}>{C.name}</span>
+              <span style={sx('font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#64748b')}>{`${L.probe.progress(s.cat + 1, L.probe.cats.length)} · ${L.probe.team}`}</span>
             </div>
             <div style={sx('font-size:14px;font-weight:800;line-height:1.4;color:#94a3b8;margin-bottom:14px')}>{C.claim}</div>
             {body}
