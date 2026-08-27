@@ -265,7 +265,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
   renderHeader() {
     const L = this.T;
     const s = this.state;
-    const langBtn = (on: boolean) => `min-height:38px;padding:0 13px;border:0;border-radius:999px;font-size:12.5px;font-weight:900;cursor:pointer;background:${on ? '#FA4BA3' : 'transparent'};color:${on ? '#0A0814' : 'rgba(246,239,230,.62)'}`;
+    const langBtn = (on: boolean) => `min-height:38px;padding:0 13px;border:0;border-radius:999px;font-size:12.5px;font-weight:900;cursor:pointer;background:${on ? '#F6EFE6' : 'transparent'};color:${on ? '#0A0814' : 'rgba(246,239,230,.62)'}`;
     return (
       <header style={sx(`position:sticky;top:0;z-index:40;padding:12px 18px;overflow:visible;transition:background .5s ease,border-color .5s ease,backdrop-filter .4s ease;`
         + (s.scrolled
@@ -757,7 +757,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     const s = this.state;
     const isTest = s.tab === 'test';
     const st = s.formStatus;
-    const tab = (on: boolean) => `min-height:46px;padding:0 12px;border:0;border-radius:999px;font-size:14px;font-weight:900;cursor:pointer;background:${on ? '#FA4BA3' : 'transparent'};color:${on ? '#0A0814' : 'rgba(246,239,230,.62)'};transition:background .3s ease,color .3s ease`;
+    const tab = (on: boolean) => `min-height:46px;padding:0 12px;border:0;border-radius:999px;font-size:14px;font-weight:900;cursor:pointer;background:${on ? '#F6EFE6' : 'transparent'};color:${on ? '#0A0814' : 'rgba(246,239,230,.62)'};transition:background .3s ease,color .3s ease`;
     const inputStyle = 'width:100%;box-sizing:border-box;min-height:52px;padding:0 14px;border-radius:14px;background:rgba(246,239,230,.05);border:1.5px solid rgba(246,239,230,.20);color:#F6EFE6;font-size:16px;font-weight:700;outline:none';
     const labelStyle = 'display:flex;flex-direction:column;gap:7px;font-size:12.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:rgba(246,239,230,.62)';
     return (

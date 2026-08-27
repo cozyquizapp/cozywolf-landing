@@ -203,7 +203,7 @@ const de: OnePageDict = {
     duo1: ['Eine freie Wand oder einen Bildschirm', 'Strom und WLAN für eure Gäste', 'Platz für eure Runde', 'Ein Handy pro Team, das habt ihr dabei'],
   },
   johannes: {
-    kicker: 'Gründer & Quizmaster',
+    kicker: 'Über mich',
     quote: [
       { w: '„Mein' }, { w: 'Ziel:' }, { w: 'Ein' }, { w: 'Abend' }, { w: 'voller' },
       { w: 'Aha-Momente,', hot: true }, { w: 'Lacher', hot: true }, { w: 'und' }, { w: 'guter' },
@@ -219,7 +219,7 @@ const de: OnePageDict = {
     label: 'Fragen', h2: 'Häufige Fragen',
     items: [
       { q: 'Brauche ich eigene Technik?',
-        a: 'Nein. Ich bringe Beamer und Sound selbst mit. Ihr braucht nur eine freie Wand oder einen Bildschirm, Strom und WLAN für deine Gäste.' },
+        a: 'Nein. Ich bringe Beamer und Sound selbst mit. Du brauchst nur eine freie Wand oder einen Bildschirm, Strom und WLAN für deine Gäste.' },
       { q: 'Müssen meine Gäste etwas installieren?',
         a: 'Nichts. Alle scannen einen QR-Code und spielen direkt im Browser am Handy. Keine App, kein Login.' },
       { q: 'Für wie viele Personen funktioniert das?',
@@ -385,7 +385,7 @@ const en: OnePageDict = {
     duo1: ['A free wall or a screen', 'Power and WiFi for your guests', 'Room for your crowd', 'One phone per team, you already have that'],
   },
   johannes: {
-    kicker: 'Founder & quizmaster',
+    kicker: 'About me',
     quote: [
       { w: '“My' }, { w: 'goal:' }, { w: 'an' }, { w: 'evening' }, { w: 'full' }, { w: 'of' },
       { w: 'aha moments,', hot: true }, { w: 'laughs', hot: true }, { w: 'and' }, { w: 'good' },

@@ -206,7 +206,7 @@ const de: MobileDict = {
     label: 'Fragen', h2: 'Häufige Fragen',
     items: [
       { q: 'Brauche ich eigene Technik?',
-        a: 'Nein. Beamer und Sound bringe ich mit, eure Gäste scannen nur einen QR-Code und spielen im Browser. Keine App, kein Login.' },
+        a: 'Nein. Beamer und Sound bringe ich mit, deine Gäste scannen nur einen QR-Code und spielen im Browser. Keine App, kein Login.' },
       { q: 'Für wie viele Personen funktioniert das?',
         a: 'Von der kleinen Runde bis zu 100 Personen. Kleine Gruppen erobern das Spielfeld, große Gruppen treten als Fraktionen an. Das Format passt sich an.' },
       { q: 'Wie lange dauert ein Quiz-Event?',
