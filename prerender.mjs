@@ -126,6 +126,16 @@ for (const route of ROUTES) {
   }
   fs.writeFileSync(out, html);
   console.log('prerendered', route, '->', out);
+
+  // /mockups zusaetzlich als flache Datei. Vercel liefert '/mockups' dann
+  // direkt aus 'mockups.html' aus, ganz ohne den Rewrite in vercel.json.
+  // Grund: die Route kam beim ersten Versuch als 404 zurueck, obwohl
+  // dist/mockups/index.html im Build lag. Zwei unabhaengige Wege sind hier
+  // billiger als raten, welcher der beiden greift. Faellt mit der Route weg.
+  if (route === '/mockups') {
+    fs.writeFileSync(path.join('dist', 'mockups.html'), html);
+    console.log('prerendered', route, '-> dist/mockups.html (Fallback)');
+  }
 }
 
 // Root-Datei entfernen: '/' wird per Rewrite aus /d bzw. /m bedient.
