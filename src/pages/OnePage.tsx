@@ -114,6 +114,7 @@ const NAME_PARAM = typeof window === 'undefined'
  * erste Wort, das im Deutschen wie im Englischen gelaeufig ist und den
  * Gegenpol zu "cozy" trifft:
  *
+ *   ?name=nur       Arena         das Wort allein, in beiden Sprachen gleich
  *   ?name=wild      WildQuiz      Gegenpol zu cozy, beide Woerter gelaeufig
  *   ?name=arena     ArenaQuiz     Wolfs eigener Griff, Arena ist in beiden Sprachen dasselbe Wort
  *   ?name=party     PartyQuiz     am verstaendlichsten fuer eine Buchung, dafuer am generischsten
@@ -122,6 +123,13 @@ const NAME_PARAM = typeof window === 'undefined'
  *   ?name=8z        8 Fraktionen      dieselbe mit Ziffer
  */
 const NAMEN: Record<string, { de: string; en: string }> = {
+  // Wolf am 27.08.: "Wie waere Arena als gesetzt nehmen? Das funktioniert auch
+  // bilingual oder?". Ja, buchstabengleich in beiden Sprachen, kein Umlaut,
+  // kein Plural-Problem. Und in der App heisst der Modus intern laengst so:
+  // arena-bg, ArenaBeamerBg, cozywolf-arena-*, 61 Dateien tragen das Wort.
+  // Der Name waere also keine Erfindung, sondern das Ausschreiben dessen, was
+  // im Code seit jeher steht.
+  nur: { de: 'Arena', en: 'Arena' },
   wild: { de: 'WildQuiz', en: 'WildQuiz' },
   arena: { de: 'ArenaQuiz', en: 'ArenaQuiz' },
   party: { de: 'PartyQuiz', en: 'PartyQuiz' },
