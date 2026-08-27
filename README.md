@@ -74,19 +74,32 @@ export default defineConfig([
 
 ## Deployen
 
-Erst `master`, dann den Arbeitszweig pushen. In dieser Reihenfolge:
+**Auf `master` pushen und den Arbeitszweig danach mehrere Minuten in Ruhe
+lassen.** Nicht beides direkt hintereinander.
 
 ```
 git push origin <zweig>:master
+# ... warten, Deployment abwarten ...
 git push -u origin <zweig>
 ```
 
-Der Grund ist mit Datum belegt. Am 27.08.2026 lief es andersherum, erst der
-Zweig, dann `master`. Vercel legt fuer einen Commit, fuer den bereits ein
-Deployment existiert, keinen zweiten an: der Zweig-Push erzeugte eine
-Preview, der `master`-Push danach nichts mehr. Die Domain blieb dadurch auf
-`2fdc9f1` stehen, waehrend `master` schon drei Commits weiter war, und von
-aussen war das nicht von einem fehlgeschlagenen Build zu unterscheiden.
+Belegt am 27.08.2026 an sieben Pushes. Vercel legt fuer einen Commit, der
+innerhalb weniger Sekunden auf zwei Zweigen landet, oft gar kein Deployment
+an, auch keines mit Status Error oder Canceled: bei Statusfilter 7/7 fehlten
+`5ed067e`, `61f2bb4`, `5adf6b4`, `f20eb02`, `7219dcb` und `1d184be`
+vollstaendig. Der einzige Push, der sauber als Production auf `master`
+durchlief, war `e2df3e8`, und das war der einzige, der allein auf `master`
+ging.
+
+Eine frueher hier stehende Erklaerung, es liege an der Reihenfolge
+(erst Zweig, dann `master`), war falsch: `f20eb02` ging zuerst auf `master`
+und kam trotzdem nicht an. Es liegt an der Naehe der beiden Pushes, nicht an
+ihrer Reihenfolge.
+
+Wenn ein Stand trotzdem nicht ankommt, hilft in Vercel bei einem fertigen
+Deployment "Promote to Production". Dauerhaft repariert wird es, indem man
+unter Settings, Git das Repository trennt und neu verbindet, damit der
+Webhook bei GitHub neu gesetzt wird.
 
 Wer den ausgelieferten Stand pruefen will: `cozywolf.de/stand.txt` nennt
 Commit, Zweig und Bauzeitpunkt.
