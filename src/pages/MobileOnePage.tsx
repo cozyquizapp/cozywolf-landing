@@ -328,7 +328,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
           <p style={sx(`margin:10px 0 0;font-size:15px;line-height:1.55;font-weight:700;color:rgba(246,239,230,.62);text-wrap:pretty;animation:mRise .8s ${EASE} both .14s`)}>{L.hero.sub2}</p>
           <div style={sx(`margin-top:24px;display:flex;flex-direction:column;gap:11px;animation:mRise .8s ${EASE} both .18s`)}>
             <a href="#anfragen" onClick={() => this.setState({ tab: 'test', formStatus: 'idle' })}
-              style={sx('display:flex;flex-direction:column;align-items:center;gap:3px;padding:16px 20px;border-radius:18px;background:#FA4BA3;color:#0A0814;font-weight:900;font-size:17px;min-height:56px;box-sizing:border-box;justify-content:center;box-shadow:0 10px 26px rgba(0,0,0,.5)')}>
+              style={sx('display:flex;flex-direction:column;align-items:center;gap:3px;padding:16px 20px;border-radius:18px;background:#F6EFE6;color:#0A0814;font-weight:900;font-size:17px;min-height:56px;box-sizing:border-box;justify-content:center;box-shadow:0 10px 26px rgba(0,0,0,.5)')}>
               {L.hero.cta}<span style={sx('font-size:13px;font-weight:800;opacity:.72')}>{L.hero.ctaSub}</span>
             </a>
             <div style={sx('display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap')}>
@@ -592,7 +592,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             <div style={sx("margin-top:8px;font-family:'League Spartan',sans-serif;font-size:24px;font-weight:900;line-height:1.15;color:#F6EFE6;text-wrap:balance")}>{L.probe.doneTitle}</div>
             <p style={sx('margin:12px 0 0;font-size:15px;line-height:1.6;font-weight:600;color:rgba(246,239,230,.78);text-wrap:pretty')}>{L.probe.doneText}</p>
             <a href="#anfragen" onClick={() => this.setState({ tab: 'test', formStatus: 'idle' })}
-              style={sx('margin-top:22px;display:flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;min-height:54px;padding:0 20px;border-radius:18px;background:#FA4BA3;color:#0A0814;font-weight:900;font-size:16px;box-shadow:0 10px 26px rgba(0,0,0,.5)')}>{L.probe.doneCta}</a>
+              style={sx('margin-top:22px;display:flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;min-height:54px;padding:0 20px;border-radius:18px;background:#F6EFE6;color:#0A0814;font-weight:900;font-size:16px;box-shadow:0 10px 26px rgba(0,0,0,.5)')}>{L.probe.doneCta}</a>
             <button type="button"
               onClick={() => { clearTimeout(this._catT); clearInterval(this._cdT); this.setState({ done: false, splash: false, count: 3, cat: 0, picked: null, guess: 180, guessDone: false, pts: [0, 0, 0], ptsDone: false }); }}
               style={sx('margin-top:10px;display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:999px;border:1px solid rgba(246,239,230,.20);background:transparent;color:#F6EFE6;font-weight:800;font-size:14.5px;cursor:pointer')}>{L.probe.doneAgain}</button>
@@ -813,7 +813,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                 {L.form.errorPre}<a href={`mailto:${EMAIL}`} style={sx('color:#FFC7E4')}>{EMAIL}</a>{L.form.errorPost}
               </p>
             )}
-            <button type="submit" style={sx('min-height:56px;border:0;border-radius:18px;background:#FA4BA3;color:#0A0814;font-size:17px;font-weight:900;box-shadow:0 10px 26px rgba(0,0,0,.5);cursor:pointer')}>
+            <button type="submit" style={sx('min-height:56px;border:0;border-radius:18px;background:#F6EFE6;color:#0A0814;font-size:17px;font-weight:900;box-shadow:0 10px 26px rgba(0,0,0,.5);cursor:pointer')}>
               {st === 'sending' ? L.form.sending : L.form.submit}
             </button>
             <p style={sx('margin:0;font-size:12.5px;line-height:1.5;color:rgba(246,239,230,.42);font-weight:600')}>
@@ -857,7 +857,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
 
           <div style={sx('position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:center;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(10,8,20,0),rgba(10,8,20,.94) 42%);pointer-events:none')}>
             <a href="#anfragen" onClick={() => this.setState({ tab: 'test', formStatus: 'idle' })}
-              style={sx('pointer-events:auto;width:100%;max-width:488px;display:flex;align-items:center;justify-content:center;gap:9px;min-height:54px;border-radius:999px;background:#FA4BA3;color:#0A0814;font-size:16.5px;font-weight:900;box-shadow:0 12px 30px rgba(0,0,0,.5)')}>
+              style={sx('pointer-events:auto;width:100%;max-width:488px;display:flex;align-items:center;justify-content:center;gap:9px;min-height:54px;border-radius:999px;background:#F6EFE6;color:#0A0814;font-size:16.5px;font-weight:900;box-shadow:0 12px 30px rgba(0,0,0,.5)')}>
               {L.sticky.label}<span style={sx('font-size:13px;font-weight:800;opacity:.7')}>{L.sticky.tag}</span>
             </a>
           </div>

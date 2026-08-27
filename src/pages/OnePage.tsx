@@ -450,7 +450,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             <button type="button" onClick={() => setLang('de')} style={sx(langBtn(this.props.lang === 'de'))}>DE</button>
             <button type="button" onClick={() => setLang('en')} style={sx(langBtn(this.props.lang === 'en'))}>EN</button>
           </div>
-          <a href="#anfragen" className="cwHovA" style={sx(`padding:11px 20px;border-radius:999px;background:#FA4BA3;color:#0A0814;font-weight:900;font-size:15px;transition:filter .28s ${EASE}`)}>{L.nav.cta}</a>
+          <a href="#anfragen" className="cwHovA" style={sx(`padding:11px 20px;border-radius:999px;background:#F6EFE6;color:#0A0814;font-weight:900;font-size:15px;transition:filter .28s ${EASE}`)}>{L.nav.cta}</a>
         </div>
       </header>
     );
@@ -467,10 +467,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         style: `position:relative;display:flex;align-items:center;justify-content:center;flex:none;min-width:0;box-sizing:border-box;overflow:hidden;border-radius:999px;white-space:nowrap;font-weight:900;min-height:66px;`
           + `width:${hot ? 'calc(60% - 7px)' : (cold ? 'calc(40% - 7px)' : 'calc(50% - 7px)')};`
           + `padding:${hot ? '16px 26px 15px' : '19px 22px'};font-size:${cold ? 16 : (hot ? 18 : 17)}px;`
-          + (primary ? 'background:#FA4BA3;' : 'background:transparent;border:1.5px solid rgba(246,239,230,.20);')
-          + `box-shadow:${primary ? (hot ? '0 18px 44px rgba(250,75,163,.4)' : '0 12px 30px rgba(250,75,163,.2)') : 'none'};`
+          + (primary ? 'background:#F6EFE6;' : 'background:transparent;border:1.5px solid rgba(246,239,230,.20);')
+          + `box-shadow:${primary ? (hot ? '0 18px 44px rgba(0,0,0,.5)' : '0 12px 30px rgba(0,0,0,.38)') : 'none'};`
           + `transition:width .7s ${EASE},padding .7s ${EASE},font-size .7s ${EASE},box-shadow .5s ${EASE}`,
-        fill: `position:absolute;inset:0;background:${primary ? '#FFC7E4' : '#AB0055'};transform:scaleY(${hot ? 1 : 0});transform-origin:bottom center;transition:transform .6s ${EASE}`,
+        fill: `position:absolute;inset:0;background:${primary ? '#FFFDF9' : 'rgba(246,239,230,.12)'};transform:scaleY(${hot ? 1 : 0});transform-origin:bottom center;transition:transform .6s ${EASE}`,
         lab: `display:block;line-height:1.15em;font-size:inherit;letter-spacing:${hot ? '-.005em' : '0'};color:${primary ? '#0A0814' : '#F6EFE6'};transition:color .4s ${EASE},letter-spacing .5s ${EASE}`,
         sub: `display:block;overflow:hidden;max-height:${hot ? '22px' : '0'};transition:max-height .6s ${EASE}`,
         subIn: `display:block;padding-top:4px;font-size:12.5px;font-weight:800;letter-spacing:.02em;white-space:nowrap;color:${primary ? 'rgba(10,8,20,.66)' : 'rgba(246,239,230,.72)'};transform:translateY(${hot ? '0' : '-8px'});opacity:${hot ? 1 : 0};transition:transform .6s ${EASE},opacity .45s ${EASE} ${hot ? '.1s' : '0s'}`,
@@ -507,7 +507,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                     <span style={sx(teammarke('#22C55E', '/assets/av-qq-mushroom.webp', 19))}></span>
                     <span style={sx('flex:1;min-width:0;font-weight:900;line-height:1;color:#F6EFE6;white-space:nowrap;overflow:hidden;font-size:9px')}>{L.hero.phoneTeamB}</span>
                   </div>
-                  <div style={sx('margin-top:auto;padding:8px 0;border-radius:8px;background:#FA4BA3;color:#0A0814;font-size:10px;font-weight:900;text-align:center;line-height:1')}>{L.hero.phoneReady}</div>
+                  <div style={sx('margin-top:auto;padding:8px 0;border-radius:8px;background:#F6EFE6;color:#0A0814;font-size:10px;font-weight:900;text-align:center;line-height:1')}>{L.hero.phoneReady}</div>
                 </div>
               </div>
             </div>
@@ -1457,7 +1457,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 )}
 
                 <div style={sx('text-align:center;margin-top:20px')}>
-                  <button type="submit" className="cwSubmit" style={sx(`padding:14px 30px;border-radius:999px;border:1.5px solid rgba(246,239,230,.18);background:linear-gradient(135deg,#CE1C6F,#AB0055);color:#F6EFE6;font-family:inherit;font-weight:900;font-size:16px;cursor:pointer;transition:transform .2s ${EASE},filter .2s ${EASE}`)}>
+                  <button type="submit" className="cwSubmit" style={sx(`padding:14px 30px;border-radius:999px;border:1.5px solid rgba(246,239,230,.18);background:#F6EFE6;color:#0A0814;font-family:inherit;font-weight:900;font-size:16px;cursor:pointer;transition:transform .2s ${EASE},filter .2s ${EASE}`)}>
                     {st === 'sending' ? L.form.sending : (test ? L.form.submitTest : L.form.submitEvent)}
                   </button>
                 </div>
@@ -1500,7 +1500,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           </div>
           <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:0 32px 26px;font-size:12.5px;font-weight:600;color:rgba(246,239,230,.42)')}>{L.footer.aiNote}</div>
         </footer>
-        <a href="#anfragen" data-m="sticky" style={sx('position:fixed;left:14px;right:14px;bottom:14px;z-index:40;align-items:center;justify-content:center;padding:15px 20px;border-radius:999px;background:#FA4BA3;color:#0A0814;font-weight:900;font-size:16px;box-shadow:0 14px 34px rgba(0,0,0,.55)')}>{L.sticky}</a>
+        <a href="#anfragen" data-m="sticky" style={sx('position:fixed;left:14px;right:14px;bottom:14px;z-index:40;align-items:center;justify-content:center;padding:15px 20px;border-radius:999px;background:#F6EFE6;color:#0A0814;font-weight:900;font-size:16px;box-shadow:0 14px 34px rgba(0,0,0,.55)')}>{L.sticky}</a>
       </div>
     );
   }
