@@ -194,6 +194,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   _b01T: ReturnType<typeof setInterval> | undefined;
   /** Welche Felder gerade belegt sind, fuer brettSetzen. */
   _b01Feld: boolean[] = [];
+  /** Laeuft gerade der Abraeum-Zeitgeber? Dann nicht noch einen starten. */
+  _b01Voll = false;
+  _b01Neu: ReturnType<typeof setTimeout> | undefined;
   // Solange der Zeiger auf einem Objekt liegt, wechselt die Ueberschrift nicht
   // von selbst weiter. Sonst springt sie einem unter der Hand weg.
   _wortHalt = false;
@@ -287,10 +290,30 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     this._b01T = setInterval(() => {
       this.setState(st => {
         const n = (st.b01 ?? 0) + 1;
-        if (n > MOVES.length) { clearInterval(this._b01T); return null; }
+        if (n > MOVES.length) { clearInterval(this._b01T); queueMicrotask(() => this.brettPruefen()); return null; }
         return { b01: n };
       });
     }, 650);
+  }
+
+  /**
+   * Wolf am 2026-08-27: "loop muesste irgendwann neu anfangen wenn voll".
+   * Sobald kein leeres Feld mehr da ist, bleibt der Endstand kurz stehen,
+   * damit man ihn noch sieht, danach wird abgeraeumt und neu gesetzt.
+   * Wer per Hand setzt, fuellt die Reste selbst auf, also ist der Ausloeser
+   * das volle Brett und nicht das Ende der Choreografie.
+   */
+  brettPruefen() {
+    if (this._b01Voll || this._reduziert) return;
+    const g = this.gameVals(((this.state.b01 ?? 0) ? CYCLE * ((this.state.b01 ?? 0) - 1) + R_END + 1 : 0), this.state.b01Hand);
+    if (g.cells.some(c => !c.owned)) return;
+    this._b01Voll = true;
+    this._b01Neu = setTimeout(() => {
+      this._b01Voll = false;
+      this.setState({ b01: 0, b01Hand: {} }, () => {
+        if (this._spielSichtbar) this.brettLauf(true);
+      });
+    }, 1800);
   }
 
   /** Ein leeres Feld beim Zeigen selbst setzen. Besetzte bleiben unberuehrt:
@@ -302,7 +325,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       if (hand[i]) return null;
       hand[i] = TEAMS[Object.keys(hand).length % TEAMS.length].id;
       return { b01Hand: hand };
-    });
+    }, () => this.brettPruefen());
   }
 
   /**
@@ -457,6 +480,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   componentWillUnmount() {
     clearInterval(this.gameTimer);
     clearInterval(this._b01T);
+    clearTimeout(this._b01Neu);
     clearTimeout(this._beamT);
     clearInterval(this._arenaT);
     clearInterval(this._hookT);
@@ -823,12 +847,20 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const H = 100 / FACTIONS.length;
     return FACTIONS.map(f => {
       const p = pts[f.id] || 0, r = ranked.indexOf(f.id), leadNow = r === 0 && p > 0;
+      // Wolf am 2026-08-27: beim Zeigen soll die Zeile selbst eine Umrandung
+      // bekommen, nicht nur der Spruch darunter erscheinen.
+      const hov = this.state.frak === f.id;
+      const rahmen = hov
+        ? `background:linear-gradient(90deg,${f.color}33,${f.color}0d);border:1px solid ${f.color};box-shadow:0 0 26px ${f.color}4d`
+        : leadNow
+          ? `background:linear-gradient(90deg,${f.color}26,transparent);border:1px solid ${f.color}80;box-shadow:0 0 22px ${f.color}33`
+          : 'border:1px solid transparent';
       return (
         <div key={f.id}
           onMouseEnter={() => { if (!this._coarse) this.setState({ frak: f.id }); }}
           onMouseLeave={() => { if (!this._coarse) this.setState({ frak: null }); }}
-          style={sx(`position:absolute;left:0;right:0;top:0;height:${H}%;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:12px;box-sizing:border-box;transform:translateY(${r * 100}%);transition:transform 1.5s ${EASE},background .6s ease,border-color .6s ease,box-shadow .6s ease;${leadNow ? `background:linear-gradient(90deg,${f.color}26,transparent);border:1px solid ${f.color}80;box-shadow:0 0 22px ${f.color}33` : 'border:1px solid transparent'}`)}>
-          <span style={sx(`flex:none;width:18px;text-align:center;font-size:15px;font-weight:900;color:${leadNow ? '#F6EFE6' : 'rgba(246,239,230,.5)'};transition:color .5s ease`)}>{r + 1}</span>
+          style={sx(`position:absolute;left:0;right:0;top:0;height:${H}%;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:12px;box-sizing:border-box;transform:translateY(${r * 100}%);transition:transform 1.5s ${EASE},background .35s ease,border-color .35s ease,box-shadow .35s ease;cursor:default;${rahmen}`)}>
+          <span style={sx(`flex:none;width:18px;text-align:center;font-size:15px;font-weight:900;color:${leadNow || hov ? '#F6EFE6' : 'rgba(246,239,230,.5)'};transition:color .5s ease`)}>{r + 1}</span>
           <span style={sx(teammarke(f.color, `/assets/crest-${f.id}.webp`, 30))}></span>
           <span style={sx('flex:none;width:124px;min-width:0')}>
             <span style={sx(`display:block;font-size:13.5px;font-weight:900;line-height:1.15;color:${f.color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>{L.sim.factions[f.id]}</span>
