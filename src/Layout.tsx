@@ -138,7 +138,7 @@ function LangSwitch({ lang }: { lang: Lang }) {
   return (
     <div style={{
       display: 'flex', gap: 2, padding: 3, borderRadius: 999,
-      background: 'rgba(255,255,255,0.04)', border: `1px solid rgba(${BRAND.pinkRgb},0.20)`,
+      background: 'rgba(246,239,230,0.04)', border: `1px solid rgba(${BRAND.pinkRgb},0.20)`,
     }}>
       {(['de', 'en'] as Lang[]).map(l => (
         <button key={l} onClick={() => setLang(l)}
@@ -172,9 +172,9 @@ function StickyMobileCta({ lang }: { lang: Lang }) {
       <a href="/#anfragen" className="cw-btn" tabIndex={show ? 0 : -1} onClick={() => track('cta-anfragen-sticky')} style={{
         display: 'inline-flex', alignItems: 'center', gap: 8,
         padding: '14px 30px', borderRadius: 999, textDecoration: 'none',
-        fontWeight: 900, fontSize: 16, color: '#fff',
+        fontWeight: 900, fontSize: 16, color: '#F6EFE6',
         background: 'linear-gradient(135deg, #CE1C6F, #AB0055)',
-        border: '1.5px solid rgba(255,255,255,0.18)',
+        border: '1.5px solid rgba(246,239,230,0.18)',
         boxShadow: `0 10px 30px rgba(${BRAND.pinkRgb},0.4), 0 4px 12px rgba(0,0,0,0.4)`,
       }}>{lang === 'de' ? 'Quiz anfragen' : 'Request a quiz'}</a>
     </div>
@@ -185,7 +185,7 @@ function SiteFooter({ lang }: { lang: Lang }) {
   const d = t(lang);
   return (
     <footer style={{
-      borderTop: `1px solid rgba(255,255,255,0.07)`,
+      borderTop: `1px solid rgba(246,239,230,0.07)`,
       marginTop: 40,
     }}>
       <div style={{
@@ -231,7 +231,7 @@ export function Btn({ href, children, variant = 'primary', event }: {
     letterSpacing: '0.01em',
   };
   const style: React.CSSProperties = variant === 'primary'
-    ? { ...base, background: 'linear-gradient(135deg, #CE1C6F, #AB0055)', color: '#fff', border: '1.5px solid rgba(255,255,255,0.18)' }
+    ? { ...base, background: 'linear-gradient(135deg, #CE1C6F, #AB0055)', color: '#F6EFE6', border: '1.5px solid rgba(246,239,230,0.18)' }
     : { ...base, background: `rgba(${BRAND.pinkRgb},0.10)`, color: BRAND.pinkSoft, border: `1.5px solid rgba(${BRAND.pinkRgb},0.40)` };
   return (
     <a className="cw-btn" href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined}
@@ -284,7 +284,7 @@ export function PageHero({ eyebrow, eyebrowLower, title, sub, visual }: { eyebro
       )}
       <h1 style={{
         margin: 0, fontFamily: FONT_DISPLAY, fontSize: 'clamp(36px, 6.2vw, 64px)', fontWeight: 800, lineHeight: 1.02,
-        color: '#F1F5F9', letterSpacing: '-0.015em', textWrap: 'balance',
+        color: '#F6EFE6', letterSpacing: '-0.015em', textWrap: 'balance',
       }}>{title}</h1>
       {sub && (
         <p style={{

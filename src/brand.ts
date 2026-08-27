@@ -2,7 +2,7 @@
 //
 // WICHTIG: Marketing-/Logo-Pink ist #FA4BA3 (per Logo-Pixel-Messung), NICHT das
 // App-UI-Pink #EC4899. Auf der Marketing-Seite gilt das Logo-Pink. Wortmarke
-// „COZYWOLF" in League Spartan (uppercase, solide), Fliesstext Nunito.
+// „COZYWOLF" in League Spartan (uppercase, solide), Fliesstext Bricolage Grotesque.
 
 export const BRAND = {
   pink:     '#FA4BA3',       // Logo/Marketing-Pink
@@ -11,14 +11,21 @@ export const BRAND = {
   magenta:  '#AB0055',       // Logo-Ring/Magenta
   navy:     '#1E2A5A',
   bg:       '#0A0814',
-  ink:      '#e2e8f0',
-  inkSoft:  '#cbd5e1',
-  muted:    '#94a3b8',
+  // Textskala des neuen Designs: warmes Creme statt kaltem Slate. Ein kaltes
+  // Weiss neben einem warmen Grund sticht blaeulich ab, deshalb ist der
+  // Primaertext #F6EFE6 und die leiseren Stufen sind derselbe Ton mit Alpha.
+  ink:      '#F6EFE6',
+  inkSoft:  'rgba(246,239,230,.78)',
+  muted:    'rgba(246,239,230,.62)',
+  hairline: 'rgba(246,239,230,.20)',
+  surface:  'rgba(246,239,230,.05)',
 } as const;
 
-// Wortmarken-/Display-Font (nur fuer „COZYWOLF"-Logo-Look). Body = Nunito.
-export const FONT_DISPLAY = "'League Spartan', 'Nunito', system-ui, sans-serif";
-export const FONT_BODY = "'Nunito', system-ui, sans-serif";
+// Wortmarken-/Display-Font (nur fuer „COZYWOLF"-Logo-Look). Die Wortmarke ist
+// die Marke selbst und bleibt bewusst League Spartan, waehrend die Arbeitsschrift
+// mit dem neuen Design auf Bricolage Grotesque wechselt.
+export const FONT_DISPLAY = "'League Spartan', 'Bricolage Grotesque', system-ui, sans-serif";
+export const FONT_BODY = "'Bricolage Grotesque', 'Nunito', system-ui, sans-serif";
 
 // Kontakt / externe Ziele (an EINER Stelle, ueberall wiederverwendet).
 export const EMAIL = 'hallo@cozywolf.de';

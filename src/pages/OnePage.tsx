@@ -13,6 +13,7 @@ import type { FormEvent, ReactNode } from 'react';
 import { useLang, setLang, type Lang } from '../lang';
 import { FORMSPREE_ID } from '../brand';
 import { sx } from './onepage/sx';
+import { KACHEL_VERLAUF, teammarke } from '../qqKachel';
 import { ONEPAGE_CSS } from './onepage/css';
 import { onePageT, type OnePageDict, type ProbeDef } from './onepage/texts';
 
@@ -20,12 +21,17 @@ const EASE = 'cubic-bezier(.22,1,.36,1)';
 const LOGO = '/logo.webp';
 
 // Spielstand-Daten der Brett-Simulation (aus dem Entwurf, Wolfs Choreografie)
+// Team-Avatare: das CozyQuiz-Objektset der App (48 Motive). Die Objekte sind
+// farbneutral, die Teamfarbe kommt aus der Kachel darunter - deshalb sind hier
+// Motiv und Farbe getrennt. Die Zuordnung folgt den Farb-Slots der App: die
+// ersten acht Motive in COZYQUIZ_AVATARS sind index-gleich zu den acht Slots,
+// also erbt jedes Team das Motiv seiner Farbe.
 const TEAMS = [
-  { id: 'g', color: '#22C55E', av: '/assets/av3d-giraffe.webp' },
-  { id: 'p', color: '#A855F7', av: '/assets/av3d-koala.webp' },
-  { id: 'y', color: '#FACC15', av: '/assets/av3d-capybara.webp' },
-  { id: 'o', color: '#F97316', av: '/assets/av3d-kuh.webp' },
-  { id: 'b', color: '#3B82F6', av: '/assets/av3d-pinguin.webp' },
+  { id: 'g', color: '#22C55E', av: '/assets/av-qq-mushroom.webp' },
+  { id: 'p', color: '#A855F7', av: '/assets/av-qq-crystal-ball.webp' },
+  { id: 'y', color: '#FACC15', av: '/assets/av-qq-game-die.webp' },
+  { id: 'o', color: '#F97316', av: '/assets/av-qq-teapot.webp' },
+  { id: 'b', color: '#3B82F6', av: '/assets/av-qq-table-lamp.webp' },
 ];
 const PRESET: [string, number][] = [['y', 29], ['y', 35], ['y', 36], ['p', 40], ['p', 41], ['p', 47], ['o', 31]];
 type Move = { t: string; c?: number; k?: 'steal' | 'stack'; sk?: number };
@@ -426,21 +432,21 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   // ------------------------------------------------- Abschnitte
   renderHeader() {
     const L = this.T;
-    const langBtn = (on: boolean) => `appearance:none;border:0;cursor:pointer;font:inherit;font-size:12.5px;font-weight:900;letter-spacing:.06em;padding:6px 11px;border-radius:999px;transition:background .25s ${EASE},color .25s ${EASE};background:${on ? '#FA4BA3' : 'transparent'};color:${on ? '#0A0814' : '#94a3b8'}`;
+    const langBtn = (on: boolean) => `appearance:none;border:0;cursor:pointer;font:inherit;font-size:12.5px;font-weight:900;letter-spacing:.06em;padding:6px 11px;border-radius:999px;transition:background .25s ${EASE},color .25s ${EASE};background:${on ? '#FA4BA3' : 'transparent'};color:${on ? '#0A0814' : 'rgba(246,239,230,.62)'}`;
     return (
       <header data-header="" style={sx(`position:sticky;overflow:visible;top:0;z-index:20;transition:padding .3s ${EASE},background .3s ${EASE},border-color .3s ${EASE};backdrop-filter:blur(14px);background:rgba(10,8,20,.86);box-shadow:0 12px 34px rgba(10,8,20,.55)`)}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;gap:32px;white-space:nowrap')}>
           <a href="#top" style={sx('display:flex;align-items:center;gap:10px')}>
             <img src={LOGO} alt="CozyWolf" width={38} height={38} style={sx('width:38px;height:38px')} />
-            <span style={sx("font-family:'League Spartan',sans-serif;font-weight:900;font-size:21px;letter-spacing:.02em;color:#F1F5F9")}>COZYWOLF</span>
+            <span style={sx("font-family:'League Spartan',sans-serif;font-weight:900;font-size:21px;letter-spacing:.02em;color:#F6EFE6")}>COZYWOLF</span>
           </a>
-          <nav data-m="nav" style={sx('display:flex;gap:26px;margin-left:auto;font-size:15px;font-weight:700;color:#cbd5e1')}>
-            <a href="#spielarten" style={sx('color:#cbd5e1')}>{L.nav.spielarten}</a>
-            <a href="#probieren" style={sx('color:#cbd5e1')}>{L.nav.probieren}</a>
-            <a href="#ablauf" style={sx('color:#cbd5e1')}>{L.nav.ablauf}</a>
-            <a href="#johannes" style={sx('color:#cbd5e1')}>{L.nav.ueber}</a>
+          <nav data-m="nav" style={sx('display:flex;gap:26px;margin-left:auto;font-size:15px;font-weight:700;color:rgba(246,239,230,.78)')}>
+            <a href="#spielarten" style={sx('color:rgba(246,239,230,.78)')}>{L.nav.spielarten}</a>
+            <a href="#probieren" style={sx('color:rgba(246,239,230,.78)')}>{L.nav.probieren}</a>
+            <a href="#ablauf" style={sx('color:rgba(246,239,230,.78)')}>{L.nav.ablauf}</a>
+            <a href="#johannes" style={sx('color:rgba(246,239,230,.78)')}>{L.nav.ueber}</a>
           </nav>
-          <div data-m="lang" style={sx('display:flex;align-items:center;gap:4px;padding:3px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03)')}>
+          <div data-m="lang" style={sx('display:flex;align-items:center;gap:4px;padding:3px;border-radius:999px;border:1px solid rgba(246,239,230,.1);background:rgba(246,239,230,.03)')}>
             <button type="button" onClick={() => setLang('de')} style={sx(langBtn(this.props.lang === 'de'))}>DE</button>
             <button type="button" onClick={() => setLang('en')} style={sx(langBtn(this.props.lang === 'en'))}>EN</button>
           </div>
@@ -494,12 +500,12 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 <div style={sx('position:absolute;inset:0;display:flex;flex-direction:column;gap:9px;padding:16px 11px;box-sizing:border-box')}>
                   <div style={sx('font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#FA4BA3;line-height:1')}>{L.hero.phoneApp}</div>
                   <div style={sx('display:flex;align-items:center;gap:7px;padding:7px 7px;border-radius:9px;box-sizing:border-box;background:#A855F72e;border:1px solid #A855F7')}>
-                    <span style={sx('flex:none;width:19px;height:19px;border-radius:50%;background:#A855F7 url(/assets/av3d-koala.webp) center/contain no-repeat')}></span>
+                    <span style={sx(teammarke('#A855F7', '/assets/av-qq-crystal-ball.webp', 19))}></span>
                     <span style={sx('flex:1;min-width:0;font-weight:900;line-height:1;color:#A855F7;white-space:nowrap;overflow:hidden;font-size:9px')}>{L.hero.phoneTeamA}</span>
                   </div>
-                  <div style={sx('display:flex;align-items:center;gap:7px;padding:7px 7px;border-radius:9px;box-sizing:border-box;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1)')}>
-                    <span style={sx('flex:none;width:19px;height:19px;border-radius:50%;background:#22C55E url(/assets/av3d-giraffe.webp) center/contain no-repeat')}></span>
-                    <span style={sx('flex:1;min-width:0;font-weight:900;line-height:1;color:#e2e8f0;white-space:nowrap;overflow:hidden;font-size:9px')}>{L.hero.phoneTeamB}</span>
+                  <div style={sx('display:flex;align-items:center;gap:7px;padding:7px 7px;border-radius:9px;box-sizing:border-box;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.1)')}>
+                    <span style={sx(teammarke('#22C55E', '/assets/av-qq-mushroom.webp', 19))}></span>
+                    <span style={sx('flex:1;min-width:0;font-weight:900;line-height:1;color:#F6EFE6;white-space:nowrap;overflow:hidden;font-size:9px')}>{L.hero.phoneTeamB}</span>
                   </div>
                   <div style={sx('margin-top:auto;padding:8px 0;border-radius:8px;background:#FA4BA3;color:#0A0814;font-size:10px;font-weight:900;text-align:center;line-height:1')}>{L.hero.phoneReady}</div>
                 </div>
@@ -510,7 +516,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
         <div style={sx('position:relative;z-index:2;flex:1;display:flex;align-items:center;width:100%;max-width:1180px;margin:0 auto;padding:72px 32px')} data-shell="" data-m="hero">
           <div style={sx('width:100%;max-width:660px')}>
-            <h1 style={sx("margin:0;font-family:'League Spartan',sans-serif;font-weight:900;font-size:clamp(52px,6.6vw,104px);line-height:.9;letter-spacing:-.035em;color:#F1F5F9")}>
+            <h1 style={sx("margin:0;font-family:'League Spartan',sans-serif;font-weight:900;font-size:clamp(52px,6.6vw,104px);line-height:.9;letter-spacing:-.035em;color:#F6EFE6")}>
               <span style={sx('display:block;padding:.14em .1em .06em;margin:-.14em -.1em -.06em;overflow:hidden;white-space:nowrap')}>
                 {hook.split('').map((ch, j) => (
                   <span key={`${hookI}-${j}`} style={sx(`display:inline-block;color:#FA4BA3;animation:${anim} 1.05s ${EASE} both ${(j * 0.07).toFixed(3)}s`)}>{ch === ' ' ? '\u00A0' : ch}</span>
@@ -518,7 +524,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               </span>
               <span style={sx(`display:block;animation:cwRise .9s ${EASE} both .12s`)}>{L.hero.rest}</span>
             </h1>
-            <p data-m="herosub" style={sx(`margin:24px 0 0;animation:cwRise .8s ${EASE} both .26s;font-size:18px;line-height:1.6;font-weight:500;color:#cbd5e1;white-space:nowrap`)}>{L.hero.sub}</p>
+            <p data-m="herosub" style={sx(`margin:24px 0 0;animation:cwRise .8s ${EASE} both .26s;font-size:18px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78);white-space:nowrap`)}>{L.hero.sub}</p>
             <div onMouseLeave={() => this.setState({ hbOn: null })} style={sx(`margin-top:30px;animation:cwRise .8s ${EASE} both .34s;display:flex;align-items:stretch;gap:14px;max-width:560px`)}>
               <a href="#anfragen" onClick={() => this.openForm('test')} onMouseEnter={() => this.setState({ hbOn: 0 })} style={sx(b0.style)}>
                 <span aria-hidden="true" style={sx(b0.fill)}></span>
@@ -535,7 +541,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 </span>
               </a>
             </div>
-            <div style={sx('margin-top:22px;display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-size:11.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#94a3b8')}>
+            <div style={sx('margin-top:22px;display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-size:11.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>
               <span style={sx('width:8px;height:8px;border-radius:50%;background:#FA4BA3;box-shadow:0 0 12px #FA4BA3')}></span>
               {L.hero.availability}
             </div>
@@ -550,14 +556,14 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       <div data-reveal="" style={sx('display:flex;align-items:center;gap:12px;margin:0 0 14px;font-size:11.5px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:#FA4BA3;white-space:nowrap')}>
         {label.split('|')[0]}
         <span style={sx('flex:1;height:1px;background:linear-gradient(90deg,rgba(250,75,163,.35),transparent);max-width:180px')}></span>
-        <span style={sx('color:#64748b')}>{label.split('|')[1]}</span>
+        <span style={sx('color:rgba(246,239,230,.42)')}>{label.split('|')[1]}</span>
       </div>
     );
   }
 
   bullet(text: string, dotColor: string) {
     return (
-      <span key={text} style={sx('display:flex;align-items:flex-start;gap:14px;font-size:21.5px;line-height:1.4;font-weight:600;color:#e6edf6;text-wrap:pretty')}>
+      <span key={text} style={sx('display:flex;align-items:flex-start;gap:14px;font-size:21.5px;line-height:1.4;font-weight:600;color:#F6EFE6;text-wrap:pretty')}>
         <span style={sx(`width:9px;height:9px;border-radius:50%;background:${dotColor};flex:none;margin-top:11px`)}></span>{text}
       </span>
     );
@@ -574,7 +580,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
   calmLead(neutral: boolean) {
     return `margin:${neutral ? '14px' : '0px'} 0 0;max-width:420px;overflow:hidden;`
-      + `max-height:${neutral ? '120px' : '0px'};font-size:16px;line-height:1.55;font-weight:600;color:#a5b4c8;text-wrap:pretty;`
+      + `max-height:${neutral ? '120px' : '0px'};font-size:16px;line-height:1.55;font-weight:600;color:rgba(246,239,230,.72);text-wrap:pretty;`
       + `opacity:${neutral ? 1 : 0};transition:opacity .4s ${EASE} ${neutral ? '.3s' : '0s'},max-height .7s ${EASE},margin .7s ${EASE}`;
   }
 
@@ -583,7 +589,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const m = this.state.mode ?? null;
     const quiz = m === 'quiz', arena = m === 'arena', neutral = m == null;
     const cols = neutral ? '1fr 1fr' : (quiz ? '1fr 0.185fr' : '0.185fr 1fr');
-    const card = (accent: string, open: boolean) => `position:relative;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;contain:layout;min-width:0;border-radius:22px;background:linear-gradient(165deg,${accent}${open ? '14' : '0d'},rgba(255,255,255,.02) 60%);border:1px solid ${accent}${open ? '47' : '30'};padding:${open ? '30px' : '24px 12px'};cursor:${open ? 'default' : 'pointer'};transition:background .5s ${EASE},border-color .5s ${EASE},box-shadow .5s ${EASE};box-shadow:${open ? `0 26px 54px rgba(0,0,0,.42),0 0 0 1px ${accent}22` : 'none'}`;
+    const card = (accent: string, open: boolean) => `position:relative;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;contain:layout;min-width:0;border-radius:22px;background:linear-gradient(165deg,${accent}${open ? '14' : '0d'},rgba(246,239,230,.02) 60%);border:1px solid ${accent}${open ? '47' : '30'};padding:${open ? '30px' : '24px 12px'};cursor:${open ? 'default' : 'pointer'};transition:background .5s ${EASE},border-color .5s ${EASE},box-shadow .5s ${EASE};box-shadow:${open ? `0 26px 54px rgba(0,0,0,.42),0 0 0 1px ${accent}22` : 'none'}`;
     const modeTitle = (open: boolean, accent: string, calm: boolean) =>
       `position:absolute;z-index:2;font-family:'League Spartan',sans-serif;font-weight:900;line-height:.92;letter-spacing:-.025em;white-space:nowrap;pointer-events:none;`
       + `color:${accent};text-shadow:0 0 46px ${accent}4d;`
@@ -594,7 +600,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           : `left:50%;top:50%;font-size:64px;transform:translate(-50%,-50%) rotate(-90deg);`)
       + `transition:left .95s ${EASE},top .95s ${EASE},font-size .95s ${EASE},transform .95s ${EASE},color .6s ${EASE}`;
     const lead = (open: boolean) =>
-      `margin:0;font-size:18.5px;line-height:1.5;font-weight:600;color:#b3c1d3;max-width:min(100%,720px);text-wrap:pretty;`
+      `margin:0;font-size:18.5px;line-height:1.5;font-weight:600;color:rgba(246,239,230,.78);max-width:min(100%,720px);text-wrap:pretty;`
       + `opacity:${open ? 1 : 0};transform:translateX(${open ? '0' : '-10px'});transition:opacity .5s ${EASE} .25s,transform .7s ${EASE}`;
     const openPaneStyle = `display:flex;flex-direction:column;height:100%;padding-top:3px;box-sizing:border-box;${this.state.openW ? 'width:' + this.state.openW + 'px;' : ''}transform-origin:left center;animation:cwGrow .8s ${EASE} .26s both;overflow:hidden`;
     const g = this.gameVals();
@@ -602,7 +608,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     return (
       <section id="spielarten" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:84px 32px')}>
         {this.kicker(`${L.modes.kicker}|${L.modes.label}`)}
-        <h2 data-reveal="" style={sx("margin:0 0 24px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;letter-spacing:-.015em;color:#F1F5F9")}>{L.modes.h2}</h2>
+        <h2 data-reveal="" style={sx("margin:0 0 24px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;letter-spacing:-.015em;color:#F6EFE6")}>{L.modes.h2}</h2>
         <div data-m="modes" ref={this.modesRef} onMouseLeave={() => this.switchMode(null)}
           style={sx(`display:grid;grid-template-columns:${cols};gap:20px;align-items:stretch;height:${neutral ? '230px' : '700px'};transition:grid-template-columns 1.05s ${EASE},height 1.05s ${EASE}`)}>
           <div onMouseEnter={() => this.switchMode('quiz')} onClick={() => this.switchMode('quiz')} style={sx(card('#FA4BA3', quiz))}>
@@ -663,12 +669,12 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       const p = pts[f.id] || 0, r = ranked.indexOf(f.id), leadNow = r === 0 && p > 0;
       return (
         <div key={f.id} style={sx(`position:absolute;left:0;right:0;top:0;height:${H}%;display:flex;align-items:center;gap:9px;padding:0 10px;border-radius:12px;box-sizing:border-box;transform:translateY(${r * 100}%);transition:transform 1.5s ${EASE},background .6s ease,border-color .6s ease,box-shadow .6s ease;${leadNow ? `background:linear-gradient(90deg,${f.color}26,transparent);border:1px solid ${f.color}80;box-shadow:0 0 22px ${f.color}33` : 'border:1px solid transparent'}`)}>
-          <span style={sx(`flex:none;width:18px;text-align:center;font-size:15px;font-weight:900;color:${leadNow ? '#fff' : '#64748b'};transition:color .5s ease`)}>{r + 1}</span>
+          <span style={sx(`flex:none;width:18px;text-align:center;font-size:15px;font-weight:900;color:${leadNow ? '#F6EFE6' : 'rgba(246,239,230,.42)'};transition:color .5s ease`)}>{r + 1}</span>
           <span style={sx(`flex:none;width:30px;height:30px;background:url(/assets/crest-${f.id}.webp) center/contain no-repeat`)}></span>
           <span style={sx('flex:none;width:104px;min-width:0')}>
             <span style={sx(`font-size:13.5px;font-weight:900;line-height:1.15;color:${f.color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>{L.sim.factions[f.id]}</span>
           </span>
-          <span style={sx('flex:1;min-width:0;height:11px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden;display:block')}>
+          <span style={sx('flex:1;min-width:0;height:11px;border-radius:999px;background:rgba(246,239,230,.06);overflow:hidden;display:block')}>
             <span style={sx(`display:block;height:100%;width:${Math.round((p / max) * 100)}%;border-radius:999px;background:linear-gradient(180deg,${f.color},${f.color}cc);box-shadow:inset 0 1px 0 rgba(255,255,255,.45);transition:width 1.8s ${EASE}`)}></span>
           </span>
           <span style={sx(`flex:none;width:46px;text-align:right;font-size:15px;font-weight:900;color:${f.color}`)}>{p}</span>
@@ -695,13 +701,14 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       const hit = revealed && k === q.correct;
       return {
         label, num: k + 1,
-        style: `flex:1;display:flex;align-items:center;gap:10px;padding:12px 12px;border-radius:14px;box-sizing:border-box;background:${hit ? q.col + '22' : 'rgba(255,255,255,.035)'};border:1px solid ${hit ? q.col : 'rgba(255,255,255,.09)'};box-shadow:${hit ? `0 0 22px ${q.col}55` : 'none'};transition:background .4s ${EASE},border-color .4s ${EASE},box-shadow .4s ${EASE}`,
+        style: `flex:1;display:flex;align-items:center;gap:10px;padding:12px 12px;border-radius:14px;box-sizing:border-box;background:${hit ? q.col + '22' : 'rgba(246,239,230,.035)'};border:1px solid ${hit ? q.col : 'rgba(246,239,230,.09)'};box-shadow:${hit ? `0 0 22px ${q.col}55` : 'none'};transition:background .4s ${EASE},border-color .4s ${EASE},box-shadow .4s ${EASE}`,
         numStyle: `font-family:'League Spartan',sans-serif;font-size:26px;font-weight:900;line-height:1;color:${hit ? q.col : q.col + 'cc'}`,
       };
     });
 
     const teamDiscs = TEAMS.map((tm, k) => ({
-      style: `width:42px;height:42px;border-radius:50%;background-image:url(${tm.av});background-color:${tm.color};background-size:35px auto;background-position:center;background-repeat:no-repeat;box-shadow:${k < answered ? `0 0 0 2px ${tm.color}` : '0 0 0 2px rgba(255,255,255,.08)'};opacity:${k < answered ? 1 : .38};transition:opacity .4s ${EASE},box-shadow .4s ${EASE}`,
+      style: teammarke(tm.color, tm.av, 42)
+        + `opacity:${k < answered ? 1 : .38};transition:opacity .4s ${EASE}`,
     }));
 
     const byId: Record<string, typeof TEAMS[number]> = {};
@@ -770,7 +777,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       if (!tm) return {
         owned: false, av: '', fresh: false, wave: false, bridgeR: false, bridgeB: false,
         sparks: [], shards: [], ghost: false, burst: false, stacked: false, dust: false,
-        style: base + duck + `border-radius:${RAD}px;background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.05)`,
+        style: base + duck + `border-radius:${RAD}px;background:rgba(246,239,230,.028);border:1px solid rgba(246,239,230,.05)`,
       };
 
       const own = owner[i], col = tm.color;
@@ -782,11 +789,21 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       const freshStack = i === justStacked;
       const ghost = stolenNow && stolenFrom ? byId[stolenFrom] : null;
       const edge = (fused: boolean) => fused ? 'none' : `1px solid ${col}${fresh ? 'ff' : '55'}`;
-      const insetTop = nT ? '' : 'inset 0 1px 0 rgba(255,255,255,.22)';
+      // Kachel-Kanten nach der einen Definition (src/qqKachel.ts): Licht auf der
+      // Oberkante, Innenlichter an den Seiten, dunkle Unterkante, kurzer harter
+      // Schlagschatten. Diese Weisswerte sind Licht und bleiben echtes Weiss.
+      // Zu einem gleichfarbigen Nachbarn faellt die Kante weg, sonst wuerde aus
+      // zwei aneinanderliegenden Kanten eine doppelt so dicke Linie.
+      const insetTop = nT ? '' : 'inset 0 1px 0 rgba(255,255,255,.38)';
+      const insetLeft = nL ? '' : 'inset 2px 0 0 rgba(255,255,255,.07)';
+      const insetRight = nR ? '' : 'inset -2px 0 0 rgba(0,0,0,.18)';
       const insetBottom = nB ? '' : 'inset 0 -3px 0 rgba(0,0,0,.2)';
       const hardDrop = (nR && nB) ? '' : `${nR ? 0 : 2}px ${nB ? 0 : 3}px 0 rgba(0,0,0,.45)`;
-      const shadow = [insetTop, insetBottom, hardDrop, '0 5px 9px rgba(0,0,0,.3)', fresh ? `0 0 22px ${col}bb` : '', isStacked ? `0 0 16px ${col}77` : ''].filter(Boolean).join(',');
-      const bg = `linear-gradient(135deg,${col}ff,${col}d9)`;
+      const shadow = [insetTop, insetLeft, insetRight, insetBottom, hardDrop, '0 5px 9px rgba(0,0,0,.3)', fresh ? `0 0 22px ${col}bb` : '', isStacked ? `0 0 16px ${col}77` : ''].filter(Boolean).join(',');
+      // Senkrechter Verlauf, hell oben, dunkel unten: die Grundannahme „Licht
+      // faellt von oben". Der frueher hier stehende diagonale Schein war die
+      // alte, flachere Fassung der Kachel.
+      const bg = `${KACHEL_VERLAUF},${col}`;
       const wd = waveDelay[i];
       const bridge = `position:absolute;background:${bg};z-index:2;pointer-events:none;${wd !== undefined ? `animation:cwBridgeFlash .44s ease-out ${wd}ms both;` : ''}`;
       const span = CS - RAD * 2;
@@ -850,12 +867,13 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         name: L.sim.teams[tm.id],
         sub: `${n} ${n === 1 ? L.sim.field : L.sim.fields}${leads ? (tied ? L.sim.tied : L.sim.lead) : ''}`,
         rowStyle: `display:inline-flex;align-items:center;gap:11px;flex:none;padding:7px 13px 7px 8px;border-radius:14px;box-sizing:border-box;transition:border-color .4s ${EASE},box-shadow .4s ${EASE},background .4s ${EASE};${isActive ? `border:1.5px solid ${tm.color};background:linear-gradient(90deg,${tm.color}1f,transparent);box-shadow:0 0 18px ${tm.color}55` : 'border:1.5px solid transparent'}`,
-        discStyle: `width:34px;height:34px;border-radius:50%;background-image:url(${tm.av});background-color:${tm.color};background-size:28px auto;background-position:center;background-repeat:no-repeat;flex:none;transition:box-shadow .4s ${EASE};${isActive ? `box-shadow:0 0 0 3px ${tm.color}44` : ''}`,
+        discStyle: teammarke(tm.color, tm.av, 34)
+          + (isActive ? `outline:3px solid ${tm.color}44;outline-offset:1px;` : ''),
         nameStyle: `font-size:15px;font-weight:900;letter-spacing:-.02em;color:${tm.color};line-height:1.15;white-space:nowrap`,
       };
     });
 
-    const fc = active ? active.color : 'rgba(255,255,255,.12)';
+    const fc = active ? active.color : 'rgba(246,239,230,.12)';
     const verb = isStack ? L.sim.verbStack : isSteal ? L.sim.verbSteal : L.sim.verbSet;
     return {
       cells, standings, seconds, qOptions, teamDiscs,
@@ -864,10 +882,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       statusLine: phase === 'b' ? `${active ? L.sim.teams[active.id] : ''} ${verb}` : (revealed ? L.sim.reveal : L.sim.answering),
       answeredLine: L.sim.answeredLine(answered),
       catPillStyle: `display:inline-flex;align-items:center;gap:8px;white-space:nowrap;flex:none;padding:6px 12px;border-radius:999px;background:${q.col}22;border:1px solid ${q.col}59;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${q.col};transition:all .4s ${EASE}`,
-      qCardStyle: `padding:20px 18px;border-radius:16px;background:rgba(255,255,255,.03);border:1px solid ${q.col}59;box-shadow:0 0 34px ${q.col}2e;font-size:21px;font-weight:900;line-height:1.25;color:#fff;transition:border-color .4s ${EASE},box-shadow .4s ${EASE}`,
+      qCardStyle: `padding:20px 18px;border-radius:16px;background:rgba(246,239,230,.03);border:1px solid ${q.col}59;box-shadow:0 0 34px ${q.col}2e;font-size:21px;font-weight:900;line-height:1.25;color:#F6EFE6;transition:border-color .4s ${EASE},box-shadow .4s ${EASE}`,
       ringStyle: `flex:none;width:62px;height:62px;border-radius:50%;border:3px solid ${q.col};display:flex;align-items:center;justify-content:center;font-family:'League Spartan',sans-serif;font-size:24px;font-weight:900;color:${q.col};box-shadow:0 0 24px ${q.col}55;transition:border-color .4s ${EASE},color .4s ${EASE}`,
       shakeStyle: (justSet >= 0) ? 'animation:cwShake .45s ease-out' : '',
-      frameStyle: `padding:8px;border-radius:14px;background:rgba(255,255,255,.015);flex:none;--tc:${active ? fc + '55' : 'transparent'};${active ? 'animation:cwGridGlow 2.4s ease-in-out infinite;' : ''}border:2px solid ${active ? fc : 'rgba(255,255,255,.1)'};box-shadow:${active ? `0 0 36px ${fc}55, inset 0 0 30px ${fc}14` : 'inset 0 0 40px rgba(0,0,0,.5)'};transition:border-color .5s ${EASE},box-shadow .5s ${EASE}`,
+      frameStyle: `padding:8px;border-radius:14px;background:rgba(246,239,230,.015);flex:none;--tc:${active ? fc + '55' : 'transparent'};${active ? 'animation:cwGridGlow 2.4s ease-in-out infinite;' : ''}border:2px solid ${active ? fc : 'rgba(246,239,230,.1)'};box-shadow:${active ? `0 0 36px ${fc}55, inset 0 0 30px ${fc}14` : 'inset 0 0 40px rgba(0,0,0,.5)'};transition:border-color .5s ${EASE},box-shadow .5s ${EASE}`,
       boardGridStyle: `display:grid;grid-template-columns:repeat(${GS},${CS}px);gap:${GAP}px`,
     };
   }
@@ -915,8 +933,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       <section style={sx('border-top:1px solid rgba(250,75,163,.07)')}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px')}>
           {this.kicker(`[ 02 ]|${L.anlaesse.label}`)}
-          <h2 data-reveal="" style={sx("margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F1F5F9")}>{L.anlaesse.h2}</h2>
-          <p data-reveal="" style={sx('margin:0 0 34px;max-width:620px;font-size:17px;line-height:1.6;color:#94a3b8;font-weight:500')}>{L.anlaesse.sub}</p>
+          <h2 data-reveal="" style={sx("margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.anlaesse.h2}</h2>
+          <p data-reveal="" style={sx('margin:0 0 34px;max-width:620px;font-size:17px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:500')}>{L.anlaesse.sub}</p>
           <div data-reveal="" data-stagger="" data-m="three"
             onMouseLeave={() => { clearTimeout(this._anlT); this.setState({ anlass: null }); }}
             style={sx(`display:grid;grid-template-columns:${cols};gap:20px;align-items:stretch;height:380px;transition:grid-template-columns 1.3s ${EASE}`)}>
@@ -926,12 +944,12 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               return (
                 <div key={i} data-anlass={i}
                   onMouseEnter={() => this.anlassPick(i)} onClick={() => this.anlassPick(i)}
-                  style={sx(`position:relative;display:flex;flex-direction:column;gap:14px;padding:${slim ? '26px 14px' : '34px 30px 30px'};border-radius:24px;overflow:hidden;box-sizing:border-box;height:100%;min-width:0;background:linear-gradient(170deg,${a}${onC ? '2e' : '1a'},rgba(255,255,255,.02) 62%);border:1px solid ${a}${onC ? 'cc' : '3d'};box-shadow:${onC ? `0 28px 56px rgba(0,0,0,.5),0 0 46px ${a}1f` : 'none'};transition:background 1.1s ${EASE},border-color 1.1s ${EASE},box-shadow 1.1s ${EASE},padding 1.25s ${EASE}`)}>
+                  style={sx(`position:relative;display:flex;flex-direction:column;gap:14px;padding:${slim ? '26px 14px' : '34px 30px 30px'};border-radius:24px;overflow:hidden;box-sizing:border-box;height:100%;min-width:0;background:linear-gradient(170deg,${a}${onC ? '2e' : '1a'},rgba(246,239,230,.02) 62%);border:1px solid ${a}${onC ? 'cc' : '3d'};box-shadow:${onC ? `0 28px 56px rgba(0,0,0,.5),0 0 46px ${a}1f` : 'none'};transition:background 1.1s ${EASE},border-color 1.1s ${EASE},box-shadow 1.1s ${EASE},padding 1.25s ${EASE}`)}>
                   <span aria-hidden="true" style={sx(`position:absolute;right:${slim ? '50%' : '26px'};bottom:${slim ? 'auto' : '-38px'};${slim ? 'top:26px;transform:translateX(50%);' : ''}font-family:'League Spartan',sans-serif;font-size:${slim ? 44 : 150}px;font-weight:900;line-height:1;color:${a};opacity:${slim ? .5 : .1};transition:font-size 1.05s ${EASE},opacity .8s ${EASE}`)}>{`0${i + 1}`}</span>
                   <span style={sx(`position:relative;align-self:flex-start;padding:5px 12px;border-radius:999px;background:${a}1f;border:1px solid ${a}59;font-size:10.5px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:${a};white-space:nowrap;opacity:${slim ? 0 : 1};max-height:${slim ? '0px' : '30px'};overflow:hidden;transition:opacity .55s ${EASE},max-height .95s ${EASE}`)}>{cardT.badge}</span>
-                  <span style={sx(`position:relative;font-family:'League Spartan',sans-serif;font-size:${onC ? 34 : 27}px;font-weight:900;line-height:1.1;white-space:normal;text-wrap:balance;color:#F1F5F9;opacity:${slim ? 0 : 1};max-height:${slim ? '0px' : '120px'};overflow:hidden;transition:font-size .85s ${EASE},opacity .55s ${EASE},max-height .95s ${EASE}`)}>{cardT.title}</span>
-                  <span style={sx(`position:relative;overflow:hidden;font-size:15.5px;line-height:1.6;font-weight:500;color:#cbd5e1;max-width:600px;max-height:${slim ? '0px' : '160px'};opacity:${slim ? 0 : 1};transition:max-height 1s ${EASE},opacity .5s ${EASE}`)}>{cardT.short}</span>
-                  <span style={sx(`position:relative;overflow:hidden;font-size:15.5px;line-height:1.65;font-weight:500;color:#cbd5e1;max-width:620px;max-height:${onC ? '200px' : '0px'};opacity:${onC ? 1 : 0};transform:translateY(${onC ? '0' : '8px'});transition:max-height 1.2s ${EASE},opacity .8s ${EASE} ${onC ? '.3s' : '0s'},transform .95s ${EASE}`)}>{cardT.desc}</span>
+                  <span style={sx(`position:relative;font-family:'League Spartan',sans-serif;font-size:${onC ? 34 : 27}px;font-weight:900;line-height:1.1;white-space:normal;text-wrap:balance;color:#F6EFE6;opacity:${slim ? 0 : 1};max-height:${slim ? '0px' : '120px'};overflow:hidden;transition:font-size .85s ${EASE},opacity .55s ${EASE},max-height .95s ${EASE}`)}>{cardT.title}</span>
+                  <span style={sx(`position:relative;overflow:hidden;font-size:15.5px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78);max-width:600px;max-height:${slim ? '0px' : '160px'};opacity:${slim ? 0 : 1};transition:max-height 1s ${EASE},opacity .5s ${EASE}`)}>{cardT.short}</span>
+                  <span style={sx(`position:relative;overflow:hidden;font-size:15.5px;line-height:1.65;font-weight:500;color:rgba(246,239,230,.78);max-width:620px;max-height:${onC ? '200px' : '0px'};opacity:${onC ? 1 : 0};transform:translateY(${onC ? '0' : '8px'});transition:max-height 1.2s ${EASE},opacity .8s ${EASE} ${onC ? '.3s' : '0s'},transform .95s ${EASE}`)}>{cardT.desc}</span>
                   <a href="#anfragen" data-m="anlasscta" style={sx(`position:relative;margin-top:auto;font-size:14.5px;font-weight:900;color:${a};opacity:${slim ? 0 : 1};transition:opacity .6s ${EASE}`)}>{L.anlaesse.cta}</a>
                 </div>
               );
@@ -970,12 +988,12 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             {p.opts.map((label, i) => {
               const chosen = sel === i;
               const right = i === p.correct;
-              let line = 'rgba(255,255,255,.09)', fill = 'rgba(255,255,255,.04)', badge = TEAMC + '22', badgeCol: string = TEAMC;
-              let letter = 'ABCD'[i], text = '#fff';
+              let line = 'rgba(246,239,230,.09)', fill = 'rgba(246,239,230,.04)', badge = TEAMC + '22', badgeCol: string = TEAMC;
+              let letter = 'ABCD'[i], text = '#F6EFE6';
               if (answeredNow) {
-                if (right) { line = OK; fill = 'rgba(34,197,94,.16)'; badge = OK; badgeCol = '#fff'; letter = '✓'; }
-                else if (chosen) { line = NO; fill = 'rgba(239,68,68,.16)'; badge = NO; badgeCol = '#fff'; letter = '✕'; }
-                else { text = 'rgba(255,255,255,.4)'; badgeCol = 'rgba(255,255,255,.35)'; }
+                if (right) { line = OK; fill = 'rgba(34,197,94,.16)'; badge = OK; badgeCol = '#F6EFE6'; letter = '✓'; }
+                else if (chosen) { line = NO; fill = 'rgba(239,68,68,.16)'; badge = NO; badgeCol = '#F6EFE6'; letter = '✕'; }
+                else { text = 'rgba(246,239,230,.4)'; badgeCol = 'rgba(246,239,230,.35)'; }
               }
               return (
                 <button key={i} type="button" onClick={() => this.setState({ probePick: i })}
@@ -1003,7 +1021,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         <div style={sx('display:flex;flex-direction:column;gap:14px')}>
           <div style={sx('display:flex;align-items:center;gap:16px;margin:12px 0 2px')}>
             <img src="/assets/skelett.webp" alt="" style={sx('flex:none;height:176px;width:auto;display:block')} />
-            <div style={sx('flex:1;min-width:0;font-size:16px;font-weight:900;line-height:1.35;color:#fff;text-wrap:pretty')}>{p.q}</div>
+            <div style={sx('flex:1;min-width:0;font-size:16px;font-weight:900;line-height:1.35;color:#F6EFE6;text-wrap:pretty')}>{p.q}</div>
           </div>
           <input type="text" inputMode="numeric" value={raw0}
             onChange={e => {
@@ -1011,13 +1029,13 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               this.setState({ guessRaw: raw, guessDone: false });
             }}
             placeholder={L.probe.guessPlaceholder} aria-label={L.probe.guessPlaceholder}
-            style={sx("width:100%;box-sizing:border-box;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.05);border:1.5px solid rgba(243,195,103,.45);color:#F59E0B;font-family:'League Spartan',sans-serif;font-size:32px;font-weight:900;text-align:center;outline:none")} />
+            style={sx("width:100%;box-sizing:border-box;padding:14px 16px;border-radius:14px;background:rgba(246,239,230,.05);border:1.5px solid rgba(243,195,103,.45);color:#F59E0B;font-family:'League Spartan',sans-serif;font-size:32px;font-weight:900;text-align:center;outline:none")} />
           <button type="button"
             onClick={() => this.setState(done ? { guessDone: false, guessRaw: '' } : { guessDone: raw0 !== '' })}
-            style={sx(`width:100%;padding:13px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;border:none;background:${done ? 'rgba(255,255,255,.06)' : col};color:${done ? '#cbd5e1' : '#0A0814'};box-shadow:0 4px 0 rgba(0,0,0,.4);transition:all .3s ${EASE}`)}>
+            style={sx(`width:100%;padding:13px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;border:none;background:${done ? 'rgba(246,239,230,.06)' : col};color:${done ? 'rgba(246,239,230,.78)' : '#0A0814'};box-shadow:0 4px 0 rgba(0,0,0,.4);transition:all .3s ${EASE}`)}>
             {done ? L.probe.guessAgain : L.probe.guessBtn}
           </button>
-          <div style={sx(`overflow:hidden;box-sizing:border-box;text-align:center;font-size:13px;line-height:1.5;font-weight:800;color:#e2e8f0;max-height:${done ? '120px' : '0px'};padding:${done ? '13px' : '0 13px'};border-radius:14px;border:1px solid ${done ? gc + '80' : 'transparent'};background:${gc}14;opacity:${done ? 1 : 0};transition:max-height .5s ${EASE},padding .5s ${EASE},opacity .35s ease`)}>
+          <div style={sx(`overflow:hidden;box-sizing:border-box;text-align:center;font-size:13px;line-height:1.5;font-weight:800;color:#F6EFE6;max-height:${done ? '120px' : '0px'};padding:${done ? '13px' : '0 13px'};border-radius:14px;border:1px solid ${done ? gc + '80' : 'transparent'};background:${gc}14;opacity:${done ? 1 : 0};transition:max-height .5s ${EASE},padding .5s ${EASE},opacity .35s ease`)}>
             {done ? (near ? L.probe.guessNear(fmt(p.target), p.unit, fmt(diff)) : L.probe.guessFar(fmt(p.target), p.unit, fmt(diff))) : ' '}
           </div>
         </div>
@@ -1035,8 +1053,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       cardBody = (
         <div style={sx('display:flex;flex-direction:column;gap:10px')}>
           {p.opts.map((label, i) => (
-            <div key={i} style={sx(`display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:14px;border:1px solid ${pts[i] > 0 ? col + '66' : 'rgba(255,255,255,.09)'};background:${pts[i] > 0 ? col + '14' : 'rgba(255,255,255,.03)'};box-sizing:border-box;transition:all .3s ${EASE}`)}>
-              <span style={sx('flex:1;font-size:13.5px;font-weight:800;color:#fff')}>{label}</span>
+            <div key={i} style={sx(`display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:14px;border:1px solid ${pts[i] > 0 ? col + '66' : 'rgba(246,239,230,.09)'};background:${pts[i] > 0 ? col + '14' : 'rgba(246,239,230,.03)'};box-sizing:border-box;transition:all .3s ${EASE}`)}>
+              <span style={sx('flex:1;font-size:13.5px;font-weight:800;color:#F6EFE6')}>{label}</span>
               <button type="button" onClick={() => this.setState(st => { const nn = (st.points || [4, 3, 3]).slice(); if (nn[i] > 0) nn[i] -= 1; return { points: nn, pointsDone: false }; })}
                 style={sx(`width:28px;height:28px;flex:none;border-radius:9px;cursor:pointer;font-family:inherit;font-size:15px;font-weight:900;border:1px solid ${col}59;background:${col}1f;color:${col}`)}>−</button>
               <span style={sx('width:26px;text-align:center;font-size:17px;font-weight:900;color:#22C55E')}>{pts[i]}</span>
@@ -1045,10 +1063,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             </div>
           ))}
           <button type="button" onClick={() => { if (ready) this.setState(st => ({ pointsDone: !st.pointsDone })); }}
-            style={sx(`width:100%;padding:12px;border-radius:14px;text-align:center;font-family:inherit;font-size:12.5px;font-weight:900;box-sizing:border-box;cursor:${ready ? 'pointer' : 'default'};border:1px solid ${ready ? col + '99' : 'rgba(255,255,255,.09)'};background:${done ? 'rgba(255,255,255,.05)' : (ready ? col : 'transparent')};color:${done ? '#cbd5e1' : (ready ? '#0A0814' : '#94a3b8')};transition:all .3s ${EASE}`)}>
+            style={sx(`width:100%;padding:12px;border-radius:14px;text-align:center;font-family:inherit;font-size:12.5px;font-weight:900;box-sizing:border-box;cursor:${ready ? 'pointer' : 'default'};border:1px solid ${ready ? col + '99' : 'rgba(246,239,230,.09)'};background:${done ? 'rgba(246,239,230,.05)' : (ready ? col : 'transparent')};color:${done ? 'rgba(246,239,230,.78)' : (ready ? '#0A0814' : 'rgba(246,239,230,.62)')};transition:all .3s ${EASE}`)}>
             {done ? L.probe.pointsAgain : (ready ? L.probe.pointsSubmit : L.probe.pointsLeft(10 - sum))}
           </button>
-          <div style={sx(`overflow:hidden;box-sizing:border-box;text-align:center;font-size:12.5px;line-height:1.5;font-weight:800;color:#e2e8f0;max-height:${done ? '130px' : '0px'};padding:${done ? '12px' : '0 12px'};margin-top:${done ? '2px' : '0'};border-radius:14px;border:1px solid ${done ? pc + '80' : 'transparent'};background:${pc}14;opacity:${done ? 1 : 0};transition:max-height .5s ${EASE},padding .5s ${EASE},opacity .35s ease`)}>
+          <div style={sx(`overflow:hidden;box-sizing:border-box;text-align:center;font-size:12.5px;line-height:1.5;font-weight:800;color:#F6EFE6;max-height:${done ? '130px' : '0px'};padding:${done ? '12px' : '0 12px'};margin-top:${done ? '2px' : '0'};border-radius:14px;border:1px solid ${done ? pc + '80' : 'transparent'};background:${pc}14;opacity:${done ? 1 : 0};transition:max-height .5s ${EASE},padding .5s ${EASE},opacity .35s ease`)}>
             {done ? L.probe.pointsResult(p.correctLabel, gained) : ' '}
           </div>
         </div>
@@ -1061,13 +1079,13 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           <div>
             <div data-reveal="" style={sx('font-size:13px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#FFC7E4')}>{L.probe.kicker}</div>
             {this.kicker(`[ 03 ]|${L.probe.label}`)}
-            <h2 data-reveal="" style={sx("margin:12px 0 14px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F1F5F9")}>{L.probe.h2}</h2>
-            <p data-reveal="" style={sx('margin:0 0 26px;max-width:520px;font-size:17px;line-height:1.6;color:#cbd5e1;font-weight:500')}>{L.probe.sub}</p>
+            <h2 data-reveal="" style={sx("margin:12px 0 14px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.probe.h2}</h2>
+            <p data-reveal="" style={sx('margin:0 0 26px;max-width:520px;font-size:17px;line-height:1.6;color:rgba(246,239,230,.78);font-weight:500')}>{L.probe.sub}</p>
             <div style={sx(`margin-bottom:26px;padding:20px 22px;border-radius:18px;border:1px solid ${col}40;border-left:3px solid ${col};background:${col}0f;transition:border-color .3s ${EASE},background .3s ${EASE}`)}>
               <div style={sx(`font-size:18px;font-weight:900;line-height:1.35;color:${col};margin-bottom:7px`)}>{catT.claim}</div>
-              <div style={sx('font-size:15.5px;line-height:1.6;font-weight:500;color:#cbd5e1')}>{catT.detail}</div>
+              <div style={sx('font-size:15.5px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78)')}>{catT.detail}</div>
             </div>
-            <div data-reveal="" style={sx('display:flex;flex-direction:column;gap:10px;font-size:15.5px;font-weight:700;color:#e2e8f0')}>
+            <div data-reveal="" style={sx('display:flex;flex-direction:column;gap:10px;font-size:15.5px;font-weight:700;color:#F6EFE6')}>
               <span style={sx('display:flex;align-items:center;gap:11px')}><span style={sx('color:#FA4BA3')}>✓</span>{L.probe.check1}</span>
               <span style={sx('display:flex;align-items:center;gap:11px')}><span style={sx('color:#FA4BA3')}>✓</span>{L.probe.check2}</span>
             </div>
@@ -1092,7 +1110,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 const pick = () => this.setState({ probeCat: k, probePick: null, guessRaw: '', guessDone: false, points: [4, 3, 3], pointsDone: false });
                 return (
                   <button key={k} type="button" onMouseEnter={pick} onClick={pick}
-                    style={sx(`display:inline-flex;align-items:center;gap:12px;padding:14px 22px;border-radius:999px;cursor:pointer;font-family:inherit;font-size:16px;font-weight:900;white-space:nowrap;transform:translateX(${arc}px) scale(${onT ? 1.05 : 1});transform-origin:left center;background:${onT ? mt.col + '26' : 'rgba(255,255,255,.03)'};border:1px solid ${onT ? mt.col : 'rgba(255,255,255,.1)'};color:${onT ? mt.col : '#cbd5e1'};box-shadow:${onT ? '0 0 26px ' + mt.col + '3d' : 'none'};transition:transform .55s ${EASE},background .3s ${EASE},border-color .3s ${EASE},color .3s ${EASE},box-shadow .4s ${EASE}`)}>
+                    style={sx(`display:inline-flex;align-items:center;gap:12px;padding:14px 22px;border-radius:999px;cursor:pointer;font-family:inherit;font-size:16px;font-weight:900;white-space:nowrap;transform:translateX(${arc}px) scale(${onT ? 1.05 : 1});transform-origin:left center;background:${onT ? mt.col + '26' : 'rgba(246,239,230,.03)'};border:1px solid ${onT ? mt.col : 'rgba(246,239,230,.1)'};color:${onT ? mt.col : 'rgba(246,239,230,.78)'};box-shadow:${onT ? '0 0 26px ' + mt.col + '3d' : 'none'};transition:transform .55s ${EASE},background .3s ${EASE},border-color .3s ${EASE},color .3s ${EASE},box-shadow .4s ${EASE}`)}>
                     <span style={sx(`display:block;width:30px;height:30px;flex:none;background:url(${mt.icon}) center/contain no-repeat;opacity:${onT ? 1 : .8}`)}></span>
                     {ct.name}
                   </button>
@@ -1104,18 +1122,18 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               + `filter:brightness(${up ? 1 : .68});transition:transform ${tilt && up ? '.22s' : '1.15s'} ${EASE},filter 1.15s ${EASE}`)}>
               <div data-m="pphone" style={sx(`width:360px;height:600px;border-radius:46px;box-sizing:border-box;padding:20px 16px;display:flex;flex-direction:column;background:linear-gradient(180deg,#150c20,#0a0714);border:7px solid #06060c;box-shadow:0 0 60px ${col}3d,0 0 120px rgba(250,75,163,.16),0 30px 70px rgba(0,0,0,.6);transition:box-shadow .5s ${EASE}`)}>
                 <div style={sx('display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:18px;border:1px solid rgba(168,85,247,.45);background:rgba(168,85,247,.07);margin-bottom:12px;flex:none')}>
-                  <span style={sx('width:34px;height:34px;border-radius:50%;background:#A855F7 url(/assets/av3d-koala.webp) center/28px no-repeat;flex:none')}></span>
+                  <span style={sx(teammarke('#A855F7', '/assets/av-qq-crystal-ball.webp', 34))}></span>
                   <span style={sx('flex:1;font-size:15px;font-weight:900;color:#A855F7')}>{L.hero.phoneTeamA}</span>
-                  <span style={sx('width:26px;height:26px;border-radius:9px;border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:11px;color:#c49ab5')}>☰</span>
+                  <span style={sx('width:26px;height:26px;border-radius:9px;border:1px solid rgba(246,239,230,.14);display:flex;align-items:center;justify-content:center;font-size:11px;color:#c49ab5')}>☰</span>
                 </div>
-                <div key={key} style={sx(`flex:1;min-height:0;padding:18px 16px;border-radius:22px;border:1px solid ${col}40;background:rgba(255,255,255,.025);box-sizing:border-box;overflow:hidden;animation:${PROBE_ORDER.indexOf(key) % 2 ? 'cwCardB' : 'cwCardA'} .55s ${EASE} both;transition:border-color .35s ${EASE}`)}>
+                <div key={key} style={sx(`flex:1;min-height:0;padding:18px 16px;border-radius:22px;border:1px solid ${col}40;background:rgba(246,239,230,.025);box-sizing:border-box;overflow:hidden;animation:${PROBE_ORDER.indexOf(key) % 2 ? 'cwCardB' : 'cwCardA'} .55s ${EASE} both;transition:border-color .35s ${EASE}`)}>
                   <span style={sx(`display:inline-flex;align-items:center;padding:6px 13px;border-radius:999px;background:${col}1f;border:1px solid ${col}80;font-size:11px;font-weight:900;color:${col};flex:none`)}>{catT.name}</span>
                   {p.kind !== 'guess' && (
-                    <div style={sx('margin:12px 0 14px;font-size:16px;font-weight:900;line-height:1.35;color:#fff')}>{p.q}</div>
+                    <div style={sx('margin:12px 0 14px;font-size:16px;font-weight:900;line-height:1.35;color:#F6EFE6')}>{p.q}</div>
                   )}
                   {cardBody}
                 </div>
-                <div style={sx('margin-top:auto;padding-top:12px;text-align:center;font-size:11px;font-weight:800;color:#94a3b8;flex:none')}>{footer}</div>
+                <div style={sx('margin-top:auto;padding-top:12px;text-align:center;font-size:11px;font-weight:800;color:rgba(246,239,230,.62);flex:none')}>{footer}</div>
               </div>
             </div>
           </div>
@@ -1142,19 +1160,19 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       this.setState({ beam: false, beamWelcome: false });
     };
     const duo = [
-      { c: '#FA4BA3', bg: 'linear-gradient(160deg,rgba(250,75,163,.12),rgba(255,255,255,.02))', bd: 'rgba(250,75,163,.28)', title: L.ablauf.duo0Title, items: L.ablauf.duo0 },
-      { c: '#FFC7E4', bg: 'rgba(255,255,255,.03)', bd: 'rgba(255,255,255,.1)', title: L.ablauf.duo1Title, items: L.ablauf.duo1 },
+      { c: '#FA4BA3', bg: 'linear-gradient(160deg,rgba(250,75,163,.12),rgba(246,239,230,.02))', bd: 'rgba(250,75,163,.28)', title: L.ablauf.duo0Title, items: L.ablauf.duo0 },
+      { c: '#FFC7E4', bg: 'rgba(246,239,230,.03)', bd: 'rgba(246,239,230,.1)', title: L.ablauf.duo1Title, items: L.ablauf.duo1 },
     ];
     return (
       <section id="ablauf" style={sx('border-top:1px solid rgba(250,75,163,.07)')}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px')}>
           {this.kicker(`[ 04 ]|${L.ablauf.label}`)}
-          <h2 data-reveal="" style={sx("margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F1F5F9")}>{L.ablauf.h2}</h2>
-          <p data-reveal="" style={sx('margin:0 0 34px;max-width:620px;font-size:17px;line-height:1.6;color:#94a3b8;font-weight:500')}>{L.ablauf.sub}</p>
+          <h2 data-reveal="" style={sx("margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.ablauf.h2}</h2>
+          <p data-reveal="" style={sx('margin:0 0 34px;max-width:620px;font-size:17px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:500')}>{L.ablauf.sub}</p>
 
           <div data-reveal="" data-m="wall" onMouseEnter={beamStart} onMouseLeave={beamStop} onClick={beamStart}
             style={sx('position:relative;margin:0 0 44px;cursor:pointer')}>
-            <div style={sx('position:relative;width:100%;aspect-ratio:16/9;border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:#0d0a17')}>
+            <div style={sx('position:relative;width:100%;aspect-ratio:16/9;border-radius:22px;overflow:hidden;border:1px solid rgba(246,239,230,.08);background:#0d0a17')}>
               <img src="/assets/wand.webp" loading="lazy" decoding="async" alt="" style={sx('position:absolute;inset:0;width:100%;height:100%;object-fit:cover')} />
               <img src="/assets/wand-an.webp" loading="lazy" decoding="async" alt="" aria-hidden="true"
                 style={sx(`position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:${on ? 1 : 0};transition:opacity .9s ${EASE} ${on ? '.1s' : '.15s'}`)} />
@@ -1169,16 +1187,16 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                       </div>
                       <div style={sx('display:flex;align-items:center;gap:14px;margin-top:26px')}>
                         <img src={LOGO} alt="" width={62} height={62} style={sx('width:62px;height:62px')} />
-                        <span style={sx('padding:12px 18px;border-radius:14px;border:1px solid rgba(250,75,163,.45);background:rgba(255,255,255,.03);font-size:15px;font-weight:900;line-height:1.35;color:#F1F5F9;text-align:center')}>{L.sim.welcomeSub}</span>
+                        <span style={sx('padding:12px 18px;border-radius:14px;border:1px solid rgba(250,75,163,.45);background:rgba(246,239,230,.03);font-size:15px;font-weight:900;line-height:1.35;color:#F6EFE6;text-align:center')}>{L.sim.welcomeSub}</span>
                       </div>
                     </div>
                     <span aria-hidden="true" style={sx('position:absolute;inset:0;border-radius:22px;pointer-events:none;overflow:hidden')}>
-                      <span style={sx('position:absolute;top:0;bottom:0;width:38%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent)')}></span>
+                      <span style={sx('position:absolute;top:0;bottom:0;width:38%;background:linear-gradient(90deg,transparent,rgba(246,239,230,.07),transparent)')}></span>
                     </span>
                     <span aria-hidden="true" style={sx('position:absolute;inset:0;border-radius:22px;pointer-events:none;background:radial-gradient(ellipse at 46% 44%,transparent 58%,rgba(0,0,0,.32))')}></span>
                     <div style={sx('position:relative;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px')}>
                       <span style={sx(g.catPillStyle)}>{g.catName}</span>
-                      <span style={sx('font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#8FA0B8')}>{g.statusLine}</span>
+                      <span style={sx('font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{g.statusLine}</span>
                     </div>
 
                     {g.showQuestion && (
@@ -1190,7 +1208,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                               {g.qOptions.map((o, i) => (
                                 <div key={i} style={sx(o.style)}>
                                   <span style={sx(o.numStyle)}>{o.num}</span>
-                                  <span style={sx('font-size:12px;font-weight:800;color:#fff;line-height:1.2')}>{o.label}</span>
+                                  <span style={sx('font-size:12px;font-weight:800;color:#F6EFE6;line-height:1.2')}>{o.label}</span>
                                 </div>
                               ))}
                             </div>
@@ -1198,7 +1216,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                           <div style={sx(g.ringStyle)}>{g.seconds}</div>
                         </div>
                         <div style={sx('margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:7px')}>
-                          <span style={sx('font-size:12.5px;font-weight:900;letter-spacing:.06em;color:#94a3b8;white-space:nowrap')}>{g.answeredLine}</span>
+                          <span style={sx('font-size:12.5px;font-weight:900;letter-spacing:.06em;color:rgba(246,239,230,.62);white-space:nowrap')}>{g.answeredLine}</span>
                           <div style={sx('display:flex;gap:9px')}>
                             {g.teamDiscs.map((d, i) => <span key={i} style={sx(d.style)}></span>)}
                           </div>
@@ -1215,7 +1233,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                               <span style={sx(s.discStyle)}></span>
                               <span style={sx('flex:1;min-width:0;display:flex;flex-direction:column;gap:1px')}>
                                 <span style={sx(s.nameStyle)}>{s.name}</span>
-                                <span style={sx('font-size:13.5px;font-weight:800;color:#8FA0B8;line-height:1.2')}>{s.sub}</span>
+                                <span style={sx('font-size:13.5px;font-weight:800;color:rgba(246,239,230,.62);line-height:1.2')}>{s.sub}</span>
                               </span>
                             </div>
                           ))}
@@ -1240,7 +1258,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   <div style={sx(`font-size:${onD ? 13 : 12}px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;color:${d.c};transition:font-size .6s ${EASE}`)}>{d.title}</div>
                   <ul style={sx(`margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:13px;overflow:hidden;max-height:${onD ? '260px' : '0px'};margin-top:${onD ? '18px' : '0px'};opacity:${onD ? 1 : 0};transform:translateY(${onD ? '0' : '8px'});transition:max-height .95s ${EASE},margin-top .95s ${EASE},opacity .5s ease ${onD ? '.22s' : '0s'},transform .7s ${EASE}`)}>
                     {d.items.map(item => (
-                      <li key={item} style={sx('display:flex;align-items:flex-start;gap:11px;font-size:16px;line-height:1.5;font-weight:600;white-space:nowrap;color:#e2e8f0')}>
+                      <li key={item} style={sx('display:flex;align-items:flex-start;gap:11px;font-size:16px;line-height:1.5;font-weight:600;white-space:nowrap;color:#F6EFE6')}>
                         <span style={sx(`flex:none;width:7px;height:7px;margin-top:8px;border-radius:50%;background:${d.c}`)}></span>{item}
                       </li>
                     ))}
@@ -1277,24 +1295,24 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 style={sx(`position:relative;z-index:2;width:220px;height:220px;border-radius:50%;object-fit:cover;object-position:center 22%;border:3px solid rgba(250,75,163,${a ? .75 : .5});box-shadow:0 24px 50px rgba(0,0,0,.55);transform:scale(${a ? 1.04 : 1});transition:transform .8s ${EASE},border-color .6s ${EASE}`)} />
             </div>
             <div style={sx('text-align:center')}>
-              <div style={sx('font-size:18px;font-weight:900;color:#F1F5F9')}>{L.johannes.name}</div>
+              <div style={sx('font-size:18px;font-weight:900;color:#F6EFE6')}>{L.johannes.name}</div>
               <div style={sx('font-size:13.5px;font-weight:700;letter-spacing:.04em;color:#FFC7E4')}>{L.johannes.role}</div>
             </div>
           </div>
           <div>
             <div data-reveal="" style={sx('font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#FFC7E4;margin-bottom:12px')}>{L.johannes.kicker}</div>
-            <h2 data-reveal="" style={sx("margin:0 0 18px;max-width:700px;font-family:'League Spartan',sans-serif;font-size:30px;font-weight:900;line-height:1.18;color:#F1F5F9;cursor:default;hyphens:none")}>
+            <h2 data-reveal="" style={sx("margin:0 0 18px;max-width:700px;font-family:'League Spartan',sans-serif;font-size:30px;font-weight:900;line-height:1.18;color:#F6EFE6;cursor:default;hyphens:none")}>
               {L.johannes.quote.map((qw, i) => (
                 <span key={i}>
-                  <span style={sx(`display:inline-block;white-space:nowrap;color:${qw.hot ? '#FA4BA3' : '#F1F5F9'}`)}>{qw.w}</span>
+                  <span style={sx(`display:inline-block;white-space:nowrap;color:${qw.hot ? '#FA4BA3' : '#F6EFE6'}`)}>{qw.w}</span>
                   {i < L.johannes.quote.length - 1 ? ' ' : ''}
                 </span>
               ))}
             </h2>
-            <p style={sx('margin:0 0 22px;max-width:680px;font-size:17px;line-height:1.65;font-weight:500;color:#cbd5e1')}>{L.johannes.body}</p>
+            <p style={sx('margin:0 0 22px;max-width:680px;font-size:17px;line-height:1.65;font-weight:500;color:rgba(246,239,230,.78)')}>{L.johannes.body}</p>
             <div data-reveal="" data-stagger="" style={sx('display:flex;flex-wrap:wrap;gap:10px')}>
               {L.johannes.chips.map(chip => (
-                <span key={chip} style={sx('padding:9px 16px;border-radius:999px;background:rgba(250,75,163,.1);border:1px solid rgba(250,75,163,.3);font-size:14px;font-weight:700;color:#e2e8f0;white-space:nowrap')}>{chip}</span>
+                <span key={chip} style={sx('padding:9px 16px;border-radius:999px;background:rgba(250,75,163,.1);border:1px solid rgba(250,75,163,.3);font-size:14px;font-weight:700;color:#F6EFE6;white-space:nowrap')}>{chip}</span>
               ))}
             </div>
           </div>
@@ -1309,15 +1327,15 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       <section style={sx('border-top:1px solid rgba(250,75,163,.07)')}>
         <div style={sx('max-width:820px;margin:0 auto;padding:80px 32px')}>
           {this.kicker(`[ 05 ]|${L.faq.label}`)}
-          <h2 data-reveal="" style={sx("margin:0 0 30px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F1F5F9")}>{L.faq.h2}</h2>
+          <h2 data-reveal="" style={sx("margin:0 0 30px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.faq.h2}</h2>
           <div data-reveal="" style={sx('display:flex;flex-direction:column;gap:12px')}>
             {L.faq.items.map((item, i) => (
-              <details key={i} className="cwFaqCard" style={sx(`border-radius:16px;background:rgba(255,255,255,.03);border:1px solid rgba(250,75,163,.18);overflow:hidden;transition:background .25s ${EASE},border-color .25s ${EASE}`)}>
-                <summary style={sx('display:flex;align-items:center;gap:14px;padding:20px 22px;font-size:17px;font-weight:800;color:#F1F5F9;list-style:none;cursor:pointer')}>
+              <details key={i} className="cwFaqCard" style={sx(`border-radius:16px;background:rgba(246,239,230,.03);border:1px solid rgba(250,75,163,.18);overflow:hidden;transition:background .25s ${EASE},border-color .25s ${EASE}`)}>
+                <summary style={sx('display:flex;align-items:center;gap:14px;padding:20px 22px;font-size:17px;font-weight:800;color:#F6EFE6;list-style:none;cursor:pointer')}>
                   <span style={sx('flex:1')}>{item.q}</span>
                   <span style={sx(`font-size:20px;font-weight:900;color:#FA4BA3;transition:transform .34s ${EASE}`)} data-faq-plus="">+</span>
                 </summary>
-                <div style={sx(`animation:cwFaq .34s ${EASE} both;padding:0 22px 20px;font-size:15.5px;line-height:1.65;font-weight:500;color:#cbd5e1`)}>{item.a}</div>
+                <div style={sx(`animation:cwFaq .34s ${EASE} both;padding:0 22px 20px;font-size:15.5px;line-height:1.65;font-weight:500;color:rgba(246,239,230,.78)`)}>{item.a}</div>
               </details>
             ))}
           </div>
@@ -1330,9 +1348,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const L = this.T;
     const test = this.state.formMode === 'test';
     const st = this.state.formStatus;
-    const tab = (on: boolean) => `padding:10px 20px;border-radius:999px;border:none;cursor:pointer;white-space:nowrap;font-family:inherit;font-size:14.5px;font-weight:900;transition:background .25s ${EASE},color .25s ${EASE};background:${on ? '#FA4BA3' : 'transparent'};color:${on ? '#0A0814' : '#cbd5e1'}`;
-    const inputStyle = 'width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);color:#F1F5F9;font-family:inherit;font-size:15px;font-weight:600';
-    const labelStyle = 'font-size:13px;font-weight:800;color:#cbd5e1;letter-spacing:.01em';
+    const tab = (on: boolean) => `padding:10px 20px;border-radius:999px;border:none;cursor:pointer;white-space:nowrap;font-family:inherit;font-size:14.5px;font-weight:900;transition:background .25s ${EASE},color .25s ${EASE};background:${on ? '#FA4BA3' : 'transparent'};color:${on ? '#0A0814' : 'rgba(246,239,230,.78)'}`;
+    const inputStyle = 'width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;background:rgba(246,239,230,.05);border:1.5px solid rgba(246,239,230,.12);color:#F6EFE6;font-family:inherit;font-size:15px;font-weight:600';
+    const labelStyle = 'font-size:13px;font-weight:800;color:rgba(246,239,230,.78);letter-spacing:.01em';
     const fieldWrap = 'display:flex;flex-direction:column;gap:6px';
     const req = <span aria-hidden="true" style={sx('color:#FA4BA3')}> *</span>;
     return (
@@ -1341,10 +1359,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         <div style={sx('position:relative;max-width:760px;margin:0 auto;padding:88px 32px;text-align:center')}>
           <span aria-hidden="true" style={sx('position:absolute;top:20px;left:50%;transform:translateX(-50%);width:520px;height:220px;border-radius:50%;background:radial-gradient(ellipse,rgba(250,75,163,.22),transparent 70%);pointer-events:none')}></span>
           {this.kicker(`[ 06 ]|${L.form.label}`)}
-          <h2 data-reveal="" style={sx("position:relative;margin:0 0 14px;font-family:'League Spartan',sans-serif;font-size:38px;font-weight:900;color:#F1F5F9")}>{L.form.h2}</h2>
-          <p style={sx('margin:0 auto 10px;max-width:560px;font-size:17.5px;line-height:1.6;font-weight:500;color:#cbd5e1')}>{L.form.sub}</p>
+          <h2 data-reveal="" style={sx("position:relative;margin:0 0 14px;font-family:'League Spartan',sans-serif;font-size:38px;font-weight:900;color:#F6EFE6")}>{L.form.h2}</h2>
+          <p style={sx('margin:0 auto 10px;max-width:560px;font-size:17.5px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78)')}>{L.form.sub}</p>
           <p style={sx('margin:0 auto 18px;font-size:14px;font-weight:800;letter-spacing:.02em;color:#FFC7E4')}>{L.form.avail}</p>
-          <div style={sx('position:relative;display:inline-flex;gap:6px;padding:6px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid rgba(250,75,163,.22);margin:0 0 22px')}>
+          <div style={sx('position:relative;display:inline-flex;gap:6px;padding:6px;border-radius:999px;background:rgba(246,239,230,.04);border:1px solid rgba(250,75,163,.22);margin:0 0 22px')}>
             <button type="button" onClick={() => this.openForm('event')} style={sx(tab(!test))}>{L.form.tabEvent}</button>
             <button type="button" onClick={() => this.openForm('test')} style={sx(tab(test))}>{L.form.tabTest}</button>
           </div>
@@ -1355,21 +1373,21 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 <span style={sx("font-family:'League Spartan',sans-serif;font-size:28px;font-weight:900;color:#FA4BA3;white-space:nowrap")}>{test ? L.form.testBig : L.form.priceBig}</span>
                 <span style={sx('font-size:14px;font-weight:700;color:#FFC7E4;white-space:nowrap')}>{test ? L.form.testSub : L.form.priceSub}</span>
               </span>
-              <span style={sx('font-size:14.5px;font-weight:700;color:#94a3b8;text-align:left')}>
+              <span style={sx('font-size:14.5px;font-weight:700;color:rgba(246,239,230,.62);text-align:left')}>
                 {test ? L.form.testNote1 : L.form.priceNote1}<br />{test ? L.form.testNote2 : L.form.priceNote2}
               </span>
             </div>
 
             {st === 'ok' && (
-              <div role="status" style={sx('max-width:560px;margin:0 auto;padding:clamp(22px,3vw,34px);border-radius:24px;background:rgba(255,255,255,.03);border:1.5px solid rgba(250,75,163,.24);box-shadow:0 16px 40px rgba(0,0,0,.35),0 0 32px rgba(250,75,163,.1);text-align:center')}>
-                <div style={sx('font-size:22px;font-weight:900;color:#F1F5F9')}>{test ? L.form.okTitleTest : L.form.okTitleEvent}</div>
-                <p style={sx('margin:10px 0 0;color:#cbd5e1;font-weight:500;line-height:1.6')}>{test ? L.form.okBodyTest : L.form.okBodyEvent}</p>
+              <div role="status" style={sx('max-width:560px;margin:0 auto;padding:clamp(22px,3vw,34px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(250,75,163,.24);box-shadow:0 16px 40px rgba(0,0,0,.35),0 0 32px rgba(250,75,163,.1);text-align:center')}>
+                <div style={sx('font-size:22px;font-weight:900;color:#F6EFE6')}>{test ? L.form.okTitleTest : L.form.okTitleEvent}</div>
+                <p style={sx('margin:10px 0 0;color:rgba(246,239,230,.78);font-weight:500;line-height:1.6')}>{test ? L.form.okBodyTest : L.form.okBodyEvent}</p>
               </div>
             )}
 
             {st !== 'ok' && (
               <form key={this.state.formMode} onSubmit={this.submitForm}
-                style={sx('max-width:560px;margin:0 auto;text-align:left;padding:clamp(22px,3vw,34px);border-radius:24px;background:rgba(255,255,255,.03);border:1.5px solid rgba(250,75,163,.24);box-shadow:0 16px 40px rgba(0,0,0,.35),0 0 32px rgba(250,75,163,.1)')}>
+                style={sx('max-width:560px;margin:0 auto;text-align:left;padding:clamp(22px,3vw,34px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(250,75,163,.24);box-shadow:0 16px 40px rgba(0,0,0,.35),0 0 32px rgba(250,75,163,.1)')}>
                 <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden="true" style={sx('display:none')} />
                 <input type="hidden" name="_subject" value={test ? 'Neues Test-Team' : 'Quiz-Anfrage'} />
                 <input type="hidden" name="art" value={test ? 'Test-Team' : 'Event-Anfrage'} />
@@ -1412,7 +1430,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                         <label htmlFor="t-groesse" style={sx(labelStyle)}>{L.form.groesse}</label>
                         <select id="t-groesse" name="groesse" defaultValue={L.form.groesseOpts[0]} style={sx(inputStyle + ';appearance:none')}>
                           {L.form.groesseOpts.map(o => (
-                            <option key={o} value={o} style={sx('background:#171126;color:#F1F5F9')}>{o}</option>
+                            <option key={o} value={o} style={sx('background:#171126;color:#F6EFE6')}>{o}</option>
                           ))}
                         </select>
                       </div>
@@ -1439,11 +1457,11 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 )}
 
                 <div style={sx('text-align:center;margin-top:20px')}>
-                  <button type="submit" className="cwSubmit" style={sx(`padding:14px 30px;border-radius:999px;border:1.5px solid rgba(255,255,255,.18);background:linear-gradient(135deg,#CE1C6F,#AB0055);color:#fff;font-family:inherit;font-weight:900;font-size:16px;cursor:pointer;transition:transform .2s ${EASE},filter .2s ${EASE}`)}>
+                  <button type="submit" className="cwSubmit" style={sx(`padding:14px 30px;border-radius:999px;border:1.5px solid rgba(246,239,230,.18);background:linear-gradient(135deg,#CE1C6F,#AB0055);color:#F6EFE6;font-family:inherit;font-weight:900;font-size:16px;cursor:pointer;transition:transform .2s ${EASE},filter .2s ${EASE}`)}>
                     {st === 'sending' ? L.form.sending : (test ? L.form.submitTest : L.form.submitEvent)}
                   </button>
                 </div>
-                <p style={sx('margin:14px auto 0;max-width:440px;text-align:center;font-size:12.5px;line-height:1.5;color:#94a3b8;font-weight:500')}>
+                <p style={sx('margin:14px auto 0;max-width:440px;text-align:center;font-size:12.5px;line-height:1.5;color:rgba(246,239,230,.62);font-weight:500')}>
                   {L.form.privacy1}<a href="/datenschutz" style={sx('color:#FFC7E4;font-weight:700')}>{L.form.privacyLink}</a>{L.form.privacy2}
                 </p>
               </form>
@@ -1472,7 +1490,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         {this.renderFaq()}
         {this.renderForm()}
         <footer style={sx('border-top:1px solid rgba(250,75,163,.07)')}>
-          <div data-m="foot" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:30px 32px;display:flex;align-items:center;gap:20px;font-size:14px;font-weight:600;color:#94a3b8')}>
+          <div data-m="foot" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:30px 32px;display:flex;align-items:center;gap:20px;font-size:14px;font-weight:600;color:rgba(246,239,230,.62)')}>
             <img src={LOGO} alt="" width={26} height={26} style={sx('width:26px;height:26px')} />
             <span style={sx('white-space:nowrap')}>{L.footer.city}</span>
             <a href="mailto:hallo@cozywolf.de" style={sx('color:#FFC7E4')}>hallo@cozywolf.de</a>
@@ -1480,7 +1498,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             <a href="/datenschutz" style={sx('color:#FFC7E4')}>{L.footer.privacy}</a>
             <a href="https://instagram.com/cozywolf.events" style={sx('margin-left:auto;display:flex;align-items:center;gap:8px;color:#FFC7E4')}>@cozywolf.events</a>
           </div>
-          <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:0 32px 26px;font-size:12.5px;font-weight:600;color:#64748b')}>{L.footer.aiNote}</div>
+          <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:0 32px 26px;font-size:12.5px;font-weight:600;color:rgba(246,239,230,.42)')}>{L.footer.aiNote}</div>
         </footer>
         <a href="#anfragen" data-m="sticky" style={sx('position:fixed;left:14px;right:14px;bottom:14px;z-index:40;align-items:center;justify-content:center;padding:15px 20px;border-radius:999px;background:#FA4BA3;color:#0A0814;font-weight:900;font-size:16px;box-shadow:0 14px 34px rgba(0,0,0,.55)')}>{L.sticky}</a>
       </div>

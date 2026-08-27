@@ -8,7 +8,7 @@
  * Stand 2026-08-06: im Layout (Nav + Footer) statt eigener Huelle; Farben aus
  * brand.ts (Marketing-Pink) statt lokaler Kopie mit dem alten App-Pink.
  */
-import { BRAND } from './brand';
+import { BRAND, FONT_BODY } from './brand';
 import { Layout } from './Layout';
 
 const PLACEHOLDER_MODE = false;
@@ -32,7 +32,7 @@ export default function LegalPage({ doc }: { doc: 'impressum' | 'datenschutz' })
               fontWeight: 900, color: BRAND.pink, marginBottom: 4,
               fontSize: 13, letterSpacing: '0.05em', textTransform: 'uppercase',
             }}>⚠️ Seite im Aufbau</div>
-            <div style={{ color: '#cbd5e1' }}>
+            <div style={{ color: 'rgba(246,239,230,.78)' }}>
               cozywolf wird aktuell als Privatperson aufgebaut. Klar-Name
               und ladungsfähige Anschrift werden mit der Gewerbe-Anmeldung
               ergänzt. Bei Rückfragen: <a href={`mailto:${EMAIL}`}
@@ -199,7 +199,7 @@ function Datenschutz() {
 
       <H2>7. Schriftarten</H2>
       <P>
-        Diese Seite nutzt die Schriftarten „Nunito" und „League Spartan".
+        Diese Seite nutzt die Schriftarten „Bricolage Grotesque" und „League Spartan".
         Diese werden lokal von unserem eigenen Server ausgeliefert (selbst
         gehostet) und nicht von externen Diensten wie Google Fonts nachgeladen.
         Es wird dabei keine Verbindung zu Google-Servern aufgebaut und keine
@@ -237,7 +237,7 @@ function Datenschutz() {
 
 function H1({ children }: { children: React.ReactNode }) {
   return <h1 style={{
-    fontSize: 32, fontWeight: 900, color: '#F1F5F9',
+    fontSize: 32, fontWeight: 900, color: '#F6EFE6',
     margin: '0 0 24px', letterSpacing: '-0.01em',
   }}>{children}</h1>;
 }
@@ -251,14 +251,14 @@ function H2({ children }: { children: React.ReactNode }) {
 
 function P({ children }: { children: React.ReactNode }) {
   return <p style={{
-    margin: '0 0 12px', color: '#cbd5e1', lineHeight: 1.6,
+    margin: '0 0 12px', color: 'rgba(246,239,230,.78)', lineHeight: 1.6,
     fontSize: 15, fontWeight: 500,
   }}>{children}</p>;
 }
 
 function Ul({ children }: { children: React.ReactNode }) {
   return <ul style={{
-    margin: '0 0 14px 24px', color: '#cbd5e1',
+    margin: '0 0 14px 24px', color: 'rgba(246,239,230,.78)',
     lineHeight: 1.7, fontSize: 15, fontWeight: 500,
   }}>{children}</ul>;
 }
@@ -279,11 +279,11 @@ function Pre({ children }: { children: React.ReactNode }) {
   return <pre style={{
     margin: '0 0 14px',
     padding: '12px 14px',
-    background: 'rgba(255,255,255,0.04)',
+    background: 'rgba(246,239,230,0.04)',
     border: `1px solid rgba(${BRAND.pinkRgb},0.18)`,
     borderRadius: 10,
-    fontFamily: "'Nunito', system-ui, sans-serif",
-    fontSize: 14, color: '#e2e8f0', lineHeight: 1.6,
+    fontFamily: FONT_BODY,
+    fontSize: 14, color: '#F6EFE6', lineHeight: 1.6,
     whiteSpace: 'pre-wrap',
   }}>{children}</pre>;
 }

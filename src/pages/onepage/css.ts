@@ -5,7 +5,7 @@
 // (Multipage-Site: Unterseiten sind eigene Full-Page-Loads).
 export const ONEPAGE_CSS = `
 html{background:#0A0814;color-scheme:dark}
-body{margin:0;background:#0A0814;font-family:'Nunito',system-ui,sans-serif;color:#e2e8f0;-webkit-font-smoothing:antialiased}
+body{margin:0;background:#0A0814;font-family:'Bricolage Grotesque','Nunito',system-ui,sans-serif;font-optical-sizing:auto;color:#F6EFE6;-webkit-font-smoothing:antialiased}
 a{color:#FA4BA3;text-decoration:none}a:hover{color:#FFC7E4}
 @keyframes cwClaim{0%{transform:scale(.2);opacity:0}6%{transform:scale(1.12);opacity:1}11%{transform:scale(1)}82%{opacity:1;transform:scale(1)}93%{opacity:.1;transform:scale(.8)}100%{opacity:0;transform:scale(.2)}}
 @keyframes cwCount{from{width:100%}to{width:0%}}
@@ -86,7 +86,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 [data-m=cats]{grid-template-columns:repeat(2,1fr)!important}
 }
 @media (max-width:900px){
-[data-m=screenbox]{position:static!important;width:100%!important;height:auto!important;margin-top:14px!important;border-radius:18px!important;box-shadow:none!important;border:1px solid rgba(255,255,255,.08)!important}
+[data-m=screenbox]{position:static!important;width:100%!important;height:auto!important;margin-top:14px!important;border-radius:18px!important;box-shadow:none!important;border:1px solid rgba(246,239,230,.08)!important}
 }
 @media (max-width:860px){
 section>div,header>div,footer>div{padding-left:16px!important;padding-right:16px!important}

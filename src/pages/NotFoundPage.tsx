@@ -35,7 +35,7 @@ export default function NotFoundPage() {
         }}>{c.eyebrow}</div>
         <h1 style={{
           margin: 0, fontFamily: FONT_DISPLAY, fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 800,
-          color: '#F1F5F9', letterSpacing: '-0.015em', textWrap: 'balance',
+          color: '#F6EFE6', letterSpacing: '-0.015em', textWrap: 'balance',
         }}>{c.title}</h1>
         <p style={{
           margin: '16px auto 26px', maxWidth: 480, fontSize: 17,
