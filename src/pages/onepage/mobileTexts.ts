@@ -108,7 +108,7 @@ const de: MobileDict = {
       'Joker, Quiz-Mafia dreht ein Feld um',
     ],
     arenaChip: 'ab 40 Personen',
-    arenaP: 'Die große Runde. Jeder spielt am eigenen Handy, acht Fraktionen treten gegeneinander an.',
+    arenaP: 'Die große Runde. Teams zu viert an einem Handy, bis zu fünf Teams je Fraktion, acht Fraktionen treten gegeneinander an.',
     arenaFactions: '8 Fraktionen',
     arenaBullets: [
       'Beim Beitreten wählt jeder eine Fraktion: Bauchgefühl, Glückstreffer, Allwissen und fünf weitere.',
@@ -277,7 +277,7 @@ const en: MobileDict = {
       'Joker, Quiz Mafia flips a tile',
     ],
     arenaChip: 'from 40 people',
-    arenaP: 'The big round. Everyone plays on their own phone, eight factions compete.',
+    arenaP: 'The big round. Teams of four around one phone, up to five teams per faction, eight factions compete.',
     arenaFactions: '8 factions',
     arenaBullets: [
       'When joining, everyone picks a faction: Gut Feeling, Lucky Strike, Know-It-Alls and five more.',
