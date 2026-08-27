@@ -267,7 +267,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
   renderHeader() {
     const L = this.T;
     const s = this.state;
-    const langBtn = (on: boolean) => `min-height:38px;padding:0 13px;border:0;border-radius:999px;font-size:12.5px;font-weight:900;cursor:pointer;background:${on ? '#F6EFE6' : 'transparent'};color:${on ? '#0A0814' : 'rgba(246,239,230,.62)'}`;
+    const langBtn = (on: boolean) => `min-height:44px;padding:0 14px;border:0;border-radius:999px;font-size:12.5px;font-weight:900;cursor:pointer;background:${on ? '#F6EFE6' : 'transparent'};color:${on ? '#0A0814' : 'rgba(246,239,230,.62)'}`;
     return (
       <header style={sx(`position:sticky;top:0;z-index:40;padding:12px 18px;overflow:visible;transition:background .5s ease,border-color .5s ease,backdrop-filter .4s ease;`
         + (s.scrolled
