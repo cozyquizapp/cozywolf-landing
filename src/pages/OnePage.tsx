@@ -510,6 +510,17 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     );
   }
 
+  /** Eine Folie weiter oder zurueck. Laeuft im Kreis, wie ein Foliendeck. */
+  folie(schritt: number) {
+    const jetzt = PROBE_ORDER.indexOf(this.state.probeCat ?? PROBE_ORDER[0]);
+    const n = PROBE_ORDER.length;
+    const naechste = PROBE_ORDER[(jetzt + schritt + n) % n];
+    this.setState({
+      probeCat: naechste, probePick: null, guessRaw: '', guessDone: false,
+      points: [4, 3, 3], pointsDone: false,
+    });
+  }
+
   kicker(label: string) {
     return (
       <div data-reveal="" style={sx('display:flex;align-items:center;gap:12px;margin:0 0 14px;font-size:11.5px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap')}>
@@ -1090,6 +1101,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   <span style={sx('flex:1;font-size:15px;font-weight:900;color:#A855F7')}>{L.hero.phoneTeamA}</span>
                   <span style={sx('width:26px;height:26px;border-radius:9px;border:1px solid rgba(246,239,230,.14);display:flex;align-items:center;justify-content:center;font-size:11px;color:#c49ab5')}>☰</span>
                 </div>
+{/* Folienwechsel (nodeck): zwei Baender mit gebogener Kante fahren
+    ueber die alte Folie und wieder hinaus. */}
+<span key={`w-${key}`} aria-hidden="true" className="cwFolie cwFolie--vor" style={sx(`background:${col}`)}></span>
+<span key={`w2-${key}`} aria-hidden="true" className="cwFolie" style={sx('background:#141024')}></span>
                 <div key={key} style={sx(`flex:1;min-height:0;padding:18px 16px;border-radius:22px;border:1px solid ${col}40;background:rgba(246,239,230,.025);box-sizing:border-box;overflow:hidden;animation:${PROBE_ORDER.indexOf(key) % 2 ? 'cwCardB' : 'cwCardA'} .55s ${EASE} both;transition:border-color .35s ${EASE}`)}>
                   <span style={sx(`display:inline-flex;align-items:center;padding:6px 13px;border-radius:999px;background:${col}1f;border:1px solid ${col}80;font-size:11px;font-weight:900;color:${col};flex:none`)}>{catT.name}</span>
                   {p.kind !== 'guess' && (
@@ -1100,6 +1115,19 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 <div style={sx('margin-top:auto;padding-top:12px;text-align:center;font-size:11px;font-weight:800;color:rgba(246,239,230,.62);flex:none')}>{footer}</div>
               </div>
             </div>
+          </div>
+          <div data-m="folienleiste" style={sx('margin:26px auto 0;display:flex;align-items:center;justify-content:center;gap:18px')}>
+            <button type="button" onClick={() => this.folie(-1)} aria-label={L.probe.zurueck}
+              style={sx('display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(246,239,230,.38);background:transparent;color:#F6EFE6;font-family:inherit;font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer')}>
+              &lsaquo; {L.probe.zurueck}
+            </button>
+            <span style={sx("font-family:'League Spartan',sans-serif;font-size:19px;font-weight:900;letter-spacing:.06em;color:rgba(246,239,230,.62);font-variant-numeric:tabular-nums;min-width:74px;text-align:center")}>
+              {String(PROBE_ORDER.indexOf(key) + 1).padStart(2, '0')} / {String(n).padStart(2, '0')}
+            </span>
+            <button type="button" onClick={() => this.folie(1)} aria-label={L.probe.weiter}
+              style={sx('display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(246,239,230,.38);background:transparent;color:#F6EFE6;font-family:inherit;font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer')}>
+              {L.probe.weiter} &rsaquo;
+            </button>
           </div>
         </div>
       </section>

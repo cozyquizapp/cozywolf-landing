@@ -93,6 +93,17 @@ section[data-band]{
   z-index:1;
 }
 @media (max-width:860px){section[data-band]{--bogen:44px}}
+@keyframes cwFolie{
+  0%{transform:translateY(106%)}
+  46%{transform:translateY(0)}
+  100%{transform:translateY(-106%)}
+}
+.cwFolie{position:absolute;left:-6%;right:-6%;top:0;bottom:0;z-index:14;pointer-events:none;
+  border-top-left-radius:50% 34px;border-top-right-radius:50% 34px;
+  border-bottom-left-radius:50% 34px;border-bottom-right-radius:50% 34px;
+  animation:cwFolie .46s cubic-bezier(.65,0,.35,1) both}
+.cwFolie--vor{animation-delay:.05s;opacity:.55}
+@media (prefers-reduced-motion:reduce){.cwFolie{display:none}}
 summary::-webkit-details-marker{display:none}
 summary{list-style:none;cursor:pointer}
 html{scroll-behavior:smooth;scroll-padding-top:88px}

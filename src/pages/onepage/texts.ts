@@ -46,7 +46,7 @@ export type OnePageDict = {
   kinetic: string;
   probe: {
     kicker: string; label: string; h2: string; sub: string;
-    check1: string; check2: string;
+    check1: string; check2: string; zurueck: string; weiter: string;
     cats: Record<string, { name: string; claim: string; detail: string }>;
     probes: Record<string, ProbeDef>;
     tapAnswer: string; guessFooter: string; guessPlaceholder: string;
@@ -160,6 +160,7 @@ const de: OnePageDict = {
     kicker: 'Fünf Fragetypen, eine Runde', label: 'Ausprobieren',
     h2: 'Genau so sieht es auf eurem Handy aus',
     sub: 'Ein Handy pro Team, QR-Code scannen, fertig. Sucht euch einen Fragetyp aus und spielt ihn hier durch, genau wie am Quizabend.',
+    zurueck: 'Zurück', weiter: 'Weiter',
     check1: 'Keine App, kein Login, kein Zettel',
     check2: 'Fünf Fragetypen, keine Runde fühlt sich gleich an',
     cats: {
@@ -344,6 +345,7 @@ const en: OnePageDict = {
     kicker: 'Five question types, one round', label: 'Try it',
     h2: 'This is exactly what it looks like on your phone',
     sub: 'One phone per team, scan a QR code, done. Pick a question type and play it through, just like on quiz night.',
+    zurueck: 'Back', weiter: 'Next',
     check1: 'No app, no login, no paper',
     check2: 'Five question types, no round feels the same',
     cats: {
