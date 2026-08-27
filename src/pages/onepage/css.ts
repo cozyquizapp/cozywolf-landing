@@ -74,36 +74,12 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
   background:radial-gradient(ellipse 120% 80% at 50% 0%,rgba(var(--cw-grundton),.14),rgba(var(--cw-grundton),.05) 45%,rgba(10,8,20,0) 78%);
   transition:background 1.1s cubic-bezier(.4,0,.2,1)}
 @media (prefers-reduced-motion:reduce){[data-cw-grund]{transition:none}}
-/* Gebogene Kante zwischen den Abschnitten (nodeck, mana).
-   Der obere Rand ist ein flacher, breiter Bogen: waagerechter Radius 50 % der
-   Breite, senkrechter Radius die Bogenhoehe. Der Abschnitt schiebt sich um
-   genau diese Hoehe in den vorhergehenden hinein, deshalb liest sich die
-   Kante als Ueberfahren und nicht als Luecke. Das Band traegt die Farbe des
-   Abschnitts; der feste Farbschleier darunter macht weiterhin den weichen
-   Wechsel. */
-section[data-band]{
-  --bogen:78px;
-  position:relative;
-  margin-top:calc(var(--bogen) * -1);
-  padding-top:var(--bogen);
-  border-top-left-radius:50% var(--bogen);
-  border-top-right-radius:50% var(--bogen);
-  background:linear-gradient(180deg,rgba(var(--cw-band,10,8,20),.085),rgba(var(--cw-band,10,8,20),.025) 38%,rgba(10,8,20,0) 74%);
-  border-top:1px solid rgba(246,239,230,.10);
-  z-index:1;
-}
-@media (max-width:860px){section[data-band]{--bogen:44px}}
-@keyframes cwFolie{
-  0%{transform:translateY(106%)}
-  46%{transform:translateY(0)}
-  100%{transform:translateY(-106%)}
-}
-.cwFolie{position:absolute;left:-8%;right:-8%;top:0;bottom:0;z-index:14;pointer-events:none;
-  border-top-left-radius:50% 34px;border-top-right-radius:50% 34px;
-  border-bottom-left-radius:50% 34px;border-bottom-right-radius:50% 34px;
-  animation:cwFolie .46s cubic-bezier(.65,0,.35,1) both}
-.cwFolie--vor{animation-delay:.05s;opacity:.55}
-@media (prefers-reduced-motion:reduce){.cwFolie{display:none}}
+/* 2026-08-27 entfernt: die gebogene Kante zwischen den Abschnitten und der
+   Folienwechsel im Handy. Beides war aus nodeck geborgt und beides hat Wolf
+   abgelehnt: „die halbkreise in den sections sind so semi" und „das
+   durchwechseln 1-5 wirkt so nicht so gut weil es auf dem handy hoch und
+   runter schiebt, das checkt man nicht so". Der Farbschleier je Abschnitt
+   ([data-cw-grund] oben) bleibt, den hat er nicht bemaengelt. */
 summary::-webkit-details-marker{display:none}
 summary{list-style:none;cursor:pointer}
 html{scroll-behavior:smooth;scroll-padding-top:88px}

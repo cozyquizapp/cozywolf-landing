@@ -510,17 +510,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     );
   }
 
-  /** Eine Folie weiter oder zurueck. Laeuft im Kreis, wie ein Foliendeck. */
-  folie(schritt: number) {
-    const jetzt = PROBE_ORDER.indexOf(this.state.probeCat ?? PROBE_ORDER[0]);
-    const n = PROBE_ORDER.length;
-    const naechste = PROBE_ORDER[(jetzt + schritt + n) % n];
-    this.setState({
-      probeCat: naechste, probePick: null, guessRaw: '', guessDone: false,
-      points: [4, 3, 3], pointsDone: false,
-    });
-  }
-
   kicker(label: string) {
     return (
       <div data-reveal="" style={sx('display:flex;align-items:center;gap:12px;margin:0 0 14px;font-size:11.5px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap')}>
@@ -576,7 +565,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const g = this.gameVals();
 
     return (
-      <section id="spielarten" data-band="" data-ton="168,85,247" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:84px 32px')}>
+      <section id="spielarten" data-ton="168,85,247" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:84px 32px')}>
         {this.kicker(`${L.modes.kicker}|${L.modes.label}`)}
         <h2 data-reveal="" style={sx("margin:0 0 24px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;letter-spacing:-.015em;color:#F6EFE6")}>{L.modes.h2}</h2>
         <div data-m="modes" ref={this.modesRef} onMouseLeave={() => this.switchMode(null)}
@@ -1049,7 +1038,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     }
 
     return (
-      <section id="probieren" data-band="" data-ton="59,130,246" style={sx('border-top:1px solid rgba(246,239,230,.10);border-bottom:1px solid rgba(246,239,230,.10);background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.04),transparent 65%)')}>
+      <section id="probieren" data-ton="59,130,246" style={sx('border-top:1px solid rgba(246,239,230,.10);border-bottom:1px solid rgba(246,239,230,.10);background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.04),transparent 65%)')}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px;display:grid;grid-template-columns:1fr 600px;gap:40px;align-items:center')} data-m="two2">
           <div>
             <div data-reveal="" style={sx('font-size:13px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{L.probe.kicker}</div>
@@ -1102,12 +1091,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   <span style={sx('width:26px;height:26px;border-radius:9px;border:1px solid rgba(246,239,230,.14);display:flex;align-items:center;justify-content:center;font-size:11px;color:#c49ab5')}>☰</span>
                 </div>
                 <div key={key} style={sx(`position:relative;overflow:hidden;flex:1;min-height:0;padding:18px 16px;border-radius:22px;border:1px solid ${col}40;background:rgba(246,239,230,.025);box-sizing:border-box;overflow:hidden;animation:${PROBE_ORDER.indexOf(key) % 2 ? 'cwCardB' : 'cwCardA'} .55s ${EASE} both;transition:border-color .35s ${EASE}`)}>
-                  {/* Folienwechsel (nodeck): zwei Baender mit gebogener Kante fahren
-                      ueber die alte Folie und wieder hinaus. Sie sitzen IN der
-                      Fragekarte, damit die Teamzeile darueber stehen bleibt - auf
-                      einem echten Handy wechselt die Frage, nicht das Geraet. */}
-                  <span aria-hidden="true" className="cwFolie cwFolie--vor" style={sx(`background:${col}`)}></span>
-                  <span aria-hidden="true" className="cwFolie" style={sx('background:#141024')}></span>
                   <span style={sx(`display:inline-flex;align-items:center;padding:6px 13px;border-radius:999px;background:${col}1f;border:1px solid ${col}80;font-size:11px;font-weight:900;color:${col};flex:none`)}>{catT.name}</span>
                   {p.kind !== 'guess' && (
                     <div style={sx('margin:12px 0 14px;font-size:16px;font-weight:900;line-height:1.35;color:#F6EFE6')}>{p.q}</div>
@@ -1118,20 +1101,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               </div>
             </div>
           </div>
-          <div data-m="folienleiste" style={sx('margin:26px auto 0;display:flex;align-items:center;justify-content:center;gap:18px')}>
-            <button type="button" onClick={() => this.folie(-1)} aria-label={L.probe.zurueck}
-              style={sx('display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(246,239,230,.38);background:transparent;color:#F6EFE6;font-family:inherit;font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer')}>
-              &lsaquo; {L.probe.zurueck}
-            </button>
-            <span style={sx("font-family:'League Spartan',sans-serif;font-size:19px;font-weight:900;letter-spacing:.06em;color:rgba(246,239,230,.62);font-variant-numeric:tabular-nums;min-width:74px;text-align:center")}>
-              {String(PROBE_ORDER.indexOf(key) + 1).padStart(2, '0')} / {String(n).padStart(2, '0')}
-            </span>
-            <button type="button" onClick={() => this.folie(1)} aria-label={L.probe.weiter}
-              style={sx('display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid rgba(246,239,230,.38);background:transparent;color:#F6EFE6;font-family:inherit;font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;cursor:pointer')}>
-              {L.probe.weiter} &rsaquo;
-            </button>
-          </div>
-        </div>
+                  </div>
       </section>
     );
   }
@@ -1158,7 +1128,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       { c: '#FFC7E4', bg: 'rgba(246,239,230,.03)', bd: 'rgba(246,239,230,.1)', title: L.ablauf.duo1Title, items: L.ablauf.duo1 },
     ];
     return (
-      <section id="ablauf" data-band="" data-ton="34,197,94" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
+      <section id="ablauf" data-ton="34,197,94" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px')}>
           {this.kicker(`[ 04 ]|${L.ablauf.label}`)}
           <h2 data-reveal="" style={sx("margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.ablauf.h2}</h2>
@@ -1274,7 +1244,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       + `transform:translateX(${a ? x : '0px'}) rotate(${a ? deg : '0deg'}) scale(${a ? .78 : .6});`
       + `opacity:${a ? 1 : 0};transition:transform .85s ${EASE},opacity .5s ${EASE},border-color .6s ${EASE}`;
     return (
-      <section id="johannes" data-band="" data-ton="249,115,22" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
+      <section id="johannes" data-ton="249,115,22" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px;display:grid;grid-template-columns:300px 1fr;gap:52px;align-items:center')} data-m="joh">
           <div onMouseEnter={() => this.setState({ johFan: true })} onMouseLeave={() => this.setState({ johFan: false })}
             style={sx('display:flex;flex-direction:column;align-items:center;gap:14px')}>
@@ -1348,7 +1318,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const fieldWrap = 'display:flex;flex-direction:column;gap:6px';
     const req = <span aria-hidden="true" style={sx('color:#FA4BA3')}> *</span>;
     return (
-      <section id="anfragen" data-band="" data-ton="250,75,163" style={sx('background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.05),transparent 70%)')}>
+      <section id="anfragen" data-ton="250,75,163" style={sx('background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.05),transparent 70%)')}>
         <span aria-hidden="true" style={sx('display:block;height:1px;background:linear-gradient(90deg,transparent,rgba(250,75,163,.32),transparent)')}></span>
         <div style={sx('position:relative;max-width:760px;margin:0 auto;padding:88px 32px;text-align:center')}>
           <span aria-hidden="true" style={sx('position:absolute;top:20px;left:50%;transform:translateX(-50%);width:520px;height:220px;border-radius:50%;background:radial-gradient(ellipse,rgba(246,239,230,.05),transparent 70%);pointer-events:none')}></span>
