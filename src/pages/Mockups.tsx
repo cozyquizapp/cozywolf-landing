@@ -446,7 +446,9 @@ const ANLASS_ACC = ['#FA4BA3', '#FFC7E4', '#FF7AC0'];
  * Drei Objekte statt einem, weil ein einzelnes den Anlass nie trifft: eine
  * Torte allein ist ein Kuchen, Torte mit Luftballons und Geschenk ist ein
  * Geburtstag. Alle neun stammen aus dem Objektsatz der App
- * (KioskQuiz frontend/public/avatars, Ordner party und cozyquiz).
+ * eigens gerendert, nicht aus einem Emoji-Satz zusammengesucht: creme
+ * Koerper, Gold als Akzent, dunkles Blau fuer Sockel, hoechstens ein
+ * weiterer Ton je Objekt. Kein Pink, das ist Marke.
  *
  * gr = Kantenlaenge in Prozent des Feldes, x/y = Position, r = Drehung.
  * Dieselbe Staffelung wie im Hero: das groesste Objekt vorn und leicht
@@ -455,19 +457,19 @@ const ANLASS_ACC = ['#FA4BA3', '#FFC7E4', '#FF7AC0'];
 type Obj = { av: string; gr: number; x: number; y: number; r: number };
 const ANLASS_GRUPPEN: Obj[][] = [
   [
-    { av: '/assets/obj-champagne.webp', gr: 58, x: 0,  y: 8,  r: -9 },
-    { av: '/assets/obj-puzzle.webp',    gr: 44, x: 50, y: 0,  r: 11 },
-    { av: '/assets/obj-disco.webp',     gr: 38, x: 40, y: 52, r: -6 },
+    { av: '/assets/obj-namensschild.webp', gr: 54, x: 0,  y: 10, r: -9 },
+    { av: '/assets/obj-sekt.webp',         gr: 48, x: 48, y: 0,  r: 10 },
+    { av: '/assets/obj-wimpel.webp',       gr: 38, x: 42, y: 52, r: -6 },
   ],
   [
-    { av: '/assets/obj-cake.webp',      gr: 58, x: 2,  y: 10, r: -7 },
-    { av: '/assets/obj-balloons.webp',  gr: 46, x: 52, y: 0,  r: 9 },
-    { av: '/assets/obj-gift.webp',      gr: 36, x: 44, y: 54, r: -12 },
+    { av: '/assets/obj-torte.webp',    gr: 56, x: 2,  y: 10, r: -7 },
+    { av: '/assets/obj-ballons.webp',  gr: 46, x: 52, y: 0,  r: 9 },
+    { av: '/assets/obj-geschenk.webp', gr: 38, x: 44, y: 54, r: -12 },
   ],
   [
-    { av: '/assets/obj-martini.webp',      gr: 56, x: 4,  y: 6,  r: -8 },
-    { av: '/assets/obj-croissant.webp',    gr: 44, x: 52, y: 4,  r: 12 },
-    { av: '/assets/obj-playing-card.webp', gr: 40, x: 38, y: 56, r: -5 },
+    { av: '/assets/obj-bier.webp',   gr: 54, x: 2,  y: 8,  r: -8 },
+    { av: '/assets/obj-kaffee.webp', gr: 46, x: 50, y: 2,  r: 11 },
+    { av: '/assets/obj-tafel.webp',  gr: 40, x: 40, y: 54, r: -5 },
   ],
 ];
 function Anlaesse({ L, mobil, entwurf }: {

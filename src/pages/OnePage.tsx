@@ -70,10 +70,10 @@ const FACTIONS = [
 // EINZIGE das Ueberschwingen, nach der Hausregel „Overshoot nur fuer den
 // einen Beat pro Bildschirm".
 const GRUPPE = [
-  { av: '/assets/av-qq-treasure-chest.webp', farbe: '#F97316', gr: 40, x: 4,  y: 6,  r: -8,  d: 0.30, beat: true,  tx: '-22px', ty: '-14px', tr: '-13deg' },
+  { av: '/assets/obj-puzzle.webp',           farbe: '#F97316', gr: 40, x: 4,  y: 6,  r: -8,  d: 0.30, beat: true,  tx: '-22px', ty: '-14px', tr: '-13deg' },
   { av: '/assets/av-qq-crystal-ball.webp',   farbe: '#A855F7', gr: 33, x: 46, y: 0,  r: 10,  d: 0.38, beat: false, tx: '18px',  ty: '-22px', tr: '16deg' },
   { av: '/assets/av-qq-mushroom.webp',       farbe: '#22C55E', gr: 30, x: 33, y: 44, r: 6,   d: 0.46, beat: false, tx: '-10px', ty: '20px',  tr: '11deg' },
-  { av: '/assets/av-qq-game-die.webp',       farbe: '#FACC15', gr: 24, x: 68, y: 40, r: -14, d: 0.54, beat: false, tx: '26px',  ty: '10px',  tr: '-20deg' },
+  { av: '/assets/obj-sanduhr.webp',          farbe: '#FACC15', gr: 24, x: 68, y: 40, r: -14, d: 0.54, beat: false, tx: '26px',  ty: '10px',  tr: '-20deg' },
   { av: '/assets/av-qq-table-lamp.webp',     farbe: '#3B82F6', gr: 21, x: 12, y: 66, r: 14,  d: 0.62, beat: false, tx: '-26px', ty: '24px',  tr: '20deg' },
 ];
 
@@ -91,12 +91,17 @@ const GRUPPE = [
  *
  *   Wissen      -> Tischlampe      Licht geht auf.        Sitzt.
  *   Glueck      -> Fliegenpilz     Glueckspilz.           Sitzt.
- *   Timing      -> Wuerfel         SCHWACH: der Wuerfel ist Zufall, nicht
- *                                  Timing. Im Objektsatz der App gibt es
- *                                  weder Uhr noch Sanduhr.
- *   Teamgeist   -> Truhe           Der gemeinsame Schatz. Mittel; „puzzle"
- *                                  aus dem Satz waere deutlicher.
+ *   Timing      -> Sanduhr         Die Zeit laeuft.       Sitzt.
+ *   Teamgeist   -> Puzzle          Zwei greifen ineinander. Sitzt.
  *   Bauchgefuehl-> Kristallkugel   Ahnung statt Wissen.   Sitzt.
+ *
+ * Sanduhr und Puzzle sind eigens gerendert (2026-08-27), weil der Objektsatz
+ * der App weder Uhr noch Puzzle hat. Damit stehen zwei der fuenf Kacheln im
+ * Hero nicht mehr fuer ein Motiv, das ein Team im Spiel waehlen kann. Der
+ * Tausch ist trotzdem richtig: der Wuerfel bedeutete Zufall, nicht Timing,
+ * und eine Kachel, die das falsche Wort illustriert, ist schlechter als eine,
+ * die nicht im Spiel vorkommt. Wenn beide Motive spaeter in den Avatarsatz
+ * der App wandern, loest sich der Rest von selbst.
  */
 const WORT_OBJEKT = [4, 2, 3, 0, 1];
 

@@ -46,9 +46,11 @@ const FILL: Record<string, number> = {
   // quadratisch zentriert worden, anders als die Team-Motive aus der App.
   // Deshalb brauchen sie einen kleineren Anteil, sonst stossen sie an die
   // Kachelkante. 0.72 gemessen gegen die Team-Kacheln daneben.
-  '/assets/anlass-firma.webp': 0.72,
-  '/assets/anlass-geburtstag.webp': 0.72,
-  '/assets/anlass-pub.webp': 0.72,
+  // Sanduhr und Puzzle im Hero: eigens gerendert und exakt auf ihre
+  // Bounding-Box beschnitten, anders als die App-Motive. Deshalb ein
+  // kleinerer Anteil, sonst stossen sie an die Kachelkante.
+  '/assets/obj-sanduhr.webp': 0.74,
+  '/assets/obj-puzzle.webp': 0.78,
   'crystal-ball': 0.89,
   'game-die': 0.78,
   'mushroom': 0.92,
