@@ -843,7 +843,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         </h2>
 
         {reihen.map((r, i) => (
-          <div key={r.key} data-m="modereihe"
+          <div key={r.key} data-m="modereihe" data-halt=""
             style={sx('display:grid;grid-template-columns:290px 1fr 340px;gap:48px;align-items:start;'
               + `padding:52px 0;border-top:1px solid ${HAAR}${i === reihen.length - 1 ? `;border-bottom:1px solid ${HAAR}` : ''}`)}>
             <div data-reveal="">
@@ -1333,7 +1333,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         {L.anlaesse.cards.map((cardT, i) => {
           const a = ACC[i];
           return (
-            <div key={cardT.title} data-m="modereihe"
+            <div key={cardT.title} data-m="modereihe" data-halt=""
               style={sx('display:grid;grid-template-columns:290px 1fr 340px;gap:48px;align-items:start;'
                 + `padding:52px 0;border-top:1px solid ${HAAR}${i === L.anlaesse.cards.length - 1 ? `;border-bottom:1px solid ${HAAR}` : ''}`)}>
               <div data-reveal="">
@@ -1502,8 +1502,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     }
 
     return (
-      <section id="probieren" data-ton="59,130,246" style={sx('border-top:1px solid rgba(246,239,230,.10);border-bottom:1px solid rgba(246,239,230,.10);background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.04),transparent 65%)')}>
-        <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:84px 32px;display:grid;grid-template-columns:1fr 600px;gap:48px;align-items:center')} data-m="two2">
+      <section id="probieren" data-ton="59,130,246" data-halt="" style={sx('border-top:1px solid rgba(246,239,230,.10);border-bottom:1px solid rgba(246,239,230,.10);background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.04),transparent 65%)')}>
+        <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:60px 32px;box-sizing:border-box;display:grid;grid-template-columns:1fr 600px;gap:48px;align-items:center')} data-m="two2">
           <div>
             {/* Wolf am 27.08.: "passt sektion 03 jetzt noch zum rest der
                 seite?". Nein, an drei Stellen. Erstens standen hier zwei
@@ -1616,6 +1616,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   renderAblauf() {
     const L = this.T;
     const on = !!this.state.beam;
+    const kipp = this.state.beamXY ? { x: this.state.beamXY.x - 0.5, y: this.state.beamXY.y - 0.5 } : null;
     const g = this.gameVals();
     const beamStart = () => {
       if (this.state.beam) return;
@@ -1630,11 +1631,11 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       this.setState({ beam: false, beamWelcome: false });
     };
     return (
-      <section id="ablauf" data-ton="34,197,94" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
-        <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px')}>
+      <section id="ablauf" data-ton="34,197,94" data-halt="" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
+        <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:34px 32px;box-sizing:border-box')}>
           {this.kicker(`[ 04 ]|${L.ablauf.label}`)}
           <h2 data-reveal="" style={sx("margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.ablauf.h2}</h2>
-          <p data-reveal="" style={sx('margin:0 0 34px;max-width:620px;font-size:17px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:500')}>{L.ablauf.sub}</p>
+          <p data-reveal="" style={sx('margin:0 0 22px;max-width:620px;font-size:17px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:500')}>{L.ablauf.sub}</p>
 
           {/* Wolf am 27.08.: "beamer kleiner und gekippt". Also keine Leinwand
               ueber die volle Breite mehr, sondern 880 px, mittig, und leicht
@@ -1655,12 +1656,21 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               this.setState({ beamXY: { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height } });
             }}
             onMouseLeave={() => { beamStop(); this.setState({ beamXY: null }); }}
-            style={sx('position:relative;margin:0 auto 44px;max-width:880px;cursor:pointer;perspective:1100px')}>
+            style={sx('position:relative;margin:0 auto 24px;max-width:640px;cursor:pointer;perspective:1100px')}>
             {/* Perspektive gehoert auf den Eltern, die Drehung auf das Kind.
                 Standen beide auf demselben Element, greift die Perspektive
                 nicht und die Kippung sah flach aus statt raeumlich. */}
-            <div style={sx(`transform:rotateY(${on ? '-2.6deg' : '-11deg'}) rotateX(${on ? '.5deg' : '2.4deg'}) scale(${on ? 1 : .95});`
-              + `transform-origin:center center;transition:transform 1.1s ${EASE}`)}>
+            {/* Wolf am 27.08.: "lieber den 3d beamercard effekt ueberall, also
+                kippen wenn nach rechts etc". Die Leinwand steht in Ruhe
+                schraeg und richtet sich beim Anspringen fast gerade; solange
+                der Zeiger darauf liegt, kippt sie ihm nach, wie die Karte in
+                03 es mit dem Handy schon macht.
+                Die Ausschlaege sind klein gehalten: 7 Grad zur Seite und 4
+                nach oben. Mehr sieht auf einer Flaeche von 880 px nicht mehr
+                nach einer Wand aus, sondern nach einer Spielkarte. */}
+            <div style={sx(`transform:rotateY(${(on ? -2.6 + (kipp?.x ?? 0) * 7 : -11).toFixed(2)}deg) `
+              + `rotateX(${(on ? 0.5 - (kipp?.y ?? 0) * 4 : 2.4).toFixed(2)}deg) scale(${on ? 1 : .95});`
+              + `transform-origin:center center;transition:transform ${kipp && on ? '.18s' : '1.1s'} ${EASE}`)}>
             {/* Hier lag ein KI-Bild: ein Wohnzimmer mit sechs Leuten von hinten
                 vor einer Beamerwand. Wolf hat es ausgemustert, wie schon das im
                 Hero, und es stand ausgerechnet an der Stelle, an der die Seite
@@ -1725,10 +1735,16 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                       </div>
                     </div>
                     <span aria-hidden="true" style={sx('position:absolute;inset:0;border-radius:22px;pointer-events:none;overflow:hidden')}>
-                      <span style={sx(`position:absolute;inset:-30%;`
-                        + `background:radial-gradient(ellipse 40% 46% at ${((this.state.beamXY?.x ?? .5) * 100).toFixed(1)}% ${((this.state.beamXY?.y ?? .5) * 100).toFixed(1)}%,`
-                        + 'rgba(255,247,235,.10),rgba(255,247,235,.045) 42%,transparent 72%);'
-                        + `transition:background ${this.state.beamXY ? '.12s' : '.6s'} linear`)}></span>
+                      {/* Kein runder Fleck mehr. Wolf: "eher diese reflektion
+                          und nicht rund". Also ein schraeger Lichtstreifen wie
+                          auf Glas, der mit der Kippung ueber die Flaeche
+                          wandert: kippt die Wand nach rechts, laeuft die
+                          Reflexion nach links, so wie sich ein Fenster in
+                          einem Bildschirm verhaelt, den man dreht. */}
+                      <span style={sx('position:absolute;inset:-40%;'
+                        + `transform:translateX(${((kipp?.x ?? 0) * -34).toFixed(1)}%) rotate(-19deg);`
+                        + 'background:linear-gradient(90deg,transparent 34%,rgba(255,250,242,.10) 46%,rgba(255,250,242,.14) 50%,rgba(255,250,242,.07) 55%,transparent 68%);'
+                        + `transition:transform ${kipp ? '.18s' : '.7s'} ${EASE}`)}></span>
                     </span>
                     <span aria-hidden="true" style={sx('position:absolute;inset:0;border-radius:22px;pointer-events:none;background:radial-gradient(ellipse at 46% 44%,transparent 58%,rgba(0,0,0,.32))')}></span>
                     <div style={sx('position:relative;display:flex;align-items:center;gap:14px;flex:none')}>
@@ -1817,8 +1833,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               stehen zwei gegen vier. Das ist Wolfs Text, deshalb steht er hier
               unveraendert. */}
           <div data-reveal="" data-m="modereihe"
-            style={sx('display:grid;grid-template-columns:300px 1fr;align-items:start;gap:64px;'
-              + 'padding:36px 0 0;border-top:1px solid rgba(246,239,230,.14)')}>
+            style={sx('display:grid;grid-template-columns:280px 1fr;align-items:start;gap:56px;'
+              + 'padding:26px 0 0;border-top:1px solid rgba(246,239,230,.14)')}>
             <div>
               <div style={sx('margin-bottom:14px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.45)')}>{L.ablauf.duo1Title}</div>
               <ul style={sx('margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px')}>
@@ -1829,9 +1845,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             </div>
             <div>
               <div style={sx('margin-bottom:14px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{L.ablauf.duo0Title}</div>
-              <ul style={sx('margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:16px')}>
+              <ul style={sx('margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px')}>
                 {L.ablauf.duo0.map(item => (
-                  <li key={item} style={sx("font-family:'League Spartan',sans-serif;font-size:clamp(20px,2.1vw,28px);font-weight:900;line-height:1.12;letter-spacing:-.02em;color:#F6EFE6;text-wrap:balance")}>{item}</li>
+                  <li key={item} style={sx("font-family:'League Spartan',sans-serif;font-size:clamp(18px,1.6vw,22px);font-weight:900;line-height:1.12;letter-spacing:-.02em;color:#F6EFE6;text-wrap:balance")}>{item}</li>
                 ))}
               </ul>
             </div>
@@ -1844,8 +1860,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   renderJohannes() {
     const L = this.T;
     return (
-      <section id="johannes" data-ton="249,115,22" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
-        <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px;display:grid;grid-template-columns:300px 1fr;gap:52px;align-items:center')} data-m="joh">
+      <section id="johannes" data-ton="249,115,22" data-halt="" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
+        <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:60px 32px;box-sizing:border-box;display:grid;grid-template-columns:300px 1fr;gap:52px;align-items:center')} data-m="joh">
           {/* Wolf am 27.08.: das echte Foto bleibt, die auffaechernden Arme und
               der pinke Ring gehen. Die beiden Nebenbilder waren Schmuck, der
               beim Zeigen aufsprang und sonst nichts sagte, und der Ring hat
@@ -1889,8 +1905,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   renderFaq() {
     const L = this.T;
     return (
-      <section id="fragen" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
-        <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px')}>
+      <section id="fragen" data-halt="" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
+        <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:60px 32px;box-sizing:border-box')}>
           {this.kicker(`[ 05 ]|${L.faq.label}`)}
           <h2 data-reveal="" style={sx("margin:0 0 36px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.faq.h2}</h2>
           <div data-reveal="" data-m="faqgrid" style={sx('display:grid;gap:34px 56px;grid-template-columns:1fr 1fr')}>
@@ -1916,7 +1932,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const fieldWrap = 'display:flex;flex-direction:column;gap:6px';
     const req = <span aria-hidden="true" style={sx(`color:${AKZENT}`)}> *</span>;
     return (
-      <section id="anfragen" data-ton="250,75,163" style={sx('background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.05),transparent 70%)')}>
+      <section id="anfragen" data-ton="250,75,163" data-halt="" style={sx('background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.05),transparent 70%)')}>
         <span aria-hidden="true" style={sx('display:block;height:1px;background:linear-gradient(90deg,transparent,rgba(250,75,163,.32),transparent)')}></span>
         <div style={sx('position:relative;max-width:760px;margin:0 auto;padding:88px 32px;text-align:center')}>
           <span aria-hidden="true" style={sx('position:absolute;top:20px;left:50%;transform:translateX(-50%);width:520px;height:220px;border-radius:50%;background:radial-gradient(ellipse,rgba(246,239,230,.05),transparent 70%);pointer-events:none')}></span>

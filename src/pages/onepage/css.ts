@@ -160,6 +160,35 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
     filter:drop-shadow(0 16px 22px rgba(0,0,0,.6))
   }
 }
+/* ── Ein Halt, ein Bildschirm ──────────────────────────────────────────────
+   Wolf am 27.08.: "ich moechte versuchen eine sektion in einen abschnitt zu
+   packen. das waere mein ziel immernoch".
+
+   GEMESSEN bei 1440x780, bevor gebaut. Die Abschnitte sind nicht das Problem,
+   die Zeilen sind es: 01 traegt zwei Zeilen (0,57 und 0,72 Bildschirme), 02
+   traegt drei (je 0,43). Der Halt ist also die Zeile, nicht der Abschnitt.
+   Damit hat jeder Halt genau einen vollstaendigen Inhalt.
+
+   Jeder Halt ist mindestens einen Bildschirm hoch und zentriert seinen Inhalt
+   darin. Kurze Halte bekommen damit Luft statt Leere, lange muessen kuerzer
+   werden: 04 lag bei 1,37 und ist auf unter 1,0 gebracht, 07 bleibt offen,
+   bis das Formular zweispaltig ist.
+
+   svh statt vh: auf dem Handy waechst und schrumpft die Adresszeile, vh
+   rechnet mit dem groessten Zustand und schneidet dann unten ab.
+
+   proximity, nicht mandatory: wer in der Naehe eines Halts aufhoert, wird
+   dorthin gezogen, wer durchzieht, wird nicht gebremst. mandatory waere auf
+   Inhalten, die hoeher sind als das Fenster, eine Falle: der Rest ist dann
+   nicht mehr erreichbar. */
+@media (min-width:901px) and (min-height:620px){
+  html{scroll-snap-type:y proximity}
+  [data-halt]{min-height:100svh;display:flex;flex-direction:column;justify-content:center;scroll-snap-align:center;box-sizing:border-box}
+  /* Der Hero traegt seine eigene Hoehe und seinen eigenen Aufbau. */
+  #top{scroll-snap-align:start}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-snap-type:none}}
+
 @media (max-width:900px){
 [data-m=modereihe]{grid-template-columns:1fr!important;gap:28px!important;padding:36px 0!important}
 [data-m=modeobjekt]{justify-content:flex-start!important;height:400px!important}
