@@ -347,7 +347,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     const L = this.T;
     const s = this.state;
     const acts = s.acts;
-    const GS = 5, RAD = 12;
+    const GS = 5;
     const owner = BOARD.map((b, i) => {
       const ov = acts[i];
       if (ov) return ov.id;
@@ -383,22 +383,22 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                 {L.modes.quizBullets.map(b => this.bullet(b, '#FA4BA3'))}
                 <div style={sx('width:100%;max-width:212px;margin:4px auto 0')}>
                   <div style={sx(`padding:9px;border-radius:16px;background:rgba(246,239,230,.015);border:1.5px solid ${actTeam ? actTeam.color : 'rgba(246,239,230,.1)'};box-shadow:${actTeam ? '0 0 24px ' + actTeam.color + '44' : 'none'};transition:border-color .5s ease,box-shadow .5s ease`)}>
-                    <div style={sx('display:grid;grid-template-columns:repeat(5,1fr);gap:4px')}>
+                    <div style={sx('display:grid;grid-template-columns:repeat(5,1fr);gap:0.72%')}>
                       {owner.map((id, i) => {
                         const ov = acts[i];
                         const t = id ? TEAMS.find(x => x.id === id) : null;
                         const cellBase = 'position:relative;aspect-ratio:1;box-sizing:border-box;display:flex;align-items:center;justify-content:center;transition:background .45s ' + EASE + ',box-shadow .45s ' + EASE + ';';
-                        if (!t) return <span key={i} style={sx(cellBase + `border-radius:${RAD}px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20)`)}></span>;
+                        if (!t) return <span key={i} style={sx(cellBase + 'border-radius:16%;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20)')}></span>;
                         const r = Math.floor(i / GS), c = i % GS, col = t.color;
                         const nT = at(r - 1, c) === id, nR = at(r, c + 1) === id, nB = at(r + 1, c) === id, nL = at(r, c - 1) === id;
-                        const rTL = (nT || nL) ? 0 : RAD, rTR = (nT || nR) ? 0 : RAD, rBR = (nB || nR) ? 0 : RAD, rBL = (nB || nL) ? 0 : RAD;
+                        const rTL = (nT || nL) ? '0' : '16%', rTR = (nT || nR) ? '0' : '16%', rBR = (nB || nR) ? '0' : '16%', rBL = (nB || nL) ? '0' : '16%';
                         // Steg ueber den Rasterabstand zum gleichfarbigen Nachbarn.
                         // So lang wie die Zellkante ohne ihre beiden Rundungen,
                         // sonst schoebe er sich ueber die Ecke hinaus. Gezeichnet
                         // wird nur nach rechts und unten, sonst doppelt sich jede
                         // Verbindung.
                         const bruecke = `position:absolute;background:${col};z-index:2;pointer-events:none;`;
-                        const steg = `calc(100% - ${RAD * 2}px)`;
+                        const steg = '68%';   // Zellkante ohne die beiden 16-Prozent-Rundungen
                         const fresh = !!ov;
                         const isStack = !!ov && ov.kind === 'stack';
                         const shadow = [
@@ -412,13 +412,13 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                         const edge = (fused: boolean) => fused ? 'none' : `1px solid ${col}${fresh ? 'ff' : '55'}`;
                         return (
                           <span key={i} style={sx(cellBase
-                            + `border-radius:${rTL}px ${rTR}px ${rBR}px ${rBL}px;background:${col};box-shadow:${shadow};`
+                            + `border-radius:${rTL} ${rTR} ${rBR} ${rBL};background:${col};box-shadow:${shadow};`
                             + `border-top:${edge(nT)};border-right:${edge(nR)};border-bottom:${edge(nB)};border-left:${edge(nL)}`)}>
                             <span style={sx(`width:${(motivAnteil(t.av) * 100).toFixed(0)}%;height:${(motivAnteil(t.av) * 100).toFixed(0)}%;background:url(${t.av}) center/contain no-repeat;animation:${ov && ov.kind === 'joker' ? 'mFlip .8s ' + EASE + ' both' : 'mPop .42s cubic-bezier(.34,1.56,.64,1) both'}`)}></span>
                             {isStack && <span style={sx(`position:absolute;right:6%;bottom:6%;width:${(motivAnteil(t.av) * 52).toFixed(0)}%;height:${(motivAnteil(t.av) * 52).toFixed(0)}%;background:url(${t.av}) center/contain no-repeat;animation:mPop .5s cubic-bezier(.34,1.56,.64,1) both .12s`)}></span>}
-                            {nR && <span style={sx(bruecke + `right:-5px;top:${RAD}px;width:6px;height:${steg}`)}></span>}
-                            {nB && <span style={sx(bruecke + `bottom:-5px;left:${RAD}px;height:6px;width:${steg}`)}></span>}
-                            {!!ov && (ov.kind === 'steal' || ov.kind === 'joker') && <span style={sx(`position:absolute;inset:-3px;border-radius:${RAD + 3}px;border:2px solid ${col};pointer-events:none;animation:mBurst .7s ease-out both`)}></span>}
+                            {nR && <span style={sx(bruecke + `right:-3.8%;top:16%;width:4.2%;height:${steg}`)}></span>}
+                            {nB && <span style={sx(bruecke + `bottom:-3.8%;left:16%;height:4.2%;width:${steg}`)}></span>}
+                            {!!ov && (ov.kind === 'steal' || ov.kind === 'joker') && <span style={sx(`position:absolute;inset:-3px;border-radius:20%;border:2px solid ${col};pointer-events:none;animation:mBurst .7s ease-out both`)}></span>}
                           </span>
                         );
                       })}

@@ -739,9 +739,13 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     // Feld nutzt die volle Breite der rechten Spalte, die Tabelle sitzt darunter
     const budget = (this.state.boardWinW || 440) - 26;
     const hBudget = (this.state.boardWinH || 520) - 16;
-    const GAP = 4;
-    const CS = Math.max(26, Math.min(56, Math.floor((budget - 6 * GAP) / GS), Math.floor((hBudget - 6 * GAP) / GS)));
-    const RAD = Math.max(4, Math.round(CS * 0.16));
+    // Abstand und Radius als Anteil der Zelle, gemessen an der Beamer-Ansicht:
+    // dort ist die Zelle 107 px bei 4 px Abstand, also 3,7 Prozent, und der
+    // Radius 16 Prozent. Feste Pixel waren auf dieser viel kleineren Zelle
+    // fast doppelt so breit und doppelt so rund.
+    const CS = Math.max(26, Math.min(56, Math.floor((budget - 6 * 3) / GS), Math.floor((hBudget - 6 * 3) / GS)));
+    const GAP = Math.max(1, Math.round(CS * 0.037));
+    const RAD = Math.max(3, Math.round(CS * 0.16));
     const at = (r: number, c: number) => (r < 0 || c < 0 || r >= GS || c >= GS) ? null : (owner[r * GS + c] || null);
 
     // Connect-Welle: BFS ueber das verbundene Gebiet des frisch gesetzten
