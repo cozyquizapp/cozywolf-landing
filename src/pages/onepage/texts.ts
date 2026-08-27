@@ -37,6 +37,7 @@ export type OnePageDict = {
     answeredLine: (n: number) => string;
     field: string; fields: string; lead: string; tied: string;
     factions: Record<string, string>;
+    mottos: Record<string, string>;
     waiting: string; phonesRight: (g: number, hits: number) => string;
   };
   anlaesse: {
@@ -135,6 +136,14 @@ const de: OnePageDict = {
       bauchgefuehl: 'Bauchgefühl', glueckstreffer: 'Glückstreffer', allwissen: 'Allwissen',
       improvisation: 'Improvisation', feierabend: 'Feierabend', letztesekunde: 'Letzte Sekunde',
       einspruch: 'Einspruch', risiko: 'Risiko',
+    },
+    // Woertlich aus der App: KioskQuiz shared/quarterQuizTypes.ts,
+    // QQ_MEGA_FACTIONS, Felder mottoDe und mottoEn. Nicht neu erfunden.
+    mottos: {
+      bauchgefuehl: 'Das Gefühl trügt nie.', glueckstreffer: 'Hauptsache richtig.',
+      allwissen: 'Wir wissen es einfach.', improvisation: 'Läuft schon irgendwie.',
+      feierabend: 'Hauptsache dabei.', letztesekunde: 'Kurz vor knapp.',
+      einspruch: 'Das zählt nicht!', risiko: 'Alles oder nichts.',
     },
     waiting: 'wartet auf die Antwort',
     phonesRight: (g, hits) => `+${g}  ${hits}/3 Handys richtig`,
@@ -323,10 +332,21 @@ const en: OnePageDict = {
     verbSet: 'claims a tile', verbSteal: 'steals one', verbStack: 'stacks up',
     answeredLine: n => `${n}/6 teams have answered`,
     field: 'tile', fields: 'tiles', lead: ' · in the lead', tied: ' · tied',
+    // 2026-08-27 an die App angeglichen. Vorher standen hier eigene
+    // Uebersetzungen (Lucky Strike, Know-It-Alls, Improv, After Hours, Risk),
+    // die es in KioskQuiz so nicht gibt. Wer auf Englisch spielt, haette auf
+    // der Leinwand andere Namen gelesen als auf der Seite.
+    // Quelle: shared/quarterQuizTypes.ts, QQ_MEGA_FACTIONS, nameEn.
     factions: {
-      bauchgefuehl: 'Gut Feeling', glueckstreffer: 'Lucky Strike', allwissen: 'Know-It-Alls',
-      improvisation: 'Improv', feierabend: 'After Hours', letztesekunde: 'Last Second',
-      einspruch: 'Objection', risiko: 'Risk',
+      bauchgefuehl: 'Gut Feeling', glueckstreffer: 'Lucky Guess', allwissen: 'Know-It-All',
+      improvisation: 'Wing It', feierabend: 'Happy Hour', letztesekunde: 'Last Second',
+      einspruch: 'Objection', risiko: 'All In',
+    },
+    mottos: {
+      bauchgefuehl: 'The gut never lies.', glueckstreffer: 'Right is right.',
+      allwissen: 'We just know.', improvisation: 'We\u2019ll figure it out.',
+      feierabend: 'Just here for fun.', letztesekunde: 'Just in time.',
+      einspruch: 'That doesn\u2019t count!', risiko: 'All or nothing.',
     },
     waiting: 'waiting for the answer',
     phonesRight: (g, hits) => `+${g}  ${hits}/3 phones right`,

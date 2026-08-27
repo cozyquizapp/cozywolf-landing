@@ -46,7 +46,13 @@ export const GEMEINSAM = {
 
     // ── Pflichtangaben und Fehlerfall ──────────────────────────────────────
     formFehler: 'Da ging etwas schief. Schreib mir gern direkt an ',
-    aiHinweis: 'Stimmungsbilder auf dieser Seite sind KI-erzeugt.',
+    // 2026-08-27 auf '' gesetzt: die Seite hat kein KI-Bild mehr. Zuletzt fiel
+    // das Wohnzimmer mit der Beamerwand im Abschnitt Ablauf weg, davor das
+    // Stimmungsbild im Hero. Ein Hinweis auf etwas, das es nicht gibt, ist
+    // keine Ehrlichkeit, sondern eine falsche Angabe. Der Schluessel bleibt
+    // stehen, damit er wieder gefuellt werden kann, falls je ein KI-Bild
+    // dazukommt.
+    aiHinweis: '',
   },
   en: {
     heroSub: 'The coziest quiz night in Hamburg you’ve ever played.',
@@ -65,6 +71,6 @@ export const GEMEINSAM = {
     faqPreisA: 'It starts at €350 for the whole evening, including tech and hosting. The exact price depends on headcount and occasion. Tell me briefly what you have in mind and I’ll send you a fair quote.',
 
     formFehler: 'Something went wrong. Feel free to email me directly at ',
-    aiHinweis: 'Mood images on this page are AI-generated.',
+    aiHinweis: '',
   },
 } as const;

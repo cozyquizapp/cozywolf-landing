@@ -26,25 +26,47 @@ const LOGO = '/logo.webp';
 // Motiv und Farbe getrennt. Die Zuordnung folgt den Farb-Slots der App: die
 // ersten acht Motive in COZYQUIZ_AVATARS sind index-gleich zu den acht Slots,
 // also erbt jedes Team das Motiv seiner Farbe.
+// ── Station 01: das Brett ────────────────────────────────────────────────
+// Drei Teams, von Wolf gewaehlt: Donut, Erdbeere, Papierboot. Nach
+// qqGridSize(3) ergibt das ein 5x5, und genau darum ging es ihm: "ich wuerde
+// ein kleineres grid mit weniger teams, aber dafuer groesser nehmen". In der
+// 340-px-Spalte waechst die Zelle damit von 49 auf 60 px.
+//
+// Die Farben sind die des BRETTS, nicht die der Avatare. Die App macht das
+// genauso (QQ_BOARD_PALETTE, qqGetBoardColor in shared/quarterQuizTypes.ts):
+// das Brett bekommt eine eigene, maximal kontrastierende Palette, damit sich
+// nahe Avatarfarben auf dem Feld nicht verwechseln lassen.
+//
+// ABWEICHUNG, bewusst und gemeldet: die App vergibt die Palettenplaetze nach
+// Beitrittsreihenfolge, bei drei Teams also 0, 1, 2 und damit Rot, Orange,
+// Gelb. Drei benachbarte Farbtoene sind auf einem Brett kaum zu trennen. Hier
+// stehen deshalb die Plaetze 0, 3 und 5, also Rot, Gruen, Blau. Wenn die App
+// die Palette bei wenigen Teams spreizt, stimmen beide wieder ueberein.
 const TEAMS = [
-  { id: 'g', color: '#22C55E', av: '/assets/av-qq-mushroom.webp' },
-  { id: 'p', color: '#A855F7', av: '/assets/av-qq-crystal-ball.webp' },
-  { id: 'y', color: '#FACC15', av: '/assets/av-qq-game-die.webp' },
-  { id: 'o', color: '#F97316', av: '/assets/av-qq-treasure-chest.webp' },
-  { id: 'b', color: '#3B82F6', av: '/assets/av-qq-table-lamp.webp' },
+  { id: 'd', color: '#3B82F6', av: '/assets/av-qq-donut.webp' },
+  { id: 's', color: '#22C55E', av: '/assets/av-qq-strawberry.webp' },
+  { id: 'b', color: '#EF4444', av: '/assets/av-qq-paper-boat.webp' },
 ];
-// Das Brett ist 6x6, weil qqGridSize(5) in der App 6 sagt. Vorher stand hier
-// fest 7x7. Die Choreografie unten ist deshalb neu gesetzt: Wolfs Ablauf
-// (sieben vorbelegte Felder, fuenfzehn Zuege, zwei Klaus, ein Stapel) bleibt,
-// die Feldnummern sind auf 6x6 uebertragen. Index = Zeile * 6 + Spalte.
 const GRID = qqGridSize(TEAMS.length);
-const PRESET: [string, number][] = [['g', 0], ['g', 1], ['o', 18], ['o', 19], ['p', 17], ['y', 23], ['b', 7]];
-type Move = { t: string; c?: number; k?: 'steal' | 'stack'; sk?: number };
-const MOVES: Move[] = [
-  { t: 'b', c: 21 }, { t: 'y', c: 3 }, { t: 'g', c: 6 }, { t: 'p', c: 16 }, { t: 'y', c: 4 },
-  { t: 'b', c: 27 }, { t: 'g', c: 7, k: 'steal' }, { t: 'y', c: 9 }, { t: 'o', c: 24 }, { t: 'b', c: 28 },
-  { t: 'p', c: 11 }, { t: 'p', c: 23, k: 'steal' }, { t: 'o', c: 25 }, { t: 'b', c: 34 }, { t: 'p', k: 'stack', sk: 17 },
+
+// Vorbelegung und Zuege auf 5x5. Kein Stapeln mehr: Wolf wollte "keine
+// doppelavatar kacheln", und der Stapel war der einzige Zug, der zwei Motive
+// auf ein Feld legt. Setzen und Klauen bleiben, das Stapeln steht weiter im
+// Text daneben.
+// Geprueft: kein Feld ausserhalb, kein Zug auf eigenes Gebiet, jeder Klau
+// trifft fremdes. Endstand 15 von 25 Feldern, groesste Flaeche je Team 5.
+const PRESET: [string, number][] = [
+  ['d', 0], ['d', 1], ['s', 4], ['s', 9], ['b', 20], ['b', 21],
+  ['s', 5],   // wird von d geklaut
+  ['d', 22],  // wird von b geklaut
 ];
+type Move = { t: string; c: number; k?: 'steal' };
+const MOVES: Move[] = [
+  { t: 'b', c: 15 }, { t: 's', c: 3 }, { t: 'd', c: 6 }, { t: 'b', c: 16 },
+  { t: 'd', c: 5, k: 'steal' }, { t: 's', c: 8 }, { t: 'b', c: 22, k: 'steal' },
+  { t: 'd', c: 10 }, { t: 's', c: 14 },
+];
+
 const CYCLE = 55, Q_END = 25, R_END = 35;
 
 const FACTIONS = [
@@ -127,6 +149,7 @@ type OPState = {
   wallScale?: number;
   beam?: boolean; beamWelcome?: boolean;
   johFan?: boolean; hookI?: number; hookVor?: number | null;
+  b01?: number; b01Hand?: Record<number, string>; frak?: string | null;
   tick?: number; hbOn?: number | null; duoHover?: number | null;
   probeCat?: string; probePick?: number | null;
   guessRaw?: string; guessDone?: boolean;
@@ -142,6 +165,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   _spielSichtbar = false;
   _spielIO: IntersectionObserver | undefined;
   _reduziert = false;
+  _b01T: ReturnType<typeof setInterval> | undefined;
+  /** Welche Felder gerade belegt sind, fuer brettSetzen. */
+  _b01Feld: boolean[] = [];
   // Solange der Zeiger auf einem Objekt liegt, wechselt die Ueberschrift nicht
   // von selbst weiter. Sonst springt sie einem unter der Hand weg.
   _wortHalt = false;
@@ -216,6 +242,44 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   }
 
   /**
+   * Das Brett in Station 01 spielt weiter, solange der Zeiger darauf liegt.
+   *
+   * Wolf: "beim hovern setzen sich felder ... waere auch krass wenn sich das
+   * feld da setzt wo man die maus hinmacht und wenn man nebendran ist laeuft
+   * automatisch". Genau das: ueber dem Brett laeuft die Choreografie weiter,
+   * ueber einem leeren Feld setzt sich dieses Feld.
+   *
+   * Der Abschnitt spielt die Choreografie ausserdem einmal von selbst durch,
+   * sobald er zu sehen ist. Wer nur scrollt, sieht das Brett trotzdem
+   * entstehen; wer stehenbleibt, kann selbst setzen. Neun Zuege zu 650 ms
+   * sind knapp sechs Sekunden, nicht die viereinhalb Minuten der alten
+   * Beamer-Uhr.
+   */
+  brettLauf(an: boolean) {
+    clearInterval(this._b01T);
+    if (!an || this._reduziert) return;
+    this._b01T = setInterval(() => {
+      this.setState(st => {
+        const n = (st.b01 ?? 0) + 1;
+        if (n > MOVES.length) { clearInterval(this._b01T); return null; }
+        return { b01: n };
+      });
+    }, 650);
+  }
+
+  /** Ein leeres Feld beim Zeigen selbst setzen. Besetzte bleiben unberuehrt:
+   *  klauen soll man nicht aus Versehen. Die Teams kommen reihum. */
+  brettSetzen(i: number) {
+    if (this._coarse || this._b01Feld[i]) return;
+    this.setState(st => {
+      const hand = { ...(st.b01Hand || {}) };
+      if (hand[i]) return null;
+      hand[i] = TEAMS[Object.keys(hand).length % TEAMS.length].id;
+      return { b01Hand: hand };
+    });
+  }
+
+  /**
    * Die Rangfolge der Fraktionen fuellt sich, solange der Abschnitt zu sehen
    * ist, und sonst nicht.
    *
@@ -233,7 +297,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     this._reduziert = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     this._spielIO = new IntersectionObserver(([e]) => {
       this._spielSichtbar = e.isIntersecting;
-      if (!e.isIntersecting || (this.state.arenaRound || 0)) return;
+      if (!e.isIntersecting) { this.brettLauf(false); return; }
+      if ((this.state.b01 ?? 0) < MOVES.length) this.brettLauf(true);
+      if (this.state.arenaRound || 0) return;
       this.arenaTick();
       // Bei „weniger Bewegung" den Endstand in einem Rutsch setzen, statt ihn
       // ueber zwanzig Sekunden wachsen zu lassen.
@@ -370,6 +436,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
   componentWillUnmount() {
     clearInterval(this.gameTimer);
+    clearInterval(this._b01T);
     clearTimeout(this._beamT);
     clearInterval(this._arenaT);
     clearInterval(this._hookT);
@@ -560,18 +627,26 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 className={k.beat ? 'cwKachel cwKachel--beat' : 'cwKachel'}
                 style={sx(`position:absolute;left:${k.x}%;top:${k.y}%;width:${k.gr}%;aspect-ratio:1/1;pointer-events:auto;`
                   + `--r:${k.r}deg;--d:${k.d}s;--tx:${k.tx};--ty:${k.ty};--tr:${k.tr};`
-                  // Die Ebenen bleiben unangetastet. Wolf: "ich wuerde glaube ich die
-                  // ebenen der kacheln nicht aendern, das sah vorher besser aus".
-                  // Stimmt: die Groessen sind eine Tiefenstaffelung, wer die
-                  // Reihenfolge umsortiert, zerlegt die Komposition. Es genuegt
-                  // vollkommen, wenn das gemeinte Objekt heller und etwas groesser ist.
-                  + `--s:${wach ? 1.06 : 1};opacity:${wach ? 1 : 0.52};`
+                  // Die Ebenen bleiben unangetastet, und die Kacheln bleiben voll
+                  // deckend. Wolf zweimal, beide Male zu Recht: "ich wuerde die
+                  // ebenen der kacheln nicht aendern" und "lass sie wie sie am
+                  // anfang waren, leuchten ja, aber nicht durchsichtig, die
+                  // ebenen muessen nicht verschwimmen".
+                  //
+                  // Mein Fehler hatte einen Namen: ich hatte Deckkraft benutzt,
+                  // wo Licht gemeint war. Durchsichtig heisst "weiter weg", und
+                  // damit verschwimmt genau die Tiefenstaffelung, die die Gruppe
+                  // traegt. Jetzt regelt Helligkeit, welche gemeint ist, und ein
+                  // farbiger Schein hebt sie zusaetzlich heraus.
+                  + `--s:${wach ? 1.06 : 1};filter:brightness(${wach ? 1.08 : 0.72});`
                   + 'border-radius:16%;'
                   + `background-image:url(${k.av}),linear-gradient(180deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.06) 18%,rgba(255,255,255,0) 50%,rgba(0,0,0,.16) 78%,rgba(0,0,0,.34) 100%);`
                   + `background-color:${k.farbe};`
                   + `background-size:${Math.round(motivAnteil(k.av) * 100)}% auto,auto;`
                   + `background-position:center,center;background-repeat:no-repeat,no-repeat;`
-                  + `box-shadow:inset 0 1px 0 rgba(255,255,255,.38),inset 2px 0 0 rgba(255,255,255,.07),inset -2px 0 0 rgba(0,0,0,.18),0 3px 4px rgba(0,0,0,.42),0 26px 50px rgba(0,0,0,.45)`)}>
+                  + 'box-shadow:inset 0 1px 0 rgba(255,255,255,.38),inset 2px 0 0 rgba(255,255,255,.07),'
+                  + 'inset -2px 0 0 rgba(0,0,0,.18),0 3px 4px rgba(0,0,0,.42),0 26px 50px rgba(0,0,0,.45)'
+                  + `${wach ? ',0 0 46px ' + k.farbe + '66' : ''}`)}>
               </span>
               );
             })}
@@ -619,8 +694,14 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
    */
   renderModes() {
     const L = this.T;
-    // Endstand der Choreografie: alle Zuege gespielt, Wurfphase vorbei.
-    const g = this.gameVals(CYCLE * MOVES.length + R_END + 1);
+    // Das Brett spielt nicht nach der Uhr, sondern nach Zuegen. b01 zaehlt,
+    // wie viele gespielt sind; b01Hand haelt die Felder, die jemand selbst
+    // gesetzt hat. Ein Tick der alten Uhr entspricht CYCLE Schritten, deshalb
+    // die Umrechnung: so bleibt die gesamte Zeichenschicht unveraendert.
+    const frakAn = FACTIONS.find(f => f.id === (this.state.frak ?? null)) || null;
+    const zuege = this.state.b01 ?? 0;
+    const g = this.gameVals(zuege ? CYCLE * (zuege - 1) + R_END + 1 : 0, this.state.b01Hand);
+    this._b01Feld = g.cells.map(c => c.owned);
     const HAAR = 'rgba(246,239,230,.14)';
     const reihen = [
       {
@@ -668,12 +749,28 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
             {r.key === 'quiz' ? (
               <div ref={this.boardWinRef} data-m="modeobjekt"
+                onMouseEnter={() => this.brettLauf(true)} onMouseLeave={() => this.brettLauf(false)}
                 style={sx('min-width:0;display:flex;justify-content:flex-end;height:340px;box-sizing:border-box')}>
-                {this.renderBoard(g)}
+                {this.renderBoard(g, i => this.brettSetzen(i))}
               </div>
             ) : (
-              <div data-m="modeobjekt" style={sx('position:relative;min-width:0;height:340px')}>
-                {this.renderFactions()}
+              <div data-m="modeobjekt" style={sx('min-width:0')}>
+                <div style={sx('position:relative;height:300px')}>{this.renderFactions()}</div>
+                {/* Wolf: "haette ich beim hovern ueber die teamwappen der arena
+                    gerne den namen und slogan". Die Sprueche stehen woertlich
+                    in der App (QQ_MEGA_FACTIONS). Sie kommen NICHT in die
+                    Zeile selbst: dort wuerde die Tabelle bei jedem Zeigen
+                    springen, und eine springende Rangliste ist schlimmer als
+                    kein Spruch. Stattdessen eine eigene Zeile mit
+                    vorgehaltener Hoehe, unter der Tabelle. */}
+                <div aria-live="polite" style={sx('margin-top:14px;min-height:44px;display:flex;align-items:center;gap:10px;flex-wrap:wrap')}>
+                  {frakAn && (
+                    <>
+                      <span style={sx(`font-size:15px;font-weight:900;color:${frakAn.color}`)}>{L.sim.factions[frakAn.id]}</span>
+                      <span style={sx('font-size:15px;font-weight:500;color:rgba(246,239,230,.7)')}>{L.sim.mottos[frakAn.id]}</span>
+                    </>
+                  )}
+                </div>
               </div>
             )}
           </div>
@@ -707,7 +804,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     return FACTIONS.map(f => {
       const p = pts[f.id] || 0, r = ranked.indexOf(f.id), leadNow = r === 0 && p > 0;
       return (
-        <div key={f.id} style={sx(`position:absolute;left:0;right:0;top:0;height:${H}%;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:12px;box-sizing:border-box;transform:translateY(${r * 100}%);transition:transform 1.5s ${EASE},background .6s ease,border-color .6s ease,box-shadow .6s ease;${leadNow ? `background:linear-gradient(90deg,${f.color}26,transparent);border:1px solid ${f.color}80;box-shadow:0 0 22px ${f.color}33` : 'border:1px solid transparent'}`)}>
+        <div key={f.id}
+          onMouseEnter={() => { if (!this._coarse) this.setState({ frak: f.id }); }}
+          onMouseLeave={() => { if (!this._coarse) this.setState({ frak: null }); }}
+          style={sx(`position:absolute;left:0;right:0;top:0;height:${H}%;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:12px;box-sizing:border-box;transform:translateY(${r * 100}%);transition:transform 1.5s ${EASE},background .6s ease,border-color .6s ease,box-shadow .6s ease;${leadNow ? `background:linear-gradient(90deg,${f.color}26,transparent);border:1px solid ${f.color}80;box-shadow:0 0 22px ${f.color}33` : 'border:1px solid transparent'}`)}>
           <span style={sx(`flex:none;width:18px;text-align:center;font-size:15px;font-weight:900;color:${leadNow ? '#F6EFE6' : 'rgba(246,239,230,.5)'};transition:color .5s ease`)}>{r + 1}</span>
           <span style={sx(teammarke(f.color, `/assets/crest-${f.id}.webp`, 30))}></span>
           <span style={sx('flex:none;width:124px;min-width:0')}>
@@ -735,7 +835,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
    *   Minuten. So lange sieht niemand zu. Die laufende Runde steht weiter im
    *   Abschnitt Ablauf, dort gehoert sie hin, dort ist der Beamer.
    */
-  gameVals(festerStand?: number) {
+  gameVals(festerStand?: number, hand?: Record<number, string>) {
     const L = this.T;
     const tick = festerStand ?? this.state.tick ?? 0;
     const cycle = Math.floor(tick / CYCLE);
@@ -766,32 +866,41 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     TEAMS.forEach(tm => { byId[tm.id] = tm; });
     const owner: Record<number, string> = {};
     PRESET.forEach(([id, cell]) => { owner[cell] = id; });
+    // Der Stapel-Zug ist raus (Wolf: "keine doppelavatar kacheln"), damit auch
+    // die Sonderbehandlung dafuer. Die Zeichenschicht kann weiterhin stapeln,
+    // sie bekommt nur nichts mehr zu stapeln.
     const stacked = new Set<number>();
     const last = played[played.length - 1];
     let stolenFrom: string | null = null;
     played.forEach((mv, i) => {
-      if (mv.k === 'stack') { if (mv.sk !== undefined) stacked.add(mv.sk); return; }
-      if (mv.c === undefined) return;
       if (i === played.length - 1) stolenFrom = owner[mv.c] || null;
       owner[mv.c] = mv.t;
     });
+    // Von Hand gesetzte Felder liegen ueber der Choreografie: wer mit dem
+    // Zeiger auf ein leeres Feld faehrt, setzt es selbst.
+    if (hand) for (const [k, v] of Object.entries(hand)) owner[Number(k)] = v;
     const active = last ? byId[last.t] : null;
-    const isStack = !!last && last.k === 'stack';
+    const isStack = false;
     const isSteal = !!last && last.k === 'steal';
-    const justSet = last && !isStack && last.c !== undefined ? last.c : -1;
-    const justStacked = isStack && last.sk !== undefined ? last.sk : -1;
+    const justSet = last ? last.c : -1;
+    const justStacked = -1;
 
     const GS = GRID;
     // Feld nutzt die volle Breite der rechten Spalte, die Tabelle sitzt darunter
     const budget = (this.state.boardWinW || 440) - 26;
     const hBudget = (this.state.boardWinH || 520) - 16;
-    // Abstand und Radius als Anteil der Zelle, gemessen an der Beamer-Ansicht:
-    // dort ist die Zelle 107 px bei 4 px Abstand, also 3,7 Prozent, und der
-    // Radius 16 Prozent. Feste Pixel waren auf dieser viel kleineren Zelle
-    // fast doppelt so breit und doppelt so rund.
-    const CS = Math.max(26, Math.min(56, Math.floor((budget - (GS - 1) * 3) / GS), Math.floor((hBudget - (GS - 1) * 3) / GS)));
-    const GAP = Math.max(1, Math.round(CS * 0.037));
-    const RAD = Math.max(3, Math.round(CS * 0.16));
+    // Abstand und Radius aus der App, nachgelesen statt gemessen:
+    // CozyQuizGridDisplay.tsx rechnet
+    //   gap = 4 (fest)
+    //   cellSize = floor((maxSize - (gridSize-1) * gap) / gridSize)
+    //   cellRadius = max(4, cellSize * 0.16)
+    // Der Abstand ist also KEIN Anteil, sondern feste 4 px. Hier stand vorher
+    // 3,7 Prozent, abgeleitet aus einer einzigen Messung bei 107 px Zelle.
+    // Auf einer 60-px-Zelle ergibt das 2,2 px statt 4, das Brett wirkt dadurch
+    // enger als im Spiel.
+    const GAP = 4;
+    const CS = Math.max(26, Math.min(96, Math.floor((budget - (GS - 1) * GAP) / GS), Math.floor((hBudget - (GS - 1) * GAP) / GS)));
+    const RAD = Math.max(4, Math.round(CS * 0.16));
     const at = (r: number, c: number) => (r < 0 || c < 0 || r >= GS || c >= GS) ? null : (owner[r * GS + c] || null);
 
     // Connect-Welle: BFS ueber das verbundene Gebiet des frisch gesetzten
@@ -946,14 +1055,18 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     };
   }
 
-  renderBoard(g: ReturnType<OnePageInner['gameVals']>): ReactNode {
+  /**
+   * @param aufFeld Wird gerufen, wenn der Zeiger auf ein Feld faehrt. Nur
+   *   Station 01 gibt das mit; der Beamer im Abschnitt Ablauf laeuft ohne.
+   */
+  renderBoard(g: ReturnType<OnePageInner['gameVals']>, aufFeld?: (i: number) => void): ReactNode {
     return (
       <div style={sx('display:flex;align-items:center')}>
         <div style={sx(g.shakeStyle)}>
           <div style={sx(g.frameStyle)}>
             <div style={sx(g.boardGridStyle)}>
               {g.cells.map((c, i) => (
-                <span key={i} style={sx(c.style)}>
+                <span key={i} onMouseEnter={aufFeld ? () => aufFeld(i) : undefined} style={sx(c.style)}>
                   {c.owned && <span style={sx(c.avStyle || '')}></span>}
                   {c.bridgeR && <span style={sx(c.bridgeRStyle || '')}></span>}
                   {c.bridgeB && <span style={sx(c.bridgeBStyle || '')}></span>}
@@ -1254,11 +1367,22 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
           <div data-reveal="" data-m="wall" onMouseEnter={beamStart} onMouseLeave={beamStop} onClick={beamStart}
             style={sx('position:relative;margin:0 0 44px;cursor:pointer')}>
-            <div style={sx('position:relative;width:100%;aspect-ratio:16/9;border-radius:22px;overflow:hidden;border:1px solid rgba(246,239,230,.08);background:#0d0a17')}>
-              <img src="/assets/wand.webp" loading="lazy" decoding="async" alt="" style={sx('position:absolute;inset:0;width:100%;height:100%;object-fit:cover')} />
-              <img src="/assets/wand-an.webp" loading="lazy" decoding="async" alt="" aria-hidden="true"
-                style={sx(`position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:${on ? 1 : 0};transition:opacity .9s ${EASE} ${on ? '.1s' : '.15s'}`)} />
-              <div data-m="screenbox" style={sx(`position:absolute;left:29.1%;top:13.7%;width:44.7%;height:31.4%;overflow:hidden;pointer-events:none;border-radius:16px;background:${on ? '#0b0714' : 'transparent'};box-shadow:${on ? '0 0 70px rgba(255,242,250,.22),0 0 22px rgba(255,242,250,.14)' : '0 0 0 rgba(0,0,0,0)'};transition:box-shadow 1.1s ${EASE} ${on ? '.2s' : '0s'},background .45s ${EASE} ${on ? '0s' : '.35s'}`)}>
+            {/* Hier lag ein KI-Bild: ein Wohnzimmer mit sechs Leuten von hinten
+                vor einer Beamerwand. Wolf hat es ausgemustert, wie schon das im
+                Hero, und es stand ausgerechnet an der Stelle, an der die Seite
+                behauptet, so laufe sein Abend. Damit ist es das letzte
+                KI-Bild der Seite gewesen, und der Hinweis im Fussbereich
+                konnte mit weg.
+                An seine Stelle tritt kein anderes Bild, sondern die Leinwand
+                selbst: eine dunkle Flaeche mit Haarlinie, die aufleuchtet,
+                sobald das Spiel laeuft. Sie behauptet keinen Raum, den es
+                nicht gibt, und der Inhalt darin ist echt. */}
+            <div style={sx('position:relative;width:100%;aspect-ratio:16/9;border-radius:22px;overflow:hidden;'
+              + `border:1px solid ${on ? 'rgba(246,239,230,.22)' : 'rgba(246,239,230,.10)'};`
+              + 'background:linear-gradient(180deg,#141024,#0a0714);'
+              + `box-shadow:${on ? '0 0 90px rgba(255,242,250,.10),inset 0 0 120px rgba(255,242,250,.05)' : 'none'};`
+              + `transition:border-color .9s ${EASE},box-shadow 1.1s ${EASE}`)}>
+              <div data-m="screenbox" style={sx(`position:absolute;inset:0;overflow:hidden;pointer-events:none;background:${on ? '#0b0714' : 'transparent'};transition:background .45s ${EASE} ${on ? '0s' : '.35s'}`)}>
                 <div aria-hidden="true" style={sx(`position:absolute;inset:0;z-index:12;pointer-events:none;border-radius:14px;opacity:0;background:linear-gradient(160deg,#fffdfb,#ece2ea);animation:${on ? 'cwBeamOn 1.9s cubic-bezier(.4,0,.3,1) both' : 'none'};transition:opacity .8s ease`)}></div>
                 <div style={sx(`position:absolute;left:50%;top:50%;width:${WALL_W}px;height:${WALL_H}px;transform-origin:center center;opacity:${on ? 1 : 0};transition:opacity .5s ${EASE} ${on ? '1.1s' : '0s'};transform:translate(-50%,-50%) scale(${this.state.wallScale ?? 0.8})`)}>
                   <div data-m="wallscreen" style={sx('width:640px;height:354px;box-sizing:border-box;padding:18px;border-radius:22px;background:transparent;display:flex;flex-direction:column;justify-content:center;overflow:hidden;position:relative')}>

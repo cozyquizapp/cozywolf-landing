@@ -80,9 +80,9 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
   .cwKachel{animation:cwKachelEin .62s cubic-bezier(.22,1,.36,1) backwards var(--d,0s)}
   .cwKachel--beat{animation-duration:.7s;animation-timing-function:cubic-bezier(.34,1.56,.64,1)}
 }
-.cwKachel{transform:rotate(var(--r,0deg)) scale(var(--s,1));transition:transform .55s cubic-bezier(.22,1,.36,1),filter .55s cubic-bezier(.22,1,.36,1),opacity .55s cubic-bezier(.22,1,.36,1)}
+.cwKachel{transform:rotate(var(--r,0deg)) scale(var(--s,1));transition:transform .55s cubic-bezier(.22,1,.36,1),filter .55s cubic-bezier(.22,1,.36,1),box-shadow .55s cubic-bezier(.22,1,.36,1)}
 @media (hover:hover) and (pointer:fine){
-  .cwKachel:hover{transform:rotate(calc(var(--r,0deg) * .4)) translateY(-10px) scale(1.14);filter:brightness(1.08);z-index:9}
+  .cwKachel:hover{transform:rotate(calc(var(--r,0deg) * .4)) translateY(-10px) scale(1.14);z-index:9}
 }
 :root{--cw-grundton:10,8,20}
 [data-cw-grund]{position:fixed;inset:0;z-index:0;pointer-events:none;
@@ -163,9 +163,6 @@ header [data-shell]{gap:20px!important}
 }
 @media (max-width:940px){
 [data-m=nav]{display:none!important}
-}
-@media (max-width:900px){
-[data-m=screenbox]{position:static!important;width:100%!important;height:auto!important;margin-top:14px!important;border-radius:18px!important;box-shadow:none!important;border:1px solid rgba(246,239,230,.08)!important}
 }
 @media (max-width:860px){
 [data-m=hgruppe]{display:none!important}
