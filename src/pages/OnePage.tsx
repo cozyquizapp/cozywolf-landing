@@ -64,9 +64,6 @@ const PROBE_ORDER = ['mucho', 'schaetzchen', 'cheese', 'zehn', 'tuete'];
 
 // Beamerbild wird in Entwurfsgroesse gebaut und auf die Leinwand skaliert
 const WALL_W = 640, WALL_H = 354;
-// Position des Handys im Hero-Foto (relativ), fuer Blob und Screen-Overlay
-const PHONE = { x: 0.775, y: 0.855 };
-const BLOB = { wc: 0.3, hc: 0.34, wo: 3.4, ho: 3.4, opC: 0.7, opO: 0.46 };
 
 type OPState = {
   formMode: 'event' | 'test'; formStatus: 'idle' | 'sending' | 'ok' | 'error';
@@ -77,7 +74,7 @@ type OPState = {
   wallScale?: number; anlass?: number | null;
   beam?: boolean; beamWelcome?: boolean;
   johFan?: boolean; openW?: number; hookI?: number;
-  tick?: number; blob?: boolean; hbOn?: number | null; duoHover?: number | null;
+  tick?: number; hbOn?: number | null; duoHover?: number | null;
   probeCat?: string; probePick?: number | null;
   guessRaw?: string; guessDone?: boolean;
   points?: number[]; pointsDone?: boolean;
@@ -102,14 +99,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   private _modesRO: ResizeObserver | undefined;
   private _boardWinEl: HTMLElement | null = null;
   private _boardWinRO: ResizeObserver | undefined;
-  private _scene: HTMLElement | null = null;
-  private _sceneRO: ResizeObserver | undefined;
-  private _sceneFit: (() => void) | undefined;
-  private _blobWrap: HTMLElement | null = null;
-  private _blobRaf = 0;
-  private _blobLast: number | null = null;
-  private _blobTarget = false;
-  private _blobP = 0;
   private _pStage: HTMLElement | null = null;
   private _pStageIO: IntersectionObserver | undefined;
   private _coarse = false;
@@ -218,78 +207,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       this.setState({ anlass: i });
     }, 210);
   }
-
-  // ------------------------------------------------- Hero-Blob
-  blobFrame(now: number) {
-    const w = this._blobWrap, inner = this._scene;
-    if (!w || !inner || !w.parentElement) return;
-    const t = this._blobLast == null ? 16 : Math.min(50, now - this._blobLast);
-    this._blobLast = now;
-    const target = this._blobTarget ? 1 : 0;
-    const dur = this._blobTarget ? 2900 : 2200;
-    let p = this._blobP;
-    const step = t / dur;
-    p = target > p ? Math.min(1, p + step) : Math.max(0, p - step);
-    this._blobP = p;
-    const e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
-    const L = w.parentElement, LW = L.clientWidth, LH = L.clientHeight;
-    if (!LW) return;
-    const sW = LW, sH = LW / 1.5, sT = LH - sH;
-    const cx = PHONE.x * sW, cy = sT + PHONE.y * sH;
-    const breath = 1 + 0.05 * Math.sin(now / 1750) * (1 - e);
-    const bw = sW * BLOB.wc * Math.pow(BLOB.wo / BLOB.wc, e) * breath;
-    const bh = sH * BLOB.hc * Math.pow(BLOB.ho / BLOB.hc, e) * breath;
-    const bl = cx - bw / 2, bt = cy - bh / 2;
-    w.style.left = bl.toFixed(1) + 'px'; w.style.top = bt.toFixed(1) + 'px';
-    w.style.width = bw.toFixed(1) + 'px'; w.style.height = bh.toFixed(1) + 'px';
-    inner.style.width = sW.toFixed(1) + 'px';
-    inner.style.left = (-bl).toFixed(1) + 'px';
-    inner.style.top = (sT - bt).toFixed(1) + 'px';
-    inner.style.opacity = (BLOB.opC + (BLOB.opO - BLOB.opC) * e).toFixed(3);
-    const sh = inner.querySelector('[data-heroshade]') as HTMLElement | null;
-    if (sh) sh.style.opacity = (e * e).toFixed(3);
-  }
-
-  blobLoop() {
-    cancelAnimationFrame(this._blobRaf);
-    const tick = (now: number) => {
-      this._blobRaf = requestAnimationFrame(tick);
-      if (document.hidden) return;
-      this.blobFrame(now);
-    };
-    this._blobRaf = requestAnimationFrame(tick);
-  }
-
-  setBlob(v: boolean) { this._blobTarget = v; this.setState({ blob: v }); }
-
-  heroSceneRef = (el: HTMLElement | null) => {
-    if (!el || this._scene === el) return;
-    this._scene = el;
-    // Handy-Screen-Overlay: perspektivische Matrix auf das Handy im Foto,
-    // vermessen im Entwurf (Box 100x217 auf das Foto-Quad)
-    const k = 98 / 217;
-    const P = { a: 0.5131223050550144, d: 0.11407164779754392, g: -0.000021891688899505144,
-                b: -1.10423155084744 * k, e: -0.19042846482961767 * k, h: -0.0006630664975972594 * k, c: 1169.2, f: 887.8 };
-    const fit = () => {
-      const scr = el.querySelector('[data-phonescreen]') as HTMLElement | null;
-      if (!scr) return;
-      const s = el.clientWidth / 1536;
-      scr.style.transform = `matrix3d(${P.a * s},${P.d * s},0,${P.g},${P.b * s},${P.e * s},0,${P.h},0,0,1,0,${P.c * s},${P.f * s},0,1)`;
-    };
-    this._sceneFit = fit;
-    fit();
-    this._sceneRO = new ResizeObserver(fit);
-    this._sceneRO.observe(el);
-    window.addEventListener('resize', fit, { passive: true });
-    const im = el.querySelector('img');
-    if (im) im.addEventListener('load', fit);
-    setTimeout(fit, 60);
-    setTimeout(fit, 400);
-  };
-
-  blobWrapRef = (el: HTMLElement | null) => {
-    if (el && this._blobWrap !== el) { this._blobWrap = el; this.blobLoop(); }
-  };
 
   modesRef = (el: HTMLElement | null) => {
     if (!el || this._modesEl === el) return;
@@ -417,15 +334,12 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     clearTimeout(this._anlT);
     clearInterval(this._arenaT);
     clearInterval(this._hookT);
-    cancelAnimationFrame(this._blobRaf);
     this.io?.disconnect();
     this.wallRO?.disconnect();
     this._modesRO?.disconnect();
     this._boardWinRO?.disconnect();
-    this._sceneRO?.disconnect();
     this._pStageIO?.disconnect();
     if (this.onScroll) window.removeEventListener('scroll', this.onScroll);
-    if (this._sceneFit) window.removeEventListener('resize', this._sceneFit);
     if (this._trackMouse) document.removeEventListener('mousemove', this._trackMouse);
   }
 
@@ -458,7 +372,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
   renderHero() {
     const L = this.T;
-    const open = !!this.state.blob;
     const on = this.state.hbOn ?? null;
     // Der gefuellte Knopf ist btn0, „Gratis fuer Test-Teams". Das sieht nach
     // einer Verwechslung aus - normalerweise gehoert die Buchung nach vorn -
@@ -488,36 +401,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     return (
       <section id="top" style={sx('position:relative;overflow:hidden;min-height:82vh;display:flex;flex-direction:column;border-bottom:1px solid rgba(246,239,230,.10)')}>
         <div style={sx('position:absolute;top:-340px;left:50%;transform:translateX(-50%);width:1500px;height:980px;background:radial-gradient(ellipse at center,rgba(246,239,230,.05),rgba(10,8,20,0) 62%);pointer-events:none')}></div>
-        <div style={sx('position:absolute;right:0;bottom:0;width:100%;aspect-ratio:1536/1024;pointer-events:none;z-index:3')}>
-          <div
-            onMouseEnter={() => this.setBlob(true)}
-            onMouseLeave={() => this.setBlob(false)}
-            onClick={() => this.setBlob(!this._blobTarget)}
-            style={sx(`position:absolute;pointer-events:auto;cursor:pointer;left:${open ? '16%' : '68%'};top:${open ? '8%' : '78%'};width:${open ? '84%' : '19%'};height:${open ? '92%' : '15%'};border-radius:50%;transition:left .5s ease,top .5s ease,width .5s ease,height .5s ease`)}
-          ></div>
-        </div>
-        <div aria-hidden="true" style={sx('position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:1')}>
-          <div ref={this.blobWrapRef} style={sx('position:absolute;left:0;top:0;width:10px;height:10px;overflow:hidden;-webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 44%,rgba(0,0,0,.55) 62%,rgba(0,0,0,0) 80%);mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 44%,rgba(0,0,0,.55) 62%,rgba(0,0,0,0) 80%);-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:100% 100%;mask-size:100% 100%')}>
-            <div ref={this.heroSceneRef} style={sx('position:absolute;left:0;top:0;width:100%')}>
-              <img src="/assets/hero-bar.webp" width={1536} height={1024} fetchPriority="high" alt={L.hero.imgAlt} style={sx('display:block;width:100%;height:auto')} />
-              <div aria-hidden="true" data-heroshade="" style={sx('position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(to right,rgba(10,8,20,.8) 0%,rgba(10,8,20,.42) 18%,rgba(10,8,20,0) 38%)')}></div>
-              <div aria-hidden="true" data-phonescreen="" style={sx('position:absolute;left:0;top:0;width:100px;height:217px;transform-origin:0 0;overflow:hidden;border-radius:13px;background:linear-gradient(180deg,#150c20,#0b0714);box-shadow:0 8px 22px rgba(0,0,0,.55)')}>
-                <div style={sx('position:absolute;inset:0;display:flex;flex-direction:column;gap:9px;padding:16px 11px;box-sizing:border-box')}>
-                  <div style={sx('font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,239,230,.62);line-height:1')}>{L.hero.phoneApp}</div>
-                  <div style={sx('display:flex;align-items:center;gap:7px;padding:7px 7px;border-radius:9px;box-sizing:border-box;background:#A855F72e;border:1px solid #A855F7')}>
-                    <span style={sx(teammarke('#A855F7', '/assets/av-qq-crystal-ball.webp', 19))}></span>
-                    <span style={sx('flex:1;min-width:0;font-weight:900;line-height:1;color:#A855F7;white-space:nowrap;overflow:hidden;font-size:9px')}>{L.hero.phoneTeamA}</span>
-                  </div>
-                  <div style={sx('display:flex;align-items:center;gap:7px;padding:7px 7px;border-radius:9px;box-sizing:border-box;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.1)')}>
-                    <span style={sx(teammarke('#22C55E', '/assets/av-qq-mushroom.webp', 19))}></span>
-                    <span style={sx('flex:1;min-width:0;font-weight:900;line-height:1;color:#F6EFE6;white-space:nowrap;overflow:hidden;font-size:9px')}>{L.hero.phoneTeamB}</span>
-                  </div>
-                  <div style={sx('margin-top:auto;padding:8px 0;border-radius:8px;background:#F6EFE6;color:#0A0814;font-size:10px;font-weight:900;text-align:center;line-height:1')}>{L.hero.phoneReady}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <div style={sx('position:relative;z-index:2;flex:1;display:flex;align-items:center;width:100%;max-width:1180px;margin:0 auto;padding:72px 32px')} data-shell="" data-m="hero">
           <div style={sx('width:100%;max-width:660px')}>
