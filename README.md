@@ -71,3 +71,22 @@ export default defineConfig([
   },
 ])
 ```
+
+## Deployen
+
+Erst `master`, dann den Arbeitszweig pushen. In dieser Reihenfolge:
+
+```
+git push origin <zweig>:master
+git push -u origin <zweig>
+```
+
+Der Grund ist mit Datum belegt. Am 27.08.2026 lief es andersherum, erst der
+Zweig, dann `master`. Vercel legt fuer einen Commit, fuer den bereits ein
+Deployment existiert, keinen zweiten an: der Zweig-Push erzeugte eine
+Preview, der `master`-Push danach nichts mehr. Die Domain blieb dadurch auf
+`2fdc9f1` stehen, waehrend `master` schon drei Commits weiter war, und von
+aussen war das nicht von einem fehlgeschlagenen Build zu unterscheiden.
+
+Wer den ausgelieferten Stand pruefen will: `cozywolf.de/stand.txt` nennt
+Commit, Zweig und Bauzeitpunkt.
