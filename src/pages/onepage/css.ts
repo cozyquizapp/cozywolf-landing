@@ -74,6 +74,25 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
   background:radial-gradient(ellipse 120% 80% at 50% 0%,rgba(var(--cw-grundton),.14),rgba(var(--cw-grundton),.05) 45%,rgba(10,8,20,0) 78%);
   transition:background 1.1s cubic-bezier(.4,0,.2,1)}
 @media (prefers-reduced-motion:reduce){[data-cw-grund]{transition:none}}
+/* Gebogene Kante zwischen den Abschnitten (nodeck, mana).
+   Der obere Rand ist ein flacher, breiter Bogen: waagerechter Radius 50 % der
+   Breite, senkrechter Radius die Bogenhoehe. Der Abschnitt schiebt sich um
+   genau diese Hoehe in den vorhergehenden hinein, deshalb liest sich die
+   Kante als Ueberfahren und nicht als Luecke. Das Band traegt die Farbe des
+   Abschnitts; der feste Farbschleier darunter macht weiterhin den weichen
+   Wechsel. */
+section[data-band]{
+  --bogen:78px;
+  position:relative;
+  margin-top:calc(var(--bogen) * -1);
+  padding-top:var(--bogen);
+  border-top-left-radius:50% var(--bogen);
+  border-top-right-radius:50% var(--bogen);
+  background:linear-gradient(180deg,rgba(var(--cw-band,10,8,20),.085),rgba(var(--cw-band,10,8,20),.025) 38%,rgba(10,8,20,0) 74%);
+  border-top:1px solid rgba(246,239,230,.10);
+  z-index:1;
+}
+@media (max-width:860px){section[data-band]{--bogen:44px}}
 summary::-webkit-details-marker{display:none}
 summary{list-style:none;cursor:pointer}
 html{scroll-behavior:smooth;scroll-padding-top:88px}

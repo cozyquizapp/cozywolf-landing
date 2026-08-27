@@ -302,6 +302,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       });
       document.querySelectorAll('section').forEach(s => this.io?.observe(s));
       this.grundfarbenBeobachten();
+      document.querySelectorAll<HTMLElement>('section[data-ton]').forEach(el => {
+        el.style.setProperty('--cw-band', el.dataset.ton || '10,8,20');
+      });
     });
 
     this.onScroll = () => {
@@ -562,7 +565,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const g = this.gameVals();
 
     return (
-      <section id="spielarten" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:84px 32px')}>
+      <section id="spielarten" data-band="" data-ton="168,85,247" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:84px 32px')}>
         {this.kicker(`${L.modes.kicker}|${L.modes.label}`)}
         <h2 data-reveal="" style={sx("margin:0 0 24px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;letter-spacing:-.015em;color:#F6EFE6")}>{L.modes.h2}</h2>
         <div data-m="modes" ref={this.modesRef} onMouseLeave={() => this.switchMode(null)}
@@ -1035,7 +1038,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     }
 
     return (
-      <section id="probieren" style={sx('border-top:1px solid rgba(246,239,230,.10);border-bottom:1px solid rgba(246,239,230,.10);background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.04),transparent 65%)')}>
+      <section id="probieren" data-band="" data-ton="59,130,246" style={sx('border-top:1px solid rgba(246,239,230,.10);border-bottom:1px solid rgba(246,239,230,.10);background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.04),transparent 65%)')}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px;display:grid;grid-template-columns:1fr 600px;gap:40px;align-items:center')} data-m="two2">
           <div>
             <div data-reveal="" style={sx('font-size:13px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{L.probe.kicker}</div>
@@ -1125,7 +1128,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       { c: '#FFC7E4', bg: 'rgba(246,239,230,.03)', bd: 'rgba(246,239,230,.1)', title: L.ablauf.duo1Title, items: L.ablauf.duo1 },
     ];
     return (
-      <section id="ablauf" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
+      <section id="ablauf" data-band="" data-ton="34,197,94" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px')}>
           {this.kicker(`[ 04 ]|${L.ablauf.label}`)}
           <h2 data-reveal="" style={sx("margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.ablauf.h2}</h2>
@@ -1241,7 +1244,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       + `transform:translateX(${a ? x : '0px'}) rotate(${a ? deg : '0deg'}) scale(${a ? .78 : .6});`
       + `opacity:${a ? 1 : 0};transition:transform .85s ${EASE},opacity .5s ${EASE},border-color .6s ${EASE}`;
     return (
-      <section id="johannes" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
+      <section id="johannes" data-band="" data-ton="249,115,22" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px;display:grid;grid-template-columns:300px 1fr;gap:52px;align-items:center')} data-m="joh">
           <div onMouseEnter={() => this.setState({ johFan: true })} onMouseLeave={() => this.setState({ johFan: false })}
             style={sx('display:flex;flex-direction:column;align-items:center;gap:14px')}>
@@ -1315,7 +1318,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const fieldWrap = 'display:flex;flex-direction:column;gap:6px';
     const req = <span aria-hidden="true" style={sx('color:#FA4BA3')}> *</span>;
     return (
-      <section id="anfragen" style={sx('background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.05),transparent 70%)')}>
+      <section id="anfragen" data-band="" data-ton="250,75,163" style={sx('background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.05),transparent 70%)')}>
         <span aria-hidden="true" style={sx('display:block;height:1px;background:linear-gradient(90deg,transparent,rgba(250,75,163,.32),transparent)')}></span>
         <div style={sx('position:relative;max-width:760px;margin:0 auto;padding:88px 32px;text-align:center')}>
           <span aria-hidden="true" style={sx('position:absolute;top:20px;left:50%;transform:translateX(-50%);width:520px;height:220px;border-radius:50%;background:radial-gradient(ellipse,rgba(246,239,230,.05),transparent 70%);pointer-events:none')}></span>
