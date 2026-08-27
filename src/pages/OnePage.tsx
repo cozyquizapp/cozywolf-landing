@@ -1422,7 +1422,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           {key === 'cheese' && (
             <img src="/assets/kolosseum.webp" alt="" style={sx('display:block;width:100%;height:104px;margin-bottom:12px;object-fit:cover;border-radius:14px')} />
           )}
-          <div style={sx('display:flex;flex-direction:column;gap:8px')}>
+          <div style={sx('display:flex;flex-direction:column;gap:9px')}>
             {p.opts.map((label, i) => {
               const chosen = sel === i;
               const right = i === p.correct;
@@ -1435,9 +1435,13 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               }
               return (
                 <button key={i} type="button" onClick={() => this.setState({ probePick: i })}
-                  style={sx(`display:flex;align-items:center;gap:11px;width:100%;padding:11px 12px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:800;box-sizing:border-box;text-align:left;box-shadow:0 3px 0 rgba(0,0,0,.45);border:1px solid ${line};background:${fill};color:${text};transform:translateY(${chosen ? '-2px' : '0'});transition:all .3s ${EASE}`)}>
-                  <span style={sx(`width:26px;height:26px;flex:none;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;background:${badge};color:${badgeCol}`)}>{letter}</span>
-                  <span style={sx('text-align:left')}>{label}</span>
+                  style={sx('display:flex;align-items:center;gap:13px;width:100%;padding:12px 14px;border-radius:10px;cursor:pointer;'
+                    + `font-family:inherit;font-size:14.5px;font-weight:900;box-sizing:border-box;text-align:left;`
+                    + `border:1px solid ${line};background:${fill};color:${text};`
+                    + `transform:translateY(${chosen ? '-2px' : '0'});transition:all .3s ${EASE}`)}>
+                  <span style={sx("font-family:'League Spartan',sans-serif;flex:none;width:22px;text-align:center;"
+                    + `font-size:24px;font-weight:900;line-height:1;color:${badgeCol === '#F6EFE6' ? badge : col}`)}>{letter}</span>
+                  <span style={sx('text-align:left;line-height:1.25')}>{label}</span>
                 </button>
               );
             })}
@@ -1614,15 +1618,29 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   <span style={sx('width:34px;height:4px;border-radius:2px;background:#1b1b24')}></span>
                   <span style={sx('width:7px;height:7px;border-radius:50%;background:#141420;box-shadow:inset 0 0 0 1px rgba(120,130,180,.35)')}></span>
                 </div>
-                <div style={sx('display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:18px;border:1px solid rgba(168,85,247,.45);background:rgba(168,85,247,.07);margin-bottom:12px;flex:none')}>
+                {/* Wolf am 27.08.: "optimiere die handy sektion". Der Kopf war
+                    ein lila Kasten mit lila Schrift, das einzige Stueck Seite,
+                    das noch so aussah. Jetzt eine Zeile mit Haarlinie: Kachel,
+                    Name in Creme, Menue als drei Striche. Was das Handy zeigt,
+                    bleibt inhaltlich, was die App zeigt; nur die Sprache ist
+                    die der Seite. */}
+                <div style={sx('display:flex;align-items:center;gap:11px;padding:0 4px 13px;margin-bottom:14px;flex:none;border-bottom:1px solid rgba(246,239,230,.14)')}>
                   <span style={sx(teammarke('#A855F7', '/assets/av-qq-crystal-ball.webp', 34))}></span>
-                  <span style={sx('flex:1;font-size:15px;font-weight:900;color:#A855F7')}>{L.hero.phoneTeamA}</span>
-                  <span style={sx('width:26px;height:26px;border-radius:9px;border:1px solid rgba(246,239,230,.14);display:flex;align-items:center;justify-content:center;font-size:11px;color:#c49ab5')}>☰</span>
+                  <span style={sx('flex:1;min-width:0;font-size:15px;font-weight:900;color:#F6EFE6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis')}>{L.hero.phoneTeamA}</span>
+                  <span aria-hidden="true" style={sx('flex:none;display:flex;flex-direction:column;gap:3px')}>
+                    <span style={sx('display:block;width:16px;height:1.5px;border-radius:1px;background:rgba(246,239,230,.5)')}></span>
+                    <span style={sx('display:block;width:16px;height:1.5px;border-radius:1px;background:rgba(246,239,230,.5)')}></span>
+                    <span style={sx('display:block;width:11px;height:1.5px;border-radius:1px;background:rgba(246,239,230,.5)')}></span>
+                  </span>
                 </div>
-                <div key={key} style={sx(`position:relative;overflow:hidden;flex:1;min-height:0;padding:18px 16px;border-radius:22px;border:1px solid ${col}40;background:rgba(246,239,230,.025);box-sizing:border-box;overflow:hidden;animation:${PROBE_ORDER.indexOf(key) % 2 ? 'cwCardB' : 'cwCardA'} .55s ${EASE} both;transition:border-color .35s ${EASE}`)}>
-                  <span style={sx(`display:inline-flex;align-items:center;padding:6px 13px;border-radius:999px;background:${col}1f;border:1px solid ${col}80;font-size:11px;font-weight:900;color:${col};flex:none`)}>{catT.name}</span>
+                <div key={key} style={sx('position:relative;overflow:hidden;flex:1;min-height:0;padding:4px 4px 0;box-sizing:border-box;'
+                  + `animation:${PROBE_ORDER.indexOf(key) % 2 ? 'cwCardB' : 'cwCardA'} .55s ${EASE} both`)}>
+                  {/* Gefuellte Kapsel mit dunkler Schrift, genau wie auf der
+                      Leinwand in 04. Beide zeigen dieselbe Kategorie, also
+                      sollen sie auch gleich aussehen. */}
+                  <span style={sx(`display:inline-flex;align-items:center;padding:5px 12px;border-radius:999px;background:${col};font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#0A0814;flex:none;transition:background .35s ${EASE}`)}>{catT.name}</span>
                   {p.kind !== 'guess' && (
-                    <div style={sx('margin:12px 0 14px;font-size:16px;font-weight:900;line-height:1.35;color:#F6EFE6')}>{p.q}</div>
+                    <div style={sx("margin:14px 0 16px;font-family:'League Spartan',sans-serif;font-size:21px;font-weight:900;line-height:1.12;letter-spacing:-.018em;color:#F6EFE6;text-wrap:balance")}>{p.q}</div>
                   )}
                   {cardBody}
                 </div>
@@ -2071,10 +2089,16 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                     vertan hat. */}
                 <div style={sx('display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(246,239,230,.14)')}>
                   <span style={sx('font-size:11.5px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:rgba(246,239,230,.5)')}>{L.form.label}</span>
-                  <span style={sx("font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;line-height:1;letter-spacing:-.02em;color:#F6EFE6")}>{test ? L.form.tabTest : L.form.tabEvent}</span>
+                  <span style={sx("font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;line-height:1;letter-spacing:-.02em;color:#F6EFE6;white-space:nowrap;"
+                    + `min-width:${Math.max(L.form.tabEvent.length, L.form.tabTest.length)}ch`)}>{test ? L.form.tabTest : L.form.tabEvent}</span>
                   <span style={sx('flex:1')}></span>
+                  {/* Und der Verweis wanderte um 35 px, weil seine Breite von
+                      seinem eigenen Text kam und der beim Wechsel wechselt.
+                      Jetzt haelt er die Breite des laengeren der beiden. */}
                   <button type="button" onClick={() => this.openForm(test ? 'event' : 'test')}
-                    style={sx('background:none;border:none;padding:0;cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;color:rgba(246,239,230,.62);text-decoration:underline;text-decoration-color:rgba(246,239,230,.3);text-underline-offset:3px')}>
+                    style={sx('background:none;border:none;padding:0;cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;'
+                      + `min-width:${Math.max(L.form.tabEvent.length, L.form.tabTest.length)}ch;text-align:right;`
+                      + 'color:rgba(246,239,230,.62);text-decoration:underline;text-decoration-color:rgba(246,239,230,.3);text-underline-offset:3px')}>
                     {test ? L.form.tabEvent : L.form.tabTest}
                   </button>
                 </div>
@@ -2096,7 +2120,12 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                         <label htmlFor="f-name" style={sx(labelStyle)}>{L.form.name}{req}</label>
                         <input id="f-name" name="name" type="text" maxLength={100} required style={sx(inputStyle)} />
                       </div>
-                      <div style={sx(fieldWrap + ';grid-column:1/-1')}>
+                      {/* Wolf am 27.08.: die Groesse darf sich beim Wechsel
+                          nicht aendern. Gemessen waren es 553 gegen 475 px.
+                          Beide Formulare haben vier Felder, aber dieses hier
+                          lag ueber die volle Breite und machte aus zwei Reihen
+                          drei. Jetzt stehen beide als zwei mal zwei. */}
+                      <div style={sx(fieldWrap)}>
                         <label htmlFor="f-email" style={sx(labelStyle)}>{L.form.email}{req}</label>
                         <input id="f-email" name="email" type="email" maxLength={150} required style={sx(inputStyle)} />
                       </div>
