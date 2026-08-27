@@ -1101,11 +1101,13 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   <span style={sx('flex:1;font-size:15px;font-weight:900;color:#A855F7')}>{L.hero.phoneTeamA}</span>
                   <span style={sx('width:26px;height:26px;border-radius:9px;border:1px solid rgba(246,239,230,.14);display:flex;align-items:center;justify-content:center;font-size:11px;color:#c49ab5')}>☰</span>
                 </div>
-{/* Folienwechsel (nodeck): zwei Baender mit gebogener Kante fahren
-    ueber die alte Folie und wieder hinaus. */}
-<span key={`w-${key}`} aria-hidden="true" className="cwFolie cwFolie--vor" style={sx(`background:${col}`)}></span>
-<span key={`w2-${key}`} aria-hidden="true" className="cwFolie" style={sx('background:#141024')}></span>
-                <div key={key} style={sx(`flex:1;min-height:0;padding:18px 16px;border-radius:22px;border:1px solid ${col}40;background:rgba(246,239,230,.025);box-sizing:border-box;overflow:hidden;animation:${PROBE_ORDER.indexOf(key) % 2 ? 'cwCardB' : 'cwCardA'} .55s ${EASE} both;transition:border-color .35s ${EASE}`)}>
+                <div key={key} style={sx(`position:relative;overflow:hidden;flex:1;min-height:0;padding:18px 16px;border-radius:22px;border:1px solid ${col}40;background:rgba(246,239,230,.025);box-sizing:border-box;overflow:hidden;animation:${PROBE_ORDER.indexOf(key) % 2 ? 'cwCardB' : 'cwCardA'} .55s ${EASE} both;transition:border-color .35s ${EASE}`)}>
+                  {/* Folienwechsel (nodeck): zwei Baender mit gebogener Kante fahren
+                      ueber die alte Folie und wieder hinaus. Sie sitzen IN der
+                      Fragekarte, damit die Teamzeile darueber stehen bleibt - auf
+                      einem echten Handy wechselt die Frage, nicht das Geraet. */}
+                  <span aria-hidden="true" className="cwFolie cwFolie--vor" style={sx(`background:${col}`)}></span>
+                  <span aria-hidden="true" className="cwFolie" style={sx('background:#141024')}></span>
                   <span style={sx(`display:inline-flex;align-items:center;padding:6px 13px;border-radius:999px;background:${col}1f;border:1px solid ${col}80;font-size:11px;font-weight:900;color:${col};flex:none`)}>{catT.name}</span>
                   {p.kind !== 'guess' && (
                     <div style={sx('margin:12px 0 14px;font-size:16px;font-weight:900;line-height:1.35;color:#F6EFE6')}>{p.q}</div>

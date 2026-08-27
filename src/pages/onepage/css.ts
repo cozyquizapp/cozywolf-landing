@@ -65,9 +65,9 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
   .cwKachel{animation:cwKachelEin .62s cubic-bezier(.22,1,.36,1) both var(--d,0s)}
   .cwKachel--beat{animation-duration:.7s;animation-timing-function:cubic-bezier(.34,1.56,.64,1)}
 }
-.cwKachel{transition:transform .24s cubic-bezier(.4,0,.2,1),filter .24s cubic-bezier(.4,0,.2,1)}
+.cwKachel{transition:transform .34s cubic-bezier(.22,1,.36,1),filter .34s cubic-bezier(.22,1,.36,1)}
 @media (hover:hover) and (pointer:fine){
-  .cwKachel:hover{transform:rotate(var(--r,0deg)) translateY(-7px) scale(1.045);filter:brightness(1.06);z-index:9}
+  .cwKachel:hover{transform:rotate(calc(var(--r,0deg) * .4)) translateY(-10px) scale(1.14);filter:brightness(1.08);z-index:9}
 }
 :root{--cw-grundton:10,8,20}
 [data-cw-grund]{position:fixed;inset:0;z-index:0;pointer-events:none;
@@ -98,7 +98,7 @@ section[data-band]{
   46%{transform:translateY(0)}
   100%{transform:translateY(-106%)}
 }
-.cwFolie{position:absolute;left:-6%;right:-6%;top:0;bottom:0;z-index:14;pointer-events:none;
+.cwFolie{position:absolute;left:-8%;right:-8%;top:0;bottom:0;z-index:14;pointer-events:none;
   border-top-left-radius:50% 34px;border-top-right-radius:50% 34px;
   border-bottom-left-radius:50% 34px;border-bottom-right-radius:50% 34px;
   animation:cwFolie .46s cubic-bezier(.65,0,.35,1) both}
