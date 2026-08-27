@@ -6,7 +6,11 @@
 export const ONEPAGE_CSS = `
 html{background:#0A0814;color-scheme:dark}
 body{margin:0;background:#0A0814;font-family:'Bricolage Grotesque','Nunito',system-ui,sans-serif;font-optical-sizing:auto;color:#F6EFE6;-webkit-font-smoothing:antialiased}
-a{color:#FA4BA3;text-decoration:none}a:hover{color:#FFC7E4}
+/* Grundfarbe fuer Verweise. Wolf am 27.08.: "pink soll grundsaetzlich raus".
+   Orange #F97316 steht schon als Puzzle im Hero und als Bauchgefuehl in der
+   Arena, ist also keine neue Farbe. Auf dem Grund #0A0814 gemessen: 7,08 zu 1
+   gegen 6,24 zu 1 beim alten Pink. */
+a{color:#F97316;text-decoration:none}a:hover{color:#FBBF77}
 @keyframes cwClaim{0%{transform:scale(.2);opacity:0}6%{transform:scale(1.12);opacity:1}11%{transform:scale(1)}82%{opacity:1;transform:scale(1)}93%{opacity:.1;transform:scale(.8)}100%{opacity:0;transform:scale(.2)}}
 @keyframes cwCount{from{width:100%}to{width:0%}}
 @keyframes cwPulseSoft{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
@@ -106,7 +110,7 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 summary::-webkit-details-marker{display:none}
 summary{list-style:none;cursor:pointer}
 html{scroll-behavior:smooth;scroll-padding-top:88px}
-a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #FFC7E4;outline-offset:3px;border-radius:8px}
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #FBBF77;outline-offset:3px;border-radius:8px}
 :focus:not(:focus-visible){outline:none}
 [data-m=sticky]{display:none}
 .cwHovA:hover{filter:brightness(1.06)}

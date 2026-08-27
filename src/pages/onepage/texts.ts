@@ -58,7 +58,7 @@ export type OnePageDict = {
     pointsResult: (label: string, g: number) => string;
     pointsFooterIdle: string; pointsFooterDone: string;
   };
-  ablauf: { label: string; h2: string; sub: string; duo0Title: string; duo0: string[]; duo1Title: string; duo1: string[] };
+  ablauf: { label: string; h2: string; sub: string; wandHint: string; duo0Title: string; duo0: string[]; duo1Title: string; duo1: string[] };
   johannes: {
     kicker: string; quote: QuoteWord[]; body: string; chips: string[];
     name: string; role: string; photoAlt: string;
@@ -215,6 +215,7 @@ const de: OnePageDict = {
   ablauf: {
     label: 'Ablauf', h2: G.de.ablaufH2,
     sub: G.de.ablaufSub,
+    wandHint: 'Zeig auf die Wand, dann läuft eine Runde',
     duo0Title: 'Ich bringe mit',
     duo0: ['Beamer und Sound, vorher aufgebaut', 'Moderation den ganzen Abend', 'Fragen, auf eure Runde abgestimmt', 'Das Spiel auf allen Handys'],
     duo1Title: 'Ihr braucht',
@@ -411,6 +412,7 @@ const en: OnePageDict = {
   ablauf: {
     label: 'How it works', h2: G.en.ablaufH2,
     sub: G.en.ablaufSub,
+    wandHint: 'Point at the wall and a round starts',
     duo0Title: 'I bring',
     duo0: ['Projector and sound, set up beforehand', 'Hosting all evening', 'Questions tuned to your crowd', 'The game on all phones'],
     duo1Title: 'You need',

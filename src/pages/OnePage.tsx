@@ -19,6 +19,21 @@ import { onePageT, type OnePageDict, type ProbeDef } from './onepage/texts';
 
 const EASE = 'cubic-bezier(.22,1,.36,1)';
 const LOGO = '/logo.webp';
+/**
+ * Der Textakzent. Wolf am 27.08.: "pink soll grundsaetzlich raus".
+ *
+ * Warum Orange und nicht einfach Creme: ohne Farbe verschwindet der
+ * Unterschied zwischen hervorgehobenem und normalem Text ganz, und Verweise
+ * saehen aus wie Fliesstext. Warum genau dieses Orange: es steht schon auf der
+ * Seite, als Puzzle im Hero und als Bauchgefuehl in der Arena, es ist also
+ * keine neue Farbe, sondern eine, die die Seite ohnehin traegt.
+ * Gemessen auf dem Grund #0A0814: 7,08 zu 1, das alte Pink hatte 6,24 zu 1.
+ * Der Verweis wird also lesbarer, nicht schlechter.
+ *
+ * Pink bleibt Marke: Logo und der ausgefuellte Knopf. Aus der Schrift ist es
+ * raus.
+ */
+const AKZENT = '#F97316';
 
 // Spielstand-Daten der Brett-Simulation (aus dem Entwurf, Wolfs Choreografie)
 // Team-Avatare: das CozyQuiz-Objektset der App (48 Motive). Die Objekte sind
@@ -42,10 +57,15 @@ const LOGO = '/logo.webp';
 // Gelb. Drei benachbarte Farbtoene sind auf einem Brett kaum zu trennen. Hier
 // stehen deshalb die Plaetze 0, 3 und 5, also Rot, Gruen, Blau. Wenn die App
 // die Palette bei wenigen Teams spreizt, stimmen beide wieder ueberein.
+// Satz G3 "Kuehl gegen warm", von Wolf am 27.08. aus vier Faessungen gewaehlt.
+// Die beiden warmen Motive stehen auf kuehlen Kacheln, das neutrale Boot auf
+// der einzigen leuchtenden Flaeche. Vorher sass die rote Erdbeere auf Gruen,
+// also auf ihrer Gegenfarbe, und das cremefarbene Boot auf dem Rot, das der
+// Erdbeere zustuende. Palettenplaetze 6, 5 und 3, also weit auseinander.
 const TEAMS = [
-  { id: 'd', color: '#3B82F6', av: '/assets/av-qq-donut.webp' },
-  { id: 's', color: '#22C55E', av: '/assets/av-qq-strawberry.webp' },
-  { id: 'b', color: '#EF4444', av: '/assets/av-qq-paper-boat.webp' },
+  { id: 'd', color: '#A855F7', av: '/assets/av-qq-donut.webp' },
+  { id: 's', color: '#3B82F6', av: '/assets/av-qq-strawberry.webp' },
+  { id: 'b', color: '#22C55E', av: '/assets/av-qq-paper-boat.webp' },
 ];
 const GRID = qqGridSize(TEAMS.length);
 
@@ -381,9 +401,12 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const box = document.querySelector('[data-m="screenbox"]');
     if (!box || typeof ResizeObserver === 'undefined') return;
     const measure = () => {
-      const r = box.getBoundingClientRect();
-      if (!r.width || !r.height) return;
-      const sc = Math.min(r.width / WALL_W, r.height / WALL_H);
+      // Nicht getBoundingClientRect: seit die Leinwand gekippt steht, liefert
+      // das die Huellbox der Drehung und damit zu viel. clientWidth ist die
+      // Breite im eigenen Koordinatensystem, also die, um die es geht.
+      const w = (box as HTMLElement).clientWidth, h = (box as HTMLElement).clientHeight;
+      if (!w || !h) return;
+      const sc = Math.min(w / WALL_W, h / WALL_H);
       if (Math.abs((this.state.wallScale ?? 0) - sc) > 0.002) this.setState({ wallScale: sc });
     };
     this.wallRO = new ResizeObserver(measure);
@@ -631,9 +654,18 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                     ))}
                   </span>
                 )}
-                <span key={`ein-${hookI}`} style={sx(`display:inline-block;color:${objekt.farbe};transition:color .4s ${EASE}`)}>
+                {/* Fassung F2, Wolf am 27.08.: waehrend das alte Wort hinaus
+                    laeuft und das neue herein kommt, wandert die Farbe von der
+                    alten in die neue. Entscheidend ist, dass der Traeger KEINEN
+                    neuen Schluessel bekommt: bekaeme er einen, baute React ihn
+                    neu auf und faenge schon in der Zielfarbe an, die
+                    Ueberblendung faende also nie statt. Genau das war vorher
+                    der Fall, transition:color stand da und lief nie. Nur die
+                    Buchstaben tragen den Schluessel, damit die Walze neu
+                    startet. */}
+                <span style={sx(`display:inline-block;color:${objekt.farbe};transition:color .62s linear`)}>
                   {hook.split('').map((ch, j) => (
-                    <span key={j} className="cwWortEin" style={sx(`animation-delay:${(j * 0.032).toFixed(3)}s`)}>{ch === ' ' ? '\u00A0' : ch}</span>
+                    <span key={`${hookI}-${j}`} className="cwWortEin" style={sx(`animation-delay:${(j * 0.032).toFixed(3)}s`)}>{ch === ' ' ? '\u00A0' : ch}</span>
                   ))}
                 </span>
               </span>
@@ -770,11 +802,11 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const HAAR = 'rgba(246,239,230,.14)';
     const reihen = [
       {
-        key: 'quiz', name: 'CozyQuiz', akzent: '#FA4BA3',
+        key: 'quiz', name: 'CozyQuiz', akzent: AKZENT,
         chip: L.modes.quizChip, lead: L.modes.quizLead, bullets: L.modes.quizBullets,
       },
       {
-        key: 'arena', name: 'CozyArena', akzent: '#FFC7E4',
+        key: 'arena', name: 'CozyArena', akzent: '#FACC15',
         chip: L.modes.arenaChip, lead: L.modes.arenaLead, bullets: L.modes.arenaBullets,
       },
     ];
@@ -1210,8 +1242,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
    */
   renderAnlaesse() {
     const L = this.T;
-    // Text braucht helle Toene auf #0A0814, #AB0055 nur als Flaechenfarbe
-    const ACC = ['#FA4BA3', '#FFC7E4', '#FF7AC0'];
+    // Die Kennzeile bleibt gedaempft, der Verweis traegt den Akzent. Vorher
+    // standen hier drei Pinktoene, und Pink soll aus der Schrift raus.
+    const ACC = ['rgba(246,239,230,.62)', 'rgba(246,239,230,.62)', 'rgba(246,239,230,.62)'];
     const HAAR = 'rgba(246,239,230,.14)';
     return (
       <section id="anlaesse" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:84px 32px')}>
@@ -1239,7 +1272,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               <div data-reveal="">
                 <p style={sx('margin:0 0 22px;font-size:18px;line-height:1.6;font-weight:500;'
                   + 'color:rgba(246,239,230,.82);max-width:60ch;text-wrap:pretty')}>{cardT.desc}</p>
-                <a href="#anfragen" style={sx(`display:inline-block;font-size:15.5px;font-weight:900;color:${a}`)}>
+                <a href="#anfragen" style={sx(`display:inline-block;font-size:15.5px;font-weight:900;color:${AKZENT}`)}>
                   {L.anlaesse.cta}
                 </a>
               </div>
@@ -1407,8 +1440,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               <div style={sx('font-size:15.5px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78)')}>{catT.detail}</div>
             </div>
             <div data-reveal="" style={sx('display:flex;flex-direction:column;gap:10px;font-size:15.5px;font-weight:700;color:#F6EFE6')}>
-              <span style={sx('display:flex;align-items:center;gap:11px')}><span style={sx('color:#FA4BA3')}>✓</span>{L.probe.check1}</span>
-              <span style={sx('display:flex;align-items:center;gap:11px')}><span style={sx('color:#FA4BA3')}>✓</span>{L.probe.check2}</span>
+              <span style={sx('display:flex;align-items:center;gap:11px')}><span style={sx('color:#22C55E')}>✓</span>{L.probe.check1}</span>
+              <span style={sx('display:flex;align-items:center;gap:11px')}><span style={sx('color:#22C55E')}>✓</span>{L.probe.check2}</span>
             </div>
           </div>
 
@@ -1486,8 +1519,20 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           <h2 data-reveal="" style={sx("margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.ablauf.h2}</h2>
           <p data-reveal="" style={sx('margin:0 0 34px;max-width:620px;font-size:17px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:500')}>{L.ablauf.sub}</p>
 
+          {/* Wolf am 27.08.: "beamer kleiner und gekippt". Also keine Leinwand
+              ueber die volle Breite mehr, sondern 880 px, mittig, und leicht
+              schraeg gestellt, als staende man neben statt vor ihr. Ein Geraet
+              ist bewusst nicht im Bild: es waere wieder ein behaupteter Raum,
+              und genau den haben wir mit den KI-Bildern rausgeworfen. Die
+              Schraege nimmt beim Anspringen ab, damit die Frage gerade steht,
+              wenn man sie lesen soll. */}
           <div data-reveal="" data-m="wall" onMouseEnter={beamStart} onMouseLeave={beamStop} onClick={beamStart}
-            style={sx('position:relative;margin:0 0 44px;cursor:pointer')}>
+            style={sx('position:relative;margin:0 auto 44px;max-width:880px;cursor:pointer;perspective:1100px')}>
+            {/* Perspektive gehoert auf den Eltern, die Drehung auf das Kind.
+                Standen beide auf demselben Element, greift die Perspektive
+                nicht und die Kippung sah flach aus statt raeumlich. */}
+            <div style={sx(`transform:rotateY(${on ? '-2.6deg' : '-11deg'}) rotateX(${on ? '.5deg' : '2.4deg'}) scale(${on ? 1 : .95});`
+              + `transform-origin:center center;transition:transform 1.1s ${EASE}`)}>
             {/* Hier lag ein KI-Bild: ein Wohnzimmer mit sechs Leuten von hinten
                 vor einer Beamerwand. Wolf hat es ausgemustert, wie schon das im
                 Hero, und es stand ausgerechnet an der Stelle, an der die Seite
@@ -1503,6 +1548,14 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               + 'background:linear-gradient(180deg,#141024,#0a0714);'
               + `box-shadow:${on ? '0 0 60px rgba(255,242,250,.06),inset 0 0 90px rgba(255,242,250,.03)' : 'none'};`
               + `transition:border-color .9s ${EASE},box-shadow 1.1s ${EASE}`)}>
+              {/* In Ruhe war die Leinwand eine leere dunkle Flaeche, und seit
+                  sie kleiner ist faellt das staerker auf. Also steht dort
+                  jetzt, was zu tun ist. Geht weg, sobald die Lampe angeht. */}
+              <div aria-hidden={on} style={sx('position:absolute;inset:0;z-index:14;display:flex;align-items:center;justify-content:center;pointer-events:none;'
+                + `opacity:${on ? 0 : 1};transition:opacity .5s ${EASE}`)}>
+                <span style={sx('padding:11px 20px;border-radius:999px;border:1px solid rgba(246,239,230,.18);background:rgba(246,239,230,.04);'
+                  + 'font-size:14px;font-weight:800;letter-spacing:.02em;color:rgba(246,239,230,.62)')}>{L.ablauf.wandHint}</span>
+              </div>
               <div data-m="screenbox" style={sx(`position:absolute;inset:0;overflow:hidden;pointer-events:none;background:${on ? '#0b0714' : 'transparent'};transition:background .45s ${EASE} ${on ? '0s' : '.35s'}`)}>
                 <div aria-hidden="true" style={sx(`position:absolute;inset:0;z-index:12;pointer-events:none;border-radius:14px;opacity:0;background:linear-gradient(160deg,#efe4dc,#cdbfcb);animation:${on ? 'cwBeamOn 1.9s cubic-bezier(.4,0,.3,1) both' : 'none'};transition:opacity .8s ease`)}></div>
                 <div style={sx(`position:absolute;left:50%;top:50%;width:${WALL_W}px;height:${WALL_H}px;transform-origin:center center;opacity:${on ? 1 : 0};transition:opacity .5s ${EASE} ${on ? '1.1s' : '0s'};transform:translate(-50%,-50%) scale(${this.state.wallScale ?? 0.8})`)}>
@@ -1577,6 +1630,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 </div>
               </div>
             </div>
+            </div>
           </div>
 
           {/* Fassung B2, von Wolf gewaehlt: die Aussage des Abschnitts ist nicht
@@ -1602,11 +1656,11 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               </ul>
             </div>
             <div>
-              <div style={sx('margin-bottom:16px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#FA4BA3')}>{L.ablauf.duo0Title}</div>
+              <div style={sx(`margin-bottom:16px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:${AKZENT}`)}>{L.ablauf.duo0Title}</div>
               <ul style={sx('margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:13px')}>
                 {L.ablauf.duo0.map(item => (
                   <li key={item} style={sx('display:flex;gap:14px;font-size:16px;line-height:1.5;font-weight:600;color:#F6EFE6;text-wrap:pretty')}>
-                    <span style={sx('flex:none;width:16px;height:1px;margin-top:12px;background:#FA4BA3')}></span>{item}
+                    <span style={sx(`flex:none;width:16px;height:1px;margin-top:12px;background:${AKZENT}`)}></span>{item}
                   </li>
                 ))}
               </ul>
@@ -1619,37 +1673,25 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
   renderJohannes() {
     const L = this.T;
-    const a = !!this.state.johFan;
-    const side = (deg: string, x: string) => 'position:absolute;left:0;top:0;width:100%;height:100%;border-radius:50%;overflow:hidden;box-sizing:border-box;'
-      + `border:3px solid rgba(250,75,163,${a ? .45 : 0});box-shadow:0 18px 40px rgba(0,0,0,.5);`
-      + `transform:translateX(${a ? x : '0px'}) rotate(${a ? deg : '0deg'}) scale(${a ? .78 : .6});`
-      + `opacity:${a ? 1 : 0};transition:transform .85s ${EASE},opacity .5s ${EASE},border-color .6s ${EASE}`;
     return (
       <section id="johannes" data-ton="249,115,22" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px;display:grid;grid-template-columns:300px 1fr;gap:52px;align-items:center')} data-m="joh">
-          <div onMouseEnter={() => this.setState({ johFan: true })} onMouseLeave={() => this.setState({ johFan: false })}
-            style={sx('display:flex;flex-direction:column;align-items:center;gap:14px')}>
-            <div style={sx('position:relative;width:220px;height:220px')}>
-              <div style={sx(side('-13deg', '-118px'))}>
-                <img src="/assets/johannes-arm1.webp" alt="" style={sx('display:block;width:100%;height:100%;object-fit:cover;border-radius:50%')} />
-              </div>
-              <div style={sx(side('13deg', '118px'))}>
-                <img src="/assets/johannes-arm2.webp" alt="" style={sx('display:block;width:100%;height:100%;object-fit:cover;border-radius:50%')} />
-              </div>
-              <img src="/assets/johannes-rund.jpg" loading="lazy" decoding="async" width={220} height={220} alt={L.johannes.photoAlt}
-                style={sx(`position:relative;z-index:2;width:220px;height:220px;border-radius:50%;object-fit:cover;object-position:center 22%;border:3px solid rgba(250,75,163,${a ? .75 : .5});box-shadow:0 24px 50px rgba(0,0,0,.55);transform:scale(${a ? 1.04 : 1});transition:transform .8s ${EASE},border-color .6s ${EASE}`)} />
-            </div>
-            <div style={sx('text-align:center')}>
-              <div style={sx('font-size:18px;font-weight:900;color:#F6EFE6')}>{L.johannes.name}</div>
-              <div style={sx('font-size:13.5px;font-weight:700;letter-spacing:.04em;color:#F6EFE6')}>{L.johannes.role}</div>
-            </div>
+          {/* Wolf am 27.08.: das echte Foto bleibt, die auffaechernden Arme und
+              der pinke Ring gehen. Die beiden Nebenbilder waren Schmuck, der
+              beim Zeigen aufsprang und sonst nichts sagte, und der Ring hat
+              Pink genau dort gesetzt, wo es raus soll. Uebrig bleibt ein
+              rundes Foto mit einer Haarlinie, wie jede andere Kante der Seite. */}
+          <div style={sx('display:flex;flex-direction:column;align-items:center;gap:14px')}>
+            <img src="/assets/johannes-rund.jpg" loading="lazy" decoding="async" width={220} height={220} alt={L.johannes.photoAlt}
+              style={sx('width:220px;height:220px;border-radius:50%;object-fit:cover;object-position:center 22%;border:1px solid rgba(246,239,230,.20);box-shadow:0 24px 50px rgba(0,0,0,.55)')} />
+            <div style={sx('font-size:18px;font-weight:900;color:#F6EFE6')}>{L.johannes.name}</div>
           </div>
           <div>
             <div data-reveal="" style={sx('font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62);margin-bottom:12px')}>{L.johannes.kicker}</div>
             <h2 data-reveal="" style={sx("margin:0 0 18px;max-width:700px;font-family:'League Spartan',sans-serif;font-size:30px;font-weight:900;line-height:1.18;color:#F6EFE6;cursor:default;hyphens:none")}>
               {L.johannes.quote.map((qw, i) => (
                 <span key={i}>
-                  <span style={sx(`display:inline-block;white-space:nowrap;color:${qw.hot ? '#FA4BA3' : '#F6EFE6'}`)}>{qw.w}</span>
+                  <span style={sx(`display:inline-block;white-space:nowrap;color:${qw.hot ? AKZENT : '#F6EFE6'}`)}>{qw.w}</span>
                   {i < L.johannes.quote.length - 1 ? ' ' : ''}
                 </span>
               ))}
@@ -1699,7 +1741,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const inputStyle = 'width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;background:rgba(246,239,230,.05);border:1.5px solid rgba(246,239,230,.38);color:#F6EFE6;font-family:inherit;font-size:15px;font-weight:600';
     const labelStyle = 'font-size:13px;font-weight:800;color:rgba(246,239,230,.78);letter-spacing:.01em';
     const fieldWrap = 'display:flex;flex-direction:column;gap:6px';
-    const req = <span aria-hidden="true" style={sx('color:#FA4BA3')}> *</span>;
+    const req = <span aria-hidden="true" style={sx(`color:${AKZENT}`)}> *</span>;
     return (
       <section id="anfragen" data-ton="250,75,163" style={sx('background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.05),transparent 70%)')}>
         <span aria-hidden="true" style={sx('display:block;height:1px;background:linear-gradient(90deg,transparent,rgba(250,75,163,.32),transparent)')}></span>
@@ -1803,7 +1845,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
                 {st === 'error' && (
                   <p role="alert" style={sx('margin:14px 0 0;color:#FCA5A5;font-weight:700;font-size:14px;text-align:center')}>
-                    {L.form.errorPre}<a href="mailto:hallo@cozywolf.de" style={sx('color:#FFC7E4')}>hallo@cozywolf.de</a>{L.form.errorPost}
+                    {L.form.errorPre}<a href="mailto:hallo@cozywolf.de" style={sx(`color:${AKZENT}`)}>hallo@cozywolf.de</a>{L.form.errorPost}
                   </p>
                 )}
 
@@ -1819,7 +1861,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   <a href={INSTA_URL} target="_blank" rel="noopener" style={sx('color:#F6EFE6;font-weight:700')}>{INSTA_HANDLE}</a>
                 </p>
                 <p style={sx('margin:14px auto 0;max-width:440px;text-align:center;font-size:12.5px;line-height:1.5;color:rgba(246,239,230,.62);font-weight:500')}>
-                  {L.form.privacy1}<a href="/datenschutz" style={sx('color:#FFC7E4;font-weight:700')}>{L.form.privacyLink}</a>{L.form.privacy2}
+                  {L.form.privacy1}<a href="/datenschutz" style={sx(`color:${AKZENT};font-weight:700`)}>{L.form.privacyLink}</a>{L.form.privacy2}
                 </p>
               </form>
             )}
@@ -1853,10 +1895,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           <div data-m="foot" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:30px 32px;display:flex;align-items:center;gap:20px;font-size:14px;font-weight:600;color:rgba(246,239,230,.62)')}>
             <img src={LOGO} alt="" width={26} height={26} style={sx('width:26px;height:26px')} />
             <span style={sx('white-space:nowrap')}>{L.footer.city}</span>
-            <a href="mailto:hallo@cozywolf.de" style={sx('color:#FFC7E4')}>hallo@cozywolf.de</a>
-            <a href="/impressum" style={sx('color:#FFC7E4')}>{L.footer.imprint}</a>
-            <a href="/datenschutz" style={sx('color:#FFC7E4')}>{L.footer.privacy}</a>
-            <a href="https://instagram.com/cozywolf.events" style={sx('margin-left:auto;display:flex;align-items:center;gap:8px;color:#FFC7E4')}>@cozywolf.events</a>
+            <a href="mailto:hallo@cozywolf.de" style={sx(`color:${AKZENT}`)}>hallo@cozywolf.de</a>
+            <a href="/impressum" style={sx(`color:${AKZENT}`)}>{L.footer.imprint}</a>
+            <a href="/datenschutz" style={sx(`color:${AKZENT}`)}>{L.footer.privacy}</a>
+            <a href="https://instagram.com/cozywolf.events" style={sx(`margin-left:auto;display:flex;align-items:center;gap:8px;color:${AKZENT}`)}>@cozywolf.events</a>
           </div>
           <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:0 32px 26px;font-size:12.5px;font-weight:600;color:rgba(246,239,230,.5)')}>{L.footer.aiNote}</div>
         </footer>
