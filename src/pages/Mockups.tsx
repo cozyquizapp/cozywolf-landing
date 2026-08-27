@@ -35,6 +35,7 @@ import { CREME, GRUND, SPARTAN, HAAR, EASE, Kicker } from './mockups/stil';
 import { HeroFarbe, FARB_ENTWUERFE, type FarbEntwurf } from './mockups/heroFarbe';
 import { BrettFarben, BRETT_FARBEN, type BrettFarbe } from './mockups/brettFarben';
 import { ArenaTabelle, ARENA_ENTWUERFE, type ArenaEntwurf } from './mockups/arenaTabelle';
+import { Einrasten, SNAP_ENTWUERFE, type SnapEntwurf } from './mockups/einrasten';
 import {
   Ablauf, UeberMich, Fragen, Anfragen,
   ABLAUF_ENTWUERFE, JOH_ENTWUERFE, FAQ_ENTWUERFE, FORM_ENTWUERFE,
@@ -183,7 +184,7 @@ const PROBE_TYPEN = [
 export default function Mockups() {
   const lang = useLang();
   const L = onePageT(lang);
-  type Stat = '00' | '01' | '02' | '03' | '04' | '05' | '06' | '07' | 'BF' | 'AR';
+  type Stat = '00' | '01' | '02' | '03' | '04' | '05' | '06' | '07' | 'BF' | 'AR' | 'SN';
   const [station, setStation] = useState<Stat>('01');
   // Fuer die Stationen 04 bis 07 genuegt ein Zaehler je Station: sie haben
   // alle drei Entwuerfe und keine eigene Logik.
@@ -194,6 +195,7 @@ export default function Mockups() {
   const [farbe, setFarbe] = useState<FarbEntwurf>(1);
   const [bf, setBf] = useState<BrettFarbe>(1);
   const [ar, setAr] = useState<ArenaEntwurf>(2);
+  const [sn, setSn] = useState<SnapEntwurf>(2);
   const [mobil, setMobil] = useState(false);
 
   const modi: Modus[] = [
@@ -220,7 +222,8 @@ export default function Mockups() {
   };
   const w = WEITERE[station];
 
-  const inhalt = station === 'AR' ? <ArenaTabelle mobil={mobil} entwurf={ar} />
+  const inhalt = station === 'SN' ? <Einrasten mobil={mobil} entwurf={sn} />
+    : station === 'AR' ? <ArenaTabelle mobil={mobil} entwurf={ar} />
     : station === 'BF' ? <BrettFarben mobil={mobil} entwurf={bf} />
     : station === '00' ? <HeroFarbe L={L} mobil={mobil} entwurf={farbe} />
     : w ? w.bau({ L, mobil, entwurf: v })
@@ -242,12 +245,16 @@ export default function Mockups() {
             { k: '04', label: '04' }, { k: '05', label: '05' }, { k: '06', label: '06' }, { k: '07', label: '07' },
             { k: 'BF', label: 'Brettfarben' },
             { k: 'AR', label: 'Arena' },
-          ]} aktiv={station} waehle={k => setStation(k as Stat)} />
+            { k: 'SN', label: 'Einrasten' },
+          ]} aktiv={station} waehle={k => setStation(k as Stat)} erledigt={ERLEDIGT} />
           <span style={sx(`font-family:${SPARTAN};font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap`)}>
-            {station === 'AR' ? 'Arena-Tabelle' : station === 'BF' ? 'Brettfarben' : station === '00' ? 'Farbwechsel' : station === '01' ? 'Spielarten' : station === '02' ? 'Anlaesse' : station === '03' ? 'Ausprobieren' : w.titel}
+            {station === 'SN' ? 'Einrasten' : station === 'AR' ? 'Arena-Tabelle' : station === 'BF' ? 'Brettfarben' : station === '00' ? 'Farbwechsel' : station === '01' ? 'Spielarten' : station === '02' ? 'Anlaesse' : station === '03' ? 'Ausprobieren' : w.titel}
           </span>
           <span style={sx('flex:1')}></span>
-          {station === 'AR'
+          {station === 'SN'
+            ? <Schalter werte={([1, 2, 3] as SnapEntwurf[]).map(k => ({ k: String(k), label: `S${k}  ${SNAP_ENTWUERFE[k].name}` }))}
+              aktiv={String(sn)} waehle={k => setSn(Number(k) as SnapEntwurf)} />
+            : station === 'AR'
             ? <Schalter werte={([1, 2, 3, 4, 5, 6, 7] as ArenaEntwurf[]).map(k => ({ k: String(k), label: `R${k}  ${ARENA_ENTWUERFE[k].name}` }))}
               aktiv={String(ar)} waehle={k => setAr(Number(k) as ArenaEntwurf)} />
             : station === 'BF'
@@ -273,7 +280,9 @@ export default function Mockups() {
             aktiv={lang} waehle={k => setLang(k as 'de' | 'en')} />
         </div>
         <div style={sx(`max-width:1000px;margin:0 auto;padding:0 24px 14px;font-size:14.5px;line-height:1.55;color:rgba(246,239,230,.66)`)}>
-          {station === 'AR'
+          {station === 'SN'
+            ? <><b style={sx(`color:${CREME}`)}>S{sn}. {SNAP_ENTWUERFE[sn].name}.</b> {SNAP_ENTWUERFE[sn].idee[lang]} <i style={sx('opacity:.7')}>Das Fenster unten scrollt selbst, damit sich das Einrasten ausprobieren laesst. Rechts die gemessenen Hoehen der echten Seite.</i></>
+            : station === 'AR'
             ? <><b style={sx(`color:${CREME}`)}>R{ar}. {ARENA_ENTWUERFE[ar].name}.</b> {ARENA_ENTWUERFE[ar].idee[lang]} <i style={sx('opacity:.7')}>Die Rangfolge laeuft, damit sich beurteilen laesst, ob der mitwandernde Rahmen unruhig wirkt. Zeig auf eine Zeile fuer das Wappen und den Spruch.</i></>
             : station === 'BF'
             ? <><b style={sx(`color:${CREME}`)}>G{bf}. {BRETT_FARBEN[bf].name}.</b> {BRETT_FARBEN[bf].idee[lang]} <i style={sx('opacity:.7')}>Gleicher Endstand in allen vier, verglichen wird nur die Farbe. Alle Toene aus QQ_BOARD_PALETTE der App.</i></>
@@ -302,18 +311,46 @@ export default function Mockups() {
   );
 }
 
-function Schalter({ werte, aktiv, waehle }: {
+/**
+ * Wolf am 27.08.: "kannst du alte sachen aus der mockup loeschen, es wird
+ * unuebersichtlich oder ausgrauen oder so".
+ *
+ * Ausgegraut, nicht geloescht. Eine entschiedene Station bleibt der Beleg
+ * dafuer, wogegen entschieden wurde, und beim naechsten Zweifel ist die
+ * Alternative einen Klick entfernt statt in der Versionsgeschichte. Was
+ * erledigt ist, steht mit einem Haken und der gewaehlten Fassung da und
+ * traegt halbe Deckkraft.
+ */
+const ERLEDIGT: Record<string, string> = {
+  '00': 'F2',
+  '01': 'A',
+  '02': 'A4',
+  '03': 'P1',
+  '04': 'B2',
+  '05': 'C',
+  '06': 'D1',
+  'BF': 'G3',
+};
+
+function Schalter({ werte, aktiv, waehle, erledigt }: {
   werte: { k: string; label: string }[]; aktiv: string; waehle: (k: string) => void;
+  /** Schluessel, die als entschieden gelten. Wert = gewaehlte Fassung. */
+  erledigt?: Record<string, string>;
 }) {
   return (
     <div style={sx(`display:inline-flex;gap:2px;padding:3px;border-radius:999px;border:1px solid ${HAAR}`)}>
-      {werte.map(w => (
-        <button key={w.k} type="button" onClick={() => waehle(w.k)}
-          style={sx('min-height:34px;padding:0 14px;border-radius:999px;border:0;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:900;letter-spacing:.04em;'
-            + `background:${aktiv === w.k ? CREME : 'transparent'};color:${aktiv === w.k ? GRUND : 'rgba(246,239,230,.7)'};transition:background .2s ${EASE},color .2s ${EASE}`)}>
-          {w.label}
-        </button>
-      ))}
+      {werte.map(w => {
+        const fertig = erledigt?.[w.k];
+        return (
+          <button key={w.k} type="button" onClick={() => waehle(w.k)}
+            title={fertig ? `entschieden: ${fertig}` : undefined}
+            style={sx('min-height:34px;padding:0 14px;border-radius:999px;border:0;cursor:pointer;font-family:inherit;font-size:12.5px;font-weight:900;letter-spacing:.04em;'
+              + `background:${aktiv === w.k ? CREME : 'transparent'};color:${aktiv === w.k ? GRUND : 'rgba(246,239,230,.7)'};`
+              + `opacity:${fertig && aktiv !== w.k ? .45 : 1};transition:background .2s ${EASE},color .2s ${EASE},opacity .2s ${EASE}`)}>
+            {fertig ? `\u2713 ${w.label}` : w.label}
+          </button>
+        );
+      })}
     </div>
   );
 }
