@@ -213,6 +213,8 @@ type OPState = {
   frakZug?: Record<string, true>;
   /** Lage des Zeigers auf der Leinwand, 0 bis 1, fuer den Lichtkegel. */
   beamXY?: { x: number; y: number } | null;
+  /** Worauf gerade gezeigt wird, in 05, 06 und 07. Schluessel ist der Text. */
+  zeig?: string | null;
   tick?: number; hbOn?: number | null;
   probeCat?: string; probePick?: number | null;
   guessRaw?: string; guessDone?: boolean;
@@ -910,7 +912,15 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   + `border:2px solid ${this.frakFuehrt()?.color ?? 'rgba(246,239,230,.1)'};`
                   + `box-shadow:${this.frakFuehrt() ? `0 0 36px ${this.frakFuehrt()!.color}55, inset 0 0 30px ${this.frakFuehrt()!.color}14` : 'inset 0 0 40px rgba(0,0,0,.5)'};`
                   + `transition:border-color .8s ${EASE},box-shadow .8s ${EASE}`)}>
-                  <div style={sx('position:relative;height:300px')}>{this.renderFactions()}</div>
+                  {/* Wolf am 27.08. zur Karte in der mittleren Spalte: "hier bringts uns
+                      aber so nicht so viel, wir gewinnen keine groesse". Stimmt,
+                      die Karte allein hat nichts gewonnen. Der Gewinn liegt
+                      woanders: seit jeder Halt einen ganzen Bildschirm hat und
+                      diese Zeile davon 0,61 braucht, ist Platz nach unten da.
+                      Also waechst die Tabelle von 300 auf 376 px, die Zeile von
+                      37 auf 47, und damit das Wappen von 34 auf 44. Das war
+                      Fassung R5, die vorher an der Hoehe gescheitert waere. */}
+                  <div style={sx('position:relative;height:376px')}>{this.renderFactions()}</div>
                 </div>
                 {/* Die Spruchkarte steht nicht mehr hier, sondern in der
                     mittleren Spalte unter dem Text. Wolf am 27.08. hat sie
@@ -983,15 +993,15 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               Fraktionsfarbe steckt NICHT mehr im Wappen. Sie muss von der
               Flaeche darunter kommen, sonst unterscheiden sich die acht
               Fraktionen nur noch am Zeichen. Also wieder auf der Kachel. */}
-          <span style={sx(teammarke(f.color, `/assets/crest-${f.id}.webp`, 34)
-            + `transform:scale(${hov ? 1.1 : 1});transition:transform .3s ${EASE}`)}></span>
+          <span style={sx(teammarke(f.color, `/assets/crest-${f.id}.webp`, 44)
+            + `transform:scale(${hov ? 1.08 : 1});transition:transform .3s ${EASE}`)}></span>
           <span style={sx('flex:none;width:124px;min-width:0')}>
-            <span style={sx(`display:block;font-size:13.5px;font-weight:900;line-height:1.15;color:${f.color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>{L.sim.factions[f.id]}</span>
+            <span style={sx(`display:block;font-size:15px;font-weight:900;line-height:1.15;color:${f.color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>{L.sim.factions[f.id]}</span>
           </span>
           {/* Der Balken ist eine liegende Kachel: gleicher Lichtverlauf, gleiche
               Kanten, nur 12 px hoch. Die Rinne dahinter bleibt eine Rinne. */}
-          <span style={sx('flex:1;min-width:0;height:12px;border-radius:6px;background:rgba(246,239,230,.06);box-shadow:inset 0 1px 2px rgba(0,0,0,.4);overflow:hidden;display:block')}>
-            <span style={sx(`display:block;height:100%;width:${Math.round((p / max) * 100)}%;border-radius:6px;`
+          <span style={sx('flex:1;min-width:0;height:14px;border-radius:7px;background:rgba(246,239,230,.06);box-shadow:inset 0 1px 2px rgba(0,0,0,.4);overflow:hidden;display:block')}>
+            <span style={sx(`display:block;height:100%;width:${Math.round((p / max) * 100)}%;border-radius:7px;`
               + `background:${KACHEL_VERLAUF},${f.color};`
               + 'box-shadow:inset 0 1px 0 rgba(255,255,255,.38),inset -2px 0 0 rgba(0,0,0,.18),0 2px 3px rgba(0,0,0,.42);'
               + `transition:width 1.8s ${EASE}`)}></span>
@@ -1554,15 +1564,27 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   // gewaehlte Fragetyp traegt einen Strich in seiner Farbe und
                   // rueckt ein, statt sich aufzublasen. Der Bogen bleibt, er
                   // war Wolfs Idee und stoert die Zeilenform nicht.
+                  // Wolf am 27.08.: "wenn man zwischen die kategorien auf die
+                  // linie geht buggt es". Der Grund: das Einruecken um 8 px lag
+                  // auf dem Knopf SELBST. Wer genau auf der Grenze stand, den
+                  // schob der Knopf unter dem Zeiger weg, der Zeiger landete
+                  // auf dem Nachbarn, der schob sich vor, und so weiter. Das
+                  // Einruecken sitzt jetzt auf dem Inhalt, die Trefferflaeche
+                  // bleibt stehen. Dazu greifen die Knoepfe senkrecht ineinander
+                  // (negativer Rand plus Polster), damit es zwischen ihnen gar
+                  // keine tote Linie mehr gibt.
                   <button key={k} type="button" onMouseEnter={pick} onClick={pick}
-                    style={sx('display:flex;align-items:center;gap:14px;width:100%;box-sizing:border-box;padding:13px 0;cursor:pointer;'
+                    style={sx('display:block;width:100%;box-sizing:border-box;padding:13px 0;margin-bottom:-1px;cursor:pointer;'
                       + 'font-family:inherit;font-size:16px;font-weight:900;white-space:nowrap;text-align:left;background:none;'
                       + `border:none;border-top:1px solid rgba(246,239,230,.14);color:${onT ? mt.col : 'rgba(246,239,230,.7)'};`
-                      + `transform:translateX(${arc + (onT ? 8 : 0)}px);`
+                      + `transform:translateX(${arc}px);`
                       + `transition:transform .55s ${EASE},color .3s ${EASE}`)}>
-                    <span aria-hidden="true" style={sx(`flex:none;width:${onT ? 26 : 14}px;height:2px;border-radius:2px;background:${onT ? mt.col : 'rgba(246,239,230,.3)'};transition:width .35s ${EASE},background .3s ${EASE}`)}></span>
-                    <span style={sx(`display:block;width:30px;height:30px;flex:none;background:url(${mt.icon}) center/contain no-repeat;opacity:${onT ? 1 : .7};transition:opacity .3s ${EASE}`)}></span>
-                    {ct.name}
+                    <span style={sx('display:flex;align-items:center;gap:14px;pointer-events:none;'
+                      + `transform:translateX(${onT ? 8 : 0}px);transition:transform .3s ${EASE}`)}>
+                      <span aria-hidden="true" style={sx(`flex:none;width:${onT ? 26 : 14}px;height:2px;border-radius:2px;background:${onT ? mt.col : 'rgba(246,239,230,.3)'};transition:width .35s ${EASE},background .3s ${EASE}`)}></span>
+                      <span style={sx(`display:block;width:30px;height:30px;flex:none;background:url(${mt.icon}) center/contain no-repeat;opacity:${onT ? 1 : .7};transition:opacity .3s ${EASE}`)}></span>
+                      {ct.name}
+                    </span>
                   </button>
                 );
               })}
@@ -1887,9 +1909,22 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             </h2>
             <p style={sx('margin:0 0 22px;max-width:680px;font-size:17px;line-height:1.65;font-weight:500;color:rgba(246,239,230,.78)')}>{L.johannes.body}</p>
             <div data-reveal="" data-stagger="" style={sx('display:flex;flex-wrap:wrap;gap:10px')}>
-              {L.johannes.chips.map(chip => (
-                <span key={chip} style={sx('padding:9px 16px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);font-size:14px;font-weight:700;color:#F6EFE6;white-space:nowrap')}>{chip}</span>
-              ))}
+              {/* Die Kacheln bekommen das Aufhellen: worauf man zeigt, steht
+                  in vollem Creme, die anderen fallen auf 45 Prozent. Nichts
+                  bewegt sich, die Zeile bricht also nicht um. */}
+              {L.johannes.chips.map(chip => {
+                const an = this.state.zeig === chip;
+                const still = !!this.state.zeig && !an;
+                return (
+                  <span key={chip}
+                    onMouseEnter={() => { if (!this._coarse) this.setState({ zeig: chip }); }}
+                    onMouseLeave={() => { if (!this._coarse) this.setState({ zeig: null }); }}
+                    style={sx('padding:9px 16px;border-radius:999px;background:rgba(246,239,230,.05);'
+                      + `border:1px solid rgba(246,239,230,${an ? '.5' : '.20'});`
+                      + 'font-size:14px;font-weight:700;color:#F6EFE6;white-space:nowrap;'
+                      + `opacity:${still ? .45 : 1};transition:opacity .3s ${EASE},border-color .3s ${EASE}`)}>{chip}</span>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -1910,12 +1945,27 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           {this.kicker(`[ 05 ]|${L.faq.label}`)}
           <h2 data-reveal="" style={sx("margin:0 0 36px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.faq.h2}</h2>
           <div data-reveal="" data-m="faqgrid" style={sx('display:grid;gap:34px 56px;grid-template-columns:1fr 1fr')}>
-            {L.faq.items.map(item => (
-              <div key={item.q} style={sx('padding-top:22px;border-top:1px solid rgba(246,239,230,.14)')}>
-                <div style={sx('margin-bottom:9px;font-size:18px;font-weight:900;line-height:1.3;color:#F6EFE6;text-wrap:balance')}>{item.q}</div>
-                <div style={sx('font-size:15.5px;line-height:1.62;font-weight:500;color:rgba(246,239,230,.76);text-wrap:pretty')}>{item.a}</div>
-              </div>
-            ))}
+            {/* Wolf am 27.08.: "h1 bei Kacheln, h2 bei text". Also hier das
+                Anruecken: die Frage rueckt 10 px nach rechts und bekommt einen
+                Strich, der von 0 auf 22 px waechst. Keine Farbe, nur Lage und
+                Laenge, wie bei den Fragetypen in 03. */}
+            {L.faq.items.map(item => {
+              const an = this.state.zeig === item.q;
+              return (
+                <div key={item.q}
+                  onMouseEnter={() => { if (!this._coarse) this.setState({ zeig: item.q }); }}
+                  onMouseLeave={() => { if (!this._coarse) this.setState({ zeig: null }); }}
+                  style={sx('padding-top:22px;border-top:1px solid rgba(246,239,230,.14);'
+                    + `transform:translateX(${an ? 10 : 0}px);transition:transform .3s ${EASE}`)}>
+                  <div style={sx('display:flex;align-items:baseline;gap:10px;margin-bottom:9px')}>
+                    <span aria-hidden="true" style={sx(`flex:none;width:${an ? 22 : 0}px;height:2px;border-radius:2px;background:#F6EFE6;`
+                      + `opacity:${an ? .8 : 0};transition:width .3s ${EASE},opacity .3s ${EASE}`)}></span>
+                    <span style={sx('font-size:18px;font-weight:900;line-height:1.3;color:#F6EFE6;text-wrap:balance')}>{item.q}</span>
+                  </div>
+                  <div style={sx('font-size:15.5px;line-height:1.62;font-weight:500;color:rgba(246,239,230,.76);text-wrap:pretty')}>{item.a}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
