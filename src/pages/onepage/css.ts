@@ -111,6 +111,11 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 @media (max-width:900px){
 [data-m=modereihe]{grid-template-columns:1fr!important;gap:28px!important;padding:36px 0!important}
 [data-m=modeobjekt]{justify-content:flex-start!important;height:400px!important}
+/* Gestapelt faellt die grosse Ziffer der Anlaesse weg. Sie ist Schmuck und
+   traegt keine Angabe; unter dem Absatz haengend saehe sie aus wie ein
+   abgeschnittener Rest, und die Nummer des Abschnitts steht ohnehin im
+   Kicker darueber. */
+[data-m=anlassnr]{display:none!important}
 }
 @media (max-width:1024px){
 [data-m=beamer]{height:auto!important;min-height:320px!important}

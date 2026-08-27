@@ -75,7 +75,7 @@ type OPState = {
   arenaPts?: Record<string, number>;
   arenaGain?: Record<string, { g: number; hits: number }>;
   arenaRound?: number;
-  wallScale?: number; anlass?: number | null;
+  wallScale?: number;
   beam?: boolean; beamWelcome?: boolean;
   johFan?: boolean; hookI?: number;
   tick?: number; hbOn?: number | null; duoHover?: number | null;
@@ -96,17 +96,13 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   wallRO: ResizeObserver | undefined;
   io: IntersectionObserver | undefined;
   private _beamT: ReturnType<typeof setTimeout> | undefined;
-  private _anlT: ReturnType<typeof setTimeout> | undefined;
   private _arenaT: ReturnType<typeof setInterval> | undefined;
   private _hookT: ReturnType<typeof setInterval> | undefined;
-  private _mx: number | undefined; private _my: number | undefined;
-  private _anlMx: number | undefined; private _anlMy: number | undefined;
   private _boardWinEl: HTMLElement | null = null;
   private _boardWinRO: ResizeObserver | undefined;
   private _pStage: HTMLElement | null = null;
   private _pStageIO: IntersectionObserver | undefined;
   private _coarse = false;
-  private _trackMouse: ((e: MouseEvent) => void) | undefined;
   private onScroll: (() => void) | undefined;
 
   get T(): OnePageDict { return onePageT(this.props.lang); }
@@ -208,25 +204,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     measure();
   }
 
-  // ------------------------------------------------- Anlaesse
-  anlassPick(i: number) {
-    if (i === (this.state.anlass ?? null)) return;
-    // Karten, die beim Aufziehen unter den ruhenden Zeiger wandern, loesen
-    // mouseenter aus, ohne dass der Nutzer sich bewegt hat: solche Wechsel ignorieren
-    const moved = this._mx !== this._anlMx || this._my !== this._anlMy;
-    if (this.state.anlass != null && !moved) return;
-    clearTimeout(this._anlT);
-    this._anlT = setTimeout(() => {
-      if (this._mx != null && this._my != null) {
-        const el = document.elementFromPoint(this._mx, this._my);
-        const card = el && el.closest ? el.closest('[data-anlass]') : null;
-        if (card && Number((card as HTMLElement).dataset.anlass) !== i) return;
-      }
-      this._anlMx = this._mx; this._anlMy = this._my;
-      this.setState({ anlass: i });
-    }, 210);
-  }
-
   boardWinRef = (el: HTMLElement | null) => {
     if (!el || this._boardWinEl === el) return;
     this._boardWinEl = el;
@@ -257,8 +234,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       });
     });
     this._coarse = window.matchMedia('(hover:none)').matches || window.innerWidth < 861;
-    this._trackMouse = e => { this._mx = e.clientX; this._my = e.clientY; };
-    document.addEventListener('mousemove', this._trackMouse, { passive: true });
     this._arenaT = setInterval(() => {
       if (document.hidden) return;
       if (!this._spielSichtbar || this._reduziert) return;
@@ -344,7 +319,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   componentWillUnmount() {
     clearInterval(this.gameTimer);
     clearTimeout(this._beamT);
-    clearTimeout(this._anlT);
     clearInterval(this._arenaT);
     clearInterval(this._hookT);
     this.io?.disconnect();
@@ -353,7 +327,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     this._boardWinRO?.disconnect();
     this._pStageIO?.disconnect();
     if (this.onScroll) window.removeEventListener('scroll', this.onScroll);
-    if (this._trackMouse) document.removeEventListener('mousemove', this._trackMouse);
   }
 
 
@@ -916,39 +889,65 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     );
   }
 
+  /**
+   * Station 02, Anlaesse, in der Fassung „Die Leinwand" (A).
+   *
+   * Weg sind die drei Karten, die beim Zeigen aufzogen und die anderen beiden
+   * auf schmale Streifen quetschten. Dasselbe Vokabular wie bei Station 01,
+   * dasselbe Problem: wer nicht mit der Maus darauf ging, las von drei
+   * Anlaessen nur Ueberschriften, und wer auf dem Handy war, sah die
+   * Bewegung gar nicht.
+   *
+   * Rechts steht hier ausnahmsweise kein Objekt aus dem Spiel, denn es gibt
+   * keins: ein Geburtstag hat keine Spielfigur. Statt eines erfundenen
+   * Symbols steht dort die Nummer, gross gesetzt. Das ist die zweite Saeule
+   * des Heros, die Schrift selbst, und sie behauptet nichts, was nicht da ist.
+   */
   renderAnlaesse() {
     const L = this.T;
-    const hov = this.state.anlass ?? null;
     // Text braucht helle Toene auf #0A0814, #AB0055 nur als Flaechenfarbe
     const ACC = ['#FA4BA3', '#FFC7E4', '#FF7AC0'];
-    const cols = [0, 1, 2].map(i => hov === null ? '1fr' : (hov === i ? '4.4fr' : '.5fr')).join(' ');
+    const HAAR = 'rgba(246,239,230,.14)';
     return (
-      <section style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
-        <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px')}>
-          {this.kicker(`[ 02 ]|${L.anlaesse.label}`)}
-          <h2 data-reveal="" style={sx("margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.anlaesse.h2}</h2>
-          <p data-reveal="" style={sx('margin:0 0 34px;max-width:620px;font-size:17px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:500')}>{L.anlaesse.sub}</p>
-          <div data-reveal="" data-stagger="" data-m="three"
-            onMouseLeave={() => { clearTimeout(this._anlT); this.setState({ anlass: null }); }}
-            style={sx(`display:grid;grid-template-columns:${cols};gap:20px;align-items:stretch;height:380px;transition:grid-template-columns 1.3s ${EASE}`)}>
-            {L.anlaesse.cards.map((cardT, i) => {
-              const onC = hov === i, a = ACC[i];
-              const slim = hov !== null && !onC;
-              return (
-                <div key={i} data-anlass={i}
-                  onMouseEnter={() => this.anlassPick(i)} onClick={() => this.anlassPick(i)}
-                  style={sx(`position:relative;display:flex;flex-direction:column;gap:14px;padding:${slim ? '26px 14px' : '34px 30px 30px'};border-radius:24px;overflow:hidden;box-sizing:border-box;height:100%;min-width:0;background:linear-gradient(180deg,#1F1A2E,#14101F);border:1px solid ${onC ? a + 'cc' : 'rgba(246,239,230,.20)'};box-shadow:${onC ? `0 28px 56px rgba(0,0,0,.5),0 0 46px ${a}1f` : 'none'};transition:background 1.1s ${EASE},border-color 1.1s ${EASE},box-shadow 1.1s ${EASE},padding 1.25s ${EASE}`)}>
-                  <span aria-hidden="true" style={sx(`position:absolute;right:${slim ? '50%' : '26px'};bottom:${slim ? 'auto' : '-38px'};${slim ? 'top:26px;transform:translateX(50%);' : ''}font-family:'League Spartan',sans-serif;font-size:${slim ? 44 : 150}px;font-weight:900;line-height:1;color:${a};opacity:${slim ? .5 : .1};transition:font-size 1.05s ${EASE},opacity .8s ${EASE}`)}>{`0${i + 1}`}</span>
-                  <span style={sx(`position:relative;align-self:flex-start;padding:5px 12px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);font-size:10.5px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap;opacity:${slim ? 0 : 1};max-height:${slim ? '0px' : '30px'};overflow:hidden;transition:opacity .55s ${EASE},max-height .95s ${EASE}`)}>{cardT.badge}</span>
-                  <span style={sx(`position:relative;font-family:'League Spartan',sans-serif;font-size:${onC ? 34 : 27}px;font-weight:900;line-height:1.1;white-space:normal;text-wrap:balance;color:#F6EFE6;opacity:${slim ? 0 : 1};max-height:${slim ? '0px' : '120px'};overflow:hidden;transition:font-size .85s ${EASE},opacity .55s ${EASE},max-height .95s ${EASE}`)}>{cardT.title}</span>
-                  <span style={sx(`position:relative;overflow:hidden;font-size:15.5px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78);max-width:600px;max-height:${slim ? '0px' : '160px'};opacity:${slim ? 0 : 1};transition:max-height 1s ${EASE},opacity .5s ${EASE}`)}>{cardT.short}</span>
-                  <span style={sx(`position:relative;overflow:hidden;font-size:15.5px;line-height:1.65;font-weight:500;color:rgba(246,239,230,.78);max-width:620px;max-height:${onC ? '200px' : '0px'};opacity:${onC ? 1 : 0};transform:translateY(${onC ? '0' : '8px'});transition:max-height 1.2s ${EASE},opacity .8s ${EASE} ${onC ? '.3s' : '0s'},transform .95s ${EASE}`)}>{cardT.desc}</span>
-                  <a href="#anfragen" data-m="anlasscta" style={sx(`position:relative;margin-top:auto;font-size:14.5px;font-weight:900;color:${a};opacity:${slim ? 0 : 1};transition:opacity .6s ${EASE}`)}>{L.anlaesse.cta}</a>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+      <section id="anlaesse" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:84px 32px')}>
+        {this.kicker(`[ 02 ]|${L.anlaesse.label}`)}
+        <h2 data-reveal="" style={sx("margin:0 0 14px;font-family:'League Spartan',sans-serif;"
+          + 'font-size:clamp(40px,5.2vw,84px);font-weight:900;line-height:.9;letter-spacing:-.032em;color:#F6EFE6')}>
+          {L.anlaesse.h2}
+        </h2>
+        <p data-reveal="" style={sx('margin:0 0 26px;max-width:620px;font-size:17px;line-height:1.6;'
+          + 'color:rgba(246,239,230,.62);font-weight:500;text-wrap:pretty')}>{L.anlaesse.sub}</p>
+
+        {L.anlaesse.cards.map((cardT, i) => {
+          const a = ACC[i];
+          return (
+            <div key={cardT.title} data-m="modereihe"
+              style={sx('display:grid;grid-template-columns:290px 1fr 340px;gap:48px;align-items:start;'
+                + `padding:52px 0;border-top:1px solid ${HAAR}${i === L.anlaesse.cards.length - 1 ? `;border-bottom:1px solid ${HAAR}` : ''}`)}>
+              <div data-reveal="">
+                <div style={sx("font-family:'League Spartan',sans-serif;font-size:clamp(30px,3.1vw,44px);"
+                  + 'font-weight:900;line-height:.95;letter-spacing:-.028em;color:#F6EFE6;text-wrap:balance')}>{cardT.title}</div>
+                <div style={sx('margin-top:12px;font-size:12px;font-weight:900;letter-spacing:.16em;'
+                  + `text-transform:uppercase;color:${a}`)}>{cardT.badge}</div>
+              </div>
+
+              <div data-reveal="">
+                <p style={sx('margin:0 0 22px;font-size:18px;line-height:1.6;font-weight:500;'
+                  + 'color:rgba(246,239,230,.82);max-width:60ch;text-wrap:pretty')}>{cardT.desc}</p>
+                <a href="#anfragen" style={sx(`display:inline-block;font-size:15.5px;font-weight:900;color:${a}`)}>
+                  {L.anlaesse.cta}
+                </a>
+              </div>
+
+              <div aria-hidden="true" data-m="anlassnr" style={sx('display:flex;justify-content:flex-end;min-width:0')}>
+                <span style={sx("font-family:'League Spartan',sans-serif;font-size:clamp(90px,9vw,150px);"
+                  + `font-weight:900;line-height:.8;letter-spacing:-.05em;color:${a};opacity:.16`)}>
+                  {`0${i + 1}`}
+                </span>
+              </div>
+            </div>
+          );
+        })}
       </section>
     );
   }
