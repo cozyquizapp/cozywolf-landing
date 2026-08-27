@@ -131,17 +131,26 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 @media (max-width:1080px){
 [data-m=modereihe]{grid-template-columns:220px 1fr 300px!important;gap:32px!important}
 }
-@media (max-width:900px){
-[data-m=modereihe]{grid-template-columns:1fr!important;gap:28px!important;padding:36px 0!important}
-[data-m=modeobjekt]{justify-content:flex-start!important;height:400px!important}
 /* Die Objekte der Anlaesse: dieselbe Bewegung wie im Hero, Heben beim
    Zeigen, sonst Ruhe. Die Ruhedrehung steht in der Klasse und nicht inline,
    sonst schlaegt sie jede Hover-Regel (das war der Fehler bei den
-   Hero-Kacheln am 27.08.). */
+   Hero-Kacheln am 27.08.).
+   Diese Regeln standen bis zum 27.08. abends versehentlich INNERHALB von
+   @media (max-width:900px) und galten damit nur auf schmalen Fenstern. Am
+   Rechner tat das Zeigen also nichts, was Wolf zurecht aufgefallen ist.
+   Gemessen: transform war bei 1440 px "none". */
 .cwAnlassObj{transform:rotate(var(--r,0deg));transition:transform .34s cubic-bezier(.22,1,.36,1),filter .34s cubic-bezier(.22,1,.36,1)}
 @media (hover:hover) and (pointer:fine){
-  .cwAnlassObj:hover{transform:rotate(calc(var(--r,0deg) * .4)) translateY(-8px) scale(1.08)}
+  /* Die Gruppe faechert auf, nicht das einzelne Objekt. Vorher zuckte immer
+     nur das eine unter dem Zeiger, und die drei gehoeren zusammen. */
+  .cwAnlassGruppe:hover .cwAnlassObj{
+    transform:rotate(calc(var(--r,0deg) * .35)) translate(var(--dx,0),var(--dy,-6px)) scale(1.07);
+    filter:drop-shadow(0 16px 22px rgba(0,0,0,.6))
+  }
 }
+@media (max-width:900px){
+[data-m=modereihe]{grid-template-columns:1fr!important;gap:28px!important;padding:36px 0!important}
+[data-m=modeobjekt]{justify-content:flex-start!important;height:400px!important}
 /* Gestapelt stehen die drei Objekte kleiner und links, nicht rechts aussen.
    Vorher fiel hier die grosse Ziffer weg, die sie ersetzt haben: die war
    Schmuck ohne Angabe. Die Objekte sagen dagegen etwas ueber den Anlass,

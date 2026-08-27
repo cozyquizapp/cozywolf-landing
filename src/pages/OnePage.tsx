@@ -176,6 +176,8 @@ type OPState = {
   beam?: boolean; beamWelcome?: boolean;
   johFan?: boolean; hookI?: number; hookVor?: number | null;
   b01?: number; b01Hand?: Record<number, string>; frak?: string | null;
+  /** Fraktionen, die gerade den Platz gewechselt haben. Kurz umrandet. */
+  frakZug?: Record<string, true>;
   tick?: number; hbOn?: number | null;
   probeCat?: string; probePick?: number | null;
   guessRaw?: string; guessDone?: boolean;
@@ -194,6 +196,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   _b01T: ReturnType<typeof setInterval> | undefined;
   /** Welche Felder gerade belegt sind, fuer brettSetzen. */
   _b01Feld: boolean[] = [];
+  _frakZugT: ReturnType<typeof setTimeout> | undefined;
   /** Laeuft gerade der Abraeum-Zeitgeber? Dann nicht noch einen starten. */
   _b01Voll = false;
   _b01Neu: ReturnType<typeof setTimeout> | undefined;
@@ -267,7 +270,24 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       const hits = Math.random() < 0.28 ? 3 : Math.random() < 0.5 ? 2 : Math.random() < 0.7 ? 1 : 0;
       if (hits) { const g = hits * 40; gain[f.id] = { g, hits }; pts[f.id] += g; }
     });
-    this.setState({ arenaPts: pts, arenaGain: gain, arenaRound: round });
+    // Wer den Platz wechselt, wird kurz umrandet. Die Reihenfolge davor
+    // steht noch in this.state.arenaPts, die danach in pts, also lassen sich
+    // beide Rangfolgen hier vergleichen, ohne sie im Zeichnen zu rechnen.
+    const rang = (q: Record<string, number>) => {
+      const r: Record<string, number> = {};
+      FACTIONS.slice().sort((a, b) => (q[b.id] || 0) - (q[a.id] || 0))
+        .forEach((f, i) => { r[f.id] = i; });
+      return r;
+    };
+    const vorher = rang(this.state.arenaPts || {}), nachher = rang(pts);
+    const zug: Record<string, true> = {};
+    FACTIONS.forEach(f => { if (vorher[f.id] !== nachher[f.id]) zug[f.id] = true; });
+
+    this.setState({ arenaPts: pts, arenaGain: gain, arenaRound: round, frakZug: zug });
+    clearTimeout(this._frakZugT);
+    // 1,5 s: die Zeile braucht selbst 1,5 s zum Umsortieren, der Rahmen soll
+    // also so lange stehen wie die Bewegung dauert und dann verschwinden.
+    this._frakZugT = setTimeout(() => this.setState({ frakZug: {} }), 1500);
   }
 
   /**
@@ -481,6 +501,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     clearInterval(this.gameTimer);
     clearInterval(this._b01T);
     clearTimeout(this._b01Neu);
+    clearTimeout(this._frakZugT);
     clearTimeout(this._beamT);
     clearInterval(this._arenaT);
     clearInterval(this._hookT);
@@ -773,8 +794,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             <div data-reveal="">
               <div style={sx("font-family:'League Spartan',sans-serif;font-size:clamp(38px,4vw,58px);"
                 + 'font-weight:900;line-height:.9;letter-spacing:-.03em;color:#F6EFE6')}>{r.name}</div>
+              {/* Wolf am 2026-08-27: "pink aus schrift raus in 01". Der Akzent
+                  bleibt als Strich vor den Punkten, die Schrift wird creme. */}
               <div style={sx('margin-top:12px;font-size:12px;font-weight:900;letter-spacing:.16em;'
-                + `text-transform:uppercase;color:${r.akzent}`)}>{r.chip}</div>
+                + 'text-transform:uppercase;color:rgba(246,239,230,.62)')}>{r.chip}</div>
             </div>
 
             <div data-reveal="">
@@ -807,13 +830,24 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                     springen, und eine springende Rangliste ist schlimmer als
                     kein Spruch. Stattdessen eine eigene Zeile mit
                     vorgehaltener Hoehe, unter der Tabelle. */}
-                <div aria-live="polite" style={sx('margin-top:14px;min-height:44px;display:flex;align-items:center;gap:10px;flex-wrap:wrap')}>
-                  {frakAn && (
-                    <>
-                      <span style={sx(`font-size:15px;font-weight:900;color:${frakAn.color}`)}>{L.sim.factions[frakAn.id]}</span>
-                      <span style={sx('font-size:15px;font-weight:500;color:rgba(246,239,230,.7)')}>{L.sim.mottos[frakAn.id]}</span>
-                    </>
-                  )}
+                {/* Wolf am 2026-08-27: "der satz unten koennte doch nicer
+                    praesentiert werden". Also kein nackter Zweizeiler mehr,
+                    sondern eine kleine Karte mit dem Wappen, dem Namen in der
+                    Fraktionsfarbe und dem Spruch darunter in Anfuehrung. Die
+                    Hoehe ist vorgehalten, damit die Tabelle beim Zeigen nicht
+                    springt, und die Karte blendet weich auf statt zu blinken. */}
+                <div aria-live="polite" style={sx('margin-top:16px;min-height:82px')}>
+                  <div style={sx('display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;box-sizing:border-box;'
+                    + `background:${frakAn ? `linear-gradient(90deg,${frakAn.color}1f,rgba(246,239,230,.02))` : 'transparent'};`
+                    + `border:1px solid ${frakAn ? frakAn.color + '4d' : 'transparent'};`
+                    + `opacity:${frakAn ? 1 : 0};transform:translateY(${frakAn ? '0' : '6px'});`
+                    + `transition:opacity .34s ${EASE},transform .34s ${EASE},background .34s ${EASE},border-color .34s ${EASE}`)}>
+                    <span style={sx(`flex:none;width:42px;height:42px;background:${frakAn ? `url(/assets/crest-${frakAn.id}.webp) center/contain no-repeat` : 'none'};filter:drop-shadow(0 3px 6px rgba(0,0,0,.5))`)}></span>
+                    <span style={sx('min-width:0;display:flex;flex-direction:column;gap:3px')}>
+                      <span style={sx(`font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:${frakAn ? frakAn.color : 'transparent'}`)}>{frakAn ? L.sim.factions[frakAn.id] : '\u00a0'}</span>
+                      <span style={sx('font-size:15.5px;line-height:1.4;font-weight:600;color:rgba(246,239,230,.82);text-wrap:pretty')}>{frakAn ? `\u201e${L.sim.mottos[frakAn.id]}\u201c` : '\u00a0'}</span>
+                    </span>
+                  </div>
                 </div>
               </div>
             )}
@@ -847,21 +881,37 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const H = 100 / FACTIONS.length;
     return FACTIONS.map(f => {
       const p = pts[f.id] || 0, r = ranked.indexOf(f.id), leadNow = r === 0 && p > 0;
-      // Wolf am 2026-08-27: beim Zeigen soll die Zeile selbst eine Umrandung
-      // bekommen, nicht nur der Spruch darunter erscheinen.
+      // Wolf am 2026-08-27: "die staendige umrandung raus, vlt kurz bei
+      // tabellen wechsel und bei hovern aber nicht dauerhaft". Der Rahmen
+      // haengt also an zwei Ereignissen und an keinem Zustand: er kommt,
+      // wenn eine Zeile ihren Platz wechselt, und wenn jemand hinzeigt.
+      // Wer auf die Zeile zeigt, die gerade gewechselt hat, bekommt trotzdem
+      // nur einen Rahmen, weil beide denselben schreiben.
+      // Gemessen am 27.08.: waehrend die Rangfolge laeuft wechseln bis zu
+      // fuenf von acht Zeilen gleichzeitig den Platz. Ein Rahmen an jeder
+      // davon sah aus wie die dauerhafte Umrandung, die weg sollte. Deshalb
+      // tragen die beiden Ereignisse verschiedene Mittel: der Platzwechsel
+      // nur einen kurzen Schein hinter der Zeile, das Zeigen den Rahmen.
+      // Damit koennen sie sich auch nicht doppeln.
       const hov = this.state.frak === f.id;
+      const bewegt = !!(this.state.frakZug || {})[f.id];
       const rahmen = hov
-        ? `background:linear-gradient(90deg,${f.color}33,${f.color}0d);border:1px solid ${f.color};box-shadow:0 0 26px ${f.color}4d`
-        : leadNow
-          ? `background:linear-gradient(90deg,${f.color}26,transparent);border:1px solid ${f.color}80;box-shadow:0 0 22px ${f.color}33`
-          : 'border:1px solid transparent';
+        ? `background:linear-gradient(90deg,${f.color}2e,${f.color}08);border:1px solid ${f.color};box-shadow:0 0 26px ${f.color}40`
+        : bewegt
+          ? `background:linear-gradient(90deg,${f.color}1f,transparent);border:1px solid transparent`
+          : 'background:transparent;border:1px solid transparent';
       return (
         <div key={f.id}
           onMouseEnter={() => { if (!this._coarse) this.setState({ frak: f.id }); }}
           onMouseLeave={() => { if (!this._coarse) this.setState({ frak: null }); }}
           style={sx(`position:absolute;left:0;right:0;top:0;height:${H}%;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:12px;box-sizing:border-box;transform:translateY(${r * 100}%);transition:transform 1.5s ${EASE},background .35s ease,border-color .35s ease,box-shadow .35s ease;cursor:default;${rahmen}`)}>
           <span style={sx(`flex:none;width:18px;text-align:center;font-size:15px;font-weight:900;color:${leadNow || hov ? '#F6EFE6' : 'rgba(246,239,230,.5)'};transition:color .5s ease`)}>{r + 1}</span>
-          <span style={sx(teammarke(f.color, `/assets/crest-${f.id}.webp`, 30))}></span>
+          {/* Die Kolosseum-Wappen der App tragen Rahmen und Farbe selbst mit,
+              deshalb flach und ohne Farbkachel dahinter, genau wie CrestAvatar
+              in der App (cozyArenaCrests.ts, Stand 2026-07-17). */}
+          <span style={sx(`flex:none;width:34px;height:34px;background:url(/assets/crest-${f.id}.webp) center/contain no-repeat;`
+            + `filter:drop-shadow(0 3px 5px rgba(0,0,0,.5))${hov ? ` drop-shadow(0 0 9px ${f.color}88)` : ''};`
+            + `transform:scale(${hov ? 1.12 : 1});transition:transform .3s ${EASE},filter .3s ${EASE}`)}></span>
           <span style={sx('flex:none;width:124px;min-width:0')}>
             <span style={sx(`display:block;font-size:13.5px;font-weight:900;line-height:1.15;color:${f.color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>{L.sim.factions[f.id]}</span>
           </span>
@@ -1203,14 +1253,26 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   Drei Objekte statt einem, weil eins den Anlass nie trifft:
                   eine Torte allein ist ein Kuchen, Torte mit Luftballons und
                   Geschenk ist ein Geburtstag. */}
-              <div aria-hidden="true" data-m="anlassnr"
+              {/* Wolf am 2026-08-27: "3 emojis pro eventart sollen bei hover
+                  auch etwas machen? (clean)". Sie faechern auf, statt einzeln
+                  zu zucken: die Gruppe reagiert als Gruppe, jedes Objekt geht
+                  von der Mitte weg, richtet sich etwas auf und kommt nach
+                  vorn. Die Richtung faellt aus der eigenen Lage im Feld, es
+                  gibt also keine Zahlenliste, die man mitpflegen muesste. */}
+              <div aria-hidden="true" data-m="anlassnr" className="cwAnlassGruppe"
                 style={sx('position:relative;width:100%;max-width:230px;margin-left:auto;aspect-ratio:1/1')}>
-                {ANLASS_GRUPPEN[i].map(o => (
-                  <span key={o.av} className="cwAnlassObj"
-                    style={sx(`position:absolute;left:${o.x}%;top:${o.y}%;width:${o.gr}%;aspect-ratio:1/1;`
-                      + `--r:${o.r}deg;background:url(${o.av}) center/contain no-repeat;`
-                      + 'filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))')}></span>
-                ))}
+                {ANLASS_GRUPPEN[i].map((o, j) => {
+                  const mx = o.x + o.gr / 2 - 50, my = o.y + o.gr / 2 - 50;
+                  const len = Math.max(6, Math.hypot(mx, my));
+                  return (
+                    <span key={o.av} className="cwAnlassObj"
+                      style={sx(`position:absolute;left:${o.x}%;top:${o.y}%;width:${o.gr}%;aspect-ratio:1/1;`
+                        + `--r:${o.r}deg;--dx:${(mx / len * 10).toFixed(1)}px;--dy:${(my / len * 10 - 4).toFixed(1)}px;`
+                        + `transition-delay:${(j * 0.05).toFixed(2)}s;`
+                        + `background:url(${o.av}) center/contain no-repeat;`
+                        + 'filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))')}></span>
+                  );
+                })}
               </div>
             </div>
           );
