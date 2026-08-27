@@ -116,7 +116,9 @@ const NAME_PARAM = typeof window === 'undefined'
  *
  *   ?name=nur       Arena         das Wort allein, in beiden Sprachen gleich
  *   ?name=rivals    Arena Rivals  Wolfs Vorschlag, siehe Einwand unten
- *   ?name=wild      WildQuiz      Gegenpol zu cozy, beide Woerter gelaeufig
+ *   ?name=crowd     CrowdQuiz     Menge statt Krach, Crowd steht schon im Code (crowdTop)
+ *   ?name=mega      MegaQuiz      der interne Name des Modus (isMega, largeGroupMode)
+ *   ?name=wild      WildQuiz      Gegenpol zu cozy, trifft aber den Ton nicht
  *   ?name=arena     ArenaQuiz     Wolfs eigener Griff, Arena ist in beiden Sprachen dasselbe Wort
  *   ?name=party     PartyQuiz     am verstaendlichsten fuer eine Buchung, dafuer am generischsten
  *   ?name=faction   FactionQuiz   nennt den Unterschied, liest sich deutsch aber schlecht
@@ -140,6 +142,17 @@ const NAMEN: Record<string, { de: string; en: string }> = {
   // Das steht als Punkt auf derselben Seite. "Rivals" verspricht Haerte, wo
   // das Spiel ausdruecklich Fairness eingebaut hat.
   rivals: { de: 'Arena Rivals', en: 'Arena Rivals' },
+  // Wolf am 27.08.: "Aber es ist nicht wild ... oder? Anderes adjektiv?".
+  // Stimmt, und das laesst sich an der Seite selbst nachlesen: gewertet wird
+  // der ANTEIL richtiger Antworten, damit eine grosse Fraktion keinen Vorteil
+  // hat. Der Modus ist nicht lauter oder wilder, er ist GROESSER. Gesucht ist
+  // also ein Wort fuer Menge, nicht fuer Krach.
+  //
+  // Zwei davon nennt der Code selbst: der Modus heisst intern largeGroupMode
+  // und isMega, und die beiden Fragetypen, die es nur dort gibt, heissen
+  // crowdTop und crowdEstimate. 48 Dateien tragen mega, 22 tragen crowd.
+  crowd: { de: 'CrowdQuiz', en: 'CrowdQuiz' },
+  mega: { de: 'MegaQuiz', en: 'MegaQuiz' },
   wild: { de: 'WildQuiz', en: 'WildQuiz' },
   arena: { de: 'ArenaQuiz', en: 'ArenaQuiz' },
   party: { de: 'PartyQuiz', en: 'PartyQuiz' },
