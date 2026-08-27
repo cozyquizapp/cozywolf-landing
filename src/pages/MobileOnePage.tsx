@@ -76,7 +76,7 @@ type MOPState = {
   pts: number[]; ptsDone: boolean;
   act: number; acts: Record<number, BoardAction>;
   splash: boolean; count: number; done: boolean;
-  scrolled?: boolean; menu?: boolean; fan?: boolean;
+  scrolled?: boolean; menu?: boolean; fan?: boolean; stickyOn?: boolean;
   anlass?: string;
 };
 
@@ -132,6 +132,8 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
           this._raf = 0;
           const sc = window.scrollY > 60;
           if (sc !== this.state.scrolled) this.setState({ scrolled: sc });
+          const st = window.scrollY > window.innerHeight * 0.8;
+          if (st !== this.state.stickyOn) this.setState({ stickyOn: st });
         });
       };
       window.addEventListener('scroll', this._onScroll, { passive: true });
@@ -309,13 +311,8 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     const hook = L.hero.hooks[hookI % L.hero.hooks.length];
     const anim = hookI % 2 ? 'mLetterB' : 'mLetter';
     return (
-      <section id="top" style={sx('position:relative;overflow:hidden;margin-top:-69px')}>
-        <div style={sx('position:relative;height:320px;overflow:hidden')}>
-          <img src="/assets/hero-room-m.webp" width={1040} height={693} fetchPriority="high" decoding="async" alt={L.hero.imgAlt}
-            style={sx('position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%;filter:brightness(1.16) saturate(1.04)')} />
-          <span aria-hidden="true" style={sx('position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,8,20,.14) 0%,rgba(10,8,20,.2) 34%,rgba(10,8,20,.52) 62%,rgba(10,8,20,.86) 84%,#0A0814 100%)')}></span>
-        </div>
-        <div style={sx('position:relative;margin-top:-46px;padding:0 20px 34px')}>
+      <section id="top" style={sx('position:relative;overflow:hidden')}>
+        <div style={sx('position:relative;padding:28px 20px 34px')}>
           <h1 style={sx("margin:0;font-family:'League Spartan',sans-serif;font-weight:900;font-size:44px;line-height:.94;letter-spacing:-.03em")}>
             <span style={sx('display:block;padding:.14em .1em .06em;margin:-.14em -.1em -.06em;overflow:hidden;white-space:nowrap')}>
               {hook.split('').map((ch, j) => (
@@ -395,6 +392,13 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                         const r = Math.floor(i / GS), c = i % GS, col = t.color;
                         const nT = at(r - 1, c) === id, nR = at(r, c + 1) === id, nB = at(r + 1, c) === id, nL = at(r, c - 1) === id;
                         const rTL = (nT || nL) ? 0 : RAD, rTR = (nT || nR) ? 0 : RAD, rBR = (nB || nR) ? 0 : RAD, rBL = (nB || nL) ? 0 : RAD;
+                        // Steg ueber den Rasterabstand zum gleichfarbigen Nachbarn.
+                        // So lang wie die Zellkante ohne ihre beiden Rundungen,
+                        // sonst schoebe er sich ueber die Ecke hinaus. Gezeichnet
+                        // wird nur nach rechts und unten, sonst doppelt sich jede
+                        // Verbindung.
+                        const bruecke = `position:absolute;background:${col};z-index:2;pointer-events:none;`;
+                        const steg = `calc(100% - ${RAD * 2}px)`;
                         const fresh = !!ov;
                         const isStack = !!ov && ov.kind === 'stack';
                         const shadow = [
@@ -412,6 +416,8 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                             + `border-top:${edge(nT)};border-right:${edge(nR)};border-bottom:${edge(nB)};border-left:${edge(nL)}`)}>
                             <span style={sx(`width:${(motivAnteil(t.av) * 100).toFixed(0)}%;height:${(motivAnteil(t.av) * 100).toFixed(0)}%;background:url(${t.av}) center/contain no-repeat;animation:${ov && ov.kind === 'joker' ? 'mFlip .8s ' + EASE + ' both' : 'mPop .42s cubic-bezier(.34,1.56,.64,1) both'}`)}></span>
                             {isStack && <span style={sx(`position:absolute;right:6%;bottom:6%;width:${(motivAnteil(t.av) * 52).toFixed(0)}%;height:${(motivAnteil(t.av) * 52).toFixed(0)}%;background:url(${t.av}) center/contain no-repeat;animation:mPop .5s cubic-bezier(.34,1.56,.64,1) both .12s`)}></span>}
+                            {nR && <span style={sx(bruecke + `right:-5px;top:${RAD}px;width:6px;height:${steg}`)}></span>}
+                            {nB && <span style={sx(bruecke + `bottom:-5px;left:${RAD}px;height:6px;width:${steg}`)}></span>}
                             {!!ov && (ov.kind === 'steal' || ov.kind === 'joker') && <span style={sx(`position:absolute;inset:-3px;border-radius:${RAD + 3}px;border:2px solid ${col};pointer-events:none;animation:mBurst .7s ease-out both`)}></span>}
                           </span>
                         );
@@ -855,7 +861,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             <div style={sx('font-size:12.5px;line-height:1.6;color:rgba(246,239,230,.42);font-weight:600')}>{L.footer.aiNote}</div>
           </footer>
 
-          <div style={sx('position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:center;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(10,8,20,0),rgba(10,8,20,.94) 42%);pointer-events:none')}>
+          <div style={sx(`position:fixed;left:0;right:0;bottom:0;z-index:50;transform:translateY(${this.state.stickyOn ? '0' : '130%'});transition:transform .3s ${EASE};display:flex;justify-content:center;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(10,8,20,0),rgba(10,8,20,.94) 42%);pointer-events:none`)}>
             <a href="#anfragen" onClick={() => this.setState({ tab: 'test', formStatus: 'idle' })}
               style={sx('pointer-events:auto;width:100%;max-width:488px;display:flex;align-items:center;justify-content:center;gap:9px;min-height:54px;border-radius:999px;background:#F6EFE6;color:#0A0814;font-size:16.5px;font-weight:900;box-shadow:0 12px 30px rgba(0,0,0,.5)')}>
               {L.sticky.label}<span style={sx('font-size:13px;font-weight:800;opacity:.7')}>{L.sticky.tag}</span>
