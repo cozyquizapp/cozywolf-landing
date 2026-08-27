@@ -115,6 +115,7 @@ const NAME_PARAM = typeof window === 'undefined'
  * Gegenpol zu "cozy" trifft:
  *
  *   ?name=nur       Arena         das Wort allein, in beiden Sprachen gleich
+ *   ?name=rivals    Arena Rivals  Wolfs Vorschlag, siehe Einwand unten
  *   ?name=wild      WildQuiz      Gegenpol zu cozy, beide Woerter gelaeufig
  *   ?name=arena     ArenaQuiz     Wolfs eigener Griff, Arena ist in beiden Sprachen dasselbe Wort
  *   ?name=party     PartyQuiz     am verstaendlichsten fuer eine Buchung, dafuer am generischsten
@@ -130,6 +131,15 @@ const NAMEN: Record<string, { de: string; en: string }> = {
   // Der Name waere also keine Erfindung, sondern das Ausschreiben dessen, was
   // im Code seit jeher steht.
   nur: { de: 'Arena', en: 'Arena' },
+  // Wolfs Vorschlag "Arena Rivals". Steht hier zum Ansehen, obwohl er drei
+  // der vier Bedingungen verletzt: zwei Woerter statt einem, [Ort][Rolle]
+  // statt [wie][was], und "Rivals" liegt im deutschen Mund so schlecht wie
+  // "Factions", es heisst hier Rivalen. Dazu ein inhaltlicher Widerspruch:
+  // die Wertung der Arena rechnet den ANTEIL richtiger Antworten, damit eine
+  // Fraktion mit acht Leuten keinen Vorteil gegenueber einer mit vier hat.
+  // Das steht als Punkt auf derselben Seite. "Rivals" verspricht Haerte, wo
+  // das Spiel ausdruecklich Fairness eingebaut hat.
+  rivals: { de: 'Arena Rivals', en: 'Arena Rivals' },
   wild: { de: 'WildQuiz', en: 'WildQuiz' },
   arena: { de: 'ArenaQuiz', en: 'ArenaQuiz' },
   party: { de: 'PartyQuiz', en: 'PartyQuiz' },
