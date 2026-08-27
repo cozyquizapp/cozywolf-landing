@@ -130,6 +130,15 @@
           "value": "public, max-age=31536000"
         }
       ]
+    },
+    {
+      "source": "/stand.txt",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
     }
   ]
 }
