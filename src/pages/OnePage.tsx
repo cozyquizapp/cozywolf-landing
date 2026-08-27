@@ -467,7 +467,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         style: `position:relative;display:flex;align-items:center;justify-content:center;flex:none;min-width:0;box-sizing:border-box;overflow:hidden;border-radius:999px;white-space:nowrap;font-weight:900;min-height:66px;`
           + `width:${hot ? 'calc(60% - 7px)' : (cold ? 'calc(40% - 7px)' : 'calc(50% - 7px)')};`
           + `padding:${hot ? '16px 26px 15px' : '19px 22px'};font-size:${cold ? 16 : (hot ? 18 : 17)}px;`
-          + (primary ? 'background:#FA4BA3;' : 'background:transparent;border:1.5px solid rgba(250,75,163,.32);')
+          + (primary ? 'background:#FA4BA3;' : 'background:transparent;border:1.5px solid rgba(246,239,230,.20);')
           + `box-shadow:${primary ? (hot ? '0 18px 44px rgba(250,75,163,.4)' : '0 12px 30px rgba(250,75,163,.2)') : 'none'};`
           + `transition:width .7s ${EASE},padding .7s ${EASE},font-size .7s ${EASE},box-shadow .5s ${EASE}`,
         fill: `position:absolute;inset:0;background:${primary ? '#FFC7E4' : '#AB0055'};transform:scaleY(${hot ? 1 : 0});transform-origin:bottom center;transition:transform .6s ${EASE}`,
@@ -481,8 +481,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const hook = L.hero.hooks[hookI % L.hero.hooks.length];
     const anim = hookI % 2 ? 'cwLetterB' : 'cwLetter';
     return (
-      <section id="top" style={sx('position:relative;overflow:hidden;min-height:82vh;display:flex;flex-direction:column;border-bottom:1px solid rgba(250,75,163,.07)')}>
-        <div style={sx('position:absolute;top:-340px;left:50%;transform:translateX(-50%);width:1500px;height:980px;background:radial-gradient(ellipse at center,rgba(250,75,163,.24),rgba(10,8,20,0) 62%);pointer-events:none')}></div>
+      <section id="top" style={sx('position:relative;overflow:hidden;min-height:82vh;display:flex;flex-direction:column;border-bottom:1px solid rgba(246,239,230,.10)')}>
+        <div style={sx('position:absolute;top:-340px;left:50%;transform:translateX(-50%);width:1500px;height:980px;background:radial-gradient(ellipse at center,rgba(246,239,230,.05),rgba(10,8,20,0) 62%);pointer-events:none')}></div>
         <div style={sx('position:absolute;right:0;bottom:0;width:100%;aspect-ratio:1536/1024;pointer-events:none;z-index:3')}>
           <div
             onMouseEnter={() => this.setBlob(true)}
@@ -496,7 +496,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             <div ref={this.heroSceneRef} style={sx('position:absolute;left:0;top:0;width:100%')}>
               <img src="/assets/hero-bar.webp" width={1536} height={1024} fetchPriority="high" alt={L.hero.imgAlt} style={sx('display:block;width:100%;height:auto')} />
               <div aria-hidden="true" data-heroshade="" style={sx('position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(to right,rgba(10,8,20,.8) 0%,rgba(10,8,20,.42) 18%,rgba(10,8,20,0) 38%)')}></div>
-              <div aria-hidden="true" data-phonescreen="" style={sx('position:absolute;left:0;top:0;width:100px;height:217px;transform-origin:0 0;overflow:hidden;border-radius:13px;background:linear-gradient(180deg,#150c20,#0b0714);box-shadow:0 0 26px rgba(168,85,247,.6),0 0 60px rgba(250,75,163,.32)')}>
+              <div aria-hidden="true" data-phonescreen="" style={sx('position:absolute;left:0;top:0;width:100px;height:217px;transform-origin:0 0;overflow:hidden;border-radius:13px;background:linear-gradient(180deg,#150c20,#0b0714);box-shadow:0 8px 22px rgba(0,0,0,.55)')}>
                 <div style={sx('position:absolute;inset:0;display:flex;flex-direction:column;gap:9px;padding:16px 11px;box-sizing:border-box')}>
                   <div style={sx('font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#FA4BA3;line-height:1')}>{L.hero.phoneApp}</div>
                   <div style={sx('display:flex;align-items:center;gap:7px;padding:7px 7px;border-radius:9px;box-sizing:border-box;background:#A855F72e;border:1px solid #A855F7')}>
@@ -589,10 +589,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const m = this.state.mode ?? null;
     const quiz = m === 'quiz', arena = m === 'arena', neutral = m == null;
     const cols = neutral ? '1fr 1fr' : (quiz ? '1fr 0.185fr' : '0.185fr 1fr');
-    const card = (accent: string, open: boolean) => `position:relative;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;contain:layout;min-width:0;border-radius:22px;background:linear-gradient(165deg,${accent}${open ? '14' : '0d'},rgba(246,239,230,.02) 60%);border:1px solid ${accent}${open ? '47' : '30'};padding:${open ? '30px' : '24px 12px'};cursor:${open ? 'default' : 'pointer'};transition:background .5s ${EASE},border-color .5s ${EASE},box-shadow .5s ${EASE};box-shadow:${open ? `0 26px 54px rgba(0,0,0,.42),0 0 0 1px ${accent}22` : 'none'}`;
+    const card = (accent: string, open: boolean) => `position:relative;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;contain:layout;min-width:0;border-radius:22px;background:linear-gradient(180deg,#1F1A2E,#14101F);border:1px solid ${open ? accent + '47' : 'rgba(246,239,230,.20)'};padding:${open ? '30px' : '24px 12px'};cursor:${open ? 'default' : 'pointer'};transition:background .5s ${EASE},border-color .5s ${EASE},box-shadow .5s ${EASE};box-shadow:${open ? '0 26px 54px rgba(0,0,0,.42)' : 'none'}`;
     const modeTitle = (open: boolean, accent: string, calm: boolean) =>
       `position:absolute;z-index:2;font-family:'League Spartan',sans-serif;font-weight:900;line-height:.92;letter-spacing:-.025em;white-space:nowrap;pointer-events:none;`
-      + `color:${accent};text-shadow:0 0 46px ${accent}4d;`
+      + `color:${accent};`
       + (open
         ? `left:30px;top:24px;font-size:46px;transform:translate(0,0) rotate(0deg);`
         : calm
@@ -930,7 +930,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const ACC = ['#FA4BA3', '#FFC7E4', '#FF7AC0'];
     const cols = [0, 1, 2].map(i => hov === null ? '1fr' : (hov === i ? '4.4fr' : '.5fr')).join(' ');
     return (
-      <section style={sx('border-top:1px solid rgba(250,75,163,.07)')}>
+      <section style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px')}>
           {this.kicker(`[ 02 ]|${L.anlaesse.label}`)}
           <h2 data-reveal="" style={sx("margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.anlaesse.h2}</h2>
@@ -1074,7 +1074,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     }
 
     return (
-      <section id="probieren" style={sx('border-top:1px solid rgba(250,75,163,.07);border-bottom:1px solid rgba(250,75,163,.07);background:radial-gradient(ellipse at 50% 0%,rgba(250,75,163,.1),transparent 65%)')}>
+      <section id="probieren" style={sx('border-top:1px solid rgba(246,239,230,.10);border-bottom:1px solid rgba(246,239,230,.10);background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.04),transparent 65%)')}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px;display:grid;grid-template-columns:1fr 600px;gap:40px;align-items:center')} data-m="two2">
           <div>
             <div data-reveal="" style={sx('font-size:13px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#FFC7E4')}>{L.probe.kicker}</div>
@@ -1120,7 +1120,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             <div style={sx('transform-style:preserve-3d;transform-origin:50% 84%;'
               + `transform:rotateX(${up ? (tilt ? -tilt.y * 9 : 0) : 64}deg) rotateY(${up && tilt ? (tilt.x * 12).toFixed(1) : 0}deg) rotateZ(${up ? 0 : -8}deg) scale(${up ? 1 : .9});`
               + `filter:brightness(${up ? 1 : .68});transition:transform ${tilt && up ? '.22s' : '1.15s'} ${EASE},filter 1.15s ${EASE}`)}>
-              <div data-m="pphone" style={sx(`width:360px;height:600px;border-radius:46px;box-sizing:border-box;padding:20px 16px;display:flex;flex-direction:column;background:linear-gradient(180deg,#150c20,#0a0714);border:7px solid #06060c;box-shadow:0 0 60px ${col}3d,0 0 120px rgba(250,75,163,.16),0 30px 70px rgba(0,0,0,.6);transition:box-shadow .5s ${EASE}`)}>
+              <div data-m="pphone" style={sx(`width:360px;height:600px;border-radius:46px;box-sizing:border-box;padding:20px 16px;display:flex;flex-direction:column;background:linear-gradient(180deg,#150c20,#0a0714);border:7px solid #06060c;box-shadow:0 30px 70px rgba(0,0,0,.6);transition:box-shadow .5s ${EASE}`)}>
                 <div style={sx('display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:18px;border:1px solid rgba(168,85,247,.45);background:rgba(168,85,247,.07);margin-bottom:12px;flex:none')}>
                   <span style={sx(teammarke('#A855F7', '/assets/av-qq-crystal-ball.webp', 34))}></span>
                   <span style={sx('flex:1;font-size:15px;font-weight:900;color:#A855F7')}>{L.hero.phoneTeamA}</span>
@@ -1160,11 +1160,11 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       this.setState({ beam: false, beamWelcome: false });
     };
     const duo = [
-      { c: '#FA4BA3', bg: 'linear-gradient(160deg,rgba(250,75,163,.12),rgba(246,239,230,.02))', bd: 'rgba(250,75,163,.28)', title: L.ablauf.duo0Title, items: L.ablauf.duo0 },
+      { c: '#FA4BA3', bg: 'linear-gradient(160deg,rgba(246,239,230,.06),rgba(246,239,230,.02))', bd: 'rgba(250,75,163,.28)', title: L.ablauf.duo0Title, items: L.ablauf.duo0 },
       { c: '#FFC7E4', bg: 'rgba(246,239,230,.03)', bd: 'rgba(246,239,230,.1)', title: L.ablauf.duo1Title, items: L.ablauf.duo1 },
     ];
     return (
-      <section id="ablauf" style={sx('border-top:1px solid rgba(250,75,163,.07)')}>
+      <section id="ablauf" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px')}>
           {this.kicker(`[ 04 ]|${L.ablauf.label}`)}
           <h2 data-reveal="" style={sx("margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.ablauf.h2}</h2>
@@ -1181,13 +1181,13 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 <div style={sx(`position:absolute;left:50%;top:50%;width:${WALL_W}px;height:${WALL_H}px;transform-origin:center center;opacity:${on ? 1 : 0};transition:opacity .5s ${EASE} ${on ? '1.1s' : '0s'};transform:translate(-50%,-50%) scale(${this.state.wallScale ?? 0.8})`)}>
                   <div data-m="wallscreen" style={sx('width:640px;height:354px;box-sizing:border-box;padding:18px;border-radius:22px;background:transparent;display:flex;flex-direction:column;justify-content:center;overflow:hidden;position:relative')}>
                     <div aria-hidden="true" style={sx(`position:absolute;inset:0;z-index:9;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 45%,#141024,#0b0714 72%);opacity:${this.state.beamWelcome ? 1 : 0};pointer-events:none;transition:opacity .8s ${EASE} ${this.state.beamWelcome ? '.75s' : '0s'}`)}>
-                      <div style={sx('display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:16px 40px;border-radius:20px;border:1px solid rgba(250,75,163,.35);background:rgba(250,75,163,.06)')}>
+                      <div style={sx('display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:16px 40px;border-radius:20px;border:1px solid rgba(246,239,230,.20);background:rgba(246,239,230,.05)')}>
                         <span style={sx('font-size:13px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#FA4BA3')}>{L.sim.welcomeKicker}</span>
                         <span style={sx("font-family:'League Spartan',sans-serif;font-size:62px;font-weight:900;letter-spacing:.02em;line-height:1;color:#FA4BA3")}>{L.sim.welcomeTitle}</span>
                       </div>
                       <div style={sx('display:flex;align-items:center;gap:14px;margin-top:26px')}>
                         <img src={LOGO} alt="" width={62} height={62} style={sx('width:62px;height:62px')} />
-                        <span style={sx('padding:12px 18px;border-radius:14px;border:1px solid rgba(250,75,163,.45);background:rgba(246,239,230,.03);font-size:15px;font-weight:900;line-height:1.35;color:#F6EFE6;text-align:center')}>{L.sim.welcomeSub}</span>
+                        <span style={sx('padding:12px 18px;border-radius:14px;border:1px solid rgba(246,239,230,.20);background:rgba(246,239,230,.03);font-size:15px;font-weight:900;line-height:1.35;color:#F6EFE6;text-align:center')}>{L.sim.welcomeSub}</span>
                       </div>
                     </div>
                     <span aria-hidden="true" style={sx('position:absolute;inset:0;border-radius:22px;pointer-events:none;overflow:hidden')}>
@@ -1280,7 +1280,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       + `transform:translateX(${a ? x : '0px'}) rotate(${a ? deg : '0deg'}) scale(${a ? .78 : .6});`
       + `opacity:${a ? 1 : 0};transition:transform .85s ${EASE},opacity .5s ${EASE},border-color .6s ${EASE}`;
     return (
-      <section id="johannes" style={sx('border-top:1px solid rgba(250,75,163,.07)')}>
+      <section id="johannes" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px;display:grid;grid-template-columns:300px 1fr;gap:52px;align-items:center')} data-m="joh">
           <div onMouseEnter={() => this.setState({ johFan: true })} onMouseLeave={() => this.setState({ johFan: false })}
             style={sx('display:flex;flex-direction:column;align-items:center;gap:14px')}>
@@ -1312,7 +1312,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             <p style={sx('margin:0 0 22px;max-width:680px;font-size:17px;line-height:1.65;font-weight:500;color:rgba(246,239,230,.78)')}>{L.johannes.body}</p>
             <div data-reveal="" data-stagger="" style={sx('display:flex;flex-wrap:wrap;gap:10px')}>
               {L.johannes.chips.map(chip => (
-                <span key={chip} style={sx('padding:9px 16px;border-radius:999px;background:rgba(250,75,163,.1);border:1px solid rgba(250,75,163,.3);font-size:14px;font-weight:700;color:#F6EFE6;white-space:nowrap')}>{chip}</span>
+                <span key={chip} style={sx('padding:9px 16px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);font-size:14px;font-weight:700;color:#F6EFE6;white-space:nowrap')}>{chip}</span>
               ))}
             </div>
           </div>
@@ -1324,13 +1324,13 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   renderFaq() {
     const L = this.T;
     return (
-      <section style={sx('border-top:1px solid rgba(250,75,163,.07)')}>
+      <section style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
         <div style={sx('max-width:820px;margin:0 auto;padding:80px 32px')}>
           {this.kicker(`[ 05 ]|${L.faq.label}`)}
           <h2 data-reveal="" style={sx("margin:0 0 30px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.faq.h2}</h2>
           <div data-reveal="" style={sx('display:flex;flex-direction:column;gap:12px')}>
             {L.faq.items.map((item, i) => (
-              <details key={i} className="cwFaqCard" style={sx(`border-radius:16px;background:rgba(246,239,230,.03);border:1px solid rgba(250,75,163,.18);overflow:hidden;transition:background .25s ${EASE},border-color .25s ${EASE}`)}>
+              <details key={i} className="cwFaqCard" style={sx(`border-radius:16px;background:rgba(246,239,230,.03);border:1px solid rgba(246,239,230,.20);overflow:hidden;transition:background .25s ${EASE},border-color .25s ${EASE}`)}>
                 <summary style={sx('display:flex;align-items:center;gap:14px;padding:20px 22px;font-size:17px;font-weight:800;color:#F6EFE6;list-style:none;cursor:pointer')}>
                   <span style={sx('flex:1')}>{item.q}</span>
                   <span style={sx(`font-size:20px;font-weight:900;color:#FA4BA3;transition:transform .34s ${EASE}`)} data-faq-plus="">+</span>
@@ -1354,22 +1354,22 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const fieldWrap = 'display:flex;flex-direction:column;gap:6px';
     const req = <span aria-hidden="true" style={sx('color:#FA4BA3')}> *</span>;
     return (
-      <section id="anfragen" style={sx('background:radial-gradient(ellipse at 50% 0%,rgba(250,75,163,.14),transparent 70%)')}>
+      <section id="anfragen" style={sx('background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.05),transparent 70%)')}>
         <span aria-hidden="true" style={sx('display:block;height:1px;background:linear-gradient(90deg,transparent,rgba(250,75,163,.32),transparent)')}></span>
         <div style={sx('position:relative;max-width:760px;margin:0 auto;padding:88px 32px;text-align:center')}>
-          <span aria-hidden="true" style={sx('position:absolute;top:20px;left:50%;transform:translateX(-50%);width:520px;height:220px;border-radius:50%;background:radial-gradient(ellipse,rgba(250,75,163,.22),transparent 70%);pointer-events:none')}></span>
+          <span aria-hidden="true" style={sx('position:absolute;top:20px;left:50%;transform:translateX(-50%);width:520px;height:220px;border-radius:50%;background:radial-gradient(ellipse,rgba(246,239,230,.05),transparent 70%);pointer-events:none')}></span>
           {this.kicker(`[ 06 ]|${L.form.label}`)}
           <h2 data-reveal="" style={sx("position:relative;margin:0 0 14px;font-family:'League Spartan',sans-serif;font-size:38px;font-weight:900;color:#F6EFE6")}>{L.form.h2}</h2>
           <p style={sx('margin:0 auto 10px;max-width:560px;font-size:17.5px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78)')}>{L.form.sub}</p>
           <p style={sx('margin:0 auto 18px;font-size:14px;font-weight:800;letter-spacing:.02em;color:#FFC7E4')}>{L.form.avail}</p>
-          <div style={sx('position:relative;display:inline-flex;gap:6px;padding:6px;border-radius:999px;background:rgba(246,239,230,.04);border:1px solid rgba(250,75,163,.22);margin:0 0 22px')}>
+          <div style={sx('position:relative;display:inline-flex;gap:6px;padding:6px;border-radius:999px;background:rgba(246,239,230,.04);border:1px solid rgba(246,239,230,.20);margin:0 0 22px')}>
             <button type="button" onClick={() => this.openForm('event')} style={sx(tab(!test))}>{L.form.tabEvent}</button>
             <button type="button" onClick={() => this.openForm('test')} style={sx(tab(test))}>{L.form.tabTest}</button>
           </div>
           <div data-form-panel="" style={sx(`overflow:hidden;max-height:1800px;opacity:1;transition:max-height 1.05s ${EASE},opacity .5s ${EASE} .18s`)}>
 
             <div data-m="pricerow" style={sx('position:relative;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin:0 0 26px')}>
-              <span style={sx('display:inline-flex;align-items:baseline;gap:8px;padding:12px 22px;border-radius:999px;background:rgba(250,75,163,.12);border:1px solid rgba(250,75,163,.45)')}>
+              <span style={sx('display:inline-flex;align-items:baseline;gap:8px;padding:12px 22px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20)')}>
                 <span style={sx("font-family:'League Spartan',sans-serif;font-size:28px;font-weight:900;color:#FA4BA3;white-space:nowrap")}>{test ? L.form.testBig : L.form.priceBig}</span>
                 <span style={sx('font-size:14px;font-weight:700;color:#FFC7E4;white-space:nowrap')}>{test ? L.form.testSub : L.form.priceSub}</span>
               </span>
@@ -1379,7 +1379,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             </div>
 
             {st === 'ok' && (
-              <div role="status" style={sx('max-width:560px;margin:0 auto;padding:clamp(22px,3vw,34px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(250,75,163,.24);box-shadow:0 16px 40px rgba(0,0,0,.35),0 0 32px rgba(250,75,163,.1);text-align:center')}>
+              <div role="status" style={sx('max-width:560px;margin:0 auto;padding:clamp(22px,3vw,34px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);box-shadow:0 16px 40px rgba(0,0,0,.35);text-align:center')}>
                 <div style={sx('font-size:22px;font-weight:900;color:#F6EFE6')}>{test ? L.form.okTitleTest : L.form.okTitleEvent}</div>
                 <p style={sx('margin:10px 0 0;color:rgba(246,239,230,.78);font-weight:500;line-height:1.6')}>{test ? L.form.okBodyTest : L.form.okBodyEvent}</p>
               </div>
@@ -1387,7 +1387,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
             {st !== 'ok' && (
               <form key={this.state.formMode} onSubmit={this.submitForm}
-                style={sx('max-width:560px;margin:0 auto;text-align:left;padding:clamp(22px,3vw,34px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(250,75,163,.24);box-shadow:0 16px 40px rgba(0,0,0,.35),0 0 32px rgba(250,75,163,.1)')}>
+                style={sx('max-width:560px;margin:0 auto;text-align:left;padding:clamp(22px,3vw,34px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);box-shadow:0 16px 40px rgba(0,0,0,.35)')}>
                 <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden="true" style={sx('display:none')} />
                 <input type="hidden" name="_subject" value={test ? 'Neues Test-Team' : 'Quiz-Anfrage'} />
                 <input type="hidden" name="art" value={test ? 'Test-Team' : 'Event-Anfrage'} />
@@ -1481,7 +1481,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         {this.renderHero()}
         {this.renderModes()}
         {this.renderAnlaesse()}
-        <section style={sx('border-top:1px solid rgba(250,75,163,.07);border-bottom:1px solid rgba(250,75,163,.07);overflow:hidden;background:#0A0814')}>
+        <section style={sx('border-top:1px solid rgba(246,239,230,.10);border-bottom:1px solid rgba(246,239,230,.10);overflow:hidden;background:#0A0814')}>
           <div data-kinetic="" data-m="kin" style={sx("padding:56px 0;text-align:center;font-family:'League Spartan',sans-serif;font-size:clamp(26px,5vw,54px);font-weight:900;line-height:1.1;color:transparent;-webkit-text-stroke:1.2px rgba(250,75,163,.3);letter-spacing:.02em;white-space:nowrap;transition:letter-spacing .1s linear")}>{L.kinetic}</div>
         </section>
         {this.renderProbe()}
@@ -1489,7 +1489,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         {this.renderJohannes()}
         {this.renderFaq()}
         {this.renderForm()}
-        <footer style={sx('border-top:1px solid rgba(250,75,163,.07)')}>
+        <footer style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
           <div data-m="foot" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:30px 32px;display:flex;align-items:center;gap:20px;font-size:14px;font-weight:600;color:rgba(246,239,230,.62)')}>
             <img src={LOGO} alt="" width={26} height={26} style={sx('width:26px;height:26px')} />
             <span style={sx('white-space:nowrap')}>{L.footer.city}</span>

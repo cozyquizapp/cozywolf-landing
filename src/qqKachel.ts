@@ -26,8 +26,11 @@ export const KACHEL_VERLAUF = 'linear-gradient(180deg,rgba(255,255,255,.22) 0%,r
 const KANTEN = 'inset 0 1px 0 rgba(255,255,255,.38),inset 2px 0 0 rgba(255,255,255,.07),'
   + 'inset -2px 0 0 rgba(0,0,0,.18),0 3px 4px rgba(0,0,0,.42)';
 
-/** Eckenradius der Teammarke: 18 Prozent, wie in der App. */
-export const KACHEL_RADIUS = '18%';
+/** Eckenradius der Kachel: 16 Prozent, wie in der App.
+ *  Brettfeld, Teammarke und Quirk-Kachel fahren dort denselben Wert - ein
+ *  Prozentwert haelt die Form ueber alle Groessen gleich, ein fester Pixelwert
+ *  waere auf einer grossen Zelle fast eckig und auf einer kleinen fast rund. */
+export const KACHEL_RADIUS = '16%';
 
 /**
  * Die Flaeche einer Kachel als CSS-String (passend zu sx()).
@@ -45,7 +48,7 @@ export function kachel(farbe: string, radius: string = KACHEL_RADIUS): string {
  * @param farbe Teamfarbe der Kachel.
  * @param av Pfad zum Avatar-Motiv.
  * @param px Kantenlaenge in Bildpunkten.
- * @param radius Eckenradius, per Vorgabe 18 Prozent.
+ * @param radius Eckenradius, per Vorgabe 16 Prozent.
  */
 export function teammarke(farbe: string, av: string, px: number, radius: string = KACHEL_RADIUS): string {
   return `width:${px}px;height:${px}px;flex:none;border-radius:${radius};`

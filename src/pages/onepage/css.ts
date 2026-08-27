@@ -53,7 +53,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 :focus:not(:focus-visible){outline:none}
 [data-m=sticky]{display:none}
 .cwHovA:hover{filter:brightness(1.06)}
-.cwFaqCard:hover{background:rgba(250,75,163,.06)!important;border-color:rgba(250,75,163,.34)!important}
+.cwFaqCard:hover{background:rgba(246,239,230,.05)!important;border-color:rgba(250,75,163,.34)!important}
 .cwSubmit:hover{filter:brightness(1.1)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}html{scroll-behavior:auto}}
 @media (min-width:1500px){
