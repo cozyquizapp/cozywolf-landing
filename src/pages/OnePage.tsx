@@ -398,26 +398,47 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const hookI = this.state.hookI ?? 0;
     const hook = L.hero.hooks[hookI % L.hero.hooks.length];
     const anim = hookI % 2 ? 'cwLetterB' : 'cwLetter';
-    return (
-      <section id="top" style={sx('position:relative;overflow:hidden;min-height:82vh;display:flex;flex-direction:column;border-bottom:1px solid rgba(246,239,230,.10)')}>
-        <div style={sx('position:absolute;top:-340px;left:50%;transform:translateX(-50%);width:1500px;height:980px;background:radial-gradient(ellipse at center,rgba(246,239,230,.05),rgba(10,8,20,0) 62%);pointer-events:none')}></div>
 
-        <div style={sx('position:relative;z-index:2;flex:1;display:flex;align-items:center;width:100%;max-width:1180px;margin:0 auto;padding:72px 32px')} data-shell="" data-m="hero">
-          <div style={sx('width:100%;max-width:660px')}>
-<p data-reveal="" style={sx(`margin:0 0 20px;display:flex;align-items:center;gap:13px;font-size:12px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);animation:cwRise .8s ${EASE} both`)}>
-  {L.hero.kicker}
-  <span aria-hidden="true" style={sx('flex:1;max-width:120px;height:1px;background:linear-gradient(90deg,rgba(246,239,230,.20),transparent)')}></span>
-</p>
-            <h1 style={sx("margin:0;font-family:'League Spartan',sans-serif;font-weight:900;font-size:clamp(52px,6.6vw,104px);line-height:.9;letter-spacing:-.035em;color:#F6EFE6")}>
+    // ── Die Objektgruppe ───────────────────────────────────────────────────
+    // Wolfs Referenzen loesen beide dasselbe Problem: der erste Bildschirm
+    // traegt ohne ein einziges Foto. Slush stellt Sticker um die Schrift,
+    // MindMarket ueberlappende Papierfiguren, beide „directly on the canvas,
+    // no frames, no rounded clipping". Diese Rolle spielen hier die Kacheln,
+    // die am Abend auf der Leinwand stehen - also kein Dekor, sondern das
+    // Produkt.
+    //
+    // Bewusst NICHT im Raster: gedreht, verschieden gross, ueberlappend. Die
+    // Groessen sind nicht zufaellig, sondern eine Tiefenstaffelung; die
+    // grosse Teekanne vorn traegt als EINZIGE das Ueberschwingen, nach der
+    // Hausregel „Overshoot nur fuer den einen Beat pro Bildschirm".
+    const GRUPPE = [
+      { av: '/assets/av-qq-teapot.webp',      farbe: '#F97316', gr: 40, x: 4,  y: 6,  r: -8,  d: 0.30, beat: true,  tx: '-22px', ty: '-14px', tr: '-13deg' },
+      { av: '/assets/av-qq-crystal-ball.webp', farbe: '#A855F7', gr: 33, x: 46, y: 0,  r: 10,  d: 0.38, beat: false, tx: '18px',  ty: '-22px', tr: '16deg' },
+      { av: '/assets/av-qq-mushroom.webp',    farbe: '#22C55E', gr: 30, x: 33, y: 44, r: 6,   d: 0.46, beat: false, tx: '-10px', ty: '20px',  tr: '11deg' },
+      { av: '/assets/av-qq-game-die.webp',    farbe: '#FACC15', gr: 24, x: 68, y: 40, r: -14, d: 0.54, beat: false, tx: '26px',  ty: '10px',  tr: '-20deg' },
+      { av: '/assets/av-qq-table-lamp.webp',  farbe: '#3B82F6', gr: 21, x: 12, y: 66, r: 14,  d: 0.62, beat: false, tx: '-26px', ty: '24px',  tr: '20deg' },
+    ];
+
+    return (
+      <section id="top" style={sx('position:relative;overflow:clip;min-height:100dvh;display:flex;flex-direction:column;border-bottom:1px solid rgba(246,239,230,.10)')}>
+        <div aria-hidden="true" style={sx('position:absolute;top:-340px;left:50%;transform:translateX(-50%);width:1500px;height:980px;background:radial-gradient(ellipse at center,rgba(246,239,230,.05),rgba(10,8,20,0) 62%);pointer-events:none')}></div>
+
+        <div data-shell="" data-m="hero" style={sx('position:relative;z-index:2;flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);align-items:center;gap:56px;width:100%;max-width:1180px;margin:0 auto;padding:88px 32px 72px;box-sizing:border-box')}>
+          <div style={sx('min-width:0')}>
+            <p style={sx(`margin:0 0 22px;display:flex;align-items:center;gap:13px;font-size:12px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);animation:cwRise .8s ${EASE} both`)}>
+              {L.hero.kicker}
+              <span aria-hidden="true" style={sx('flex:1;max-width:110px;height:1px;background:linear-gradient(90deg,rgba(246,239,230,.20),transparent)')}></span>
+            </p>
+            <h1 data-aufloesen="" style={sx("margin:0;font-family:'League Spartan',sans-serif;font-weight:900;font-size:clamp(56px,8.6vw,142px);line-height:.84;letter-spacing:-.038em;color:#F6EFE6;will-change:transform")}>
               <span style={sx('display:block;padding:.14em .1em .06em;margin:-.14em -.1em -.06em;overflow:hidden;white-space:nowrap')}>
                 {hook.split('').map((ch, j) => (
-                  <span key={`${hookI}-${j}`} style={sx(`display:inline-block;color:#F6EFE6;animation:${anim} 1.05s ${EASE} both ${(j * 0.07).toFixed(3)}s`)}>{ch === ' ' ? '\u00A0' : ch}</span>
+                  <span key={`${hookI}-${j}`} style={sx(`display:inline-block;animation:${anim} 1.05s ${EASE} both ${(j * 0.06).toFixed(3)}s`)}>{ch === ' ' ? '\u00A0' : ch}</span>
                 ))}
               </span>
               <span style={sx(`display:block;animation:cwRise .9s ${EASE} both .12s`)}>{L.hero.rest}</span>
             </h1>
-            <p data-m="herosub" style={sx(`margin:24px 0 0;animation:cwRise .8s ${EASE} both .26s;font-size:18px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78);white-space:nowrap`)}>{L.hero.sub}</p>
-            <div onMouseLeave={() => this.setState({ hbOn: null })} style={sx(`margin-top:30px;animation:cwRise .8s ${EASE} both .34s;display:flex;align-items:stretch;gap:14px;max-width:560px`)}>
+            <p data-m="herosub" style={sx(`margin:26px 0 0;animation:cwRise .8s ${EASE} both .26s;font-size:18.5px;line-height:1.55;font-weight:500;color:rgba(246,239,230,.78);max-width:44ch;text-wrap:pretty`)}>{L.hero.sub}</p>
+            <div onMouseLeave={() => this.setState({ hbOn: null })} style={sx(`margin-top:34px;animation:cwRise .8s ${EASE} both .34s;display:flex;align-items:stretch;gap:14px;max-width:520px`)}>
               <a href="#anfragen" onClick={() => this.openForm('test')} onMouseEnter={() => this.setState({ hbOn: 0 })} style={sx(b0.style)}>
                 <span aria-hidden="true" style={sx(b0.fill)}></span>
                 <span style={sx('position:relative;display:block;text-align:center')}>
@@ -433,10 +454,23 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 </span>
               </a>
             </div>
-            <div style={sx('margin-top:22px;display:flex;align-items:center;flex-wrap:wrap;gap:10px;font-size:11.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>
-              <span style={sx('width:8px;height:8px;border-radius:50%;background:#FA4BA3')}></span>
-              {L.hero.availability}
-            </div>
+            <p style={sx(`margin:24px 0 0;animation:cwRise .8s ${EASE} both .42s;font-size:11.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)`)}>{L.hero.availability}</p>
+          </div>
+
+          <div data-treiben="" data-m="hgruppe" aria-hidden="true" style={sx('position:relative;align-self:center;width:100%;aspect-ratio:1/1;pointer-events:none')}>
+            {GRUPPE.map(k => (
+              <span key={k.av}
+                className={k.beat ? 'cwKachel cwKachel--beat' : 'cwKachel'}
+                style={sx(`position:absolute;left:${k.x}%;top:${k.y}%;width:${k.gr}%;aspect-ratio:1/1;pointer-events:auto;`
+                  + `--r:${k.r}deg;--d:${k.d}s;--tx:${k.tx};--ty:${k.ty};--tr:${k.tr};`
+                  + `transform:rotate(${k.r}deg);border-radius:16%;`
+                  + `background-image:url(${k.av}),linear-gradient(180deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.06) 18%,rgba(255,255,255,0) 50%,rgba(0,0,0,.16) 78%,rgba(0,0,0,.34) 100%);`
+                  + `background-color:${k.farbe};`
+                  + `background-size:${Math.round(motivAnteil(k.av) * 100)}% auto,auto;`
+                  + `background-position:center,center;background-repeat:no-repeat,no-repeat;`
+                  + `box-shadow:inset 0 1px 0 rgba(255,255,255,.38),inset 2px 0 0 rgba(255,255,255,.07),inset -2px 0 0 rgba(0,0,0,.18),0 3px 4px rgba(0,0,0,.42),0 26px 50px rgba(0,0,0,.45)`)}>
+              </span>
+            ))}
           </div>
         </div>
       </section>

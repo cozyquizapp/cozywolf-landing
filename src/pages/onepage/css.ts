@@ -46,6 +46,29 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 @keyframes cwCardB{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes cwBeamOn{0%{opacity:0}5%{opacity:.9}11%{opacity:.28}18%{opacity:.96}27%{opacity:.5}38%{opacity:1}58%{opacity:.74}78%{opacity:.3}100%{opacity:0}}
 @keyframes cwPuddle{0%,100%{-webkit-mask-size:49% 33%;mask-size:49% 33%}50%{-webkit-mask-size:53% 36%;mask-size:53% 36%}}
+/* Hero-Ueberschrift loest sich beim Verlassen im Grund auf (superplay.co).
+   Kein Ausblenden: die Schrift waechst und nimmt die Grundfarbe an. */
+@keyframes cwAufloesen{to{transform:scale(1.85);color:#0A0814;letter-spacing:-.05em}}
+/* Die Objekte der Marke treiben dabei leicht auseinander, wie Sticker, die
+   von der Folie rutschen. Sie bleiben sichtbar, sie weichen nur aus. */
+@keyframes cwTreiben{to{transform:translate3d(var(--tx,0),var(--ty,0),0) rotate(var(--tr,0deg)) scale(.86)}}
+/* Auftritt der Objektgruppe: fallen von oben ein, gestaffelt. */
+@keyframes cwKachelEin{from{opacity:0;transform:translate3d(0,-38px,0) rotate(var(--r,0deg)) scale(.82)}to{opacity:1;transform:translate3d(0,0,0) rotate(var(--r,0deg)) scale(1)}}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion:no-preference){
+    [data-aufloesen]{animation-name:cwAufloesen;animation-duration:auto;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:view();animation-range:exit 0% exit 92%}
+    [data-treiben]{animation-name:cwTreiben;animation-duration:auto;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:view();animation-range:exit 0% exit 100%}
+  }
+}
+@media (prefers-reduced-motion:no-preference){
+  .cwKachel{animation:cwKachelEin .62s cubic-bezier(.22,1,.36,1) both var(--d,0s)}
+  .cwKachel--beat{animation-duration:.7s;animation-timing-function:cubic-bezier(.34,1.56,.64,1)}
+}
+.cwKachel{transition:transform .24s cubic-bezier(.4,0,.2,1),filter .24s cubic-bezier(.4,0,.2,1)}
+@media (hover:hover) and (pointer:fine){
+  .cwKachel:hover{transform:rotate(var(--r,0deg)) translateY(-7px) scale(1.045);filter:brightness(1.06);z-index:9}
+}
 summary::-webkit-details-marker{display:none}
 summary{list-style:none;cursor:pointer}
 html{scroll-behavior:smooth;scroll-padding-top:88px}
@@ -89,6 +112,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 [data-m=screenbox]{position:static!important;width:100%!important;height:auto!important;margin-top:14px!important;border-radius:18px!important;box-shadow:none!important;border:1px solid rgba(246,239,230,.08)!important}
 }
 @media (max-width:860px){
+[data-m=hgruppe]{display:none!important}
 section>div,header>div,footer>div{padding-left:16px!important;padding-right:16px!important}
 section>div{padding-top:52px!important;padding-bottom:52px!important}
 h1{font-size:34px!important;line-height:1.06!important}
