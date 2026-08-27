@@ -36,6 +36,7 @@ import { HeroFarbe, FARB_ENTWUERFE, type FarbEntwurf } from './mockups/heroFarbe
 import { BrettFarben, BRETT_FARBEN, type BrettFarbe } from './mockups/brettFarben';
 import { ArenaTabelle, ARENA_ENTWUERFE, type ArenaEntwurf } from './mockups/arenaTabelle';
 import { Einrasten, SNAP_ENTWUERFE, type SnapEntwurf } from './mockups/einrasten';
+import { HoverMuster, HOVER_ENTWUERFE, type HoverEntwurf } from './mockups/hover';
 import {
   Ablauf, UeberMich, Fragen, Anfragen,
   ABLAUF_ENTWUERFE, JOH_ENTWUERFE, FAQ_ENTWUERFE, FORM_ENTWUERFE,
@@ -184,7 +185,7 @@ const PROBE_TYPEN = [
 export default function Mockups() {
   const lang = useLang();
   const L = onePageT(lang);
-  type Stat = '00' | '01' | '02' | '03' | '04' | '05' | '06' | '07' | 'BF' | 'AR' | 'SN';
+  type Stat = '00' | '01' | '02' | '03' | '04' | '05' | '06' | '07' | 'BF' | 'AR' | 'SN' | 'HV';
   const [station, setStation] = useState<Stat>('01');
   // Fuer die Stationen 04 bis 07 genuegt ein Zaehler je Station: sie haben
   // alle drei Entwuerfe und keine eigene Logik.
@@ -196,6 +197,7 @@ export default function Mockups() {
   const [bf, setBf] = useState<BrettFarbe>(1);
   const [ar, setAr] = useState<ArenaEntwurf>(2);
   const [sn, setSn] = useState<SnapEntwurf>(2);
+  const [hv, setHv] = useState<HoverEntwurf>(1);
   const [mobil, setMobil] = useState(false);
 
   const modi: Modus[] = [
@@ -222,7 +224,8 @@ export default function Mockups() {
   };
   const w = WEITERE[station];
 
-  const inhalt = station === 'SN' ? <Einrasten mobil={mobil} entwurf={sn} />
+  const inhalt = station === 'HV' ? <HoverMuster mobil={mobil} entwurf={hv} />
+    : station === 'SN' ? <Einrasten mobil={mobil} entwurf={sn} />
     : station === 'AR' ? <ArenaTabelle mobil={mobil} entwurf={ar} />
     : station === 'BF' ? <BrettFarben mobil={mobil} entwurf={bf} />
     : station === '00' ? <HeroFarbe L={L} mobil={mobil} entwurf={farbe} />
@@ -246,12 +249,16 @@ export default function Mockups() {
             { k: 'BF', label: 'Brettfarben' },
             { k: 'AR', label: 'Arena' },
             { k: 'SN', label: 'Einrasten' },
+            { k: 'HV', label: 'Zeigen' },
           ]} aktiv={station} waehle={k => setStation(k as Stat)} erledigt={ERLEDIGT} />
           <span style={sx(`font-family:${SPARTAN};font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap`)}>
-            {station === 'SN' ? 'Einrasten' : station === 'AR' ? 'Arena-Tabelle' : station === 'BF' ? 'Brettfarben' : station === '00' ? 'Farbwechsel' : station === '01' ? 'Spielarten' : station === '02' ? 'Anlaesse' : station === '03' ? 'Ausprobieren' : w.titel}
+            {station === 'HV' ? 'Zeigeeffekte' : station === 'SN' ? 'Einrasten' : station === 'AR' ? 'Arena-Tabelle' : station === 'BF' ? 'Brettfarben' : station === '00' ? 'Farbwechsel' : station === '01' ? 'Spielarten' : station === '02' ? 'Anlaesse' : station === '03' ? 'Ausprobieren' : w.titel}
           </span>
           <span style={sx('flex:1')}></span>
-          {station === 'SN'
+          {station === 'HV'
+            ? <Schalter werte={([1, 2, 3] as HoverEntwurf[]).map(k => ({ k: String(k), label: `H${k}  ${HOVER_ENTWUERFE[k].name}` }))}
+              aktiv={String(hv)} waehle={k => setHv(Number(k) as HoverEntwurf)} />
+            : station === 'SN'
             ? <Schalter werte={([1, 2, 3] as SnapEntwurf[]).map(k => ({ k: String(k), label: `S${k}  ${SNAP_ENTWUERFE[k].name}` }))}
               aktiv={String(sn)} waehle={k => setSn(Number(k) as SnapEntwurf)} />
             : station === 'AR'
@@ -280,7 +287,9 @@ export default function Mockups() {
             aktiv={lang} waehle={k => setLang(k as 'de' | 'en')} />
         </div>
         <div style={sx(`max-width:1000px;margin:0 auto;padding:0 24px 14px;font-size:14.5px;line-height:1.55;color:rgba(246,239,230,.66)`)}>
-          {station === 'SN'
+          {station === 'HV'
+            ? <><b style={sx(`color:${CREME}`)}>H{hv}. {HOVER_ENTWUERFE[hv].name}.</b> {HOVER_ENTWUERFE[hv].idee[lang]} <i style={sx('opacity:.7')}>Gezeigt an den drei Abschnitten, die heute nichts tun: 06, 07 und die Kacheln aus 05.</i></>
+            : station === 'SN'
             ? <><b style={sx(`color:${CREME}`)}>S{sn}. {SNAP_ENTWUERFE[sn].name}.</b> {SNAP_ENTWUERFE[sn].idee[lang]} <i style={sx('opacity:.7')}>Das Fenster unten scrollt selbst, damit sich das Einrasten ausprobieren laesst. Rechts die gemessenen Hoehen der echten Seite.</i></>
             : station === 'AR'
             ? <><b style={sx(`color:${CREME}`)}>R{ar}. {ARENA_ENTWUERFE[ar].name}.</b> {ARENA_ENTWUERFE[ar].idee[lang]} <i style={sx('opacity:.7')}>Die Rangfolge laeuft, damit sich beurteilen laesst, ob der mitwandernde Rahmen unruhig wirkt. Zeig auf eine Zeile fuer das Wappen und den Spruch.</i></>

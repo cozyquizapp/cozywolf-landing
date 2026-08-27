@@ -6,11 +6,15 @@
 export const ONEPAGE_CSS = `
 html{background:#0A0814;color-scheme:dark}
 body{margin:0;background:#0A0814;font-family:'Bricolage Grotesque','Nunito',system-ui,sans-serif;font-optical-sizing:auto;color:#F6EFE6;-webkit-font-smoothing:antialiased}
-/* Verweise ohne eigene Farbe: Creme mit Unterlinie. Wolf am 27.08. zum
-   Orange: "es beisst sich mit dem logo". Ohne Farbe braucht ein Verweis eine
-   andere Marke, sonst ist er nicht als Verweis zu erkennen, also die Linie. */
-a{color:#F6EFE6;text-decoration:underline;text-decoration-color:rgba(246,239,230,.4);text-underline-offset:3px;text-decoration-thickness:1px}
-a:hover{text-decoration-color:#F6EFE6}
+/* Verweise ohne eigene Farbe: Creme. Wolf am 27.08. zum Orange: "es beisst
+   sich mit dem logo". Ohne Farbe braucht ein Verweis im FLIESSTEXT eine andere
+   Marke, sonst ist er nicht als Verweis zu erkennen, also eine Unterlinie.
+   Aber nur dort: die erste Fassung hat sie global gesetzt, danach waren auch
+   die Navigation, die Knoepfe und der Sprungverweis unterstrichen. Deshalb
+   traegt die Linie jetzt ein eigenes Merkmal statt des Elementnamens. */
+a{color:#F6EFE6;text-decoration:none}
+a[data-verweis]{text-decoration:underline;text-decoration-color:rgba(246,239,230,.4);text-underline-offset:3px;text-decoration-thickness:1px}
+a[data-verweis]:hover{text-decoration-color:#F6EFE6}
 @keyframes cwClaim{0%{transform:scale(.2);opacity:0}6%{transform:scale(1.12);opacity:1}11%{transform:scale(1)}82%{opacity:1;transform:scale(1)}93%{opacity:.1;transform:scale(.8)}100%{opacity:0;transform:scale(.2)}}
 @keyframes cwCount{from{width:100%}to{width:0%}}
 @keyframes cwPulseSoft{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}

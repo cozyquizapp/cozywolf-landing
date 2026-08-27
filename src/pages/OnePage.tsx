@@ -291,6 +291,14 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     }, 300);
   }
 
+  /** Wer gerade fuehrt. Null, solange keine Punkte stehen. */
+  frakFuehrt() {
+    const pts = this.state.arenaPts || {};
+    let best: typeof FACTIONS[number] | null = null, bp = 0;
+    FACTIONS.forEach(f => { const p = pts[f.id] || 0; if (p > bp) { bp = p; best = f; } });
+    return best as typeof FACTIONS[number] | null;
+  }
+
   arenaTick() {
     const round = (this.state.arenaRound || 0) + 1;
     // Nach acht Runden stehen bleiben statt auf null zuruecksetzen. Der
@@ -859,6 +867,32 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   </li>
                 ))}
               </ul>
+
+              {/* Fassung R7 aus dem Mockup, Lage nach Wolfs Vorschlag vom
+                  27.08.: die Spruchkarte steht unter dem Text der Zeile, nicht
+                  unter der Tabelle. Zwei Gruende, beide von ihm: unter dem Text
+                  ist ohnehin Platz frei, die Karte kostet dort also keine
+                  Hoehe, und die Tabelle bleibt so hoch wie das Brett in der
+                  Zeile darueber. Das Wappen steht hier gross, 76 statt 42 px,
+                  weil die Wappen in der Tabelle selbst zu klein sind, um das
+                  Zeichen zu erkennen.
+                  Die Hoehe ist vorgehalten, sonst springt der Text beim
+                  Zeigen. Die Karte blendet weich auf statt zu blinken. */}
+              {r.key === 'arena' && (
+                <div aria-live="polite" style={sx('margin-top:26px;min-height:118px')}>
+                  <div style={sx('display:flex;align-items:center;gap:18px;padding:16px 20px;border-radius:18px;box-sizing:border-box;max-width:520px;'
+                    + `background:${frakAn ? `linear-gradient(90deg,${frakAn.color}22,rgba(246,239,230,.02))` : 'transparent'};`
+                    + `border:1px solid ${frakAn ? frakAn.color + '4d' : 'transparent'};`
+                    + `opacity:${frakAn ? 1 : 0};transform:translateY(${frakAn ? '0' : '6px'});`
+                    + `transition:opacity .34s ${EASE},transform .34s ${EASE},background .34s ${EASE},border-color .34s ${EASE}`)}>
+                    <span style={sx(frakAn ? teammarke(frakAn.color, `/assets/crest-${frakAn.id}.webp`, 76) : 'flex:none;width:76px;height:76px')}></span>
+                    <span style={sx('min-width:0;display:flex;flex-direction:column;gap:5px')}>
+                      <span style={sx(`font-size:12.5px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:${frakAn ? frakAn.color : 'transparent'}`)}>{frakAn ? L.sim.factions[frakAn.id] : '\u00a0'}</span>
+                      <span style={sx('font-size:17px;line-height:1.35;font-weight:600;color:rgba(246,239,230,.86);text-wrap:pretty')}>{frakAn ? `\u201e${L.sim.mottos[frakAn.id]}\u201c` : '\u00a0'}</span>
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {r.key === 'quiz' ? (
@@ -869,33 +903,21 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               </div>
             ) : (
               <div data-m="modeobjekt" style={sx('min-width:0')}>
-                <div style={sx('position:relative;height:300px')}>{this.renderFactions()}</div>
-                {/* Wolf: "haette ich beim hovern ueber die teamwappen der arena
-                    gerne den namen und slogan". Die Sprueche stehen woertlich
-                    in der App (QQ_MEGA_FACTIONS). Sie kommen NICHT in die
-                    Zeile selbst: dort wuerde die Tabelle bei jedem Zeigen
-                    springen, und eine springende Rangliste ist schlimmer als
-                    kein Spruch. Stattdessen eine eigene Zeile mit
-                    vorgehaltener Hoehe, unter der Tabelle. */}
-                {/* Wolf am 2026-08-27: "der satz unten koennte doch nicer
-                    praesentiert werden". Also kein nackter Zweizeiler mehr,
-                    sondern eine kleine Karte mit dem Wappen, dem Namen in der
-                    Fraktionsfarbe und dem Spruch darunter in Anfuehrung. Die
-                    Hoehe ist vorgehalten, damit die Tabelle beim Zeigen nicht
-                    springt, und die Karte blendet weich auf statt zu blinken. */}
-                <div aria-live="polite" style={sx('margin-top:16px;min-height:82px')}>
-                  <div style={sx('display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;box-sizing:border-box;'
-                    + `background:${frakAn ? `linear-gradient(90deg,${frakAn.color}1f,rgba(246,239,230,.02))` : 'transparent'};`
-                    + `border:1px solid ${frakAn ? frakAn.color + '4d' : 'transparent'};`
-                    + `opacity:${frakAn ? 1 : 0};transform:translateY(${frakAn ? '0' : '6px'});`
-                    + `transition:opacity .34s ${EASE},transform .34s ${EASE},background .34s ${EASE},border-color .34s ${EASE}`)}>
-                    <span style={sx(frakAn ? teammarke(frakAn.color, `/assets/crest-${frakAn.id}.webp`, 42) : 'flex:none;width:42px;height:42px')}></span>
-                    <span style={sx('min-width:0;display:flex;flex-direction:column;gap:3px')}>
-                      <span style={sx(`font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:${frakAn ? frakAn.color : 'transparent'}`)}>{frakAn ? L.sim.factions[frakAn.id] : '\u00a0'}</span>
-                      <span style={sx('font-size:15.5px;line-height:1.4;font-weight:600;color:rgba(246,239,230,.82);text-wrap:pretty')}>{frakAn ? `\u201e${L.sim.mottos[frakAn.id]}\u201c` : '\u00a0'}</span>
-                    </span>
-                  </div>
+                {/* Rahmen wie am Brett darueber, nur traegt er hier die Farbe
+                    der fuehrenden Fraktion statt der Seite am Zug. Beide
+                    Zeilen tragen damit dasselbe Zeichen. */}
+                <div style={sx(`padding:8px;border-radius:14px;background:rgba(246,239,230,.015);`
+                  + `border:2px solid ${this.frakFuehrt()?.color ?? 'rgba(246,239,230,.1)'};`
+                  + `box-shadow:${this.frakFuehrt() ? `0 0 36px ${this.frakFuehrt()!.color}55, inset 0 0 30px ${this.frakFuehrt()!.color}14` : 'inset 0 0 40px rgba(0,0,0,.5)'};`
+                  + `transition:border-color .8s ${EASE},box-shadow .8s ${EASE}`)}>
+                  <div style={sx('position:relative;height:300px')}>{this.renderFactions()}</div>
                 </div>
+                {/* Die Spruchkarte steht nicht mehr hier, sondern in der
+                    mittleren Spalte unter dem Text. Wolf am 27.08. hat sie
+                    dorthin kopiert und gefragt, was ich davon halte: sie
+                    kostet dort keine Hoehe, weil unter dem Text ohnehin Platz
+                    frei ist, und die Tabelle bleibt so hoch wie das Brett in
+                    der Zeile darueber. */}
               </div>
             )}
           </div>
@@ -998,7 +1020,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const idx = Math.min(MOVES.length, cycle + (phase === 'b' ? 1 : 0));
     const played = MOVES.slice(0, idx);
     const seconds = Math.max(1, Math.ceil((R_END - t) * 0.2));
-    const answered = phase === 'q' ? Math.min(6, Math.floor(t / 4)) : 6;
+    // Die 6 stand hier fest, seit das Brett sechs Teams hatte. Mit drei Teams
+    // stand darunter "6/3 Teams haben geantwortet".
+    const answered = phase === 'q' ? Math.min(TEAMS.length, Math.floor(t / 4)) : TEAMS.length;
     const revealed = phase !== 'q';
 
     const qOptions = q.opts.map((label, k) => {
@@ -1189,12 +1213,22 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       const leads = tm.id === leaderId;
       const isActive = !!active && active.id === tm.id;
       return {
+        // Der Spielstand der App, Stand 27.08.: Kachel, Name in CREME, dann
+        // die Zahl gross und die Einheit klein daneben. Vorher stand der Name
+        // in der Teamfarbe und die Felderzahl klein darunter. In der App
+        // traegt die Kachel die Farbe und die Schrift bleibt creme, und die
+        // Zahl ist das, was man aus zehn Metern lesen soll.
         name: L.sim.teams[tm.id],
+        zahl: String(n),
+        // Ohne den Zusatz "fuehrt" oder "Gleichstand": er hat die Zeile so
+        // breit gemacht, dass der Teamname davor abgeschnitten wurde, und die
+        // Fuehrung steht ohnehin schon oben in der Liste.
+        einheit: n === 1 ? L.sim.field : L.sim.fields,
         sub: `${n} ${n === 1 ? L.sim.field : L.sim.fields}${leads ? (tied ? L.sim.tied : L.sim.lead) : ''}`,
-        rowStyle: `display:inline-flex;align-items:center;gap:11px;flex:none;padding:7px 13px 7px 8px;border-radius:14px;box-sizing:border-box;transition:border-color .4s ${EASE},box-shadow .4s ${EASE},background .4s ${EASE};${isActive ? `border:1.5px solid ${tm.color};background:linear-gradient(90deg,${tm.color}1f,transparent);box-shadow:0 0 18px ${tm.color}55` : 'border:1.5px solid transparent'}`,
-        discStyle: teammarke(tm.color, tm.av, 34)
+        rowStyle: `display:flex;align-items:center;gap:13px;width:100%;padding:6px 12px 6px 6px;border-radius:14px;box-sizing:border-box;transition:border-color .4s ${EASE},box-shadow .4s ${EASE},background .4s ${EASE};${isActive ? `border:1.5px solid ${tm.color};background:linear-gradient(90deg,${tm.color}1f,transparent);box-shadow:0 0 18px ${tm.color}55` : 'border:1.5px solid transparent'}`,
+        discStyle: teammarke(tm.color, tm.av, 38)
           + (isActive ? `outline:3px solid ${tm.color}44;outline-offset:1px;` : ''),
-        nameStyle: `font-size:15px;font-weight:900;letter-spacing:-.02em;color:${tm.color};line-height:1.15;white-space:nowrap`,
+        nameStyle: 'font-size:14.5px;font-weight:900;letter-spacing:-.01em;color:#F6EFE6;line-height:1.15;white-space:nowrap',
       };
     });
 
@@ -1312,7 +1346,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               <div data-reveal="">
                 <p style={sx('margin:0 0 22px;font-size:18px;line-height:1.6;font-weight:500;'
                   + 'color:rgba(246,239,230,.82);max-width:60ch;text-wrap:pretty')}>{cardT.desc}</p>
-                <a href="#anfragen" style={sx(`display:inline-block;font-size:15.5px;font-weight:900;color:${AKZENT}`)}>
+                <a href="#anfragen" data-verweis="" style={sx(`display:inline-block;font-size:15.5px;font-weight:900;color:${AKZENT}`)}>
                   {L.anlaesse.cta}
                 </a>
               </div>
@@ -1536,7 +1570,28 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             <div style={sx('transform-style:preserve-3d;transform-origin:50% 84%;'
               + `transform:rotateX(${up ? (tilt ? -tilt.y * 9 : 0) : 64}deg) rotateY(${up && tilt ? (tilt.x * 12).toFixed(1) : 0}deg) rotateZ(${up ? 0 : -8}deg) scale(${up ? 1 : .9});`
               + `filter:brightness(${up ? 1 : .68});transition:transform ${tilt && up ? '.22s' : '1.15s'} ${EASE},filter 1.15s ${EASE}`)}>
-              <div data-m="pphone" style={sx(`width:360px;height:600px;border-radius:46px;box-sizing:border-box;padding:20px 16px;display:flex;flex-direction:column;background:linear-gradient(180deg,#150c20,#0a0714);border:7px solid #06060c;box-shadow:0 30px 70px rgba(0,0,0,.6);transition:box-shadow .5s ${EASE}`)}>
+              {/* Wolf am 27.08.: "canva hat so ein handy mockup, vlt waere das
+                  was fuer uns". Statt eines fremden Bildes ein echtes Geraet
+                  in CSS: aeusserer Rahmen mit Lichtkante, innen ein schmaler
+                  schwarzer Spalt zwischen Rahmen und Bildschirm, Aussparung
+                  oben, Tasten an der Seite. Kostet kein Bild, skaliert
+                  verlustfrei und laesst sich mitfaerben.
+                  Die Masse sind die eines iPhone 15 im Verhaeltnis: 360 zu 600
+                  ist 1 zu 1,67, das Geraet selbst 1 zu 2,03. */}
+              <div aria-hidden="true" style={sx('position:absolute;left:-11px;top:150px;width:4px;height:34px;border-radius:3px 0 0 3px;background:linear-gradient(180deg,#2a2a33,#101016)')}></div>
+              <div aria-hidden="true" style={sx('position:absolute;left:-11px;top:200px;width:4px;height:56px;border-radius:3px 0 0 3px;background:linear-gradient(180deg,#2a2a33,#101016)')}></div>
+              <div aria-hidden="true" style={sx('position:absolute;right:-11px;top:186px;width:4px;height:76px;border-radius:0 3px 3px 0;background:linear-gradient(180deg,#2a2a33,#101016)')}></div>
+              <div data-m="pphone" style={sx('position:relative;width:360px;height:600px;border-radius:52px;box-sizing:border-box;padding:20px 16px;display:flex;flex-direction:column;'
+                + 'background:linear-gradient(180deg,#150c20,#0a0714);'
+                + 'border:9px solid #0b0b12;'
+                + 'box-shadow:0 0 0 1.5px #33333d,inset 0 0 0 1.5px rgba(246,239,230,.06),0 30px 70px rgba(0,0,0,.6);'
+                + `transition:box-shadow .5s ${EASE}`)}>
+                {/* Die Aussparung. Sie liegt ueber dem Inhalt, deshalb der
+                    hohe z-Index, und traegt Hoerer und Kamera. */}
+                <div aria-hidden="true" style={sx('position:absolute;left:50%;top:8px;transform:translateX(-50%);z-index:6;width:112px;height:26px;border-radius:14px;background:#0b0b12;display:flex;align-items:center;justify-content:center;gap:12px')}>
+                  <span style={sx('width:34px;height:4px;border-radius:2px;background:#1b1b24')}></span>
+                  <span style={sx('width:7px;height:7px;border-radius:50%;background:#141420;box-shadow:inset 0 0 0 1px rgba(120,130,180,.35)')}></span>
+                </div>
                 <div style={sx('display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:18px;border:1px solid rgba(168,85,247,.45);background:rgba(168,85,247,.07);margin-bottom:12px;flex:none')}>
                   <span style={sx(teammarke('#A855F7', '/assets/av-qq-crystal-ball.webp', 34))}></span>
                   <span style={sx('flex:1;font-size:15px;font-weight:900;color:#A855F7')}>{L.hero.phoneTeamA}</span>
@@ -1708,16 +1763,25 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                       </>
                     )}
 
+                    {/* Das Brett rechnet seine Zellgroesse aus der rechten
+                        Spalte in Station 01 (340 px). In der Leinwand steht
+                        weniger Hoehe zur Verfuegung, gemessen 262 px gegen
+                        316 px Brett, und der Ueberstand hat die Kopfzeile
+                        ueberdeckt. Deshalb hier ein Faktor statt einer
+                        zweiten Rechnung: dieselbe Zeichnung, kleiner. */}
                     {g.showBoard && (
-                      <div style={sx('zoom:.95;width:100%;display:flex;gap:26px;align-items:center;justify-content:center')}>
-                        {this.renderBoard(g)}
-                        <div style={sx('flex:none;display:flex;flex-direction:column;gap:5px;min-width:0')}>
+                      <div style={sx('flex:1;min-height:0;width:100%;margin-top:8px;display:flex;gap:12px;align-items:center;justify-content:center;overflow:hidden')}>
+                        <div style={sx('flex:none;transform:scale(.72);transform-origin:center center')}>
+                          {this.renderBoard(g)}
+                        </div>
+                        <div style={sx('flex:1;max-width:340px;display:flex;flex-direction:column;gap:4px;min-width:0')}>
                           {g.standings.map((s, i) => (
                             <div key={i} style={sx(s.rowStyle)}>
                               <span style={sx(s.discStyle)}></span>
-                              <span style={sx('flex:1;min-width:0;display:flex;flex-direction:column;gap:1px')}>
-                                <span style={sx(s.nameStyle)}>{s.name}</span>
-                                <span style={sx('font-size:13.5px;font-weight:800;color:rgba(246,239,230,.62);line-height:1.2')}>{s.sub}</span>
+                              <span style={sx(s.nameStyle + ';flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis')}>{s.name}</span>
+                              <span style={sx("flex:none;display:flex;align-items:baseline;gap:5px")}>
+                                <span style={sx("font-family:'League Spartan',sans-serif;font-size:24px;font-weight:900;line-height:1;color:#F6EFE6;font-variant-numeric:tabular-nums")}>{s.zahl}</span>
+                                <span style={sx('font-size:12.5px;font-weight:800;color:rgba(246,239,230,.55);white-space:nowrap')}>{s.einheit}</span>
                               </span>
                             </div>
                           ))}
@@ -1954,7 +2018,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
                 {st === 'error' && (
                   <p role="alert" style={sx('margin:14px 0 0;color:#FCA5A5;font-weight:700;font-size:14px;text-align:center')}>
-                    {L.form.errorPre}<a href="mailto:hallo@cozywolf.de" style={sx(`color:${AKZENT}`)}>hallo@cozywolf.de</a>{L.form.errorPost}
+                    {L.form.errorPre}<a href="mailto:hallo@cozywolf.de" data-verweis="" style={sx(`color:${AKZENT}`)}>hallo@cozywolf.de</a>{L.form.errorPost}
                   </p>
                 )}
 
@@ -1970,7 +2034,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   <a href={INSTA_URL} target="_blank" rel="noopener" style={sx('color:#F6EFE6;font-weight:700')}>{INSTA_HANDLE}</a>
                 </p>
                 <p style={sx('margin:14px auto 0;max-width:440px;text-align:center;font-size:12.5px;line-height:1.5;color:rgba(246,239,230,.62);font-weight:500')}>
-                  {L.form.privacy1}<a href="/datenschutz" style={sx(`color:${AKZENT};font-weight:700`)}>{L.form.privacyLink}</a>{L.form.privacy2}
+                  {L.form.privacy1}<a href="/datenschutz" data-verweis="" style={sx(`color:${AKZENT};font-weight:700`)}>{L.form.privacyLink}</a>{L.form.privacy2}
                 </p>
               </form>
             )}
@@ -2004,9 +2068,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           <div data-m="foot" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:30px 32px;display:flex;align-items:center;gap:20px;font-size:14px;font-weight:600;color:rgba(246,239,230,.62)')}>
             <img src={LOGO} alt="" width={26} height={26} style={sx('width:26px;height:26px')} />
             <span style={sx('white-space:nowrap')}>{L.footer.city}</span>
-            <a href="mailto:hallo@cozywolf.de" style={sx(`color:${AKZENT}`)}>hallo@cozywolf.de</a>
-            <a href="/impressum" style={sx(`color:${AKZENT}`)}>{L.footer.imprint}</a>
-            <a href="/datenschutz" style={sx(`color:${AKZENT}`)}>{L.footer.privacy}</a>
+            <a href="mailto:hallo@cozywolf.de" data-verweis="" style={sx(`color:${AKZENT}`)}>hallo@cozywolf.de</a>
+            <a href="/impressum" data-verweis="" style={sx(`color:${AKZENT}`)}>{L.footer.imprint}</a>
+            <a href="/datenschutz" data-verweis="" style={sx(`color:${AKZENT}`)}>{L.footer.privacy}</a>
             <a href="https://instagram.com/cozywolf.events" style={sx(`margin-left:auto;display:flex;align-items:center;gap:8px;color:${AKZENT}`)}>@cozywolf.events</a>
           </div>
           <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:0 32px 26px;font-size:12.5px;font-weight:600;color:rgba(246,239,230,.5)')}>{L.footer.aiNote}</div>

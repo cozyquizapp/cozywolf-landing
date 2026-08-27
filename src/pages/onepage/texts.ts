@@ -116,7 +116,11 @@ const de: OnePageDict = {
   },
   sim: {
     teams: {
-      g: 'Quiz-Mafia', p: 'Glühbirnen', y: 'Hirnsturm', o: 'Pub-Crawl-Profis', b: 'Frag-Mich-Was-Leichtes',
+      // Die Schluessel sind die der drei Teams auf dem Brett (d = Donut,
+      // s = Erdbeere, b = Papierboot). Vorher standen hier g, p, y, o und b
+      // aus dem alten Sechserfeld, und weil d und s darin fehlten, blieben im
+      // Spielstand zwei von drei Namen leer.
+      d: 'Quiz-Mafia', s: 'Pub-Crawl-Profis', b: 'Frag-Mich-Was-Leichtes',
     },
     questions: [
       { cat: 'Mu-Cho', col: '#3B82F6', text: 'Was verschickte Netflix, bevor es Streaming gab?',
@@ -317,7 +321,7 @@ const en: OnePageDict = {
   },
   sim: {
     teams: {
-      g: 'Quiz Mafia', p: 'Lightbulbs', y: 'Brainstorm', o: 'Pub Crawl Pros', b: 'Ask-Me-Something-Easy',
+      d: 'Quiz Mafia', s: 'Pub Crawl Pros', b: 'Ask-Me-Something-Easy',
     },
     questions: [
       { cat: 'Mu-Cho', col: '#3B82F6', text: 'What did Netflix ship before streaming existed?',
