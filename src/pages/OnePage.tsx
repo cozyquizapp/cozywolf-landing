@@ -104,6 +104,8 @@ const GRUPPE = [
  * der App wandern, loest sich der Rest von selbst.
  */
 const WORT_OBJEKT = [4, 2, 3, 0, 1];
+/** Umkehrung: welches Wort gehoert zu welchem Objekt. Fuer das Zeigen. */
+const OBJEKT_WORT = GRUPPE.map((_, i) => WORT_OBJEKT.indexOf(i));
 
 const CAT_META = [
   { key: 'mucho', col: '#3B82F6', icon: '/assets/cat-mucho.webp' },
@@ -124,7 +126,7 @@ type OPState = {
   arenaRound?: number;
   wallScale?: number;
   beam?: boolean; beamWelcome?: boolean;
-  johFan?: boolean; hookI?: number;
+  johFan?: boolean; hookI?: number; hookVor?: number | null;
   tick?: number; hbOn?: number | null; duoHover?: number | null;
   probeCat?: string; probePick?: number | null;
   guessRaw?: string; guessDone?: boolean;
@@ -140,6 +142,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   _spielSichtbar = false;
   _spielIO: IntersectionObserver | undefined;
   _reduziert = false;
+  // Solange der Zeiger auf einem Objekt liegt, wechselt die Ueberschrift nicht
+  // von selbst weiter. Sonst springt sie einem unter der Hand weg.
+  _wortHalt = false;
   wallRO: ResizeObserver | undefined;
   io: IntersectionObserver | undefined;
   private _beamT: ReturnType<typeof setTimeout> | undefined;
@@ -287,8 +292,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       this.arenaTick();
     }, 2600);
     this._hookT = setInterval(() => {
-      if (document.hidden) return;
-      this.setState(s => ({ hookI: (s.hookI ?? 0) + 1 }));
+      if (document.hidden || this._wortHalt) return;
+      this.setState(s => ({ hookVor: s.hookI ?? 0, hookI: (s.hookI ?? 0) + 1 }));
     }, 6800);
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduced) return;
@@ -460,8 +465,11 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const n = L.hero.hooks.length;
     const hook = L.hero.hooks[hookI % n];
     // Das Wort davor bleibt waehrend des Wechsels stehen und laeuft nach oben
-    // hinaus. Beim allerersten Aufbau gibt es keins, dann faellt es weg.
-    const vorher = hookI > 0 ? L.hero.hooks[(hookI - 1) % n] : null;
+    // hinaus. Es steht im Zustand und wird nicht aus hookI-1 erraten: beim
+    // Zeigen auf ein Objekt springt die Ueberschrift auf ein beliebiges Wort,
+    // und dann ist der Vorgaenger eben nicht das Wort davor in der Liste.
+    const vorI = this.state.hookVor ?? null;
+    const vorher = vorI == null ? null : L.hero.hooks[vorI % n];
     const objekt = GRUPPE[WORT_OBJEKT[hookI % n] % GRUPPE.length];
 
     return (
@@ -469,16 +477,23 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         <div aria-hidden="true" style={sx('position:absolute;top:-340px;left:50%;transform:translateX(-50%);width:1500px;height:980px;background:radial-gradient(ellipse at center,rgba(246,239,230,.05),rgba(10,8,20,0) 62%);pointer-events:none')}></div>
 
         <div data-shell="" data-m="hero" style={sx('position:relative;z-index:2;flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);align-items:center;gap:56px;width:100%;max-width:1180px;margin:0 auto;padding:88px 32px 72px;box-sizing:border-box')}>
-          <div style={sx('min-width:0')}>
+          <div style={sx('position:relative;z-index:1;min-width:0')}>
             <p style={sx(`margin:0 0 22px;display:flex;align-items:center;gap:13px;font-size:12px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);animation:cwRise .8s ${EASE} both`)}>
               {L.hero.kicker}
               <span aria-hidden="true" style={sx('flex:1;max-width:110px;height:1px;background:linear-gradient(90deg,rgba(246,239,230,.20),transparent)')}></span>
             </p>
             <h1 data-aufloesen="" style={sx("margin:0;font-family:'League Spartan',sans-serif;font-weight:900;font-size:clamp(56px,8.6vw,142px);line-height:.84;letter-spacing:-.038em;color:#F6EFE6;will-change:transform")}>
-              <span style={sx('position:relative;display:block;padding:.14em .1em .06em;margin:-.14em -.1em -.06em;overflow:hidden;white-space:nowrap')}>
+              {/* Die Zeile ist breiter als ihre Spalte. Gemessen bei 1440 px
+                  Fensterbreite: "Bauchgefuehl" ist 647 px breit, die Spalte
+                  620 px, also wurden 27 px abgeschnitten. Statt die Schrift
+                  fuer alle zu verkleinern, darf das lange Wort in die Luft
+                  zwischen Text und Objekten laufen. Es passiert HINTER den
+                  Objekten (z-Index), und geklammert bleibt es trotzdem, sonst
+                  gaebe es keine Walze. */}
+              <span data-wortzeile="" style={sx('position:relative;display:block;padding:.14em .1em .06em;margin:-.14em -.1em -.06em;overflow:hidden;white-space:nowrap')}>
                 {vorher && (
                   <span key={`aus-${hookI}`} aria-hidden="true"
-                    style={sx(`position:absolute;left:.1em;top:.14em;white-space:nowrap;color:${GRUPPE[WORT_OBJEKT[(hookI - 1) % n] % GRUPPE.length].farbe}`)}>
+                    style={sx(`position:absolute;left:.1em;top:.14em;white-space:nowrap;color:${GRUPPE[WORT_OBJEKT[(vorI ?? 0) % n] % GRUPPE.length].farbe}`)}>
                     {vorher.split('').map((ch, j) => (
                       <span key={j} className="cwWortAus" style={sx(`animation-delay:${(j * 0.032).toFixed(3)}s`)}>{ch === ' ' ? '\u00A0' : ch}</span>
                     ))}
@@ -512,18 +527,45 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             <p style={sx(`margin:24px 0 0;animation:cwRise .8s ${EASE} both .42s;font-size:11.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)`)}>{L.hero.availability}</p>
           </div>
 
-          <div data-treiben="" data-m="hgruppe" aria-hidden="true" style={sx('position:relative;align-self:center;width:100%;aspect-ratio:1/1;pointer-events:none')}>
+          {/* z-Index 3: die Objekte stehen ueber der Ueberschrift, damit das
+              lange Wort HINTER ihnen durchlaeuft und nicht darueber.
+              aria-hidden bleibt, es ist Bild und kein Inhalt; die Objekte sind
+              trotzdem mit der Tastatur erreichbar, weil sie als Gruppe den
+              Wortwechsel steuern. */}
+          <div data-treiben="" data-m="hgruppe" aria-hidden="true" style={sx('position:relative;z-index:3;align-self:center;width:100%;aspect-ratio:1/1;pointer-events:none')}>
             {GRUPPE.map((k, i) => {
               // Das Objekt zum aktuellen Wort steht vorn, die anderen treten
               // zurueck. Kein Ausblenden, nur weniger Licht: sie bleiben die
               // Gruppe, aus der eines gerade gemeint ist.
               const wach = i === WORT_OBJEKT[hookI % n] % GRUPPE.length;
+              // Wolfs Frage: "koennte sich das wort beim drueber hovern
+              // veraendern links oder ist das too much?" Nicht zu viel, aber
+              // andersherum: nicht das Wort reagiert auf den Zeiger, sondern
+              // das Objekt. Eine Ueberschrift, die wechselt, weil der Zeiger
+              // sie zufaellig streift, fuehlt sich unsicher an; ein Objekt,
+              // das man absichtlich anfaehrt, ist eine Frage, und das Wort ist
+              // die Antwort. Auf dem Handy gibt es kein Zeigen, dort laeuft
+              // weiter der Takt.
+              const zeigen = () => {
+                if (this._coarse) return;
+                this._wortHalt = true;
+                const w = OBJEKT_WORT[i];
+                if (w < 0 || (this.state.hookI ?? 0) % n === w) return;
+                this.setState(st => ({ hookVor: st.hookI ?? 0, hookI: w }));
+              };
               return (
               <span key={k.av}
+                onMouseEnter={zeigen} onFocus={zeigen}
+                onMouseLeave={() => { this._wortHalt = false; }}
                 className={k.beat ? 'cwKachel cwKachel--beat' : 'cwKachel'}
                 style={sx(`position:absolute;left:${k.x}%;top:${k.y}%;width:${k.gr}%;aspect-ratio:1/1;pointer-events:auto;`
                   + `--r:${k.r}deg;--d:${k.d}s;--tx:${k.tx};--ty:${k.ty};--tr:${k.tr};`
-                  + `--s:${wach ? 1.06 : 1};opacity:${wach ? 1 : 0.52};z-index:${wach ? 4 : 1};`
+                  // Die Ebenen bleiben unangetastet. Wolf: "ich wuerde glaube ich die
+                  // ebenen der kacheln nicht aendern, das sah vorher besser aus".
+                  // Stimmt: die Groessen sind eine Tiefenstaffelung, wer die
+                  // Reihenfolge umsortiert, zerlegt die Komposition. Es genuegt
+                  // vollkommen, wenn das gemeinte Objekt heller und etwas groesser ist.
+                  + `--s:${wach ? 1.06 : 1};opacity:${wach ? 1 : 0.52};`
                   + 'border-radius:16%;'
                   + `background-image:url(${k.av}),linear-gradient(180deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.06) 18%,rgba(255,255,255,0) 50%,rgba(0,0,0,.16) 78%,rgba(0,0,0,.34) 100%);`
                   + `background-color:${k.farbe};`

@@ -95,6 +95,10 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
    durchwechseln 1-5 wirkt so nicht so gut weil es auf dem handy hoch und
    runter schiebt, das checkt man nicht so". Der Farbschleier je Abschnitt
    ([data-cw-grund] oben) bleibt, den hat er nicht bemaengelt. */
+/* Die Wechselzeile der Ueberschrift darf nach rechts ueber ihre Spalte
+   hinaus, damit das laengste Wort nicht beschnitten wird. Nur ab 1200 px,
+   darunter ist die Spalte breit genug und der Platz daneben fehlt. */
+@media (min-width:1200px){[data-wortzeile]{width:calc(100% + 190px)}}
 summary::-webkit-details-marker{display:none}
 summary{list-style:none;cursor:pointer}
 html{scroll-behavior:smooth;scroll-padding-top:88px}
