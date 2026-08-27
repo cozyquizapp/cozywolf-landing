@@ -460,6 +460,11 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const L = this.T;
     const open = !!this.state.blob;
     const on = this.state.hbOn ?? null;
+    // Der gefuellte Knopf ist btn0, „Gratis fuer Test-Teams". Das sieht nach
+    // einer Verwechslung aus - normalerweise gehoert die Buchung nach vorn -
+    // ist aber Absicht: Wolf hat aktuell noch keine Kunden und braucht zuerst
+    // Test-Teams (2026-08-27). Sobald Termine laufen, gehoert „Termin anfragen"
+    // auf Platz 0 und das Gratisangebot auf Platz 1.
     const hb = (i: number) => {
       const hot = on === i, cold = on !== null && !hot;
       const primary = i === 0;

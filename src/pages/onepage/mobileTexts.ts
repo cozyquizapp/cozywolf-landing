@@ -92,11 +92,11 @@ const de: MobileDict = {
   modes: {
     label: 'Die Spielarten', h2: 'Zwei Modi, ein Abend',
     sub: 'Tippt einen Modus an, um zu sehen, wie er gespielt wird.',
-    quizChip: 'bis 30 Personen',
+    quizChip: 'bis 40 Personen',
     quizP: 'Der Brettspielabend, in kleinen Teams. Jede richtige Antwort ist ein Zug auf dem Feld.',
     quizTeams: '4 bis 8 Teams',
     quizBullets: [
-      'Teams zu dritt oder viert, ein Handy pro Team.',
+      'Teams zu viert oder fünft, ein Handy pro Team.',
       'Nicht die meisten Felder gewinnen, sondern die größte zusammenhängende Fläche.',
       'Jede gewonnene Frage ist eine Entscheidung.',
     ],
@@ -107,7 +107,7 @@ const de: MobileDict = {
       'Stapeln, Glühbirnen verstärken ein eigenes Feld',
       'Joker, Quiz-Mafia dreht ein Feld um',
     ],
-    arenaChip: 'ab 25 Personen',
+    arenaChip: 'ab 40 Personen',
     arenaP: 'Die große Runde. Jeder spielt am eigenen Handy, acht Fraktionen treten gegeneinander an.',
     arenaFactions: '8 Fraktionen',
     arenaBullets: [
@@ -208,7 +208,7 @@ const de: MobileDict = {
       { q: 'Brauche ich eigene Technik?',
         a: 'Nein. Beamer und Sound bringe ich mit, deine Gäste scannen nur einen QR-Code und spielen im Browser. Keine App, kein Login.' },
       { q: 'Für wie viele Personen funktioniert das?',
-        a: 'Von der kleinen Runde bis zu 100 Personen. Kleine Gruppen erobern das Spielfeld, große Gruppen treten als Fraktionen an. Das Format passt sich an.' },
+        a: 'Von der kleinen Runde bis zu 160 Personen. Kleine Gruppen erobern das Spielfeld, große Gruppen treten als Fraktionen an. Das Format passt sich an.' },
       { q: 'Wie lange dauert ein Quiz-Event?',
         a: 'Meist 90 bis 120 Minuten mit mehreren Runden. Die genaue Länge stimme ich vorher mit dir auf deinen Anlass ab.' },
       { q: 'Was kostet das?',
@@ -261,11 +261,11 @@ const en: MobileDict = {
   modes: {
     label: 'The formats', h2: 'Two modes, one evening',
     sub: 'Tap a mode to see how it’s played.',
-    quizChip: 'up to 30 people',
+    quizChip: 'up to 40 people',
     quizP: 'The board game night, in small teams. Every correct answer is a move on the board.',
     quizTeams: '4 to 8 teams',
     quizBullets: [
-      'Teams of three or four, one phone per team.',
+      'Teams of four or five, one phone per team.',
       'It’s not the most tiles that win, but the largest connected area.',
       'Every question you win is a decision.',
     ],
@@ -276,7 +276,7 @@ const en: MobileDict = {
       'Stack, Lightbulbs reinforce their own tile',
       'Joker, Quiz Mafia flips a tile',
     ],
-    arenaChip: 'from 25 people',
+    arenaChip: 'from 40 people',
     arenaP: 'The big round. Everyone plays on their own phone, eight factions compete.',
     arenaFactions: '8 factions',
     arenaBullets: [
@@ -377,7 +377,7 @@ const en: MobileDict = {
       { q: 'Do I need my own equipment?',
         a: 'No. I bring the projector and sound, your guests just scan a QR code and play in the browser. No app, no login.' },
       { q: 'How many people does it work for?',
-        a: 'From a small round up to 100 people. Small groups conquer the game board, large groups compete as factions. The format adapts.' },
+        a: 'From a small round up to 160 people. Small groups conquer the game board, large groups compete as factions. The format adapts.' },
       { q: 'How long does a quiz event take?',
         a: 'Usually 90 to 120 minutes with several rounds. I agree the exact length with you beforehand to fit your occasion.' },
       { q: 'What does it cost?',
