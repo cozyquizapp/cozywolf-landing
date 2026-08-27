@@ -1768,7 +1768,15 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                         + 'background:linear-gradient(90deg,transparent 34%,rgba(255,250,242,.10) 46%,rgba(255,250,242,.14) 50%,rgba(255,250,242,.07) 55%,transparent 68%);'
                         + `transition:transform ${kipp ? '.18s' : '.7s'} ${EASE}`)}></span>
                     </span>
-                    <span aria-hidden="true" style={sx('position:absolute;inset:0;border-radius:22px;pointer-events:none;background:radial-gradient(ellipse at 46% 44%,transparent 58%,rgba(0,0,0,.32))')}></span>
+                    {/* Hier lag eine runde Abdunklung zu den Ecken hin. Auf
+                        dunklem Grund liest sie sich nicht als Vignette,
+                        sondern als runder heller Fleck in der Mitte, und genau
+                        den hat Wolf am 27.08. noch gesehen, nachdem der
+                        eigentliche Lichtfleck schon weg war. Jetzt dunkelt es
+                        nur noch an den vier Kanten ab, gerade und ohne Mitte. */}
+                    <span aria-hidden="true" style={sx('position:absolute;inset:0;border-radius:22px;pointer-events:none;'
+                      + 'background:linear-gradient(180deg,rgba(0,0,0,.26),transparent 16%,transparent 84%,rgba(0,0,0,.26)),'
+                      + 'linear-gradient(90deg,rgba(0,0,0,.22),transparent 12%,transparent 88%,rgba(0,0,0,.22))')}></span>
                     <div style={sx('position:relative;display:flex;align-items:center;gap:14px;flex:none')}>
                       <span style={sx(g.catPillStyle)}>{g.catName}</span>
                       <span style={sx('font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,239,230,.5);white-space:nowrap')}>{g.statusLine}</span>
