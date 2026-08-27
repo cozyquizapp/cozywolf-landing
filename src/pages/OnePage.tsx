@@ -13,7 +13,7 @@ import type { FormEvent, ReactNode } from 'react';
 import { useLang, setLang, type Lang } from '../lang';
 import { EMAIL, FORMSPREE_ID, INSTA_HANDLE, INSTA_URL } from '../brand';
 import { sx } from './onepage/sx';
-import { KACHEL_VERLAUF, motivAnteil, teammarke } from '../qqKachel';
+import { KACHEL_VERLAUF, motivAnteil, qqGridSize, teammarke } from '../qqKachel';
 import { ONEPAGE_CSS } from './onepage/css';
 import { onePageT, type OnePageDict, type ProbeDef } from './onepage/texts';
 
@@ -33,12 +33,17 @@ const TEAMS = [
   { id: 'o', color: '#F97316', av: '/assets/av-qq-treasure-chest.webp' },
   { id: 'b', color: '#3B82F6', av: '/assets/av-qq-table-lamp.webp' },
 ];
-const PRESET: [string, number][] = [['y', 29], ['y', 35], ['y', 36], ['p', 40], ['p', 41], ['p', 47], ['o', 31]];
+// Das Brett ist 6x6, weil qqGridSize(5) in der App 6 sagt. Vorher stand hier
+// fest 7x7. Die Choreografie unten ist deshalb neu gesetzt: Wolfs Ablauf
+// (sieben vorbelegte Felder, fuenfzehn Zuege, zwei Klaus, ein Stapel) bleibt,
+// die Feldnummern sind auf 6x6 uebertragen. Index = Zeile * 6 + Spalte.
+const GRID = qqGridSize(TEAMS.length);
+const PRESET: [string, number][] = [['g', 0], ['g', 1], ['o', 18], ['o', 19], ['p', 17], ['y', 23], ['b', 7]];
 type Move = { t: string; c?: number; k?: 'steal' | 'stack'; sk?: number };
 const MOVES: Move[] = [
-  { t: 'g', c: 16 }, { t: 'b', c: 4 }, { t: 'y', c: 10 }, { t: 'o', c: 2 }, { t: 'p', c: 20 },
-  { t: 'g', c: 17 }, { t: 'b', c: 36, k: 'steal' }, { t: 'y', c: 3 }, { t: 'p', c: 19 }, { t: 'g', c: 23 },
-  { t: 'b', c: 18 }, { t: 'g', c: 41, k: 'steal' }, { t: 'y', c: 24 }, { t: 'p', k: 'stack', sk: 40 }, { t: 'o', c: 25 },
+  { t: 'b', c: 21 }, { t: 'y', c: 3 }, { t: 'g', c: 6 }, { t: 'p', c: 16 }, { t: 'y', c: 4 },
+  { t: 'b', c: 27 }, { t: 'g', c: 7, k: 'steal' }, { t: 'y', c: 9 }, { t: 'o', c: 24 }, { t: 'b', c: 28 },
+  { t: 'p', c: 11 }, { t: 'p', c: 23, k: 'steal' }, { t: 'o', c: 25 }, { t: 'b', c: 34 }, { t: 'p', k: 'stack', sk: 17 },
 ];
 const CYCLE = 55, Q_END = 25, R_END = 35;
 
@@ -87,6 +92,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   gameTimer: ReturnType<typeof setInterval> | undefined;
   _spielSichtbar = false;
   _spielIO: IntersectionObserver | undefined;
+  _reduziert = false;
   wallRO: ResizeObserver | undefined;
   io: IntersectionObserver | undefined;
   private _beamT: ReturnType<typeof setTimeout> | undefined;
@@ -146,7 +152,11 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
   arenaTick() {
     const round = (this.state.arenaRound || 0) + 1;
-    if (round > 8) { this.setState({ arenaPts: {}, arenaGain: {}, arenaRound: 0 }); return; }
+    // Nach acht Runden stehen bleiben statt auf null zuruecksetzen. Der
+    // Ruecksprung erzeugte ein 20-Sekunden-Fenster, in dem acht Fraktionen mit
+    // 0 Punkten dastanden. Ein Endstand ist ein Bild, eine Nullreihe ist ein
+    // Fehler, auch wenn sie keiner ist.
+    if (round > 8) return;
     const pts = { ...(this.state.arenaPts || {}) };
     const gain: Record<string, { g: number; hits: number }> = {};
     FACTIONS.forEach(f => {
@@ -158,33 +168,28 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   }
 
   /**
-   * Die beiden Simulationen der Spielarten laufen, solange der Abschnitt zu
-   * sehen ist, und sonst nicht.
+   * Die Rangfolge der Fraktionen fuellt sich, solange der Abschnitt zu sehen
+   * ist, und sonst nicht.
    *
-   * Vorher hingen sie am Aufklappen der Karten: wer nicht mit der Maus
-   * darauf ging, sah ein totes Brett und leere Balken. In der Fassung
-   * „Leinwand" stehen beide Modi dauerhaft nebeneinander, es gibt kein
-   * Aufklappen mehr, an dem sich der Start festmachen koennte. Sichtbarkeit
-   * ist der ehrlichere Ausloeser: rechnen, wenn jemand hinsieht.
+   * Vorher hing sie am Aufklappen der Karten: wer nicht mit der Maus darauf
+   * ging, sah leere Balken. In der Fassung „Leinwand" gibt es kein Aufklappen
+   * mehr, an dem sich der Start festmachen koennte. Sichtbarkeit ist der
+   * ehrlichere Ausloeser: rechnen, wenn jemand hinsieht.
+   *
+   * Das Brett daneben braucht keinen Zeitgeber, es zeigt einen festen
+   * Endstand (siehe gameVals). Die laufende Runde steht im Abschnitt Ablauf.
    */
   spielartenBeobachten() {
     const el = document.getElementById('spielarten');
     if (!el || typeof IntersectionObserver === 'undefined') return;
-    const reduziert = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this._reduziert = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     this._spielIO = new IntersectionObserver(([e]) => {
       this._spielSichtbar = e.isIntersecting;
-      if (e.isIntersecting) {
-        // Bei „weniger Bewegung" einmal rechnen, damit Brett und Balken einen
-        // Stand zeigen, danach still stehen bleiben.
-        if (reduziert) { if (!(this.state.arenaRound || 0)) { this.arenaTick(); this.arenaTick(); this.arenaTick(); } return; }
-        if (!this.gameTimer) this.startGame();
-        if (!(this.state.arenaRound || 0)) this.arenaTick();
-      } else if (!this.state.beam) {
-        // Der Beamer im Abschnitt Ablauf faehrt dieselbe Uhr. Laeuft er, wird
-        // sie hier nicht angehalten.
-        clearInterval(this.gameTimer);
-        this.gameTimer = undefined;
-      }
+      if (!e.isIntersecting || (this.state.arenaRound || 0)) return;
+      this.arenaTick();
+      // Bei „weniger Bewegung" den Endstand in einem Rutsch setzen, statt ihn
+      // ueber zwanzig Sekunden wachsen zu lassen.
+      if (this._reduziert) for (let i = 0; i < 8; i++) this.arenaTick();
     }, { rootMargin: '0px 0px -12% 0px' });
     this._spielIO.observe(el);
   }
@@ -256,7 +261,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     document.addEventListener('mousemove', this._trackMouse, { passive: true });
     this._arenaT = setInterval(() => {
       if (document.hidden) return;
-      if (!this._spielSichtbar) return;
+      if (!this._spielSichtbar || this._reduziert) return;
       this.arenaTick();
     }, 2600);
     this._hookT = setInterval(() => {
@@ -551,7 +556,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
    */
   renderModes() {
     const L = this.T;
-    const g = this.gameVals();
+    // Endstand der Choreografie: alle Zuege gespielt, Wurfphase vorbei.
+    const g = this.gameVals(CYCLE * MOVES.length + R_END + 1);
     const HAAR = 'rgba(246,239,230,.14)';
     const reihen = [
       {
@@ -659,9 +665,16 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   }
 
   // ------------------------------------------------- Brett-Simulation
-  gameVals() {
+  /**
+   * @param festerStand Statt der laufenden Uhr einen festen Zeitpunkt rechnen.
+   *   Station 01 zeigt damit ein fertiges Brett statt eines halb leeren: die
+   *   Choreografie braucht 16 Fragen à 16,5 Sekunden, also viereinhalb
+   *   Minuten. So lange sieht niemand zu. Die laufende Runde steht weiter im
+   *   Abschnitt Ablauf, dort gehoert sie hin, dort ist der Beamer.
+   */
+  gameVals(festerStand?: number) {
     const L = this.T;
-    const tick = this.state.tick ?? 0;
+    const tick = festerStand ?? this.state.tick ?? 0;
     const cycle = Math.floor(tick / CYCLE);
     const t = tick % CYCLE;
     const phase = t < Q_END ? 'q' : (t < R_END ? 'r' : 'b');
@@ -705,7 +718,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const justSet = last && !isStack && last.c !== undefined ? last.c : -1;
     const justStacked = isStack && last.sk !== undefined ? last.sk : -1;
 
-    const GS = 7;
+    const GS = GRID;
     // Feld nutzt die volle Breite der rechten Spalte, die Tabelle sitzt darunter
     const budget = (this.state.boardWinW || 440) - 26;
     const hBudget = (this.state.boardWinH || 520) - 16;
@@ -713,7 +726,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     // dort ist die Zelle 107 px bei 4 px Abstand, also 3,7 Prozent, und der
     // Radius 16 Prozent. Feste Pixel waren auf dieser viel kleineren Zelle
     // fast doppelt so breit und doppelt so rund.
-    const CS = Math.max(26, Math.min(56, Math.floor((budget - 6 * 3) / GS), Math.floor((hBudget - 6 * 3) / GS)));
+    const CS = Math.max(26, Math.min(56, Math.floor((budget - (GS - 1) * 3) / GS), Math.floor((hBudget - (GS - 1) * 3) / GS)));
     const GAP = Math.max(1, Math.round(CS * 0.037));
     const RAD = Math.max(3, Math.round(CS * 0.16));
     const at = (r: number, c: number) => (r < 0 || c < 0 || r >= GS || c >= GS) ? null : (owner[r * GS + c] || null);
@@ -749,7 +762,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       shards: { style: string }[]; sparks: { style: string }[];
     };
 
-    const cells: Cell[] = Array.from({ length: 49 }, (_, i) => {
+    const cells: Cell[] = Array.from({ length: GS * GS }, (_, i) => {
       const tm = owner[i] ? byId[owner[i]] : null;
       const r = Math.floor(i / GS), c = i % GS;
       const base = `position:relative;width:${CS}px;height:${CS}px;display:flex;align-items:center;justify-content:center;box-sizing:border-box;transition:background .45s ${EASE},box-shadow .45s ${EASE};`;

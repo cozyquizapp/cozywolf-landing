@@ -14,7 +14,7 @@ import type { FormEvent, ReactNode } from 'react';
 import { useLang, setLang, type Lang } from '../lang';
 import { FORMSPREE_ID, INSTA_URL, EMAIL } from '../brand';
 import { sx } from './onepage/sx';
-import { motivAnteil, teammarke } from '../qqKachel';
+import { motivAnteil, qqGridSize, teammarke } from '../qqKachel';
 import { mobileT, type MobileDict, type MobileCat } from './onepage/mobileTexts';
 
 const EASE = 'cubic-bezier(.22,1,.36,1)';
@@ -49,20 +49,27 @@ const TEAMS = [
   { id: 'o', color: '#F97316', av: '/assets/av-qq-treasure-chest.webp' },
 ];
 
-// 5x5 fuers Handy: vier Teams, dafuer grosse Felder
+// 6x6, weil qqGridSize(4) in der App 6 sagt (KioskQuiz
+// shared/quarterQuizTypes.ts:257). Hier stand vorher 5x5 mit der Begruendung
+// „dafuer grosse Felder". Das war eine Bequemlichkeit, kein Spielstand: wer
+// mit vier Teams spielt, sieht am Abend ein 6x6.
+const GRID = qqGridSize(TEAMS.length);
 const BOARD = [
-  'g', 'g', '', 'p', 'p',
-  'g', '', 'y', 'p', '',
-  '', 'y', 'y', '', 'p',
-  'o', 'y', '', 'g', '',
-  'o', 'o', '', '', 'g',
+  'g', 'g', '', 'p', 'p', '',
+  'g', '', 'y', 'p', '', '',
+  '', 'y', 'y', '', 'p', 'p',
+  'o', 'y', '', 'g', '', 'p',
+  'o', 'o', '', 'g', '', '',
+  '', 'o', '', '', 'g', 'g',
 ];
 
 type BoardAction = { i: number; id: string; kind: 'set' | 'steal' | 'stack' | 'joker' };
+// Auf 6x6 uebertragen: setzen neben eigenem Gebiet, klauen beim Nachbarn,
+// stapeln auf dem eigenen Feld, Joker als letzter Zug.
 const ACTIONS: BoardAction[] = [
-  { i: 6, id: 'p', kind: 'set' },
-  { i: 16, id: 'o', kind: 'steal' },
-  { i: 8, id: 'p', kind: 'stack' },
+  { i: 10, id: 'p', kind: 'set' },
+  { i: 19, id: 'o', kind: 'steal' },
+  { i: 16, id: 'p', kind: 'stack' },
   { i: 2, id: 'g', kind: 'joker' },
 ];
 
@@ -176,7 +183,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     if (which === 'quiz') {
       this._fill = setInterval(() => {
         this.setState(p => {
-          if (p.open !== 'quiz' || p.step >= 25) {
+          if (p.open !== 'quiz' || p.step >= BOARD.length) {
             clearInterval(this._fill);
             if (p.open === 'quiz') this.startActions();
             return null;
@@ -348,7 +355,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     const L = this.T;
     const s = this.state;
     const acts = s.acts;
-    const GS = 5;
+    const GS = GRID;
     const owner = BOARD.map((b, i) => {
       const ov = acts[i];
       if (ov) return ov.id;
@@ -382,9 +389,9 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             <div style={sx(this.bodyStyle(s.open === 'quiz'))}>
               <div style={sx('min-height:0;overflow:hidden;padding-top:16px;display:flex;flex-direction:column;gap:12px')}>
                 {L.modes.quizBullets.map(b => this.bullet(b, '#FA4BA3'))}
-                <div style={sx('width:100%;max-width:212px;margin:4px auto 0')}>
+                <div style={sx('width:100%;max-width:246px;margin:4px auto 0')}>
                   <div style={sx(`padding:9px;border-radius:16px;background:rgba(246,239,230,.015);border:1.5px solid ${actTeam ? actTeam.color : 'rgba(246,239,230,.1)'};box-shadow:${actTeam ? '0 0 24px ' + actTeam.color + '44' : 'none'};transition:border-color .5s ease,box-shadow .5s ease`)}>
-                    <div style={sx('display:grid;grid-template-columns:repeat(5,1fr);gap:0.72%')}>
+                    <div style={sx(`display:grid;grid-template-columns:repeat(${GS},1fr);gap:0.72%`)}>
                       {owner.map((id, i) => {
                         const ov = acts[i];
                         const t = id ? TEAMS.find(x => x.id === id) : null;

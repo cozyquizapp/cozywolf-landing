@@ -28,7 +28,7 @@ import { useState } from 'react';
 import { useLang, setLang } from '../lang';
 import { sx } from './onepage/sx';
 import { onePageT } from './onepage/texts';
-import { KACHEL_VERLAUF, kachel, motivAnteil, teammarke } from '../qqKachel';
+import { KACHEL_VERLAUF, kachel, motivAnteil, qqGridSize, teammarke } from '../qqKachel';
 
 const CREME = '#F6EFE6';
 const GRUND = '#0A0814';
@@ -238,7 +238,8 @@ function LeinwandA({ L, modi, mobil }: { L: ReturnType<typeof onePageT>; modi: M
 }
 
 /**
- * Das Spielfeld, 7 mal 7, als ruhiges Standbild.
+ * Das Spielfeld als ruhiges Standbild. Die Kantenlaenge kommt aus
+ * qqGridSize() und nicht aus dem Bauchgefuehl: fuenf Teams ergeben 6 mal 6.
  *
  * Geometrie eins zu eins aus OnePage.gameVals(): Abstand 3,7 Prozent der
  * Zelle, Radius 16 Prozent, beides gemessen an der Beamer-Ansicht der App
@@ -250,14 +251,17 @@ function LeinwandA({ L, modi, mobil }: { L: ReturnType<typeof onePageT>; modi: M
  * Bewusst OHNE Simulation: hier steht ein Endstand, kein laufendes Spiel.
  * Auf der Leinwand soll ein Bild haengen, das man lesen kann, ohne zu warten.
  */
+const BRETT_KANTE = qqGridSize(5);   // fuenf Teams -> 6x6, wie in der App
+// Derselbe Endstand, den die Simulation auf /d erreicht (OnePage PRESET +
+// MOVES). Das Mockup zeigt damit kein ausgedachtes Brett, sondern das Bild,
+// das am Ende einer Runde wirklich dasteht.
 const BRETT_BESITZ: (string | null)[] = [
-  null, 'o', 'o', null, null, 'p', null,
-  null, 'o', null, null, 'p', 'p', null,
-  'g', null, null, null, 'p', null, 'y',
-  'g', 'g', null, null, null, 'y', 'y',
-  'g', null, null, 'b', null, 'y', null,
-  null, null, 'b', 'b', null, null, null,
-  null, null, 'b', null, null, null, null,
+  'g', 'g', null, 'y', 'y', null,
+  'g', 'g', null, 'y', null, 'p',
+  null, null, null, null, 'p', 'p',
+  'o', 'o', null, 'b', null, 'p',
+  'o', 'o', null, 'b', 'b', null,
+  null, null, null, null, 'b', null,
 ];
 const BRETT_TEAMS: Record<string, { farbe: string; av: string }> = {
   o: { farbe: '#F97316', av: '/assets/av-qq-treasure-chest.webp' },
@@ -268,7 +272,7 @@ const BRETT_TEAMS: Record<string, { farbe: string; av: string }> = {
 };
 
 function Brett({ cs }: { cs: number }) {
-  const GS = 7;
+  const GS = BRETT_KANTE;
   // Nicht runden: bei 41 px Zelle macht ein gerundeter Abstand aus 3,7 Prozent
   // gemessene 4,9 Prozent, das Brett wird sichtbar luftiger als in der App.
   // Bruchteile von Bildpunkten sind in CSS erlaubt, also nimm sie.

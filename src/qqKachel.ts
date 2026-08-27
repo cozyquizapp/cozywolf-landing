@@ -105,3 +105,23 @@ export function teammarke(farbe: string, av: string, px: number, radius: string 
     + `background-repeat:no-repeat,no-repeat;`
     + `box-shadow:${KANTEN};`;
 }
+
+/**
+ * Kantenlaenge des Spielfelds nach Anzahl der Teams.
+ *
+ * Portiert aus der App, KioskQuiz shared/quarterQuizTypes.ts:257
+ * (Funktion qqGridSize). Dort entscheidet sie ueber room.gridSize, also
+ * ueber das Brett, das am Abend wirklich an der Wand haengt. Die Landing
+ * hatte stattdessen feste Werte: Desktop 7x7 bei fuenf Teams, Handy 5x5 bei
+ * vier. Nach dieser Regel waeren beide 6x6 gewesen. Wer die Seite mit dem
+ * Spiel vergleicht, haette den Unterschied gesehen.
+ *
+ * Bei Aenderung in der App hier mitziehen.
+ */
+export function qqGridSize(teamCount: number): number {
+  if (teamCount <= 2) return 4;   // 4x4 = 16
+  if (teamCount === 3) return 5;  // 5x5 = 25
+  if (teamCount <= 5) return 6;   // 6x6 = 36
+  if (teamCount <= 7) return 7;   // 7x7 = 49
+  return 8;                       // 8 bis 10 Teams -> 8x8 = 64
+}
