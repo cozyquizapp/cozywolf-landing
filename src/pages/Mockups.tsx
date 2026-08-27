@@ -129,12 +129,60 @@ const ANLASS_ENTWUERFE = {
 } as const;
 type AnlassEntwurf = keyof typeof ANLASS_ENTWUERFE;
 
+/**
+ * Station 03, Ausprobieren. Drei Entwuerfe, alle in der Handschrift A.
+ *
+ * Die Station hat als einzige schon ein echtes Objekt: das Handy. Die Frage
+ * ist deshalb nicht "was steht rechts", sondern "wessen Bildschirm zeigen
+ * wir". Am Abend gibt es zwei: die Wand und die Hand.
+ */
+const PROBE_ENTWUERFE = {
+  1: {
+    name: 'Das Handy',
+    idee: {
+      de: 'Wie heute, nur ohne Kasten: der Anspruch steht als Zeile an einer Haarlinie statt in einem gerahmten Feld, die fuenf Fragetypen als Reihe unter dem Text statt als Spalte daneben. Rechts das Handy. Am wenigsten Risiko, am wenigsten Neues.',
+      en: 'Like today, minus the box: the claim sits on a hairline instead of a framed panel, the five question types run as a row under the text instead of a column beside it. Phone on the right. Least risk, least new.',
+    },
+  },
+  2: {
+    name: 'Die Wand',
+    idee: {
+      de: 'Kein Geraet. Rechts steht die Frage so, wie sie am Abend an der Wand steht: gross, mit den Antworten darunter. Das passt zu der Verabredung, dass der Desktop die Leinwand ist und das Handy die Mobilfassung. Risiko: die Station heisst „so sieht es auf eurem Handy aus", und dann kommt kein Handy.',
+      en: 'No device. On the right, the question appears the way it does on the wall: large, answers underneath. This matches the agreement that desktop is the canvas and the phone is the mobile version. Risk: the station says \u201cthis is what it looks like on your phone\u201d and then shows no phone.',
+    },
+  },
+  4: {
+    name: 'Handy und Stapel',
+    idee: {
+      de: 'Das Handy vorn, dahinter faechern die anderen vier Fragetypen auf. Loest den Widerspruch der beiden anderen: die Ueberschrift sagt „so sieht es auf eurem Handy aus", also muss ein Handy da sein, und gleichzeitig sieht man auf einen Blick, dass es fuenf verschiedene sind.',
+      en: 'Phone in front, the other four question types fanned out behind it. Resolves the contradiction in the other two: the heading says \u201cthis is what it looks like on your phone\u201d, so a phone has to be there, and at the same time you see at a glance that there are five different types.',
+    },
+  },
+  3: {
+    name: 'Der Stapel',
+    idee: {
+      de: 'Die fuenf Fragetypen liegen als gedrehter Stapel uebereinander, wie die Objektgruppe im Hero. Der vorderste ist lesbar, die anderen schauen hervor. Zeigt auf einen Blick, dass es fuenf verschiedene sind, und benutzt dieselbe Anordnung wie oben.',
+      en: 'The five question types lie in a rotated stack, like the hero cluster. The front one is readable, the others peek out. Shows at a glance that there are five different ones, and reuses the arrangement from the top.',
+    },
+  },
+} as const;
+type ProbeEntwurf = keyof typeof PROBE_ENTWUERFE;
+
+const PROBE_TYPEN = [
+  { k: 'mucho', icon: '/assets/cat-mucho.webp', col: '#3B82F6' },
+  { k: 'schaetzchen', icon: '/assets/cat-schaetzchen.webp', col: '#F59E0B' },
+  { k: 'cheese', icon: '/assets/cat-cheese.webp', col: '#8B5CF6' },
+  { k: 'zehn', icon: '/assets/cat-10v10.webp', col: '#22C55E' },
+  { k: 'tuete', icon: '/assets/cat-buntetuete.webp', col: '#EF4444' },
+] as const;
+
 export default function Mockups() {
   const lang = useLang();
   const L = onePageT(lang);
-  const [station, setStation] = useState<'01' | '02'>('01');
+  const [station, setStation] = useState<'01' | '02' | '03'>('01');
   const [brief, setBrief] = useState<Brief>('A');
   const [entwurf, setEntwurf] = useState<AnlassEntwurf>(1);
+  const [probe, setProbe] = useState<ProbeEntwurf>(1);
   const [mobil, setMobil] = useState(false);
 
   const modi: Modus[] = [
@@ -148,7 +196,9 @@ export default function Mockups() {
     },
   ];
 
-  const inhalt = station === '02'
+  const inhalt = station === '03'
+    ? <Probieren L={L} mobil={mobil} entwurf={probe} />
+    : station === '02'
     ? <Anlaesse L={L} mobil={mobil} entwurf={entwurf} />
     : brief === 'A' ? <LeinwandA L={L} modi={modi} mobil={mobil} />
       : brief === 'B' ? <SpielfeldB L={L} modi={modi} mobil={mobil} />
@@ -160,14 +210,17 @@ export default function Mockups() {
 
       <header style={sx(`position:sticky;top:0;z-index:20;background:rgba(10,8,20,.92);backdrop-filter:blur(14px);border-bottom:1px solid ${HAAR}`)}>
         <div style={sx('max-width:1240px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap')}>
-          <Schalter werte={[{ k: '01', label: '01  Spielarten' }, { k: '02', label: '02  Anlaesse' }]}
-            aktiv={station} waehle={k => setStation(k as '01' | '02')} />
+          <Schalter werte={[{ k: '01', label: '01  Spielarten' }, { k: '02', label: '02  Anlaesse' }, { k: '03', label: '03  Ausprobieren' }]}
+            aktiv={station} waehle={k => setStation(k as '01' | '02' | '03')} />
           <span style={sx('flex:1')}></span>
           {station === '01'
             ? <Schalter werte={(['A', 'B', 'C'] as Brief[]).map(k => ({ k, label: `${k}  ${HANDSCHRIFTEN[k].name}` }))}
               aktiv={brief} waehle={k => setBrief(k as Brief)} />
-            : <Schalter werte={([1, 2, 4, 3] as AnlassEntwurf[]).map(k => ({ k: String(k), label: `A${k}  ${ANLASS_ENTWUERFE[k].name}` }))}
-              aktiv={String(entwurf)} waehle={k => setEntwurf(Number(k) as AnlassEntwurf)} />}
+            : station === '02'
+              ? <Schalter werte={([1, 2, 4, 3] as AnlassEntwurf[]).map(k => ({ k: String(k), label: `A${k}  ${ANLASS_ENTWUERFE[k].name}` }))}
+                aktiv={String(entwurf)} waehle={k => setEntwurf(Number(k) as AnlassEntwurf)} />
+              : <Schalter werte={([1, 4, 2, 3] as ProbeEntwurf[]).map(k => ({ k: String(k), label: `P${k}  ${PROBE_ENTWUERFE[k].name}` }))}
+                aktiv={String(probe)} waehle={k => setProbe(Number(k) as ProbeEntwurf)} />}
           <Schalter werte={[{ k: 'd', label: 'Desktop' }, { k: 'm', label: 'Mobil' }]}
             aktiv={mobil ? 'm' : 'd'} waehle={k => setMobil(k === 'm')} />
           <Schalter werte={[{ k: 'de', label: 'DE' }, { k: 'en', label: 'EN' }]}
@@ -176,7 +229,9 @@ export default function Mockups() {
         <div style={sx(`max-width:1000px;margin:0 auto;padding:0 24px 14px;font-size:14.5px;line-height:1.55;color:rgba(246,239,230,.66)`)}>
           {station === '01'
             ? <><b style={sx(`color:${CREME}`)}>{brief}. {HANDSCHRIFTEN[brief].name}.</b> {HANDSCHRIFTEN[brief].idee[lang]}</>
-            : <><b style={sx(`color:${CREME}`)}>A{entwurf}. {ANLASS_ENTWUERFE[entwurf].name}.</b> {ANLASS_ENTWUERFE[entwurf].idee[lang]} <i style={sx('opacity:.7')}>Die Handschrift steht, es geht nur um die dritte Spalte.</i></>}
+            : station === '02'
+              ? <><b style={sx(`color:${CREME}`)}>A{entwurf}. {ANLASS_ENTWUERFE[entwurf].name}.</b> {ANLASS_ENTWUERFE[entwurf].idee[lang]} <i style={sx('opacity:.7')}>Die Handschrift steht, es geht nur um die dritte Spalte.</i></>
+              : <><b style={sx(`color:${CREME}`)}>P{probe}. {PROBE_ENTWUERFE[probe].name}.</b> {PROBE_ENTWUERFE[probe].idee[lang]} <i style={sx('opacity:.7')}>Statisch, immer Mu-Cho: es geht um die Form, nicht um die Bedienung.</i></>}
         </div>
       </header>
 
@@ -537,6 +592,191 @@ function Anlaesse({ L, mobil, entwurf }: {
           </div>
         );
       })}
+    </section>
+  );
+}
+
+/**
+ * Station 03, Ausprobieren. Drei Entwuerfe, alle Handschrift A.
+ *
+ * Statisch: gezeigt wird immer derselbe Fragetyp (Mu-Cho). Ein Mockup soll
+ * die Form entscheiden, nicht die Bedienung; die Bedienung steht schon auf
+ * der echten Seite und bleibt, welcher Entwurf auch gewinnt.
+ */
+function Probieren({ L, mobil, entwurf }: {
+  L: ReturnType<typeof onePageT>; mobil: boolean; entwurf: ProbeEntwurf;
+}) {
+  const typ = PROBE_TYPEN[0];
+  const cat = L.probe.cats.mucho;
+  const frage = L.probe.probes.mucho;
+  const opts = ('opts' in frage ? frage.opts : []) as string[];
+  const AKZENT = typ.col;
+
+  // Die Frage, wie sie am Abend aussieht. Fuer P1 im Handy, fuer P2 an der
+  // Wand, fuer P3 auf dem vordersten Blatt des Stapels.
+  const frageBild = (gross: boolean) => (
+    <>
+      <span style={sx(`display:inline-flex;align-items:center;gap:8px;padding:${gross ? '7px 15px' : '6px 13px'};border-radius:999px;`
+        + `background:${AKZENT}1f;border:1px solid ${AKZENT}80;font-size:${gross ? '13px' : '11px'};font-weight:900;color:${AKZENT}`)}>
+        <span style={sx(`display:block;width:${gross ? 20 : 16}px;height:${gross ? 20 : 16}px;background:url(${typ.icon}) center/contain no-repeat`)}></span>
+        {cat.name}
+      </span>
+      <div style={sx(`margin:${gross ? '20px' : '12px'} 0 ${gross ? '22px' : '14px'};font-size:${gross ? '30px' : '16px'};`
+        + `font-weight:900;line-height:1.28;color:${CREME};text-wrap:balance`)}>{frage.q}</div>
+      <div style={sx(`display:grid;gap:${gross ? '10px' : '8px'}`)}>
+        {opts.map((o, i) => (
+          <span key={o} style={sx(`display:flex;align-items:center;gap:${gross ? 14 : 10}px;padding:${gross ? '14px 16px' : '11px 12px'};`
+            + `border-radius:${gross ? 16 : 13}px;box-sizing:border-box;`
+            + `background:${i === 0 ? AKZENT + '22' : 'rgba(246,239,230,.035)'};`
+            + `border:1px solid ${i === 0 ? AKZENT : 'rgba(246,239,230,.09)'};`
+            + `box-shadow:${i === 0 ? '0 0 22px ' + AKZENT + '55' : 'none'}`)}>
+            <span style={sx(`font-family:${SPARTAN};font-size:${gross ? 26 : 20}px;font-weight:900;line-height:1;color:${AKZENT}`)}>{i + 1}</span>
+            <span style={sx(`font-size:${gross ? '17px' : '13.5px'};font-weight:700;color:${CREME}`)}>{o}</span>
+          </span>
+        ))}
+      </div>
+    </>
+  );
+
+  const text = (
+    <div style={sx('min-width:0')}>
+      <Kicker nummer="[ 03 ]" label={L.probe.label} />
+      <h2 style={sx(`margin:0 0 16px;font-family:${SPARTAN};`
+        + `font-size:${mobil ? '40px' : 'clamp(44px,5vw,78px)'};font-weight:900;line-height:.92;letter-spacing:-.032em;color:${CREME}`)}>
+        {L.probe.h2}
+      </h2>
+      <p style={sx('margin:0 0 26px;max-width:54ch;font-size:18px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.8)')}>{L.probe.sub}</p>
+
+      {/* Der Anspruch stand bisher in einem gerahmten Kasten mit farbigem
+          Rand. Das ist Karten-Vokabular, dasselbe, das bei 01 und 02 raus
+          ist. Eine Haarlinie links reicht vollkommen. */}
+      <div style={sx(`margin:0 0 26px;padding-left:18px;border-left:2px solid ${AKZENT}`)}>
+        <div style={sx(`font-size:18px;font-weight:900;line-height:1.35;color:${AKZENT};margin-bottom:6px`)}>{cat.claim}</div>
+        <div style={sx('font-size:15.5px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78)')}>{cat.detail}</div>
+      </div>
+
+      <div style={sx('display:flex;flex-direction:column;gap:10px;font-size:15.5px;font-weight:700;color:#F6EFE6;margin-bottom:26px')}>
+        <span style={sx('display:flex;align-items:center;gap:11px')}><span style={sx('color:#FA4BA3')}>✓</span>{L.probe.check1}</span>
+        <span style={sx('display:flex;align-items:center;gap:11px')}><span style={sx('color:#FA4BA3')}>✓</span>{L.probe.check2}</span>
+      </div>
+
+      {/* Die fuenf Typen als Reihe unter dem Text statt als Spalte daneben:
+          die Spalte kostete 200 px Breite genau dort, wo der Text sie
+          braucht. Im Stapel-Entwurf faellt die Reihe weg, dort sind die fuenf
+          das Bild. */}
+      {entwurf !== 3 && (
+        <div style={sx('display:flex;flex-wrap:wrap;gap:9px')}>
+          {PROBE_TYPEN.map((t, i) => (
+            <span key={t.k} style={sx('display:inline-flex;align-items:center;gap:9px;padding:10px 15px;border-radius:999px;'
+              + `font-size:14.5px;font-weight:900;white-space:nowrap;`
+              + `background:${i === 0 ? t.col + '26' : 'rgba(246,239,230,.03)'};`
+              + `border:1px solid ${i === 0 ? t.col : 'rgba(246,239,230,.1)'};`
+              + `color:${i === 0 ? t.col : 'rgba(246,239,230,.78)'}`)}>
+              <span style={sx(`display:block;width:22px;height:22px;background:url(${t.icon}) center/contain no-repeat`)}></span>
+              {L.probe.cats[t.k].name}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  const handy = (
+    <div style={sx(`width:${mobil ? '100%' : '340px'};max-width:340px;aspect-ratio:340/580;box-sizing:border-box;`
+      + 'padding:18px 15px;display:flex;flex-direction:column;border-radius:44px;'
+      + 'background:linear-gradient(180deg,#150c20,#0a0714);border:7px solid #06060c;box-shadow:0 30px 70px rgba(0,0,0,.6)')}>
+      <div style={sx('display:flex;align-items:center;gap:10px;padding:10px 11px;border-radius:16px;'
+        + 'border:1px solid rgba(168,85,247,.45);background:rgba(168,85,247,.07);margin-bottom:12px;flex:none')}>
+        <span style={sx(teammarke('#A855F7', '/assets/av-qq-crystal-ball.webp', 30))}></span>
+        <span style={sx('flex:1;font-size:14px;font-weight:900;color:#A855F7')}>{L.hero.phoneTeamA}</span>
+      </div>
+      <div style={sx(`flex:1;min-height:0;padding:16px 14px;border-radius:20px;border:1px solid ${AKZENT}40;background:rgba(246,239,230,.025);box-sizing:border-box`)}>
+        {frageBild(false)}
+      </div>
+      <div style={sx('margin-top:auto;padding-top:11px;text-align:center;font-size:11px;font-weight:800;color:rgba(246,239,230,.62);flex:none')}>
+        {L.probe.tapAnswer}
+      </div>
+    </div>
+  );
+
+  const wand = (
+    <div style={sx('width:100%;max-width:520px;box-sizing:border-box;padding:34px 32px;'
+      + `border-radius:26px;border:1px solid ${HAAR};background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.05),transparent 70%)`)}>
+      {frageBild(true)}
+    </div>
+  );
+
+  // Fuenf Blaetter, gedreht und versetzt, das vorderste lesbar.
+  const stapel = (
+    <div style={sx(`position:relative;width:100%;max-width:${mobil ? '320px' : '420px'};aspect-ratio:1/1.06`)}>
+      {PROBE_TYPEN.slice().reverse().map((t, j) => {
+        const i = PROBE_TYPEN.length - 1 - j;      // 4 hinten ... 0 vorn
+        const vorn = i === 0;
+        const dreh = [-2, 5, -7, 9, -11][i];
+        return (
+          <div key={t.k} className="mkKachel"
+            // Nach oben rechts aufgefaechert, nicht gerade gestapelt: gerade
+            // gestapelt verdeckt das vorderste Blatt genau die Kategorie-Marke
+            // der hinteren, und dann sieht man nicht, dass es fuenf
+            // verschiedene sind. Das ist aber die ganze Aussage.
+            style={sx(`position:absolute;left:${i * 6}%;top:${(4 - i) * 4.2}%;width:76%;height:83%;`
+              + `--r:${dreh}deg;box-sizing:border-box;border-radius:22px;padding:${vorn ? '22px 20px' : '16px'};`
+              + `background:linear-gradient(180deg,#1a1329,#120d1e);border:1px solid ${vorn ? t.col + '80' : 'rgba(246,239,230,.13)'};`
+              + `box-shadow:0 ${vorn ? 26 : 14}px ${vorn ? 46 : 26}px rgba(0,0,0,.5)`)}>
+            {vorn ? frageBild(false) : (
+              <span style={sx(`display:inline-flex;align-items:center;gap:8px;padding:6px 13px;border-radius:999px;`
+                + `background:${t.col}1f;border:1px solid ${t.col}66;font-size:11.5px;font-weight:900;color:${t.col}`)}>
+                <span style={sx(`display:block;width:16px;height:16px;background:url(${t.icon}) center/contain no-repeat`)}></span>
+                {L.probe.cats[t.k].name}
+              </span>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+
+  // P4: das Handy vorn, die vier uebrigen Typen dahinter aufgefaechert. Sie
+  // zeigen nur ihre Marke, mehr braucht es nicht: sie beantworten die Frage
+  // "wie viele gibt es", nicht "wie sieht die Frage aus".
+  const handyStapel = (
+    <div style={sx(`position:relative;width:100%;max-width:${mobil ? '330px' : '470px'};aspect-ratio:${mobil ? '330/600' : '470/620'}`)}>
+      {PROBE_TYPEN.slice(1).reverse().map((t, j) => {
+        const i = 4 - j;                       // 4 ganz hinten ... 1 direkt hinter dem Handy
+        return (
+          <div key={t.k} className="mkKachel"
+            // Treppe nach oben rechts, und die Marke sitzt an der RECHTEN
+            // Kante: links deckt das Handy die Blaetter ab, dort waere sie
+            // unsichtbar, und dann zeigte der Faecher nur graue Raender.
+            style={sx(`position:absolute;right:${(4 - i) * 5}%;top:${(4 - i) * 4}%;width:${mobil ? 58 : 54}%;height:62%;`
+              + `--r:${[0, 3, 6, 9, 12][i]}deg;transform-origin:bottom left;box-sizing:border-box;padding:14px 16px;`
+              + 'border-radius:24px;background:linear-gradient(180deg,#1a1329,#120d1e);'
+              + `border:1px solid rgba(246,239,230,.13);box-shadow:0 14px 28px rgba(0,0,0,.5);`
+              + 'display:flex;justify-content:flex-end;align-items:flex-start')}>
+            {/* Nur das Zeichen, kein Name: vom Blatt ist neben dem Handy rund
+                ein Viertel zu sehen, und ein Name wie „Schaetzchen" wird darin
+                angeschnitten. Die fuenf Namen stehen ohnehin als Reihe unter
+                dem Text. Der Faecher beantwortet nur „es gibt mehr". */}
+            <span style={sx(`display:flex;align-items:center;justify-content:center;width:40px;height:40px;flex:none;`
+              + `border-radius:13px;background:${t.col}1f;border:1px solid ${t.col}66`)}>
+              <span style={sx(`display:block;width:24px;height:24px;background:url(${t.icon}) center/contain no-repeat`)}></span>
+            </span>
+          </div>
+        );
+      })}
+      <div style={sx('position:absolute;left:0;bottom:0;width:74%')}>{handy}</div>
+    </div>
+  );
+
+  const rechts = entwurf === 1 ? handy : entwurf === 4 ? handyStapel
+    : entwurf === 2 ? wand : stapel;
+  return (
+    <section style={sx(`max-width:1240px;margin:0 auto;padding:${mobil ? '52px 22px 70px' : '96px 40px 120px'}`)}>
+      <div style={sx(`display:grid;gap:${mobil ? '34px' : '56px'};align-items:center;`
+        + `grid-template-columns:${mobil ? '1fr' : entwurf === 1 ? '1fr 340px' : entwurf === 4 ? '1fr 470px' : '1fr 520px'}`)}>
+        {text}
+        <div style={sx(mobil ? 'display:flex;justify-content:center' : 'display:flex;justify-content:flex-end')}>{rechts}</div>
+      </div>
     </section>
   );
 }
