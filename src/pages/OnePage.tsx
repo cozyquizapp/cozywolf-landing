@@ -1097,7 +1097,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       qText: q.text, catName: q.cat,
       showQuestion: phase !== 'b', showBoard: phase === 'b',
       statusLine: phase === 'b' ? `${active ? L.sim.teams[active.id] : ''} ${verb}` : (revealed ? L.sim.reveal : L.sim.answering),
-      answeredLine: L.sim.answeredLine(answered),
+      answeredLine: L.sim.answeredLine(answered, TEAMS.length),
       catPillStyle: `display:inline-flex;align-items:center;gap:8px;white-space:nowrap;flex:none;padding:6px 12px;border-radius:999px;background:${q.col}22;border:1px solid ${q.col}59;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${q.col};transition:all .4s ${EASE}`,
       qCardStyle: `padding:20px 18px;border-radius:16px;background:rgba(246,239,230,.03);border:1px solid ${q.col}59;box-shadow:0 0 34px ${q.col}2e;font-size:21px;font-weight:900;line-height:1.25;color:#F6EFE6;transition:border-color .4s ${EASE},box-shadow .4s ${EASE}`,
       ringStyle: `flex:none;width:62px;height:62px;border-radius:50%;border:3px solid ${q.col};display:flex;align-items:center;justify-content:center;font-family:'League Spartan',sans-serif;font-size:24px;font-weight:900;color:${q.col};box-shadow:0 0 24px ${q.col}55;transition:border-color .4s ${EASE},color .4s ${EASE}`,
@@ -1439,10 +1439,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             <div style={sx('position:relative;width:100%;aspect-ratio:16/9;border-radius:22px;overflow:hidden;'
               + `border:1px solid ${on ? 'rgba(246,239,230,.22)' : 'rgba(246,239,230,.10)'};`
               + 'background:linear-gradient(180deg,#141024,#0a0714);'
-              + `box-shadow:${on ? '0 0 90px rgba(255,242,250,.10),inset 0 0 120px rgba(255,242,250,.05)' : 'none'};`
+              + `box-shadow:${on ? '0 0 60px rgba(255,242,250,.06),inset 0 0 90px rgba(255,242,250,.03)' : 'none'};`
               + `transition:border-color .9s ${EASE},box-shadow 1.1s ${EASE}`)}>
               <div data-m="screenbox" style={sx(`position:absolute;inset:0;overflow:hidden;pointer-events:none;background:${on ? '#0b0714' : 'transparent'};transition:background .45s ${EASE} ${on ? '0s' : '.35s'}`)}>
-                <div aria-hidden="true" style={sx(`position:absolute;inset:0;z-index:12;pointer-events:none;border-radius:14px;opacity:0;background:linear-gradient(160deg,#fffdfb,#ece2ea);animation:${on ? 'cwBeamOn 1.9s cubic-bezier(.4,0,.3,1) both' : 'none'};transition:opacity .8s ease`)}></div>
+                <div aria-hidden="true" style={sx(`position:absolute;inset:0;z-index:12;pointer-events:none;border-radius:14px;opacity:0;background:linear-gradient(160deg,#efe4dc,#cdbfcb);animation:${on ? 'cwBeamOn 1.9s cubic-bezier(.4,0,.3,1) both' : 'none'};transition:opacity .8s ease`)}></div>
                 <div style={sx(`position:absolute;left:50%;top:50%;width:${WALL_W}px;height:${WALL_H}px;transform-origin:center center;opacity:${on ? 1 : 0};transition:opacity .5s ${EASE} ${on ? '1.1s' : '0s'};transform:translate(-50%,-50%) scale(${this.state.wallScale ?? 0.8})`)}>
                   <div data-m="wallscreen" style={sx('width:640px;height:354px;box-sizing:border-box;padding:18px;border-radius:22px;background:transparent;display:flex;flex-direction:column;justify-content:center;overflow:hidden;position:relative')}>
                     <div aria-hidden="true" style={sx(`position:absolute;inset:0;z-index:9;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 45%,#141024,#0b0714 72%);opacity:${this.state.beamWelcome ? 1 : 0};pointer-events:none;transition:opacity .8s ${EASE} ${this.state.beamWelcome ? '.75s' : '0s'}`)}>
@@ -1451,7 +1451,13 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                         <span style={sx("font-family:'League Spartan',sans-serif;font-size:62px;font-weight:900;letter-spacing:.02em;line-height:1;color:#F6EFE6")}>{L.sim.welcomeTitle}</span>
                       </div>
                       <div style={sx('display:flex;align-items:center;gap:14px;margin-top:26px')}>
-                        <img src={LOGO} alt="" width={62} height={62} style={sx('width:62px;height:62px')} />
+                        {/* Wolf am 2026-08-27: "der wolf ist alt aus der beamerview".
+                            Nachgesehen: /logo.webp ist Bild fuer Bild dasselbe wie die
+                            Pose augenzu.mundzu der App, also nicht alt, sondern schlafend.
+                            Die App begruesst mit einer wachen, winkenden Pose. Genau die
+                            steht jetzt hier: augenauf.mundauf.winken, aus dem App-Bestand
+                            unter frontend/public/avatars/cozywolf, auf 320 px gerechnet. */}
+                        <img src="/assets/wolf-winken.webp" alt="" width={62} height={62} style={sx('width:62px;height:62px')} />
                         <span style={sx('padding:12px 18px;border-radius:14px;border:1px solid rgba(246,239,230,.20);background:rgba(246,239,230,.03);font-size:15px;font-weight:900;line-height:1.35;color:#F6EFE6;text-align:center')}>{L.sim.welcomeSub}</span>
                       </div>
                     </div>

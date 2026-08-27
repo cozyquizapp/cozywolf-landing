@@ -34,7 +34,7 @@ export type OnePageDict = {
     questions: { cat: string; col: string; text: string; opts: string[]; correct: number; pick: number }[];
     welcomeKicker: string; welcomeTitle: string; welcomeSub: string;
     answering: string; reveal: string; verbSet: string; verbSteal: string; verbStack: string;
-    answeredLine: (n: number) => string;
+    answeredLine: (n: number, ges: number) => string;
     field: string; fields: string; lead: string; tied: string;
     factions: Record<string, string>;
     mottos: Record<string, string>;
@@ -130,7 +130,7 @@ const de: OnePageDict = {
     welcomeSub: 'Macht’s euch bequem, gleich geht’s los!',
     answering: 'Teams antworten', reveal: 'Auflösung',
     verbSet: 'erobert', verbSteal: 'klaut', verbStack: 'stapelt',
-    answeredLine: n => `${n}/6 Teams haben geantwortet`,
+    answeredLine: (n, ges) => `${n}/${ges} Teams haben geantwortet`,
     field: 'Feld', fields: 'Felder', lead: ' · Führung', tied: ' · Gleichstand',
     factions: {
       bauchgefuehl: 'Bauchgefühl', glueckstreffer: 'Glückstreffer', allwissen: 'Allwissen',
@@ -330,7 +330,7 @@ const en: OnePageDict = {
     welcomeSub: 'Make yourselves comfortable, we’re about to start!',
     answering: 'Teams answering', reveal: 'Reveal',
     verbSet: 'claims a tile', verbSteal: 'steals one', verbStack: 'stacks up',
-    answeredLine: n => `${n}/6 teams have answered`,
+    answeredLine: (n, ges) => `${n}/${ges} teams have answered`,
     field: 'tile', fields: 'tiles', lead: ' · in the lead', tied: ' · tied',
     // 2026-08-27 an die App angeglichen. Vorher standen hier eigene
     // Uebersetzungen (Lucky Strike, Know-It-Alls, Improv, After Hours, Risk),

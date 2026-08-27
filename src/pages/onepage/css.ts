@@ -58,7 +58,12 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 @keyframes cwSheen{0%{transform:translateX(-120%)}60%,100%{transform:translateX(220%)}}
 @keyframes cwCardA{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes cwCardB{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
-@keyframes cwBeamOn{0%{opacity:0}5%{opacity:.9}11%{opacity:.28}18%{opacity:.96}27%{opacity:.5}38%{opacity:1}58%{opacity:.74}78%{opacity:.3}100%{opacity:0}}
+/* Das Aufwaermen der Lampe. Wolf am 2026-08-27: "so blendet es und sieht
+   nicht nice aus". Die Spitzen lagen bei .9 bis 1 auf fast weissem Grund,
+   also volle Leinwandflaeche in Weiss, mehrfach. Jetzt bleibt der hoechste
+   Wert bei .34 und der Ton ist warm statt weiss: man sieht die Lampe
+   ankommen, ohne geblendet zu werden. */
+@keyframes cwBeamOn{0%{opacity:0}6%{opacity:.3}13%{opacity:.1}20%{opacity:.34}30%{opacity:.16}40%{opacity:.3}62%{opacity:.2}82%{opacity:.08}100%{opacity:0}}
 @keyframes cwPuddle{0%,100%{-webkit-mask-size:49% 33%;mask-size:49% 33%}50%{-webkit-mask-size:53% 36%;mask-size:53% 36%}}
 /* Hero-Ueberschrift loest sich beim Verlassen im Grund auf (superplay.co).
    Kein Ausblenden: die Schrift waechst und nimmt die Grundfarbe an. */
