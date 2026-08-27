@@ -84,16 +84,52 @@ const H2_GROSS = STIL >= 2 ? 'clamp(40px,5.2vw,84px)' : null;
  */
 const NAME_PARAM = typeof window === 'undefined'
   ? null : new URLSearchParams(window.location.search).get('name');
-const NEUER_NAME = NAME_PARAM === '8' || NAME_PARAM === '8z';
+
 /**
- * Ausgeschrieben oder als Ziffer. Gemessen in der 290-px-Spalte, in der auch
- * "CozyQuiz" steht: "Acht Fraktionen" bricht dort auf zwei Zeilen, "CozyQuiz"
- * steht auf einer. Die beiden Modi haetten damit verschiedene Formen, obwohl
- * sie nebeneinander stehen. "8 Fraktionen" passt auf eine Zeile.
- *   ?name=8    Acht Fraktionen
- *   ?name=8z   8 Fraktionen
+ * Die Namen des grossen Modus zur Probe.
+ *
+ * Wolf am 27.08., und der Einwand sitzt: "CozyQuiz beschreibung wie ist es und
+ * was ist es und auf englisch, acht fraktionen beschreibt nicht was es ist und
+ * wie und auf deutsch". Damit steht die Formel fest, nach der der Name gebaut
+ * sein muss:
+ *
+ *     [wie es ist][was es ist], ein Wort, englisch
+ *      Cozy        Quiz
+ *
+ * "Acht Fraktionen" erfuellt keinen der drei Punkte: es nennt eine Menge statt
+ * eines Gefuehls, ein Bauteil statt der Gattung, und es ist deutsch. Es kann
+ * also im Text stehen, aber nicht als Name.
+ *
+ * Was Wolf selbst geschrieben hat, war naeher dran, als es aussah: "bei 160
+ * leuten ist es eher nicht mehr cozy, mehr arena". Sein Einwand galt dem
+ * Cozy, nicht dem Arena.
+ *
+ * Wolfs Nachtrag, ebenfalls richtig: "Wild Factions, wobei sich factions auf
+ * deutsch nicht so gut liest wie quiz oder cozy". Das ist die vierte
+ * Bedingung, und sie war bisher unausgesprochen: BEIDE Woerter muessen auch
+ * im deutschen Mund liegen. "Quiz" und "Cozy" tun das, "Factions" nicht, das
+ * heisst hier Fraktionen.
+ *
+ * Damit bleibt das Gattungswort "Quiz" gesetzt, und gesucht ist nur noch das
+ * erste Wort, das im Deutschen wie im Englischen gelaeufig ist und den
+ * Gegenpol zu "cozy" trifft:
+ *
+ *   ?name=wild      WildQuiz      Gegenpol zu cozy, beide Woerter gelaeufig
+ *   ?name=arena     ArenaQuiz     Wolfs eigener Griff, Arena ist in beiden Sprachen dasselbe Wort
+ *   ?name=party     PartyQuiz     am verstaendlichsten fuer eine Buchung, dafuer am generischsten
+ *   ?name=faction   FactionQuiz   nennt den Unterschied, liest sich deutsch aber schlecht
+ *   ?name=8         Acht Fraktionen   die Menge, zum Vergleich
+ *   ?name=8z        8 Fraktionen      dieselbe mit Ziffer
  */
-const NAME_ZIFFER = NAME_PARAM === '8z';
+const NAMEN: Record<string, { de: string; en: string }> = {
+  wild: { de: 'WildQuiz', en: 'WildQuiz' },
+  arena: { de: 'ArenaQuiz', en: 'ArenaQuiz' },
+  party: { de: 'PartyQuiz', en: 'PartyQuiz' },
+  faction: { de: 'FactionQuiz', en: 'FactionQuiz' },
+  '8': { de: 'Acht Fraktionen', en: '8 Factions' },
+  '8z': { de: '8 Fraktionen', en: '8 Factions' },
+};
+const NEUER_NAME = !!(NAME_PARAM && NAMEN[NAME_PARAM]);
 /** Trennung zwischen Kapiteln: ab Fassung 3 Luft statt Linie. */
 const OHNE_LINIE = STIL >= 3;
 /** Dichtewelle: dicht, mittel, luftig als Polster oben und unten. */
@@ -900,18 +936,17 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       },
       {
         key: 'arena',
-        name: NEUER_NAME
-          ? (this.props.lang === 'en'
-            ? '8 Factions'
-            : (NAME_ZIFFER ? '8 Fraktionen' : 'Acht Fraktionen'))
-          : 'CozyArena',
+        name: NEUER_NAME ? NAMEN[NAME_PARAM!][this.props.lang] : 'CozyArena',
         akzent: '#FACC15',
         chip: L.modes.arenaChip,
         // Unter dem neuen Namen stuende sonst "Acht Fraktionen ... einer von
         // acht Fraktionen". Statt der Wiederholung die Rechnung, die den Namen
         // ueberhaupt traegt: acht mal fuenf mal vier sind die 160, die weiter
         // unten auf dieser Seite ohnehin stehen.
-        lead: NEUER_NAME
+        // Die Rechnung im Text ersetzt den urspruenglichen Satz nur bei den
+        // Zahlen-Namen: dort stuende sonst "Acht Fraktionen ... einer von acht
+        // Fraktionen". ArenaQuiz und FactionQuiz wiederholen nichts.
+        lead: (NAME_PARAM === '8' || NAME_PARAM === '8z')
           ? (this.props.lang === 'en'
             ? 'You play in teams around one phone, just like in CozyQuiz, only each team belongs to a faction. Eight factions, up to five teams each, up to 160 people. Question by question, each side’s bar grows.'
             : 'Ihr spielt wie im CozyQuiz in Teams an einem Handy, nur gehört jedes Team zu einer Fraktion. Acht Fraktionen, je bis zu fünf Teams, bis zu 160 Personen. Frage für Frage wächst der Balken jeder Seite.')
