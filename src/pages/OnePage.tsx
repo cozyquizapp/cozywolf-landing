@@ -20,20 +20,25 @@ import { onePageT, type OnePageDict, type ProbeDef } from './onepage/texts';
 const EASE = 'cubic-bezier(.22,1,.36,1)';
 const LOGO = '/logo.webp';
 /**
- * Der Textakzent. Wolf am 27.08.: "pink soll grundsaetzlich raus".
+ * Der Textakzent.
  *
- * Warum Orange und nicht einfach Creme: ohne Farbe verschwindet der
- * Unterschied zwischen hervorgehobenem und normalem Text ganz, und Verweise
- * saehen aus wie Fliesstext. Warum genau dieses Orange: es steht schon auf der
- * Seite, als Puzzle im Hero und als Bauchgefuehl in der Arena, es ist also
- * keine neue Farbe, sondern eine, die die Seite ohnehin traegt.
- * Gemessen auf dem Grund #0A0814: 7,08 zu 1, das alte Pink hatte 6,24 zu 1.
- * Der Verweis wird also lesbarer, nicht schlechter.
+ * Erst Pink, dann Orange, jetzt Creme. Wolf am 27.08. zum Orange: "es beisst
+ * sich mit dem logo", und er hat recht. Das Logo ist Pink und Dunkelblau.
+ * Orange liegt im Farbkreis direkt neben Pink, zwei benachbarte Toene
+ * nebeneinander werden nicht zu einem Paar, sondern zu einem Fehler.
  *
- * Pink bleibt Marke: Logo und der ausgefuellte Knopf. Aus der Schrift ist es
- * raus.
+ * Deshalb gar kein zweiter Farbton in der Schrift. Hervorhebung laeuft ueber
+ * Helligkeit: der betonte Teil steht in vollem Creme, der Rest gedaempft.
+ * Verweise bekommen eine Unterlinie, damit sie ohne Farbe erkennbar bleiben.
+ * Farbe traegt auf dieser Seite nur noch, was im Spiel auch Farbe hat:
+ * Kacheln, Wappen, Brett. Damit steht das Pink des Logos allein da, statt mit
+ * irgendetwas zu konkurrieren.
+ *
+ * Gemessen auf dem Grund #0A0814: 17,4 zu 1. Falls doch ein Farbton gewuenscht
+ * ist, waere Gelb #FACC15 der naechste Kandidat, 12,96 zu 1, und weit genug
+ * von Pink entfernt. Dann reicht diese eine Zeile.
  */
-const AKZENT = '#F97316';
+const AKZENT = '#F6EFE6';
 
 // Spielstand-Daten der Brett-Simulation (aus dem Entwurf, Wolfs Choreografie)
 // Team-Avatare: das CozyQuiz-Objektset der App (48 Motive). Die Objekte sind
@@ -198,6 +203,8 @@ type OPState = {
   b01?: number; b01Hand?: Record<number, string>; frak?: string | null;
   /** Fraktionen, die gerade den Platz gewechselt haben. Kurz umrandet. */
   frakZug?: Record<string, true>;
+  /** Lage des Zeigers auf der Leinwand, 0 bis 1, fuer den Lichtkegel. */
+  beamXY?: { x: number; y: number } | null;
   tick?: number; hbOn?: number | null;
   probeCat?: string; probePick?: number | null;
   guessRaw?: string; guessDone?: boolean;
@@ -757,7 +764,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     return (
       <div data-reveal="" style={sx('display:flex;align-items:center;gap:12px;margin:0 0 14px;font-size:11.5px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap')}>
         {label.split('|')[0]}
-        <span style={sx('flex:1;height:1px;background:linear-gradient(90deg,rgba(249,115,22,.4),transparent);max-width:180px')}></span>
+        <span style={sx('flex:1;height:1px;background:linear-gradient(90deg,rgba(246,239,230,.28),transparent);max-width:180px')}></span>
         <span style={sx('color:rgba(246,239,230,.5)')}>{label.split('|')[1]}</span>
       </div>
     );
@@ -1552,7 +1559,18 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               und genau den haben wir mit den KI-Bildern rausgeworfen. Die
               Schraege nimmt beim Anspringen ab, damit die Frage gerade steht,
               wenn man sie lesen soll. */}
-          <div data-reveal="" data-m="wall" onMouseEnter={beamStart} onMouseLeave={beamStop} onClick={beamStart}
+          {/* Wolf am 27.08.: "beim draufgehen gibts einen effekt, wenn man mit
+              der maus druebergeht soll dieser Lichtstrahl mitwandern". Bisher
+              stand der Schein fest bei 62 Prozent Breite. Jetzt liegt er dort,
+              wo der Zeiger ist, wie der helle Fleck, den eine Beamerlampe auf
+              die Wand wirft. Auf Geraeten ohne Zeiger bleibt er in der Mitte. */}
+          <div data-reveal="" data-m="wall" onMouseEnter={beamStart} onClick={beamStart}
+            onMouseMove={e => {
+              if (this._coarse) return;
+              const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+              this.setState({ beamXY: { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height } });
+            }}
+            onMouseLeave={() => { beamStop(); this.setState({ beamXY: null }); }}
             style={sx('position:relative;margin:0 auto 44px;max-width:880px;cursor:pointer;perspective:1100px')}>
             {/* Perspektive gehoert auf den Eltern, die Drehung auf das Kind.
                 Standen beide auf demselben Element, greift die Perspektive
@@ -1603,7 +1621,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                       </div>
                     </div>
                     <span aria-hidden="true" style={sx('position:absolute;inset:0;border-radius:22px;pointer-events:none;overflow:hidden')}>
-                      <span style={sx('position:absolute;top:0;bottom:0;width:38%;background:linear-gradient(90deg,transparent,rgba(246,239,230,.07),transparent)')}></span>
+                      <span style={sx(`position:absolute;inset:-30%;`
+                        + `background:radial-gradient(ellipse 40% 46% at ${((this.state.beamXY?.x ?? .5) * 100).toFixed(1)}% ${((this.state.beamXY?.y ?? .5) * 100).toFixed(1)}%,`
+                        + 'rgba(255,247,235,.10),rgba(255,247,235,.045) 42%,transparent 72%);'
+                        + `transition:background ${this.state.beamXY ? '.12s' : '.6s'} linear`)}></span>
                     </span>
                     <span aria-hidden="true" style={sx('position:absolute;inset:0;border-radius:22px;pointer-events:none;background:radial-gradient(ellipse at 46% 44%,transparent 58%,rgba(0,0,0,.32))')}></span>
                     <div style={sx('position:relative;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px')}>
@@ -1668,26 +1689,34 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               Handy gab es die gar nicht. Wolfs Einwand "nicht 2 mal die
               grosse schrift" ist der Grund, warum hier nichts gross gesetzt
               ist: die Ueberschrift sagt es schon. */}
+          {/* Wolf am 27.08.: "unter 04 fehlt das ungleichgewicht". Stimmt: zwei
+              gleich breite Spalten mit je vier Punkten sagen "hier sind zwei
+              Listen", und genau das sollte B2 nicht sagen. Jetzt traegt die
+              Form die Aussage: links schmal, klein und gedaempft, rechts
+              breit und in voller Groesse. Die Zahl darueber sagt es nochmal
+              in einem Blick.
+              Was das Ungleichgewicht weiter flach haelt, steht im Text und
+              nicht im Aufbau: "Ihr braucht" fuehrt vier Punkte, von denen zwei
+              gar keine Anforderung sind, sondern Selbstverstaendlichkeiten
+              (Platz fuer die Runde, ein Handy pro Team). Kuerzt man die beiden,
+              stehen zwei gegen vier. Das ist Wolfs Text, deshalb steht er hier
+              unveraendert. */}
           <div data-reveal="" data-m="modereihe"
-            style={sx('display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:48px;'
+            style={sx('display:grid;grid-template-columns:300px 1fr;align-items:start;gap:64px;'
               + 'padding:36px 0 0;border-top:1px solid rgba(246,239,230,.14)')}>
             <div>
-              <div style={sx('margin-bottom:16px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.55)')}>{L.ablauf.duo1Title}</div>
-              <ul style={sx('margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:13px')}>
+              <div style={sx('margin-bottom:14px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.45)')}>{L.ablauf.duo1Title}</div>
+              <ul style={sx('margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px')}>
                 {L.ablauf.duo1.map(item => (
-                  <li key={item} style={sx('display:flex;gap:14px;font-size:16px;line-height:1.5;font-weight:600;color:rgba(246,239,230,.72);text-wrap:pretty')}>
-                    <span style={sx('flex:none;width:16px;height:1px;margin-top:12px;background:rgba(246,239,230,.35)')}></span>{item}
-                  </li>
+                  <li key={item} style={sx('font-size:14.5px;line-height:1.45;font-weight:500;color:rgba(246,239,230,.5);text-wrap:pretty')}>{item}</li>
                 ))}
               </ul>
             </div>
             <div>
-              <div style={sx(`margin-bottom:16px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:${AKZENT}`)}>{L.ablauf.duo0Title}</div>
-              <ul style={sx('margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:13px')}>
+              <div style={sx('margin-bottom:14px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{L.ablauf.duo0Title}</div>
+              <ul style={sx('margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:16px')}>
                 {L.ablauf.duo0.map(item => (
-                  <li key={item} style={sx('display:flex;gap:14px;font-size:16px;line-height:1.5;font-weight:600;color:#F6EFE6;text-wrap:pretty')}>
-                    <span style={sx(`flex:none;width:16px;height:1px;margin-top:12px;background:${AKZENT}`)}></span>{item}
-                  </li>
+                  <li key={item} style={sx("font-family:'League Spartan',sans-serif;font-size:clamp(20px,2.1vw,28px);font-weight:900;line-height:1.12;letter-spacing:-.02em;color:#F6EFE6;text-wrap:balance")}>{item}</li>
                 ))}
               </ul>
             </div>
@@ -1717,7 +1746,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             <h2 data-reveal="" style={sx("margin:0 0 18px;max-width:700px;font-family:'League Spartan',sans-serif;font-size:30px;font-weight:900;line-height:1.18;color:#F6EFE6;cursor:default;hyphens:none")}>
               {L.johannes.quote.map((qw, i) => (
                 <span key={i}>
-                  <span style={sx(`display:inline-block;white-space:nowrap;color:${qw.hot ? AKZENT : '#F6EFE6'}`)}>{qw.w}</span>
+                  {/* Ohne zweite Farbe traegt die Helligkeit die Betonung:
+                      das Hervorgehobene steht in vollem Creme, der Rest
+                      gedaempft. */}
+                  <span style={sx(`display:inline-block;white-space:nowrap;color:${qw.hot ? '#F6EFE6' : 'rgba(246,239,230,.6)'}`)}>{qw.w}</span>
                   {i < L.johannes.quote.length - 1 ? ' ' : ''}
                 </span>
               ))}

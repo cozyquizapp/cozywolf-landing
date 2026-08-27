@@ -6,11 +6,11 @@
 export const ONEPAGE_CSS = `
 html{background:#0A0814;color-scheme:dark}
 body{margin:0;background:#0A0814;font-family:'Bricolage Grotesque','Nunito',system-ui,sans-serif;font-optical-sizing:auto;color:#F6EFE6;-webkit-font-smoothing:antialiased}
-/* Grundfarbe fuer Verweise. Wolf am 27.08.: "pink soll grundsaetzlich raus".
-   Orange #F97316 steht schon als Puzzle im Hero und als Bauchgefuehl in der
-   Arena, ist also keine neue Farbe. Auf dem Grund #0A0814 gemessen: 7,08 zu 1
-   gegen 6,24 zu 1 beim alten Pink. */
-a{color:#F97316;text-decoration:none}a:hover{color:#FBBF77}
+/* Verweise ohne eigene Farbe: Creme mit Unterlinie. Wolf am 27.08. zum
+   Orange: "es beisst sich mit dem logo". Ohne Farbe braucht ein Verweis eine
+   andere Marke, sonst ist er nicht als Verweis zu erkennen, also die Linie. */
+a{color:#F6EFE6;text-decoration:underline;text-decoration-color:rgba(246,239,230,.4);text-underline-offset:3px;text-decoration-thickness:1px}
+a:hover{text-decoration-color:#F6EFE6}
 @keyframes cwClaim{0%{transform:scale(.2);opacity:0}6%{transform:scale(1.12);opacity:1}11%{transform:scale(1)}82%{opacity:1;transform:scale(1)}93%{opacity:.1;transform:scale(.8)}100%{opacity:0;transform:scale(.2)}}
 @keyframes cwCount{from{width:100%}to{width:0%}}
 @keyframes cwPulseSoft{0%,100%{opacity:.55;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}}
@@ -51,7 +51,11 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
    unruhig. Und cwLetterB war zeichengleich zu cwLetter, der Wechsel
    zwischen beiden hat nie etwas bewirkt. */
 @keyframes cwWortEin{from{transform:translateY(112%);opacity:0}60%{opacity:1}to{transform:none;opacity:1}}
-@keyframes cwWortAus{from{transform:none;opacity:1}62%{opacity:1}to{transform:translateY(-112%);opacity:0}}
+/* Das ausgehende Wort haelt seine Deckkraft bis 62 Prozent der Walze. In
+   diesem Fenster stehen kurz zwei Woerter gleich deutlich uebereinander, was
+   Wolf am 27.08. auf einem Bildschirmfoto festgehalten hat. Es blendet jetzt
+   frueher ab: ab einem Drittel wird es leichter, die Bewegung bleibt gleich. */
+@keyframes cwWortAus{from{transform:none;opacity:1}34%{opacity:.7}68%{opacity:.28}to{transform:translateY(-112%);opacity:0}}
 .cwWortEin{display:inline-block;animation:cwWortEin .62s cubic-bezier(.22,1,.36,1) both}
 .cwWortAus{display:inline-block;animation:cwWortAus .62s cubic-bezier(.22,1,.36,1) both}
 @media (prefers-reduced-motion:reduce){
@@ -110,7 +114,7 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 summary::-webkit-details-marker{display:none}
 summary{list-style:none;cursor:pointer}
 html{scroll-behavior:smooth;scroll-padding-top:88px}
-a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #FBBF77;outline-offset:3px;border-radius:8px}
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #F6EFE6;outline-offset:3px;border-radius:8px}
 :focus:not(:focus-visible){outline:none}
 [data-m=sticky]{display:none}
 .cwHovA:hover{filter:brightness(1.06)}
