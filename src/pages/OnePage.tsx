@@ -191,6 +191,14 @@ const PROBE_ORDER = ['mucho', 'schaetzchen', 'cheese', 'zehn', 'tuete'];
 
 // Beamerbild wird in Entwurfsgroesse gebaut und auf die Leinwand skaliert
 const WALL_W = 640, WALL_H = 354;
+// Die Sterne der Begruessungsfolie. Feste Liste statt Zufall: sie wird bei
+// jedem Zeichnen gelesen, ein Zufall darin liesse sie flackern.
+const STERNE = Array.from({ length: 26 }, (_, i) => ({
+  x: (i * 37) % 97,
+  y: (i * 53) % 91,
+  g: 1.4 + (i % 3) * 0.8,
+  o: (0.28 + (i % 4) * 0.16).toFixed(2),
+}));
 
 type OPState = {
   formMode: 'event' | 'test'; formStatus: 'idle' | 'sending' | 'ok' | 'error';
@@ -997,15 +1005,22 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       const hit = revealed && k === q.correct;
       return {
         label, num: k + 1,
-        style: `flex:1;display:flex;align-items:center;gap:10px;padding:12px 12px;border-radius:14px;box-sizing:border-box;background:${hit ? q.col + '22' : 'rgba(246,239,230,.035)'};border:1px solid ${hit ? q.col : 'rgba(246,239,230,.09)'};box-shadow:${hit ? `0 0 22px ${q.col}55` : 'none'};transition:background .4s ${EASE},border-color .4s ${EASE},box-shadow .4s ${EASE}`,
-        numStyle: `font-family:'League Spartan',sans-serif;font-size:26px;font-weight:900;line-height:1;color:${hit ? q.col : q.col + 'cc'}`,
+        style: `flex:1;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:10px;box-sizing:border-box;background:${hit ? q.col + '1f' : 'rgba(0,0,0,.28)'};border:1px solid ${hit ? q.col : 'rgba(246,239,230,.14)'};box-shadow:${hit ? `0 0 26px ${q.col}55` : 'none'};transition:background .4s ${EASE},border-color .4s ${EASE},box-shadow .4s ${EASE}`,
+        numStyle: `font-family:'League Spartan',sans-serif;font-size:32px;font-weight:900;line-height:1;color:${q.col}`,
       };
     });
 
-    const teamDiscs = TEAMS.map((tm, k) => ({
-      style: teammarke(tm.color, tm.av, 42)
-        + `opacity:${k < answered ? 1 : .38};transition:opacity .4s ${EASE}`,
-    }));
+    // Wie in der App: wer geantwortet hat, leuchtet und traegt einen Ring in
+    // der Kategoriefarbe; wer noch nicht dran ist, steht entsaettigt da.
+    const teamDiscs = TEAMS.map((tm, k) => {
+      const fertig = k < answered;
+      return {
+        style: teammarke(tm.color, tm.av, 42)
+          + `filter:${fertig ? 'none' : 'saturate(.25) brightness(.55)'};`
+          + `outline:${fertig ? `2px solid ${q.col}` : '2px solid transparent'};outline-offset:2px;`
+          + `transition:filter .4s ${EASE},outline-color .4s ${EASE}`,
+      };
+    });
 
     const byId: Record<string, typeof TEAMS[number]> = {};
     TEAMS.forEach(tm => { byId[tm.id] = tm; });
@@ -1188,12 +1203,26 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     return {
       cells, standings, seconds, qOptions, teamDiscs,
       qText: q.text, catName: q.cat,
+      // Wie weit die Runde ist: ein Zug von MOVES entspricht einer Frage.
+      fortschritt: Math.round(Math.min(1, (cycle + 1) / (MOVES.length + 1)) * 100),
       showQuestion: phase !== 'b', showBoard: phase === 'b',
       statusLine: phase === 'b' ? `${active ? L.sim.teams[active.id] : ''} ${verb}` : (revealed ? L.sim.reveal : L.sim.answering),
       answeredLine: L.sim.answeredLine(answered, TEAMS.length),
-      catPillStyle: `display:inline-flex;align-items:center;gap:8px;white-space:nowrap;flex:none;padding:6px 12px;border-radius:999px;background:${q.col}22;border:1px solid ${q.col}59;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:${q.col};transition:all .4s ${EASE}`,
-      qCardStyle: `padding:20px 18px;border-radius:16px;background:rgba(246,239,230,.03);border:1px solid ${q.col}59;box-shadow:0 0 34px ${q.col}2e;font-size:21px;font-weight:900;line-height:1.25;color:#F6EFE6;transition:border-color .4s ${EASE},box-shadow .4s ${EASE}`,
-      ringStyle: `flex:none;width:62px;height:62px;border-radius:50%;border:3px solid ${q.col};display:flex;align-items:center;justify-content:center;font-family:'League Spartan',sans-serif;font-size:24px;font-weight:900;color:${q.col};box-shadow:0 0 24px ${q.col}55;transition:border-color .4s ${EASE},color .4s ${EASE}`,
+      // Die Beamer-Ansicht der App, Stand 27.08., nach den Bildschirmfotos, die
+      // Wolf geschickt hat. Was sich gegen vorher geaendert hat:
+      //  * Die Kategorie steht als GEFUELLTE Kapsel in ihrer Farbe mit dunkler
+      //    Schrift, nicht als Umriss.
+      //  * Die Frage steht frei und gross in der Mitte, ohne Kasten und ohne
+      //    Rahmen. Der Kasten war das letzte, was die Folie eingeengt hat.
+      //  * Die Uhr ist eine nackte Zahl oben rechts in der Kategoriefarbe,
+      //    kein Ring mehr.
+      //  * Die Antworten sind breite Zeilen mit Haarlinie, die Ziffer gross in
+      //    der Kategoriefarbe, der Text in Creme.
+      //  * Die Kategoriefarbe faerbt den ganzen Grund, nicht nur die Akzente.
+      catFarbe: q.col,
+      catPillStyle: `display:inline-flex;align-items:center;white-space:nowrap;flex:none;padding:5px 13px;border-radius:999px;background:${q.col};font-size:11.5px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#0A0814;transition:background .4s ${EASE}`,
+      qCardStyle: "font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;line-height:1.06;letter-spacing:-.022em;color:#F6EFE6;text-align:center;text-wrap:balance",
+      ringStyle: `flex:none;font-family:'League Spartan',sans-serif;font-size:38px;font-weight:900;line-height:1;color:${q.col};font-variant-numeric:tabular-nums;transition:color .4s ${EASE}`,
       shakeStyle: (justSet >= 0) ? 'animation:cwShake .45s ease-out' : '',
       frameStyle: `padding:8px;border-radius:14px;background:rgba(246,239,230,.015);flex:none;--tc:${active ? fc + '55' : 'transparent'};${active ? 'animation:cwGridGlow 2.4s ease-in-out infinite;' : ''}border:2px solid ${active ? fc : 'rgba(246,239,230,.1)'};box-shadow:${active ? `0 0 36px ${fc}55, inset 0 0 30px ${fc}14` : 'inset 0 0 40px rgba(0,0,0,.5)'};transition:border-color .5s ${EASE},box-shadow .5s ${EASE}`,
       boardGridStyle: `display:grid;grid-template-columns:repeat(${GS},${CS}px);gap:${GAP}px`,
@@ -1603,21 +1632,41 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               <div data-m="screenbox" style={sx(`position:absolute;inset:0;overflow:hidden;pointer-events:none;background:${on ? '#0b0714' : 'transparent'};transition:background .45s ${EASE} ${on ? '0s' : '.35s'}`)}>
                 <div aria-hidden="true" style={sx(`position:absolute;inset:0;z-index:12;pointer-events:none;border-radius:14px;opacity:0;background:linear-gradient(160deg,#efe4dc,#cdbfcb);animation:${on ? 'cwBeamOn 1.9s cubic-bezier(.4,0,.3,1) both' : 'none'};transition:opacity .8s ease`)}></div>
                 <div style={sx(`position:absolute;left:50%;top:50%;width:${WALL_W}px;height:${WALL_H}px;transform-origin:center center;opacity:${on ? 1 : 0};transition:opacity .5s ${EASE} ${on ? '1.1s' : '0s'};transform:translate(-50%,-50%) scale(${this.state.wallScale ?? 0.8})`)}>
-                  <div data-m="wallscreen" style={sx('width:640px;height:354px;box-sizing:border-box;padding:18px;border-radius:22px;background:transparent;display:flex;flex-direction:column;justify-content:center;overflow:hidden;position:relative')}>
-                    <div aria-hidden="true" style={sx(`position:absolute;inset:0;z-index:9;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 45%,#141024,#0b0714 72%);opacity:${this.state.beamWelcome ? 1 : 0};pointer-events:none;transition:opacity .8s ${EASE} ${this.state.beamWelcome ? '.75s' : '0s'}`)}>
-                      <div style={sx('display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:16px 40px;border-radius:20px;border:1px solid rgba(246,239,230,.20);background:rgba(246,239,230,.05)')}>
-                        <span style={sx('font-size:13px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{L.sim.welcomeKicker}</span>
-                        <span style={sx("font-family:'League Spartan',sans-serif;font-size:62px;font-weight:900;letter-spacing:.02em;line-height:1;color:#F6EFE6")}>{L.sim.welcomeTitle}</span>
-                      </div>
-                      <div style={sx('display:flex;align-items:center;gap:14px;margin-top:26px')}>
-                        {/* Wolf am 2026-08-27: "der wolf ist alt aus der beamerview".
-                            Nachgesehen: /logo.webp ist Bild fuer Bild dasselbe wie die
-                            Pose augenzu.mundzu der App, also nicht alt, sondern schlafend.
-                            Die App begruesst mit einer wachen, winkenden Pose. Genau die
-                            steht jetzt hier: augenauf.mundauf.winken, aus dem App-Bestand
-                            unter frontend/public/avatars/cozywolf, auf 320 px gerechnet. */}
-                        <img src="/assets/wolf-winken.webp" alt="" width={62} height={62} style={sx('width:62px;height:62px')} />
-                        <span style={sx('padding:12px 18px;border-radius:14px;border:1px solid rgba(246,239,230,.20);background:rgba(246,239,230,.03);font-size:15px;font-weight:900;line-height:1.35;color:#F6EFE6;text-align:center')}>{L.sim.welcomeSub}</span>
+                  <div data-m="wallscreen" style={sx('width:640px;height:354px;box-sizing:border-box;padding:22px 26px;border-radius:22px;display:flex;flex-direction:column;overflow:hidden;position:relative;'
+                    + `background:radial-gradient(ellipse 120% 90% at 50% 0%,${g.catFarbe}1f,transparent 62%),`
+                    + `linear-gradient(180deg,${g.catFarbe}14,#07060d 70%);`
+                    + `transition:background .6s ${EASE}`)}>
+                    {/* Der Fortschritt der Runde, wie in der App als duenner
+                        Balken ueber der ganzen Breite. */}
+                    <span aria-hidden="true" style={sx('position:absolute;left:0;right:0;top:0;height:4px;z-index:10;background:rgba(246,239,230,.08)')}>
+                      <span style={sx(`display:block;height:100%;width:${g.fortschritt}%;background:${g.catFarbe};transition:width 1.2s ${EASE},background .6s ${EASE}`)}></span>
+                    </span>
+                    {/* Die Begruessungsfolie der App, Stand 27.08., nach dem
+                        Bildschirmfoto von Wolf: dunkler Grund mit warmem
+                        Schein und Sternen, klein die Zeile "Herzlich
+                        willkommen zum", darunter die Wortmarke sehr gross und
+                        weit gesperrt, darunter der Gruss. Der 3D-Wolf steht
+                        links am Rand und ist angeschnitten.
+                        Der Wolf kommt aus dem Begruessungsvideo der App
+                        (public/videos/willkommen-wolf.webm, vp9, 768 px,
+                        5,17 s): letztes Bild entnommen, der dunkle Grund von
+                        aussen geflutet, 46 Prozent der Flaeche durchsichtig,
+                        auf 440 px Hoehe gerechnet. Ein Video von einem
+                        Megabyte fuer eine Geste, die auf der Landing niemand
+                        zweimal sieht, waere die Ladezeit nicht wert. */}
+                    <div aria-hidden="true" style={sx('position:absolute;inset:0;z-index:9;border-radius:22px;overflow:hidden;pointer-events:none;'
+                      + 'background:radial-gradient(ellipse 62% 46% at 50% 40%,rgba(190,24,93,.30),transparent 68%),'
+                      + 'radial-gradient(ellipse at 50% 45%,#1a1226,#0b0714 74%);'
+                      + `opacity:${this.state.beamWelcome ? 1 : 0};transition:opacity .8s ${EASE} ${this.state.beamWelcome ? '.75s' : '0s'}`)}>
+                      {STERNE.map((st, i) => (
+                        <span key={i} style={sx(`position:absolute;left:${st.x}%;top:${st.y}%;width:${st.g}px;height:${st.g}px;border-radius:50%;background:rgba(246,239,230,${st.o});box-shadow:0 0 6px rgba(246,239,230,.5)`)}></span>
+                      ))}
+                      <img src="/assets/wolf-3d.webp" alt="" width={384} height={440}
+                        style={sx('position:absolute;left:-34px;bottom:-26px;width:auto;height:74%;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))')} />
+                      <div style={sx('position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0 40px;box-sizing:border-box')}>
+                        <span style={sx('font-size:13px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.78)')}>{L.sim.welcomeKicker}</span>
+                        <span style={sx("font-family:'League Spartan',sans-serif;font-size:76px;font-weight:900;letter-spacing:.06em;line-height:.92;color:#F6EFE6;text-transform:uppercase")}>{L.sim.welcomeTitle}</span>
+                        <span style={sx('margin-top:10px;font-size:19px;font-weight:900;line-height:1.3;color:#F6EFE6;text-align:center')}>{L.sim.welcomeSub}</span>
                       </div>
                     </div>
                     <span aria-hidden="true" style={sx('position:absolute;inset:0;border-radius:22px;pointer-events:none;overflow:hidden')}>
@@ -1627,30 +1676,32 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                         + `transition:background ${this.state.beamXY ? '.12s' : '.6s'} linear`)}></span>
                     </span>
                     <span aria-hidden="true" style={sx('position:absolute;inset:0;border-radius:22px;pointer-events:none;background:radial-gradient(ellipse at 46% 44%,transparent 58%,rgba(0,0,0,.32))')}></span>
-                    <div style={sx('position:relative;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px')}>
+                    <div style={sx('position:relative;display:flex;align-items:center;gap:14px;flex:none')}>
                       <span style={sx(g.catPillStyle)}>{g.catName}</span>
-                      <span style={sx('font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{g.statusLine}</span>
+                      <span style={sx('font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,239,230,.5);white-space:nowrap')}>{g.statusLine}</span>
+                      <span style={sx('flex:1')}></span>
+                      <span style={sx(g.ringStyle)}>{g.seconds}</span>
                     </div>
 
                     {g.showQuestion && (
                       <>
-                        <div style={sx('display:flex;gap:16px;align-items:flex-start')}>
-                          <div style={sx('flex:1;min-width:0')}>
-                            <div style={sx(g.qCardStyle)}>{g.qText}</div>
-                            <div style={sx('display:flex;gap:8px;margin-top:14px')}>
-                              {g.qOptions.map((o, i) => (
-                                <div key={i} style={sx(o.style)}>
-                                  <span style={sx(o.numStyle)}>{o.num}</span>
-                                  <span style={sx('font-size:12px;font-weight:800;color:#F6EFE6;line-height:1.2')}>{o.label}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                          <div style={sx(g.ringStyle)}>{g.seconds}</div>
+                        {/* Die Frage steht frei und mittig, ohne Kasten. Der
+                            Kasten war das letzte, was die Folie eingeengt hat,
+                            und in der App gibt es ihn nicht. */}
+                        <div style={sx('flex:1;display:flex;align-items:center;justify-content:center;padding:0 18px;min-height:0')}>
+                          <div style={sx(g.qCardStyle)}>{g.qText}</div>
                         </div>
-                        <div style={sx('margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:7px')}>
-                          <span style={sx('font-size:12.5px;font-weight:900;letter-spacing:.06em;color:rgba(246,239,230,.62);white-space:nowrap')}>{g.answeredLine}</span>
-                          <div style={sx('display:flex;gap:9px')}>
+                        <div style={sx('display:flex;gap:12px;flex:none')}>
+                          {g.qOptions.map((o, i) => (
+                            <div key={i} style={sx(o.style)}>
+                              <span style={sx(o.numStyle)}>{o.num}</span>
+                              <span style={sx('font-size:14px;font-weight:900;color:#F6EFE6;line-height:1.2')}>{o.label}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div style={sx('margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:8px;flex:none')}>
+                          <span style={sx('font-size:12.5px;font-weight:900;letter-spacing:.04em;color:rgba(246,239,230,.7);white-space:nowrap')}>{g.answeredLine}</span>
+                          <div style={sx('display:flex;gap:10px')}>
                             {g.teamDiscs.map((d, i) => <span key={i} style={sx(d.style)}></span>)}
                           </div>
                         </div>
