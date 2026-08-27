@@ -3,6 +3,7 @@
 // Seiten-spezifische Copy lebt bewusst hier statt in src/i18n.ts
 // (dort liegen nur die geteilten Bausteine der Unterseiten).
 import type { Lang } from '../../lang';
+import { GEMEINSAM as G } from './gemeinsam';
 
 // Einzige Stelle fuer die Termin-Angabe (Handoff 0b): steckt in Hero-Zeile und
 // Formular-Hinweis beider Fassungen. Aendert sich die Verfuegbarkeit, nur hier.
@@ -20,7 +21,7 @@ export type OnePageDict = {
   hero: {
     kicker: string; hooks: string[]; rest: string; sub: string;
     btn0: string; btn0Sub: string; btn1: string; btn1Sub: string;
-    availability: string; imgAlt: string;
+    availability: string;
     phoneApp: string; phoneTeamA: string; phoneTeamB: string; phoneReady: string;
   };
   modes: {
@@ -87,17 +88,16 @@ const de: OnePageDict = {
     kicker: 'Live-Quiz in Hamburg',
     hooks: ['Wissen', 'Glück', 'Timing', 'Teamgeist', 'Bauchgefühl'],
     rest: 'ist nicht alles.',
-    sub: 'Der gemütlichste Quizabend in Hamburg, den ihr je gespielt habt.',
-    btn0: 'Gratis für Test-Teams', btn0Sub: 'Ein ganzer Abend, kostenlos',
+    sub: G.de.heroSub,
+    btn0: 'Gratis für Test-Teams', btn0Sub: G.de.ctaSub,
     btn1: 'Termin anfragen', btn1Sub: 'Unverbindlich, Antwort in 24 Stunden',
     availability: `Hamburg und Umland · ab 350 € · Termine ab ${TERMIN_AB.de}`,
-    imgAlt: 'Stimmungsbild, KI-erzeugt: Gäste in einer Hamburger Bar vor der Quiz-Leinwand',
     phoneApp: 'CozyQuiz', phoneTeamA: 'Glühbirnen', phoneTeamB: 'Quiz-Mafia', phoneReady: 'Bereit',
   },
   modes: {
     kicker: '[ 01 ]', label: 'Die Spielarten', h2: 'Zwei Modi, ein Abend',
     quizChip: 'Bis 40 Personen',
-    quizCalm: 'Der Brettspielabend, in kleinen Teams. Jede richtige Antwort ist ein Zug auf dem Feld.',
+    quizCalm: G.de.quizCalm,
     quizLead: 'Ihr spielt in Teams zu viert oder fünft an einem Handy, der Beamer ist die Bühne. Wer eine Frage richtig hat, setzt ein Feld.',
     quizBullets: [
       'Nicht wer die meisten Felder hat gewinnt, sondern wer die größte zusammenhängende Fläche hält',
@@ -141,7 +141,7 @@ const de: OnePageDict = {
   },
   anlaesse: {
     label: 'Anlässe', h2: 'Für welchen Anlass?',
-    sub: 'Gleiches Spiel, anderer Abend. Ich stimme Fragen, Länge und Spielart auf eure Runde ab.',
+    sub: G.de.anlaesseSub,
     cta: 'Anfragen →',
     cards: [
       { badge: 'Team-Event', title: 'Firma oder Team',
@@ -196,8 +196,8 @@ const de: OnePageDict = {
     pointsFooterDone: 'Alles auf eine Antwort bringt am meisten, kostet aber alles.',
   },
   ablauf: {
-    label: 'Ablauf', h2: 'Mehr als eine freie Wand braucht ihr nicht',
-    sub: 'Beamer, Sound, Aufbau und Moderation bringe ich mit.',
+    label: 'Ablauf', h2: G.de.ablaufH2,
+    sub: G.de.ablaufSub,
     duo0Title: 'Ich bringe mit',
     duo0: ['Beamer und Sound, vorher aufgebaut', 'Moderation den ganzen Abend', 'Fragen, auf eure Runde abgestimmt', 'Das Spiel auf allen Handys'],
     duo1Title: 'Ihr braucht',
@@ -219,18 +219,18 @@ const de: OnePageDict = {
   faq: {
     label: 'Fragen', h2: 'Häufige Fragen',
     items: [
-      { q: 'Brauche ich eigene Technik?',
+      { q: G.de.faqTechnikQ,
         a: 'Nein. Ich bringe Beamer und Sound selbst mit. Du brauchst nur eine freie Wand oder einen Bildschirm, Strom und WLAN für deine Gäste.' },
       { q: 'Müssen meine Gäste etwas installieren?',
         a: 'Nichts. Alle scannen einen QR-Code und spielen direkt im Browser am Handy. Keine App, kein Login.' },
-      { q: 'Für wie viele Personen funktioniert das?',
-        a: 'Von der kleinen Runde bis zu 160 Personen. Kleine Gruppen erobern das Spielfeld, große Gruppen treten als Fraktionen an. Das Format passt sich an.' },
-      { q: 'Wie lange dauert ein Quiz-Event?',
-        a: 'Meist 90 bis 120 Minuten mit mehreren Runden. Die genaue Länge stimme ich vorher mit dir auf deinen Anlass ab.' },
+      { q: G.de.faqGroesseQ,
+        a: G.de.faqGroesseA },
+      { q: G.de.faqDauerQ,
+        a: G.de.faqDauerA },
       { q: 'Wie weit fährst du?',
         a: 'Ich bin in Hamburg und im Umland unterwegs. Für weiter entfernte Anfragen melde dich einfach kurz, meist lässt sich etwas einrichten.' },
       { q: 'Was kostet das?',
-        a: 'Es geht bei 350 € für den ganzen Abend los, mit Technik und Moderation. Der genaue Preis richtet sich nach Personenzahl und Anlass. Schreib mir kurz, worum es geht, dann bekommst du von mir ein faires Angebot.' },
+        a: G.de.faqPreisA },
     ],
   },
   form: {
@@ -258,11 +258,11 @@ const de: OnePageDict = {
     okBodyEvent: 'Ich melde mich mit einem Vorschlag bei dir. Meist geht das schnell.',
     okTitleTest: 'Ihr seid dabei!',
     okBodyTest: 'Ich melde mich mit einem Terminvorschlag, meist geht das schnell. Euer Quizabend geht aufs Haus.',
-    errorPre: 'Da ging etwas schief. Schreib mir gern direkt an ', errorPost: '.',
+    errorPre: G.de.formFehler, errorPost: '.',
     privacy1: 'Mit dem Absenden verarbeite ich deine Angaben, um deine Anfrage zu beantworten. Mehr dazu in der ',
     privacyLink: 'Datenschutzerklärung', privacy2: '.',
   },
-  footer: { city: 'CozyWolf, Hamburg', imprint: 'Impressum', privacy: 'Datenschutz', aiNote: 'Stimmungsbilder auf dieser Seite sind KI-erzeugt.' },
+  footer: { city: 'CozyWolf, Hamburg', imprint: 'Impressum', privacy: 'Datenschutz', aiNote: G.de.aiHinweis },
   sticky: 'Termin anfragen',
 };
 
@@ -272,17 +272,16 @@ const en: OnePageDict = {
     kicker: 'Live quiz in Hamburg',
     hooks: ['Knowledge', 'Luck', 'Timing', 'Team spirit', 'Gut feeling'],
     rest: 'isn’t everything.',
-    sub: 'The coziest quiz night in Hamburg you’ve ever played.',
-    btn0: 'Free for test teams', btn0Sub: 'A whole evening, on the house',
+    sub: G.en.heroSub,
+    btn0: 'Free for test teams', btn0Sub: G.en.ctaSub,
     btn1: 'Request a date', btn1Sub: 'No strings attached, reply within 24 hours',
     availability: `Hamburg and around · from €350 · dates from ${TERMIN_AB.en}`,
-    imgAlt: 'Mood image, AI-generated: guests in a Hamburg bar in front of the quiz screen',
     phoneApp: 'CozyQuiz', phoneTeamA: 'Lightbulbs', phoneTeamB: 'Quiz Mafia', phoneReady: 'Ready',
   },
   modes: {
     kicker: '[ 01 ]', label: 'The formats', h2: 'Two modes, one evening',
     quizChip: 'Up to 40 people',
-    quizCalm: 'The board game night, in small teams. Every correct answer is a move on the board.',
+    quizCalm: G.en.quizCalm,
     quizLead: 'You play in teams of four or five around one phone, the projector is the stage. Answer correctly, claim a tile.',
     quizBullets: [
       'It’s not the most tiles that wins, but the largest connected area',
@@ -326,7 +325,7 @@ const en: OnePageDict = {
   },
   anlaesse: {
     label: 'Occasions', h2: 'What’s the occasion?',
-    sub: 'Same game, different night. I tune the questions, length and format to your crowd.',
+    sub: G.en.anlaesseSub,
     cta: 'Enquire →',
     cards: [
       { badge: 'Team event', title: 'Company or team',
@@ -381,8 +380,8 @@ const en: OnePageDict = {
     pointsFooterDone: 'All-in scores the most, but costs everything.',
   },
   ablauf: {
-    label: 'How it works', h2: 'A free wall is all you need',
-    sub: 'I bring the projector, sound, setup and hosting.',
+    label: 'How it works', h2: G.en.ablaufH2,
+    sub: G.en.ablaufSub,
     duo0Title: 'I bring',
     duo0: ['Projector and sound, set up beforehand', 'Hosting all evening', 'Questions tuned to your crowd', 'The game on all phones'],
     duo1Title: 'You need',
@@ -403,14 +402,14 @@ const en: OnePageDict = {
   faq: {
     label: 'Questions', h2: 'Frequently asked questions',
     items: [
-      { q: 'Do I need my own equipment?',
+      { q: G.en.faqTechnikQ,
         a: 'No. I bring the projector and sound myself. You only need a free wall or a screen, power and WiFi for your guests.' },
       { q: 'Do my guests have to install anything?',
         a: 'Nothing. Everyone scans a QR code and plays right in the browser on their phone. No app, no login.' },
-      { q: 'How many people does it work for?',
-        a: 'From a small round up to 160 people. Small groups conquer the game board, large groups compete as factions. The format adapts.' },
-      { q: 'How long does a quiz event take?',
-        a: 'Usually 90 to 120 minutes with several rounds. I agree the exact length with you beforehand to fit your occasion.' },
+      { q: G.en.faqGroesseQ,
+        a: G.en.faqGroesseA },
+      { q: G.en.faqDauerQ,
+        a: G.en.faqDauerA },
       { q: 'How far do you travel?',
         a: 'I’m based in Hamburg and the surrounding area. For requests further out, just drop me a line, usually something can be arranged.' },
       { q: 'What does it cost?',
@@ -442,11 +441,11 @@ const en: OnePageDict = {
     okBodyEvent: 'I’ll get back to you with a proposal. Usually quickly.',
     okTitleTest: 'You’re in!',
     okBodyTest: 'I’ll get back to you with a date proposal, usually quickly. Your quiz night is on the house.',
-    errorPre: 'Something went wrong. Feel free to email me directly at ', errorPost: '.',
+    errorPre: G.en.formFehler, errorPost: '.',
     privacy1: 'By sending, I process your details to answer your request. More in the ',
     privacyLink: 'privacy policy', privacy2: '.',
   },
-  footer: { city: 'CozyWolf, Hamburg', imprint: 'Imprint', privacy: 'Privacy', aiNote: 'Mood images on this page are AI-generated.' },
+  footer: { city: 'CozyWolf, Hamburg', imprint: 'Imprint', privacy: 'Privacy', aiNote: G.en.aiHinweis },
   sticky: 'Request a date',
 };
 

@@ -3,6 +3,7 @@
 // Gedankenstriche aus dem Entwurf sind per Repo-Regel durch Kommas ersetzt.
 import type { Lang } from '../../lang';
 import { TERMIN_AB } from './texts';
+import { GEMEINSAM as G } from './gemeinsam';
 
 export type MobileCat = {
   key: string; name: string; col: string; icon: string; claim: string;
@@ -15,7 +16,7 @@ export type MobileCat = {
 export type MobileDict = {
   nav: { items: { href: string; label: string }[]; menuLabel: string };
   hero: {
-    kicker: string; hooks: string[]; rest: string; sub: string; sub2: string; imgAlt: string;
+    kicker: string; hooks: string[]; rest: string; sub: string; sub2: string;
     cta: string; ctaSub: string; bookQ: string; bookCta: string; avail: string;
   };
   modes: {
@@ -83,10 +84,9 @@ const de: MobileDict = {
     kicker: 'Live-Quiz in Hamburg',
     hooks: ['Wissen', 'Glück', 'Timing', 'Teamgeist', 'Bauchgefühl'],
     rest: 'ist nicht alles.',
-    sub: 'Der gemütlichste Quizabend in Hamburg, den ihr je gespielt habt.',
+    sub: G.de.heroSub,
     sub2: 'Ich bringe Beamer, Sound und Moderation. Ihr spielt direkt am Handy, ihr braucht nur eine freie Wand.',
-    imgAlt: 'Stimmungsbild, KI-erzeugt: Gäste in einer Hamburger Bar vor der Quiz-Leinwand',
-    cta: 'Gratis für Test-Teams', ctaSub: 'Ein ganzer Abend, kostenlos',
+    cta: 'Gratis für Test-Teams', ctaSub: G.de.ctaSub,
     bookQ: 'Lieber direkt buchen?', bookCta: 'Termin anfragen →',
     avail: `Hamburg & Umland · Nächste Termine ab ${TERMIN_AB.de}`,
   },
@@ -94,7 +94,7 @@ const de: MobileDict = {
     label: 'Die Spielarten', h2: 'Zwei Modi, ein Abend',
     sub: 'Tippt einen Modus an, um zu sehen, wie er gespielt wird.',
     quizChip: 'bis 40 Personen',
-    quizP: 'Der Brettspielabend, in kleinen Teams. Jede richtige Antwort ist ein Zug auf dem Feld.',
+    quizP: G.de.quizCalm,
     quizTeams: '4 bis 8 Teams',
     quizBullets: [
       'Teams zu viert oder fünft, ein Handy pro Team.',
@@ -173,7 +173,7 @@ const de: MobileDict = {
   },
   anlaesse: {
     label: 'Anlässe', h2: 'Für welchen Anlass?',
-    sub: 'Gleiches Spiel, anderer Abend. Ich stimme Fragen, Länge und Spielart auf eure Runde ab.',
+    sub: G.de.anlaesseSub,
     cta: 'Anfragen →',
     cards: [
       { badge: 'Team-Event', title: 'Firma oder Team',
@@ -185,8 +185,8 @@ const de: MobileDict = {
     ],
   },
   ablauf: {
-    label: 'Der Abend', h2: 'Mehr als eine freie Wand braucht ihr nicht',
-    sub: 'Beamer, Sound, Aufbau und Moderation bringe ich mit.',
+    label: 'Der Abend', h2: G.de.ablaufH2,
+    sub: G.de.ablaufSub,
     priceBig: 'ab 350 €', priceSub: 'für den ganzen Abend',
     wallAltOff: 'Wohnzimmer mit Beamer, Wand noch dunkel',
     welcomeKicker: 'Herzlich willkommen zum', welcomeTitle: 'COZYQUIZ',
@@ -206,14 +206,14 @@ const de: MobileDict = {
   faq: {
     label: 'Fragen', h2: 'Häufige Fragen',
     items: [
-      { q: 'Brauche ich eigene Technik?',
+      { q: G.de.faqTechnikQ,
         a: 'Nein. Beamer und Sound bringe ich mit, deine Gäste scannen nur einen QR-Code und spielen im Browser. Keine App, kein Login.' },
-      { q: 'Für wie viele Personen funktioniert das?',
-        a: 'Von der kleinen Runde bis zu 160 Personen. Kleine Gruppen erobern das Spielfeld, große Gruppen treten als Fraktionen an. Das Format passt sich an.' },
-      { q: 'Wie lange dauert ein Quiz-Event?',
-        a: 'Meist 90 bis 120 Minuten mit mehreren Runden. Die genaue Länge stimme ich vorher mit dir auf deinen Anlass ab.' },
+      { q: G.de.faqGroesseQ,
+        a: G.de.faqGroesseA },
+      { q: G.de.faqDauerQ,
+        a: G.de.faqDauerA },
       { q: 'Was kostet das?',
-        a: 'Es geht bei 350 € für den ganzen Abend los, mit Technik und Moderation. Der genaue Preis richtet sich nach Personenzahl und Anlass. Schreib mir kurz, worum es geht, dann bekommst du von mir ein faires Angebot.' },
+        a: G.de.faqPreisA },
     ],
   },
   form: {
@@ -228,11 +228,11 @@ const de: MobileDict = {
     anlass: 'Anlass', anlassOpts: ['Firma oder Team', 'Private Feier', 'Café, Bar oder Pub', 'Etwas anderes'],
     personen: 'Personen', nachricht: 'Nachricht', nachrichtPh: 'Wann, wo, und was ist der Anlass?',
     submit: 'Anfrage senden', sending: 'Senden …',
-    errorPre: 'Da ging etwas schief. Schreib mir gern direkt an ', errorPost: '.',
+    errorPre: G.de.formFehler, errorPost: '.',
     privacy1: 'Ich nutze deine Angaben nur, um dir zu antworten. Mehr dazu in der ',
     privacyLink: 'Datenschutzerklärung', privacy2: '.',
   },
-  footer: { imprint: 'Impressum', privacy: 'Datenschutz', instagram: 'Instagram', aiNote: 'Stimmungsbilder auf dieser Seite sind KI-erzeugt.' },
+  footer: { imprint: 'Impressum', privacy: 'Datenschutz', instagram: 'Instagram', aiNote: G.de.aiHinweis },
   sticky: { label: 'Gratis für Test-Teams', tag: '0 €' },
 };
 
@@ -253,10 +253,9 @@ const en: MobileDict = {
     kicker: 'Live quiz in Hamburg',
     hooks: ['Knowledge', 'Luck', 'Timing', 'Team spirit', 'Gut feeling'],
     rest: 'isn’t everything.',
-    sub: 'The coziest quiz night in Hamburg you’ve ever played.',
+    sub: G.en.heroSub,
     sub2: 'I bring the projector, sound and hosting. You play right on your phones, all you need is a free wall.',
-    imgAlt: 'Mood image, AI-generated: guests in a Hamburg bar in front of the quiz screen',
-    cta: 'Free for test teams', ctaSub: 'A whole evening, on the house',
+    cta: 'Free for test teams', ctaSub: G.en.ctaSub,
     bookQ: 'Rather book directly?', bookCta: 'Request a date →',
     avail: `Hamburg & around · next dates from ${TERMIN_AB.en}`,
   },
@@ -264,7 +263,7 @@ const en: MobileDict = {
     label: 'The formats', h2: 'Two modes, one evening',
     sub: 'Tap a mode to see how it’s played.',
     quizChip: 'up to 40 people',
-    quizP: 'The board game night, in small teams. Every correct answer is a move on the board.',
+    quizP: G.en.quizCalm,
     quizTeams: '4 to 8 teams',
     quizBullets: [
       'Teams of four or five, one phone per team.',
@@ -343,7 +342,7 @@ const en: MobileDict = {
   },
   anlaesse: {
     label: 'Occasions', h2: 'What’s the occasion?',
-    sub: 'Same game, different night. I tune the questions, length and format to your crowd.',
+    sub: G.en.anlaesseSub,
     cta: 'Enquire →',
     cards: [
       { badge: 'Team event', title: 'Company or team',
@@ -355,8 +354,8 @@ const en: MobileDict = {
     ],
   },
   ablauf: {
-    label: 'The evening', h2: 'A free wall is all you need',
-    sub: 'I bring the projector, sound, setup and hosting.',
+    label: 'The evening', h2: G.en.ablaufH2,
+    sub: G.en.ablaufSub,
     priceBig: 'from €350', priceSub: 'for the whole evening',
     wallAltOff: 'Living room with projector, wall still dark',
     welcomeKicker: 'A warm welcome to', welcomeTitle: 'COZYQUIZ',
@@ -376,12 +375,12 @@ const en: MobileDict = {
   faq: {
     label: 'Questions', h2: 'Frequently asked questions',
     items: [
-      { q: 'Do I need my own equipment?',
+      { q: G.en.faqTechnikQ,
         a: 'No. I bring the projector and sound, your guests just scan a QR code and play in the browser. No app, no login.' },
-      { q: 'How many people does it work for?',
-        a: 'From a small round up to 160 people. Small groups conquer the game board, large groups compete as factions. The format adapts.' },
-      { q: 'How long does a quiz event take?',
-        a: 'Usually 90 to 120 minutes with several rounds. I agree the exact length with you beforehand to fit your occasion.' },
+      { q: G.en.faqGroesseQ,
+        a: G.en.faqGroesseA },
+      { q: G.en.faqDauerQ,
+        a: G.en.faqDauerA },
       { q: 'What does it cost?',
         a: 'It starts at €350 for the whole evening, including tech and hosting. The exact price depends on headcount and occasion. Tell me briefly what you have in mind and you’ll get a fair offer.' },
     ],
@@ -398,11 +397,11 @@ const en: MobileDict = {
     anlass: 'Occasion', anlassOpts: ['Company or team', 'Private party', 'Café, bar or pub', 'Something else'],
     personen: 'People', nachricht: 'Message', nachrichtPh: 'When, where, and what’s the occasion?',
     submit: 'Send request', sending: 'Sending …',
-    errorPre: 'Something went wrong. Feel free to email me directly at ', errorPost: '.',
+    errorPre: G.en.formFehler, errorPost: '.',
     privacy1: 'I only use your details to reply to you. More in the ',
     privacyLink: 'privacy policy', privacy2: '.',
   },
-  footer: { imprint: 'Imprint', privacy: 'Privacy', instagram: 'Instagram', aiNote: 'Mood images on this page are AI-generated.' },
+  footer: { imprint: 'Imprint', privacy: 'Privacy', instagram: 'Instagram', aiNote: G.en.aiHinweis },
   sticky: { label: 'Free for test teams', tag: '€0' },
 };
 
