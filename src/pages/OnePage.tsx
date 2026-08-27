@@ -1905,15 +1905,32 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           <div>
             <div data-reveal="" style={sx('font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62);margin-bottom:12px')}>{L.johannes.kicker}</div>
             <h2 data-reveal="" style={sx("margin:0 0 18px;max-width:700px;font-family:'League Spartan',sans-serif;font-size:30px;font-weight:900;line-height:1.18;color:#F6EFE6;cursor:default;hyphens:none")}>
-              {L.johannes.quote.map((qw, i) => (
-                <span key={i}>
-                  {/* Ohne zweite Farbe traegt die Helligkeit die Betonung:
-                      das Hervorgehobene steht in vollem Creme, der Rest
-                      gedaempft. */}
-                  <span style={sx(`display:inline-block;white-space:nowrap;color:${qw.hot ? '#F6EFE6' : 'rgba(246,239,230,.6)'}`)}>{qw.w}</span>
-                  {i < L.johannes.quote.length - 1 ? ' ' : ''}
-                </span>
-              ))}
+              {/* Ohne zweite Farbe traegt die Helligkeit die Betonung: das
+                  Hervorgehobene steht in vollem Creme, der Rest gedaempft.
+                  Wolf am 27.08.: "hier sollte beim hovern was mit den helleren
+                  woertern passieren". Also zeigt man auf ein betontes Wort,
+                  hebt es sich leicht an und der ganze uebrige Satz faellt
+                  weiter zurueck; das betonte Wort steht dann allein da. Nur
+                  die betonten Woerter reagieren, die uebrigen sind kein Ziel:
+                  ein Satz, in dem jedes Wort zuckt, ist kein Zitat mehr. */}
+              {L.johannes.quote.map((qw, i) => {
+                const an = qw.hot && this.state.zeig === `q${i}`;
+                const still = !!this.state.zeig && String(this.state.zeig).startsWith('q') && !an;
+                return (
+                  <span key={i}>
+                    <span
+                      onMouseEnter={qw.hot && !this._coarse ? () => this.setState({ zeig: `q${i}` }) : undefined}
+                      onMouseLeave={qw.hot && !this._coarse ? () => this.setState({ zeig: null }) : undefined}
+                      style={sx('display:inline-block;white-space:nowrap;'
+                        + `color:${qw.hot ? '#F6EFE6' : 'rgba(246,239,230,.6)'};`
+                        + `opacity:${still ? (qw.hot ? .4 : .3) : 1};`
+                        + `transform:translateY(${an ? -3 : 0}px);`
+                        + `${qw.hot ? 'cursor:default;' : ''}`
+                        + `transition:opacity .3s ${EASE},transform .3s ${EASE}`)}>{qw.w}</span>
+                    {i < L.johannes.quote.length - 1 ? ' ' : ''}
+                  </span>
+                );
+              })}
             </h2>
             <p style={sx('margin:0 0 22px;max-width:680px;font-size:17px;line-height:1.65;font-weight:500;color:rgba(246,239,230,.78)')}>{L.johannes.body}</p>
             <div data-reveal="" data-stagger="" style={sx('display:flex;flex-wrap:wrap;gap:10px')}>
@@ -1984,38 +2001,61 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const L = this.T;
     const test = this.state.formMode === 'test';
     const st = this.state.formStatus;
-    const tab = (on: boolean) => `padding:10px 20px;border-radius:999px;border:none;cursor:pointer;white-space:nowrap;font-family:inherit;font-size:14.5px;font-weight:900;transition:background .25s ${EASE},color .25s ${EASE};background:${on ? '#F6EFE6' : 'transparent'};color:${on ? '#0A0814' : 'rgba(246,239,230,.78)'}`;
     const inputStyle = 'width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;background:rgba(246,239,230,.05);border:1.5px solid rgba(246,239,230,.38);color:#F6EFE6;font-family:inherit;font-size:15px;font-weight:600';
     const labelStyle = 'font-size:13px;font-weight:800;color:rgba(246,239,230,.78);letter-spacing:.01em';
     const fieldWrap = 'display:flex;flex-direction:column;gap:6px';
     const req = <span aria-hidden="true" style={sx(`color:${AKZENT}`)}> *</span>;
     return (
       <section id="anfragen" data-ton="250,75,163" data-halt="" style={sx('background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.05),transparent 70%)')}>
-        <span aria-hidden="true" style={sx('display:block;height:1px;background:linear-gradient(90deg,transparent,rgba(250,75,163,.32),transparent)')}></span>
-        <div style={sx('position:relative;max-width:760px;margin:0 auto;padding:88px 32px;text-align:center')}>
-          <span aria-hidden="true" style={sx('position:absolute;top:20px;left:50%;transform:translateX(-50%);width:520px;height:220px;border-radius:50%;background:radial-gradient(ellipse,rgba(246,239,230,.05),transparent 70%);pointer-events:none')}></span>
-          {this.kicker(`[ 06 ]|${L.form.label}`)}
-          <h2 data-reveal="" style={sx("position:relative;margin:0 0 14px;font-family:'League Spartan',sans-serif;font-size:38px;font-weight:900;color:#F6EFE6")}>{L.form.h2}</h2>
-          <p style={sx('margin:0 auto 10px;max-width:560px;font-size:17.5px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78)')}>{L.form.sub}</p>
-          <p style={sx('margin:0 auto 18px;font-size:14px;font-weight:800;letter-spacing:.02em;color:#F6EFE6')}>{L.form.avail}</p>
-          <div style={sx('position:relative;display:inline-flex;gap:6px;padding:6px;border-radius:999px;background:rgba(246,239,230,.04);border:1px solid rgba(246,239,230,.20);margin:0 0 22px')}>
-            <button type="button" onClick={() => this.openForm('event')} style={sx(tab(!test))}>{L.form.tabEvent}</button>
-            <button type="button" onClick={() => this.openForm('test')} style={sx(tab(test))}>{L.form.tabTest}</button>
-          </div>
-          <div data-form-panel="" style={sx(`overflow:hidden;max-height:1800px;opacity:1;transition:max-height 1.05s ${EASE},opacity .5s ${EASE} .18s`)}>
+        <span aria-hidden="true" style={sx('display:block;height:1px;background:linear-gradient(90deg,transparent,rgba(246,239,230,.22),transparent)')}></span>
+        {/* Fassung E1, von Wolf gewaehlt, mit seiner Auflage: "die formulare
+            zwischen testteams und ernsthafter anfrage muss klar getrennt sein".
+            Also links die Wahl als zwei grosse Zeilen mit ihrem Preis, rechts
+            das Formular, das mit einer Aufschrift sagt, welcher der beiden
+            gerade ausgefuellt wird. Zwei Reiter nebeneinander hatten das
+            nicht geleistet: sie sahen aus wie eine Einstellung, nicht wie
+            eine Entscheidung.
+            Nebenwirkung, und die war das Ziel: der Abschnitt lag bei 1,29
+            Bildschirmen und war damit der letzte, der nicht auf einen Halt
+            passte. Nebeneinander statt untereinander loest das. */}
+        <div data-shell="" data-m="formraum" style={sx('position:relative;width:100%;max-width:1180px;margin:0 auto;padding:56px 32px;box-sizing:border-box;'
+          + 'display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:56px;align-items:start')}>
+          <div>
+            {this.kicker(`[ 06 ]|${L.form.label}`)}
+            <h2 data-reveal="" style={sx("margin:0 0 12px;font-family:'League Spartan',sans-serif;font-size:clamp(30px,3.2vw,44px);font-weight:900;line-height:1.02;letter-spacing:-.028em;color:#F6EFE6;text-wrap:balance")}>{L.form.h2}</h2>
+            <p style={sx('margin:0 0 8px;font-size:17px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78)')}>{L.form.sub}</p>
+            <p style={sx('margin:0 0 26px;font-size:14px;font-weight:800;letter-spacing:.02em;color:rgba(246,239,230,.62)')}>{L.form.avail}</p>
 
-            <div data-m="pricerow" style={sx('position:relative;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin:0 0 26px')}>
-              <span style={sx('display:inline-flex;align-items:baseline;gap:8px;padding:12px 22px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20)')}>
-                <span style={sx("font-family:'League Spartan',sans-serif;font-size:28px;font-weight:900;color:#F6EFE6;white-space:nowrap")}>{test ? L.form.testBig : L.form.priceBig}</span>
-                <span style={sx('font-size:14px;font-weight:700;color:#F6EFE6;white-space:nowrap')}>{test ? L.form.testSub : L.form.priceSub}</span>
-              </span>
-              <span style={sx('font-size:14.5px;font-weight:700;color:rgba(246,239,230,.62);text-align:left')}>
-                {test ? L.form.testNote1 : L.form.priceNote1}<br />{test ? L.form.testNote2 : L.form.priceNote2}
-              </span>
-            </div>
+            {/* Die beiden Wege. Der gewaehlte steht hell und traegt einen
+                Strich, der andere faellt zurueck. Das ist H2 aus dem
+                Zeigen-Mockup, hier auf die Wahl angewandt. */}
+            {[
+              { k: 'test' as const, an: test, gross: L.form.testBig, klein: L.form.testSub, titel: L.form.tabTest, n1: L.form.testNote1, n2: L.form.testNote2 },
+              { k: 'event' as const, an: !test, gross: L.form.priceBig, klein: L.form.priceSub, titel: L.form.tabEvent, n1: L.form.priceNote1, n2: L.form.priceNote2 },
+            ].map(w => (
+              <button key={w.k} type="button" onClick={() => this.openForm(w.k)}
+                aria-pressed={w.an}
+                style={sx('display:block;width:100%;box-sizing:border-box;text-align:left;cursor:pointer;background:none;font-family:inherit;'
+                  + 'border:none;border-top:1px solid rgba(246,239,230,.14);padding:20px 0;'
+                  + `opacity:${w.an ? 1 : .45};transition:opacity .3s ${EASE}`)}>
+                <span style={sx('display:flex;align-items:center;gap:12px;margin-bottom:6px;'
+                  + `transform:translateX(${w.an ? 10 : 0}px);transition:transform .3s ${EASE}`)}>
+                  <span aria-hidden="true" style={sx(`flex:none;width:${w.an ? 26 : 0}px;height:2px;border-radius:2px;background:#F6EFE6;`
+                    + `opacity:${w.an ? .9 : 0};transition:width .3s ${EASE},opacity .3s ${EASE}`)}></span>
+                  <span style={sx("font-family:'League Spartan',sans-serif;font-size:clamp(24px,2.4vw,32px);font-weight:900;line-height:1;letter-spacing:-.025em;color:#F6EFE6;white-space:nowrap")}>{w.gross}</span>
+                  <span style={sx('font-size:14px;font-weight:800;color:rgba(246,239,230,.7);white-space:nowrap')}>{w.klein}</span>
+                </span>
+                <span style={sx('display:block;font-size:15px;line-height:1.5;font-weight:600;color:rgba(246,239,230,.72);max-width:38ch')}>
+                  {w.n1} {w.n2}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div data-form-panel="" style={sx('min-width:0')}>
 
             {st === 'ok' && (
-              <div role="status" style={sx('max-width:560px;margin:0 auto;padding:clamp(22px,3vw,34px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);box-shadow:0 16px 40px rgba(0,0,0,.35);text-align:center')}>
+              <div role="status" style={sx('width:100%;box-sizing:border-box;padding:clamp(22px,3vw,34px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);box-shadow:0 16px 40px rgba(0,0,0,.35);text-align:center')}>
                 <div style={sx('font-size:22px;font-weight:900;color:#F6EFE6')}>{test ? L.form.okTitleTest : L.form.okTitleEvent}</div>
                 <p style={sx('margin:10px 0 0;color:rgba(246,239,230,.78);font-weight:500;line-height:1.6')}>{test ? L.form.okBodyTest : L.form.okBodyEvent}</p>
               </div>
@@ -2023,7 +2063,21 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
             {st !== 'ok' && (
               <form key={this.state.formMode} onSubmit={this.submitForm}
-                style={sx('max-width:560px;margin:0 auto;text-align:left;padding:clamp(22px,3vw,34px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);box-shadow:0 16px 40px rgba(0,0,0,.35)')}>
+                style={sx('width:100%;text-align:left;padding:clamp(22px,3vw,30px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);box-shadow:0 16px 40px rgba(0,0,0,.35);box-sizing:border-box')}>
+                {/* Die Aufschrift. Wolfs Auflage war, dass klar getrennt sein
+                    muss, welches der beiden Formulare man ausfuellt. Links
+                    steht die Wahl, hier steht die Antwort darauf, in derselben
+                    Zeile wie ein Wechselverweis fuer den Fall, dass man sich
+                    vertan hat. */}
+                <div style={sx('display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(246,239,230,.14)')}>
+                  <span style={sx('font-size:11.5px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:rgba(246,239,230,.5)')}>{L.form.label}</span>
+                  <span style={sx("font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;line-height:1;letter-spacing:-.02em;color:#F6EFE6")}>{test ? L.form.tabTest : L.form.tabEvent}</span>
+                  <span style={sx('flex:1')}></span>
+                  <button type="button" onClick={() => this.openForm(test ? 'event' : 'test')}
+                    style={sx('background:none;border:none;padding:0;cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;color:rgba(246,239,230,.62);text-decoration:underline;text-decoration-color:rgba(246,239,230,.3);text-underline-offset:3px')}>
+                    {test ? L.form.tabEvent : L.form.tabTest}
+                  </button>
+                </div>
                 <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden="true" style={sx('display:none')} />
                 <input type="hidden" name="_subject" value={test ? 'Neues Test-Team' : 'Quiz-Anfrage'} />
                 <input type="hidden" name="art" value={test ? 'Test-Team' : 'Event-Anfrage'} />

@@ -27,7 +27,11 @@
 export const GEMEINSAM = {
   de: {
     // ── Das Kernversprechen ────────────────────────────────────────────────
-    heroSub: 'Der gemütlichste Quizabend in Hamburg, den ihr je gespielt habt.',
+    // Wolf am 27.08.: "hier steht btw zu oft hamburg". Im Hero stand es
+    // dreimal: in der Kennzeile, hier und in der Fusszeile. Die Kennzeile
+    // behaelt es, das ist die Zeile, die auch fuer die Suche zaehlt. Hier und
+    // unten faellt es weg, ohne dass eine Zeile verschwindet.
+    heroSub: 'Der gemütlichste Quizabend, den ihr je gespielt habt.',
     ctaSub: 'Ein ganzer Abend, kostenlos',
     anlaesseSub: 'Gleiches Spiel, anderer Abend. Ich stimme Fragen, Länge und Spielart auf eure Runde ab.',
     quizCalm: 'Der Brettspielabend, in kleinen Teams. Jede richtige Antwort ist ein Zug auf dem Feld.',
@@ -55,7 +59,7 @@ export const GEMEINSAM = {
     aiHinweis: '',
   },
   en: {
-    heroSub: 'The coziest quiz night in Hamburg you’ve ever played.',
+    heroSub: 'The coziest quiz night you’ve ever played.',
     ctaSub: 'A whole evening, on the house',
     anlaesseSub: 'Same game, different night. I tune the questions, length and format to your crowd.',
     quizCalm: 'The board game night, in small teams. Every correct answer is a move on the board.',

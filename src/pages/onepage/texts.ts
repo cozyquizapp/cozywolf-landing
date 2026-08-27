@@ -92,7 +92,7 @@ const de: OnePageDict = {
     sub: G.de.heroSub,
     btn0: 'Gratis für Test-Teams', btn0Sub: G.de.ctaSub,
     btn1: 'Termin anfragen', btn1Sub: 'Unverbindlich, Antwort in 24 Stunden',
-    availability: `Hamburg und Umland · ab 350 € · Termine ab ${TERMIN_AB.de}`,
+    availability: `Ab 350 € · Termine ab ${TERMIN_AB.de}`,
     phoneApp: 'CozyQuiz', phoneTeamA: 'Glühbirnen', phoneTeamB: 'Quiz-Mafia', phoneReady: 'Bereit',
   },
   modes: {
@@ -297,7 +297,7 @@ const en: OnePageDict = {
     sub: G.en.heroSub,
     btn0: 'Free for test teams', btn0Sub: G.en.ctaSub,
     btn1: 'Request a date', btn1Sub: 'No strings attached, reply within 24 hours',
-    availability: `Hamburg and around · from €350 · dates from ${TERMIN_AB.en}`,
+    availability: `From €350 · dates from ${TERMIN_AB.en}`,
     phoneApp: 'CozyQuiz', phoneTeamA: 'Lightbulbs', phoneTeamB: 'Quiz Mafia', phoneReady: 'Ready',
   },
   modes: {
