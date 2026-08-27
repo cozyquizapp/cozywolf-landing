@@ -34,6 +34,7 @@ import { KACHEL_VERLAUF, kachel, motivAnteil, qqGridSize, teammarke } from '../q
 import { CREME, GRUND, SPARTAN, HAAR, EASE, Kicker } from './mockups/stil';
 import { HeroFarbe, FARB_ENTWUERFE, type FarbEntwurf } from './mockups/heroFarbe';
 import { BrettFarben, BRETT_FARBEN, type BrettFarbe } from './mockups/brettFarben';
+import { ArenaTabelle, ARENA_ENTWUERFE, type ArenaEntwurf } from './mockups/arenaTabelle';
 import {
   Ablauf, UeberMich, Fragen, Anfragen,
   ABLAUF_ENTWUERFE, JOH_ENTWUERFE, FAQ_ENTWUERFE, FORM_ENTWUERFE,
@@ -182,7 +183,7 @@ const PROBE_TYPEN = [
 export default function Mockups() {
   const lang = useLang();
   const L = onePageT(lang);
-  type Stat = '00' | '01' | '02' | '03' | '04' | '05' | '06' | '07' | 'BF';
+  type Stat = '00' | '01' | '02' | '03' | '04' | '05' | '06' | '07' | 'BF' | 'AR';
   const [station, setStation] = useState<Stat>('01');
   // Fuer die Stationen 04 bis 07 genuegt ein Zaehler je Station: sie haben
   // alle drei Entwuerfe und keine eigene Logik.
@@ -192,6 +193,7 @@ export default function Mockups() {
   const [probe, setProbe] = useState<ProbeEntwurf>(1);
   const [farbe, setFarbe] = useState<FarbEntwurf>(1);
   const [bf, setBf] = useState<BrettFarbe>(1);
+  const [ar, setAr] = useState<ArenaEntwurf>(2);
   const [mobil, setMobil] = useState(false);
 
   const modi: Modus[] = [
@@ -218,7 +220,8 @@ export default function Mockups() {
   };
   const w = WEITERE[station];
 
-  const inhalt = station === 'BF' ? <BrettFarben mobil={mobil} entwurf={bf} />
+  const inhalt = station === 'AR' ? <ArenaTabelle mobil={mobil} entwurf={ar} />
+    : station === 'BF' ? <BrettFarben mobil={mobil} entwurf={bf} />
     : station === '00' ? <HeroFarbe L={L} mobil={mobil} entwurf={farbe} />
     : w ? w.bau({ L, mobil, entwurf: v })
     : station === '03' ? <Probieren L={L} mobil={mobil} entwurf={probe} />
@@ -238,12 +241,16 @@ export default function Mockups() {
             { k: '01', label: '01' }, { k: '02', label: '02' }, { k: '03', label: '03' },
             { k: '04', label: '04' }, { k: '05', label: '05' }, { k: '06', label: '06' }, { k: '07', label: '07' },
             { k: 'BF', label: 'Brettfarben' },
+            { k: 'AR', label: 'Arena' },
           ]} aktiv={station} waehle={k => setStation(k as Stat)} />
           <span style={sx(`font-family:${SPARTAN};font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap`)}>
-            {station === 'BF' ? 'Brettfarben' : station === '00' ? 'Farbwechsel' : station === '01' ? 'Spielarten' : station === '02' ? 'Anlaesse' : station === '03' ? 'Ausprobieren' : w.titel}
+            {station === 'AR' ? 'Arena-Tabelle' : station === 'BF' ? 'Brettfarben' : station === '00' ? 'Farbwechsel' : station === '01' ? 'Spielarten' : station === '02' ? 'Anlaesse' : station === '03' ? 'Ausprobieren' : w.titel}
           </span>
           <span style={sx('flex:1')}></span>
-          {station === 'BF'
+          {station === 'AR'
+            ? <Schalter werte={([1, 2, 3, 4, 5, 6, 7] as ArenaEntwurf[]).map(k => ({ k: String(k), label: `R${k}  ${ARENA_ENTWUERFE[k].name}` }))}
+              aktiv={String(ar)} waehle={k => setAr(Number(k) as ArenaEntwurf)} />
+            : station === 'BF'
             ? <Schalter werte={([1, 2, 3, 4] as BrettFarbe[]).map(k => ({ k: String(k), label: `G${k}  ${BRETT_FARBEN[k].name}` }))}
               aktiv={String(bf)} waehle={k => setBf(Number(k) as BrettFarbe)} />
             : station === '00'
@@ -266,7 +273,9 @@ export default function Mockups() {
             aktiv={lang} waehle={k => setLang(k as 'de' | 'en')} />
         </div>
         <div style={sx(`max-width:1000px;margin:0 auto;padding:0 24px 14px;font-size:14.5px;line-height:1.55;color:rgba(246,239,230,.66)`)}>
-          {station === 'BF'
+          {station === 'AR'
+            ? <><b style={sx(`color:${CREME}`)}>R{ar}. {ARENA_ENTWUERFE[ar].name}.</b> {ARENA_ENTWUERFE[ar].idee[lang]} <i style={sx('opacity:.7')}>Die Rangfolge laeuft, damit sich beurteilen laesst, ob der mitwandernde Rahmen unruhig wirkt. Zeig auf eine Zeile fuer das Wappen und den Spruch.</i></>
+            : station === 'BF'
             ? <><b style={sx(`color:${CREME}`)}>G{bf}. {BRETT_FARBEN[bf].name}.</b> {BRETT_FARBEN[bf].idee[lang]} <i style={sx('opacity:.7')}>Gleicher Endstand in allen vier, verglichen wird nur die Farbe. Alle Toene aus QQ_BOARD_PALETTE der App.</i></>
             : station === '00'
             ? <><b style={sx(`color:${CREME}`)}>F{farbe}. {FARB_ENTWUERFE[farbe].name}.</b> {FARB_ENTWUERFE[farbe].idee[lang]} <i style={sx('opacity:.7')}>Wechselt hier alle 3,4 s statt alle 6,8 s, damit man nicht warten muss.</i></>
