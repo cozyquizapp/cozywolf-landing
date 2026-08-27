@@ -301,6 +301,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         }
       });
       document.querySelectorAll('section').forEach(s => this.io?.observe(s));
+      this.grundfarbenBeobachten();
     });
 
     this.onScroll = () => {
@@ -335,12 +336,41 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     clearInterval(this._arenaT);
     clearInterval(this._hookT);
     this.io?.disconnect();
+    this._grundIO?.disconnect();
     this.wallRO?.disconnect();
     this._modesRO?.disconnect();
     this._boardWinRO?.disconnect();
     this._pStageIO?.disconnect();
     if (this.onScroll) window.removeEventListener('scroll', this.onScroll);
     if (this._trackMouse) document.removeEventListener('mousemove', this._trackMouse);
+  }
+
+
+  // Grundfarbe je Abschnitt (Twitch Turbo). Eigener Beobachter, weil dieser
+  // beim Verlassen NICHT abbestellt: wer zurueckscrollt, soll die Farbe des
+  // Abschnitts wiedersehen, in dem er landet.
+  private _grundIO: IntersectionObserver | undefined;
+
+  grundfarbenBeobachten() {
+    const TOENE: Record<string, string> = {
+      top:        '10,8,20',      // Hero bleibt der reine Grund
+      spielarten: '168,85,247',   // Lila, die Farbe der Kristallkugel
+      probieren:  '59,130,246',   // Blau, Mu-Cho
+      ablauf:     '34,197,94',    // Gruen, der Pilz
+      johannes:   '249,115,22',   // Orange, die Teekanne
+      fragen:     '250,204,21',   // Gelb, der Wuerfel
+      anfragen:   '250,75,163',   // Das Marken-Pink, einmal, am Ziel
+    };
+    const wurzel = document.documentElement;
+    this._grundIO = new IntersectionObserver((eintraege) => {
+      // Der Abschnitt, der am meisten Bild einnimmt, gibt den Ton an.
+      const sichtbar = eintraege.filter(e => e.isIntersecting);
+      if (!sichtbar.length) return;
+      const bester = sichtbar.reduce((a, b2) => b2.intersectionRatio > a.intersectionRatio ? b2 : a);
+      const ton = TOENE[(bester.target as HTMLElement).id] ?? '10,8,20';
+      wurzel.style.setProperty('--cw-grundton', ton);
+    }, { threshold: [0.12, 0.3, 0.55, 0.8] });
+    document.querySelectorAll('section[id]').forEach(s => this._grundIO?.observe(s));
   }
 
   // ------------------------------------------------- Abschnitte
@@ -1417,6 +1447,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const L = this.T;
     return (
       <div data-m="root" style={sx('min-height:100vh;background:#0A0814;width:100%')}>
+        <div aria-hidden="true" data-cw-grund=""></div>
         <style>{ONEPAGE_CSS}</style>
         {this.renderHeader()}
         {this.renderHero()}

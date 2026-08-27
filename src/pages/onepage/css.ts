@@ -69,6 +69,11 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 @media (hover:hover) and (pointer:fine){
   .cwKachel:hover{transform:rotate(var(--r,0deg)) translateY(-7px) scale(1.045);filter:brightness(1.06);z-index:9}
 }
+:root{--cw-grundton:10,8,20}
+[data-cw-grund]{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 120% 80% at 50% 0%,rgba(var(--cw-grundton),.14),rgba(var(--cw-grundton),.05) 45%,rgba(10,8,20,0) 78%);
+  transition:background 1.1s cubic-bezier(.4,0,.2,1)}
+@media (prefers-reduced-motion:reduce){[data-cw-grund]{transition:none}}
 summary::-webkit-details-marker{display:none}
 summary{list-style:none;cursor:pointer}
 html{scroll-behavior:smooth;scroll-padding-top:88px}
