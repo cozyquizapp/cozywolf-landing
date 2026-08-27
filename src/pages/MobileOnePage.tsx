@@ -46,7 +46,7 @@ const TEAMS = [
   { id: 'g', color: '#22C55E', av: '/assets/av-qq-mushroom.webp' },
   { id: 'p', color: '#A855F7', av: '/assets/av-qq-crystal-ball.webp' },
   { id: 'y', color: '#FACC15', av: '/assets/av-qq-game-die.webp' },
-  { id: 'o', color: '#F97316', av: '/assets/av-qq-teapot.webp' },
+  { id: 'o', color: '#F97316', av: '/assets/av-qq-treasure-chest.webp' },
 ];
 
 // 5x5 fuers Handy: vier Teams, dafuer grosse Felder

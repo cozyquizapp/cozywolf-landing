@@ -30,7 +30,6 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 @keyframes cwWave{0%{opacity:0;transform:scale(.7)}35%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(1.15)}}
 @keyframes cwBridgeFlash{0%{opacity:.35}40%{opacity:1;filter:brightness(1.6)}100%{opacity:1;filter:brightness(1)}}
 @keyframes cwGridGlow{0%,100%{box-shadow:0 0 0 1px var(--tc),0 0 46px var(--tc)}50%{box-shadow:0 0 0 1px var(--tc),0 0 84px var(--tc)}}
-@keyframes cwGrow{0%{opacity:0;transform:translateX(-26px) scale(.955)}45%{opacity:1}100%{opacity:1;transform:none}}
 @keyframes cwSwapIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 @keyframes cwRailIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
 @keyframes cwMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
@@ -102,11 +101,16 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 [data-m=beamer]{width:100%!important}
 [data-m=cats]{grid-template-columns:repeat(3,1fr)!important}
 }
+/* Station 01 in der Fassung „Leinwand": Name, Text, Objekt nebeneinander.
+   Unter 1080 px wird die Namensspalte schmaler, unter 900 px stapeln die drei
+   uebereinander, sonst bliebe fuer den Text weniger als 30 Zeichen. Das Objekt
+   (Brett, Rangfolge) darf dann die volle Breite nehmen. */
 @media (max-width:1080px){
-[data-m=modetext]{flex:0 1 290px!important;min-width:250px!important;max-width:330px!important}
+[data-m=modereihe]{grid-template-columns:220px 1fr 300px!important;gap:32px!important}
 }
-@media (max-width:820px){
-[data-m=modes]{grid-template-columns:1fr!important;min-height:0!important}
+@media (max-width:900px){
+[data-m=modereihe]{grid-template-columns:1fr!important;gap:28px!important;padding:36px 0!important}
+[data-m=modeobjekt]{justify-content:flex-start!important;height:400px!important}
 }
 @media (max-width:1024px){
 [data-m=beamer]{height:auto!important;min-height:320px!important}
@@ -123,6 +127,17 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 [data-m=probe]{flex-direction:column!important;align-items:stretch!important;gap:26px!important}
 [data-m=probe]>div:first-child{flex-direction:row!important;flex-wrap:wrap!important;justify-content:center!important;gap:8px!important}
 [data-m=pphone]{width:100%!important;max-width:360px!important;margin:0 auto!important;height:auto!important;min-height:600px!important}
+}
+/* Kopfzeile zwischen 861 und 1000 px. Gemessen bei 880 px: der Knopf
+   „Termin anfragen" stand 47 px ausserhalb des Fensters, weil Navigation und
+   Knopf erst ab 860 px verschwinden. Erst enger setzen, dann die Navigation
+   weglassen, den Knopf so lange wie moeglich behalten. */
+@media (max-width:1000px){
+header [data-shell]{gap:20px!important}
+[data-m=nav]{gap:18px!important;font-size:14px!important}
+}
+@media (max-width:940px){
+[data-m=nav]{display:none!important}
 }
 @media (max-width:900px){
 [data-m=screenbox]{position:static!important;width:100%!important;height:auto!important;margin-top:14px!important;border-radius:18px!important;box-shadow:none!important;border:1px solid rgba(246,239,230,.08)!important}

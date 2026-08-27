@@ -30,7 +30,7 @@ const TEAMS = [
   { id: 'g', color: '#22C55E', av: '/assets/av-qq-mushroom.webp' },
   { id: 'p', color: '#A855F7', av: '/assets/av-qq-crystal-ball.webp' },
   { id: 'y', color: '#FACC15', av: '/assets/av-qq-game-die.webp' },
-  { id: 'o', color: '#F97316', av: '/assets/av-qq-teapot.webp' },
+  { id: 'o', color: '#F97316', av: '/assets/av-qq-treasure-chest.webp' },
   { id: 'b', color: '#3B82F6', av: '/assets/av-qq-table-lamp.webp' },
 ];
 const PRESET: [string, number][] = [['y', 29], ['y', 35], ['y', 36], ['p', 40], ['p', 41], ['p', 47], ['o', 31]];
@@ -67,13 +67,12 @@ const WALL_W = 640, WALL_H = 354;
 
 type OPState = {
   formMode: 'event' | 'test'; formStatus: 'idle' | 'sending' | 'ok' | 'error';
-  mode?: 'quiz' | 'arena' | null;
   arenaPts?: Record<string, number>;
   arenaGain?: Record<string, { g: number; hits: number }>;
   arenaRound?: number;
   wallScale?: number; anlass?: number | null;
   beam?: boolean; beamWelcome?: boolean;
-  johFan?: boolean; openW?: number; hookI?: number;
+  johFan?: boolean; hookI?: number;
   tick?: number; hbOn?: number | null; duoHover?: number | null;
   probeCat?: string; probePick?: number | null;
   guessRaw?: string; guessDone?: boolean;
@@ -86,7 +85,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   state: OPState = { formMode: 'event', formStatus: 'idle' };
 
   gameTimer: ReturnType<typeof setInterval> | undefined;
-  switchTimer: ReturnType<typeof setTimeout> | undefined;
+  _spielSichtbar = false;
+  _spielIO: IntersectionObserver | undefined;
   wallRO: ResizeObserver | undefined;
   io: IntersectionObserver | undefined;
   private _beamT: ReturnType<typeof setTimeout> | undefined;
@@ -95,8 +95,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   private _hookT: ReturnType<typeof setInterval> | undefined;
   private _mx: number | undefined; private _my: number | undefined;
   private _anlMx: number | undefined; private _anlMy: number | undefined;
-  private _modesEl: HTMLElement | null = null;
-  private _modesRO: ResizeObserver | undefined;
   private _boardWinEl: HTMLElement | null = null;
   private _boardWinRO: ResizeObserver | undefined;
   private _pStage: HTMLElement | null = null;
@@ -138,22 +136,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     setTimeout(settle, 120);
   }
 
-  // ------------------------------------------------- Spielarten-Karten
-  // Waehrend des Spaltenwechsels pausiert die Spiel-Simulation: sonst rechnet
-  // React mitten in der Layout-Animation 49 Zellen neu und es ruckelt.
-  switchMode(next: 'quiz' | 'arena' | null) {
-    if ((this.state.mode ?? null) === next) return;
-    clearInterval(this.gameTimer);
-    clearTimeout(this.switchTimer);
-    if (next === 'arena') this.setState({ mode: next, arenaPts: {}, arenaGain: {}, arenaRound: 0 });
-    else this.setState({ mode: next });
-    if (next == null) return;
-    this.switchTimer = setTimeout(() => {
-      if (next === 'quiz') this.startGame();
-      else this.arenaTick();
-    }, 380);
-  }
-
   startGame() {
     clearInterval(this.gameTimer);
     this.setState({ tick: 0 });
@@ -173,6 +155,38 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       if (hits) { const g = hits * 40; gain[f.id] = { g, hits }; pts[f.id] += g; }
     });
     this.setState({ arenaPts: pts, arenaGain: gain, arenaRound: round });
+  }
+
+  /**
+   * Die beiden Simulationen der Spielarten laufen, solange der Abschnitt zu
+   * sehen ist, und sonst nicht.
+   *
+   * Vorher hingen sie am Aufklappen der Karten: wer nicht mit der Maus
+   * darauf ging, sah ein totes Brett und leere Balken. In der Fassung
+   * „Leinwand" stehen beide Modi dauerhaft nebeneinander, es gibt kein
+   * Aufklappen mehr, an dem sich der Start festmachen koennte. Sichtbarkeit
+   * ist der ehrlichere Ausloeser: rechnen, wenn jemand hinsieht.
+   */
+  spielartenBeobachten() {
+    const el = document.getElementById('spielarten');
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const reduziert = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this._spielIO = new IntersectionObserver(([e]) => {
+      this._spielSichtbar = e.isIntersecting;
+      if (e.isIntersecting) {
+        // Bei „weniger Bewegung" einmal rechnen, damit Brett und Balken einen
+        // Stand zeigen, danach still stehen bleiben.
+        if (reduziert) { if (!(this.state.arenaRound || 0)) { this.arenaTick(); this.arenaTick(); this.arenaTick(); } return; }
+        if (!this.gameTimer) this.startGame();
+        if (!(this.state.arenaRound || 0)) this.arenaTick();
+      } else if (!this.state.beam) {
+        // Der Beamer im Abschnitt Ablauf faehrt dieselbe Uhr. Laeuft er, wird
+        // sie hier nicht angehalten.
+        clearInterval(this.gameTimer);
+        this.gameTimer = undefined;
+      }
+    }, { rootMargin: '0px 0px -12% 0px' });
+    this._spielIO.observe(el);
   }
 
   watchWall() {
@@ -208,16 +222,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     }, 210);
   }
 
-  modesRef = (el: HTMLElement | null) => {
-    if (!el || this._modesEl === el) return;
-    this._modesEl = el;
-    this._modesRO = new ResizeObserver(() => {
-      const w = Math.round((el.clientWidth - 20) / 1.185) - 62;
-      if (w > 0 && w !== this.state.openW) this.setState({ openW: w });
-    });
-    this._modesRO.observe(el);
-  };
-
   boardWinRef = (el: HTMLElement | null) => {
     if (!el || this._boardWinEl === el) return;
     this._boardWinEl = el;
@@ -252,9 +256,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     document.addEventListener('mousemove', this._trackMouse, { passive: true });
     this._arenaT = setInterval(() => {
       if (document.hidden) return;
-      if ((this.state.mode ?? null) !== 'arena') return;
+      if (!this._spielSichtbar) return;
       this.arenaTick();
-    }, 8200);
+    }, 2600);
     this._hookT = setInterval(() => {
       if (document.hidden) return;
       this.setState(s => ({ hookI: (s.hookI ?? 0) + 1 }));
@@ -302,6 +306,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       });
       document.querySelectorAll('section').forEach(s => this.io?.observe(s));
       this.grundfarbenBeobachten();
+      this.spielartenBeobachten();
       document.querySelectorAll<HTMLElement>('section[data-ton]').forEach(el => {
         el.style.setProperty('--cw-band', el.dataset.ton || '10,8,20');
       });
@@ -333,7 +338,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
   componentWillUnmount() {
     clearInterval(this.gameTimer);
-    clearTimeout(this.switchTimer);
     clearTimeout(this._beamT);
     clearTimeout(this._anlT);
     clearInterval(this._arenaT);
@@ -341,7 +345,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     this.io?.disconnect();
     this._grundIO?.disconnect();
     this.wallRO?.disconnect();
-    this._modesRO?.disconnect();
     this._boardWinRO?.disconnect();
     this._pStageIO?.disconnect();
     if (this.onScroll) window.removeEventListener('scroll', this.onScroll);
@@ -528,95 +531,103 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     );
   }
 
-  calmChip(neutral: boolean, accent: string) {
-    return `align-self:flex-start;box-sizing:border-box;overflow:hidden;white-space:nowrap;`
-      + `margin:${neutral ? '78px' : '0px'} 0 0;padding:${neutral ? '6px 13px' : '0 13px'};`
-      + `max-height:${neutral ? '30px' : '0px'};border-radius:999px;`
-      + `background:${accent}1f;border:1px solid ${accent}${neutral ? '59' : '00'};`
-      + `font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:${accent};`
-      + `opacity:${neutral ? 1 : 0};transition:opacity .4s ${EASE} ${neutral ? '.26s' : '0s'},max-height .7s ${EASE},margin .7s ${EASE},padding .7s ${EASE}`;
-  }
-
-  calmLead(neutral: boolean) {
-    return `margin:${neutral ? '14px' : '0px'} 0 0;max-width:420px;overflow:hidden;`
-      + `max-height:${neutral ? '120px' : '0px'};font-size:16px;line-height:1.55;font-weight:600;color:rgba(246,239,230,.72);text-wrap:pretty;`
-      + `opacity:${neutral ? 1 : 0};transition:opacity .4s ${EASE} ${neutral ? '.3s' : '0s'},max-height .7s ${EASE},margin .7s ${EASE}`;
-  }
-
+  /**
+   * Station 01, Die Spielarten, in der Fassung „Die Leinwand" (A).
+   *
+   * 2026-08-27, von Wolf gewaehlt aus drei Entwuerfen auf /mockups: "ich
+   * glaube version 1 ist fuer die sektion am besten".
+   *
+   * Was hier weggefallen ist: die zwei Karten, die beim Zeigen aufzogen und
+   * die jeweils andere auf einen senkrechten Streifen zusammendrueckten. Sie
+   * brachten ein Vokabular mit, das der Hero nicht hat (Kasten, Rand,
+   * Schlagschatten), und sie versteckten den zweiten Modus hinter einer
+   * Mausbewegung. Jetzt stehen beide da, untereinander, getrennt nur durch
+   * eine Haarlinie: Name links, Text in der Mitte, rechts das Ding selbst.
+   *
+   * Rechts steht KEINE Dekoration, sondern das, was der Modus ist:
+   *   CozyQuiz  -> das Brett, auf dem Flaeche entsteht.
+   *   CozyArena -> die Rangfolge der Fraktionen, die sich live umsortiert.
+   * Beides laeuft weiter, es haengt nur nicht mehr am Aufklappen.
+   */
   renderModes() {
     const L = this.T;
-    const m = this.state.mode ?? null;
-    const quiz = m === 'quiz', arena = m === 'arena', neutral = m == null;
-    const cols = neutral ? '1fr 1fr' : (quiz ? '1fr 0.185fr' : '0.185fr 1fr');
-    const card = (accent: string, open: boolean) => `position:relative;display:flex;flex-direction:column;box-sizing:border-box;overflow:hidden;contain:layout;min-width:0;border-radius:22px;background:linear-gradient(180deg,#1F1A2E,#14101F);border:1px solid ${open ? accent + '47' : 'rgba(246,239,230,.20)'};padding:${open ? '30px' : '24px 12px'};cursor:${open ? 'default' : 'pointer'};transition:background .5s ${EASE},border-color .5s ${EASE},box-shadow .5s ${EASE};box-shadow:${open ? '0 26px 54px rgba(0,0,0,.42)' : 'none'}`;
-    const modeTitle = (open: boolean, accent: string, calm: boolean) =>
-      `position:absolute;z-index:2;font-family:'League Spartan',sans-serif;font-weight:900;line-height:.92;letter-spacing:-.025em;white-space:nowrap;pointer-events:none;`
-      + `color:${accent};`
-      + (open
-        ? `left:30px;top:24px;font-size:46px;transform:translate(0,0) rotate(0deg);`
-        : calm
-          ? `left:30px;top:24px;font-size:52px;transform:translate(0,0) rotate(0deg);`
-          : `left:50%;top:50%;font-size:64px;transform:translate(-50%,-50%) rotate(-90deg);`)
-      + `transition:left .95s ${EASE},top .95s ${EASE},font-size .95s ${EASE},transform .95s ${EASE},color .6s ${EASE}`;
-    const lead = (open: boolean) =>
-      `margin:0;font-size:18.5px;line-height:1.5;font-weight:600;color:rgba(246,239,230,.78);max-width:min(100%,720px);text-wrap:pretty;`
-      + `opacity:${open ? 1 : 0};transform:translateX(${open ? '0' : '-10px'});transition:opacity .5s ${EASE} .25s,transform .7s ${EASE}`;
-    const openPaneStyle = `display:flex;flex-direction:column;height:100%;padding-top:3px;box-sizing:border-box;${this.state.openW ? 'width:' + this.state.openW + 'px;' : ''}transform-origin:left center;animation:cwGrow .8s ${EASE} .26s both;overflow:hidden`;
     const g = this.gameVals();
+    const HAAR = 'rgba(246,239,230,.14)';
+    const reihen = [
+      {
+        key: 'quiz', name: 'CozyQuiz', akzent: '#FA4BA3',
+        chip: L.modes.quizChip, lead: L.modes.quizLead, bullets: L.modes.quizBullets,
+      },
+      {
+        key: 'arena', name: 'CozyArena', akzent: '#FFC7E4',
+        chip: L.modes.arenaChip, lead: L.modes.arenaLead, bullets: L.modes.arenaBullets,
+      },
+    ];
 
     return (
       <section id="spielarten" data-ton="168,85,247" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:84px 32px')}>
         {this.kicker(`${L.modes.kicker}|${L.modes.label}`)}
-        <h2 data-reveal="" style={sx("margin:0 0 24px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;letter-spacing:-.015em;color:#F6EFE6")}>{L.modes.h2}</h2>
-        <div data-m="modes" ref={this.modesRef} onMouseLeave={() => this.switchMode(null)}
-          style={sx(`display:grid;grid-template-columns:${cols};gap:20px;align-items:stretch;height:${neutral ? '230px' : '700px'};transition:grid-template-columns 1.05s ${EASE},height 1.05s ${EASE}`)}>
-          <div onMouseEnter={() => this.switchMode('quiz')} onClick={() => this.switchMode('quiz')} style={sx(card('#FA4BA3', quiz))}>
-            <span style={sx(modeTitle(quiz, '#FA4BA3', neutral))}>CozyQuiz</span>
-            <span style={sx(this.calmChip(neutral, '#FA4BA3'))}>{L.modes.quizChip}</span>
-            <p style={sx(this.calmLead(neutral))}>{L.modes.quizCalm}</p>
-            {quiz && (
-              <div style={sx(openPaneStyle)}>
-                <div style={sx('display:flex;flex-wrap:wrap;gap:36px;margin-top:58px;flex:1;min-height:0;align-items:center')}>
-                  <div data-m="modetext" style={sx('flex:1.6 1 380px;min-width:288px;max-width:470px;display:flex;flex-direction:column;gap:22px')}>
-                    <p style={sx(lead(true))}>{L.modes.quizLead}</p>
-                    <div style={sx('display:flex;flex-direction:column;gap:18px')}>
-                      {L.modes.quizBullets.map(b => this.bullet(b, '#FA4BA3'))}
-                    </div>
-                  </div>
-                  <div ref={this.boardWinRef} style={sx('flex:1 1 250px;max-width:460px;min-width:0;height:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:4px 0')}>
-                    {this.renderBoard(g)}
-                  </div>
-                </div>
+        <h2 data-reveal="" style={sx("margin:0 0 40px;font-family:'League Spartan',sans-serif;"
+          + 'font-size:clamp(40px,5.2vw,84px);font-weight:900;line-height:.9;letter-spacing:-.032em;color:#F6EFE6')}>
+          {L.modes.h2}
+        </h2>
+
+        {reihen.map((r, i) => (
+          <div key={r.key} data-m="modereihe"
+            style={sx('display:grid;grid-template-columns:290px 1fr 340px;gap:48px;align-items:start;'
+              + `padding:52px 0;border-top:1px solid ${HAAR}${i === reihen.length - 1 ? `;border-bottom:1px solid ${HAAR}` : ''}`)}>
+            <div data-reveal="">
+              <div style={sx("font-family:'League Spartan',sans-serif;font-size:clamp(38px,4vw,58px);"
+                + 'font-weight:900;line-height:.9;letter-spacing:-.03em;color:#F6EFE6')}>{r.name}</div>
+              <div style={sx('margin-top:12px;font-size:12px;font-weight:900;letter-spacing:.16em;'
+                + `text-transform:uppercase;color:${r.akzent}`)}>{r.chip}</div>
+            </div>
+
+            <div data-reveal="">
+              <p style={sx('margin:0 0 26px;font-size:19px;line-height:1.55;font-weight:500;'
+                + 'color:rgba(246,239,230,.82);max-width:56ch;text-wrap:pretty')}>{r.lead}</p>
+              <ul style={sx('margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px')}>
+                {r.bullets.map(b => (
+                  <li key={b} style={sx('display:flex;gap:14px;font-size:15.5px;line-height:1.5;'
+                    + 'font-weight:600;color:rgba(246,239,230,.7);text-wrap:pretty')}>
+                    <span style={sx(`flex:none;width:18px;height:1px;margin-top:11px;background:${r.akzent}`)}></span>
+                    {b}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {r.key === 'quiz' ? (
+              <div ref={this.boardWinRef} data-m="modeobjekt"
+                style={sx('min-width:0;display:flex;justify-content:flex-end;height:340px;box-sizing:border-box')}>
+                {this.renderBoard(g)}
+              </div>
+            ) : (
+              <div data-m="modeobjekt" style={sx('position:relative;min-width:0;height:340px')}>
+                {this.renderFactions()}
               </div>
             )}
           </div>
-          <div onMouseEnter={() => this.switchMode('arena')} onClick={() => this.switchMode('arena')} style={sx(card('#AB0055', arena))}>
-            <span style={sx(modeTitle(arena, '#FFC7E4', neutral))}>CozyArena</span>
-            <span style={sx(this.calmChip(neutral, '#FFC7E4'))}>{L.modes.arenaChip}</span>
-            <p style={sx(this.calmLead(neutral))}>{L.modes.arenaCalm}</p>
-            {arena && (
-              <div style={sx(openPaneStyle)}>
-                <div style={sx('display:flex;flex-wrap:wrap;gap:36px;margin-top:58px;flex:1;min-height:0;align-items:center')}>
-                  <div data-m="modetext" style={sx('flex:1.6 1 380px;min-width:288px;max-width:470px;display:flex;flex-direction:column;gap:22px')}>
-                    <p style={sx(lead(true))}>{L.modes.arenaLead}</p>
-                    <div style={sx('display:flex;flex-direction:column;gap:18px')}>
-                      {L.modes.arenaBullets.map(b => this.bullet(b, '#FFC7E4'))}
-                    </div>
-                  </div>
-                  <div style={sx('position:relative;flex:1 1 230px;max-width:392px;min-width:0;height:100%;box-sizing:border-box;padding:4px 0')}>
-                    <div style={sx('position:relative;width:100%;height:100%')}>
-                      {this.renderFactions()}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
+        ))}
       </section>
     );
   }
 
+  /**
+   * Das Pendant zum Brett: die Rangfolge der acht Fraktionen.
+   *
+   * Warum kein zweites Brett und keine Wand aus Wappen. Das Brett zeigt beim
+   * CozyQuiz FLAECHE, weil dort Flaeche gewinnt. In der Arena gibt es kein
+   * Brett, Wolfs eigener Satz dazu lautet „Kein Spielbrett, ein Rennen der
+   * Fraktionen", und gewertet wird der ANTEIL richtiger Antworten. Ein Anteil
+   * ist ein Balken, kein Feld: eine Reihe aus Kacheln wuerde gezaehlte Felder
+   * behaupten, die es hier nicht gibt. Acht Wappen nebeneinander wiederum
+   * waeren Deko, sie sagen nichts ueber den Stand.
+   *
+   * Gemeinsam bleibt die Oberflaeche: der Balken traegt denselben Lichtverlauf
+   * und dieselben Kanten wie eine Kachel (src/qqKachel.ts), das Wappen sitzt
+   * auf einer Kachel in seiner Fraktionsfarbe. Ein Vokabular, zwei Formen.
+   */
   renderFactions() {
     const L = this.T;
     const pts = this.state.arenaPts || {};
@@ -627,16 +638,21 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     return FACTIONS.map(f => {
       const p = pts[f.id] || 0, r = ranked.indexOf(f.id), leadNow = r === 0 && p > 0;
       return (
-        <div key={f.id} style={sx(`position:absolute;left:0;right:0;top:0;height:${H}%;display:flex;align-items:center;gap:9px;padding:0 10px;border-radius:12px;box-sizing:border-box;transform:translateY(${r * 100}%);transition:transform 1.5s ${EASE},background .6s ease,border-color .6s ease,box-shadow .6s ease;${leadNow ? `background:linear-gradient(90deg,${f.color}26,transparent);border:1px solid ${f.color}80;box-shadow:0 0 22px ${f.color}33` : 'border:1px solid transparent'}`)}>
+        <div key={f.id} style={sx(`position:absolute;left:0;right:0;top:0;height:${H}%;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:12px;box-sizing:border-box;transform:translateY(${r * 100}%);transition:transform 1.5s ${EASE},background .6s ease,border-color .6s ease,box-shadow .6s ease;${leadNow ? `background:linear-gradient(90deg,${f.color}26,transparent);border:1px solid ${f.color}80;box-shadow:0 0 22px ${f.color}33` : 'border:1px solid transparent'}`)}>
           <span style={sx(`flex:none;width:18px;text-align:center;font-size:15px;font-weight:900;color:${leadNow ? '#F6EFE6' : 'rgba(246,239,230,.5)'};transition:color .5s ease`)}>{r + 1}</span>
-          <span style={sx(`flex:none;width:30px;height:30px;background:url(/assets/crest-${f.id}.webp) center/contain no-repeat`)}></span>
-          <span style={sx('flex:none;width:104px;min-width:0')}>
-            <span style={sx(`font-size:13.5px;font-weight:900;line-height:1.15;color:${f.color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>{L.sim.factions[f.id]}</span>
+          <span style={sx(teammarke(f.color, `/assets/crest-${f.id}.webp`, 30))}></span>
+          <span style={sx('flex:none;width:124px;min-width:0')}>
+            <span style={sx(`display:block;font-size:13.5px;font-weight:900;line-height:1.15;color:${f.color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>{L.sim.factions[f.id]}</span>
           </span>
-          <span style={sx('flex:1;min-width:0;height:11px;border-radius:999px;background:rgba(246,239,230,.06);overflow:hidden;display:block')}>
-            <span style={sx(`display:block;height:100%;width:${Math.round((p / max) * 100)}%;border-radius:999px;background:linear-gradient(180deg,${f.color},${f.color}cc);box-shadow:inset 0 1px 0 rgba(255,255,255,.45);transition:width 1.8s ${EASE}`)}></span>
+          {/* Der Balken ist eine liegende Kachel: gleicher Lichtverlauf, gleiche
+              Kanten, nur 12 px hoch. Die Rinne dahinter bleibt eine Rinne. */}
+          <span style={sx('flex:1;min-width:0;height:12px;border-radius:6px;background:rgba(246,239,230,.06);box-shadow:inset 0 1px 2px rgba(0,0,0,.4);overflow:hidden;display:block')}>
+            <span style={sx(`display:block;height:100%;width:${Math.round((p / max) * 100)}%;border-radius:6px;`
+              + `background:${KACHEL_VERLAUF},${f.color};`
+              + 'box-shadow:inset 0 1px 0 rgba(255,255,255,.38),inset -2px 0 0 rgba(0,0,0,.18),0 2px 3px rgba(0,0,0,.42);'
+              + `transition:width 1.8s ${EASE}`)}></span>
           </span>
-          <span style={sx(`flex:none;width:46px;text-align:right;font-size:15px;font-weight:900;color:${f.color}`)}>{p}</span>
+          <span style={sx(`flex:none;width:44px;text-align:right;font-size:15px;font-weight:900;color:${f.color};font-variant-numeric:tabular-nums`)}>{p}</span>
         </div>
       );
     });
