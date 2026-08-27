@@ -142,6 +142,21 @@ for (const route of ROUTES) {
 fs.rmSync('dist/index.html');
 console.log('dist/index.html entfernt ("/" laeuft ueber die UA-Rewrites)');
 
+// stand.txt: welcher Commit liegt gerade auf der Domain?
+//
+// 2026-08-27. Wolf sah auf cozywolf.de tagelang einen alten Stand, waehrend
+// GitHub laengst den neuen trug. Von aussen war nicht zu unterscheiden, ob
+// der Build fehlschlug, ob die Domain an einem anderen Zweig haengt oder ob
+// nur der Browser cachte: die Seite sieht in allen drei Faellen gleich aus.
+// Diese Datei beantwortet das ohne Werkzeuge und ohne Zugang: einmal
+// cozywolf.de/stand.txt aufrufen. Steht dort ein alter Commit, liegt es an
+// der Auslieferung. Steht dort der erwartete, liegt es am Browser.
+const sha = process.env.VERCEL_GIT_COMMIT_SHA || 'lokal';
+const zweig = process.env.VERCEL_GIT_COMMIT_REF || '-';
+fs.writeFileSync('dist/stand.txt',
+  `commit: ${sha}\nzweig:  ${zweig}\ngebaut: ${new Date().toISOString()}\n`);
+console.log('stand.txt geschrieben:', sha, zweig);
+
 // sitemap.xml: die Site ist ein One-Pager, indexierbar ist nur '/'.
 fs.writeFileSync('dist/sitemap.xml',
   `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${BASE}/</loc></url></urlset>`);
