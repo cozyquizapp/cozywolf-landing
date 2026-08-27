@@ -445,7 +445,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     // grosse Teekanne vorn traegt als EINZIGE das Ueberschwingen, nach der
     // Hausregel „Overshoot nur fuer den einen Beat pro Bildschirm".
     const GRUPPE = [
-      { av: '/assets/av-qq-teapot.webp',      farbe: '#F97316', gr: 40, x: 4,  y: 6,  r: -8,  d: 0.30, beat: true,  tx: '-22px', ty: '-14px', tr: '-13deg' },
+      { av: '/assets/av-qq-treasure-chest.webp', farbe: '#F97316', gr: 40, x: 4,  y: 6,  r: -8,  d: 0.30, beat: true,  tx: '-22px', ty: '-14px', tr: '-13deg' },
       { av: '/assets/av-qq-crystal-ball.webp', farbe: '#A855F7', gr: 33, x: 46, y: 0,  r: 10,  d: 0.38, beat: false, tx: '18px',  ty: '-22px', tr: '16deg' },
       { av: '/assets/av-qq-mushroom.webp',    farbe: '#22C55E', gr: 30, x: 33, y: 44, r: 6,   d: 0.46, beat: false, tx: '-10px', ty: '20px',  tr: '11deg' },
       { av: '/assets/av-qq-game-die.webp',    farbe: '#FACC15', gr: 24, x: 68, y: 40, r: -14, d: 0.54, beat: false, tx: '26px',  ty: '10px',  tr: '-20deg' },
@@ -496,7 +496,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 className={k.beat ? 'cwKachel cwKachel--beat' : 'cwKachel'}
                 style={sx(`position:absolute;left:${k.x}%;top:${k.y}%;width:${k.gr}%;aspect-ratio:1/1;pointer-events:auto;`
                   + `--r:${k.r}deg;--d:${k.d}s;--tx:${k.tx};--ty:${k.ty};--tr:${k.tr};`
-                  + `transform:rotate(${k.r}deg);border-radius:16%;`
+                  + 'border-radius:16%;'
                   + `background-image:url(${k.av}),linear-gradient(180deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.06) 18%,rgba(255,255,255,0) 50%,rgba(0,0,0,.16) 78%,rgba(0,0,0,.34) 100%);`
                   + `background-color:${k.farbe};`
                   + `background-size:${Math.round(motivAnteil(k.av) * 100)}% auto,auto;`

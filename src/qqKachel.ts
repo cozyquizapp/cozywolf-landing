@@ -47,6 +47,7 @@ const FILL: Record<string, number> = {
   'mushroom': 0.92,
   'table-lamp': 0.92,
   'teapot': 0.91,
+  'treasure-chest': 0.79,
 };
 const NUDGE: Record<string, [number, number]> = {
   'mushroom': [-0.2, 2.5],
