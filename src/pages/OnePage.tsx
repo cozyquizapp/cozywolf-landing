@@ -129,6 +129,32 @@ const WORT_OBJEKT = [4, 2, 3, 0, 1];
 /** Umkehrung: welches Wort gehoert zu welchem Objekt. Fuer das Zeigen. */
 const OBJEKT_WORT = GRUPPE.map((_, i) => WORT_OBJEKT.indexOf(i));
 
+// ── Station 02: drei Objekte je Anlass ───────────────────────────────────
+// Eigens gerendert (2026-08-27), nicht aus einem Emoji-Satz zusammengesucht:
+// creme Koerper, Gold als Akzent, dunkles Blau fuer Sockel, hoechstens ein
+// weiterer Ton je Objekt, kein Pink. Auf 48 px muss jedes noch als Silhouette
+// erkennbar sein, deshalb keine duennen Teile und keine Schrift.
+// gr = Kantenlaenge in Prozent des Feldes, x/y = Lage, r = Drehung. Dieselbe
+// Staffelung wie im Hero: das groesste Objekt vorn und leicht gegen den
+// Uhrzeigersinn, die kleineren dahinter.
+const ANLASS_GRUPPEN = [
+  [
+    { av: '/assets/obj-namensschild.webp', gr: 54, x: 0, y: 10, r: -9 },
+    { av: '/assets/obj-sekt.webp', gr: 48, x: 48, y: 0, r: 10 },
+    { av: '/assets/obj-wimpel.webp', gr: 38, x: 42, y: 52, r: -6 },
+  ],
+  [
+    { av: '/assets/obj-torte.webp', gr: 56, x: 2, y: 10, r: -7 },
+    { av: '/assets/obj-ballons.webp', gr: 46, x: 52, y: 0, r: 9 },
+    { av: '/assets/obj-geschenk.webp', gr: 38, x: 44, y: 54, r: -12 },
+  ],
+  [
+    { av: '/assets/obj-bier.webp', gr: 54, x: 2, y: 8, r: -8 },
+    { av: '/assets/obj-kaffee.webp', gr: 46, x: 50, y: 2, r: 11 },
+    { av: '/assets/obj-tafel.webp', gr: 40, x: 40, y: 54, r: -5 },
+  ],
+];
+
 const CAT_META = [
   { key: 'mucho', col: '#3B82F6', icon: '/assets/cat-mucho.webp' },
   { key: 'schaetzchen', col: '#F59E0B', icon: '/assets/cat-schaetzchen.webp' },
@@ -150,7 +176,7 @@ type OPState = {
   beam?: boolean; beamWelcome?: boolean;
   johFan?: boolean; hookI?: number; hookVor?: number | null;
   b01?: number; b01Hand?: Record<number, string>; frak?: string | null;
-  tick?: number; hbOn?: number | null; duoHover?: number | null;
+  tick?: number; hbOn?: number | null;
   probeCat?: string; probePick?: number | null;
   guessRaw?: string; guessDone?: boolean;
   points?: number[]; pointsDone?: boolean;
@@ -345,12 +371,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   // ------------------------------------------------- Lifecycle
   componentDidMount() {
     setTimeout(() => this.watchWall(), 60);
-    document.querySelectorAll('details').forEach(d => {
-      d.addEventListener('toggle', () => {
-        const p = d.querySelector('[data-faq-plus]') as HTMLElement | null;
-        if (p) p.style.transform = d.open ? 'rotate(135deg)' : '';
-      });
-    });
     this._coarse = window.matchMedia('(hover:none)').matches || window.innerWidth < 861;
     this._arenaT = setInterval(() => {
       if (document.hidden) return;
@@ -1142,11 +1162,23 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 </a>
               </div>
 
-              <div aria-hidden="true" data-m="anlassnr" style={sx('display:flex;justify-content:flex-end;min-width:0')}>
-                <span style={sx("font-family:'League Spartan',sans-serif;font-size:clamp(90px,9vw,150px);"
-                  + `font-weight:900;line-height:.8;letter-spacing:-.05em;color:${a};opacity:.16`)}>
-                  {`0${i + 1}`}
-                </span>
+              {/* Drei Objekte je Anlass, frei und ueberlappend wie die Gruppe im
+                  Hero, ohne Kachel. Wolf hatte die Kachelfassung abgelehnt,
+                  mit zwei Gruenden, die beide stimmen: die Kachel bedeutet im
+                  Spiel ein Feld oder eine Teammarke, neben "Geburtstag"
+                  bedeutet sie nichts, und drei grosse pinke Flaechen je
+                  Abschnitt machen Pink zur Flaeche statt zur Marke.
+                  Drei Objekte statt einem, weil eins den Anlass nie trifft:
+                  eine Torte allein ist ein Kuchen, Torte mit Luftballons und
+                  Geschenk ist ein Geburtstag. */}
+              <div aria-hidden="true" data-m="anlassnr"
+                style={sx('position:relative;width:100%;max-width:230px;margin-left:auto;aspect-ratio:1/1')}>
+                {ANLASS_GRUPPEN[i].map(o => (
+                  <span key={o.av} className="cwAnlassObj"
+                    style={sx(`position:absolute;left:${o.x}%;top:${o.y}%;width:${o.gr}%;aspect-ratio:1/1;`
+                      + `--r:${o.r}deg;background:url(${o.av}) center/contain no-repeat;`
+                      + 'filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))')}></span>
+                ))}
               </div>
             </div>
           );
@@ -1341,7 +1373,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const L = this.T;
     const on = !!this.state.beam;
     const g = this.gameVals();
-    const dh = this.state.duoHover ?? null;
     const beamStart = () => {
       if (this.state.beam) return;
       clearTimeout(this._beamT);
@@ -1354,10 +1385,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       clearInterval(this.gameTimer);
       this.setState({ beam: false, beamWelcome: false });
     };
-    const duo = [
-      { c: '#FA4BA3', bg: 'linear-gradient(160deg,rgba(246,239,230,.06),rgba(246,239,230,.02))', bd: 'rgba(246,239,230,.20)', title: L.ablauf.duo0Title, items: L.ablauf.duo0 },
-      { c: '#FFC7E4', bg: 'rgba(246,239,230,.03)', bd: 'rgba(246,239,230,.1)', title: L.ablauf.duo1Title, items: L.ablauf.duo1 },
-    ];
     return (
       <section id="ablauf" data-ton="34,197,94" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px')}>
@@ -1452,26 +1479,38 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             </div>
           </div>
 
-          <div data-reveal="" data-m="two" style={sx('display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:20px')}>
-            {duo.map((d, i) => {
-              const onD = dh === i;
-              return (
-                <div key={i}
-                  onMouseEnter={() => this.setState({ duoHover: i })}
-                  onMouseLeave={() => this.setState({ duoHover: null })}
-                  onClick={() => this.setState({ duoHover: i })}
-                  style={sx(`position:relative;overflow:hidden;box-sizing:border-box;min-width:0;padding:32px 30px;border-radius:22px;background:${d.bg};border:1px solid ${onD ? d.c + '80' : d.bd};cursor:default;transition:padding .95s ${EASE},border-color .6s ease,background .6s ease`)}>
-                  <div style={sx(`font-size:${onD ? 13 : 12}px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;color:${d.c};transition:font-size .6s ${EASE}`)}>{d.title}</div>
-                  <ul style={sx(`margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:13px;overflow:hidden;max-height:${onD ? '260px' : '0px'};margin-top:${onD ? '18px' : '0px'};opacity:${onD ? 1 : 0};transform:translateY(${onD ? '0' : '8px'});transition:max-height .95s ${EASE},margin-top .95s ${EASE},opacity .5s ease ${onD ? '.22s' : '0s'},transform .7s ${EASE}`)}>
-                    {d.items.map(item => (
-                      <li key={item} style={sx('display:flex;align-items:flex-start;gap:11px;font-size:16px;line-height:1.5;font-weight:600;white-space:nowrap;color:#F6EFE6')}>
-                        <span style={sx(`flex:none;width:7px;height:7px;margin-top:8px;border-radius:50%;background:${d.c}`)}></span>{item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              );
-            })}
+          {/* Fassung B2, von Wolf gewaehlt: die Aussage des Abschnitts ist nicht
+              "hier sind zwei Listen", sondern "ihr braucht fast nichts". Also
+              traegt die Ueberschrift das Ungleichgewicht, und darunter steht
+              eine Zeile gegen vier.
+              Weg sind die zwei Kaesten, die beim Zeigen aufklappten: sie
+              versteckten beide Listen hinter einer Mausbewegung, und auf dem
+              Handy gab es die gar nicht. Wolfs Einwand "nicht 2 mal die
+              grosse schrift" ist der Grund, warum hier nichts gross gesetzt
+              ist: die Ueberschrift sagt es schon. */}
+          <div data-reveal="" data-m="modereihe"
+            style={sx('display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:48px;'
+              + 'padding:36px 0 0;border-top:1px solid rgba(246,239,230,.14)')}>
+            <div>
+              <div style={sx('margin-bottom:16px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.55)')}>{L.ablauf.duo1Title}</div>
+              <ul style={sx('margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:13px')}>
+                {L.ablauf.duo1.map(item => (
+                  <li key={item} style={sx('display:flex;gap:14px;font-size:16px;line-height:1.5;font-weight:600;color:rgba(246,239,230,.72);text-wrap:pretty')}>
+                    <span style={sx('flex:none;width:16px;height:1px;margin-top:12px;background:rgba(246,239,230,.35)')}></span>{item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <div style={sx('margin-bottom:16px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#FA4BA3')}>{L.ablauf.duo0Title}</div>
+              <ul style={sx('margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:13px')}>
+                {L.ablauf.duo0.map(item => (
+                  <li key={item} style={sx('display:flex;gap:14px;font-size:16px;line-height:1.5;font-weight:600;color:#F6EFE6;text-wrap:pretty')}>
+                    <span style={sx('flex:none;width:16px;height:1px;margin-top:12px;background:#FA4BA3')}></span>{item}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </section>
@@ -1527,22 +1566,24 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     );
   }
 
+  /**
+   * Fassung D1, Wolf am 2026-08-27: alle sechs Fragen offen in zwei Spalten.
+   * Keine Aufklapp-Kaesten mehr. Wer wissen will, was es kostet, muss nicht
+   * erst klicken, und die Antworten stehen beim Scrollen einfach mit da.
+   */
   renderFaq() {
     const L = this.T;
     return (
-      <section style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
-        <div style={sx('max-width:820px;margin:0 auto;padding:80px 32px')}>
+      <section id="fragen" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
+        <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px')}>
           {this.kicker(`[ 05 ]|${L.faq.label}`)}
-          <h2 data-reveal="" style={sx("margin:0 0 30px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.faq.h2}</h2>
-          <div data-reveal="" style={sx('display:flex;flex-direction:column;gap:12px')}>
-            {L.faq.items.map((item, i) => (
-              <details key={i} className="cwFaqCard" style={sx(`border-radius:16px;background:rgba(246,239,230,.03);border:1px solid rgba(246,239,230,.20);overflow:hidden;transition:background .25s ${EASE},border-color .25s ${EASE}`)}>
-                <summary style={sx('display:flex;align-items:center;gap:14px;padding:20px 22px;font-size:17px;font-weight:800;color:#F6EFE6;list-style:none;cursor:pointer')}>
-                  <span style={sx('flex:1')}>{item.q}</span>
-                  <span style={sx(`font-size:20px;font-weight:900;color:#F6EFE6;transition:transform .34s ${EASE}`)} data-faq-plus="">+</span>
-                </summary>
-                <div style={sx(`animation:cwFaq .34s ${EASE} both;padding:0 22px 20px;font-size:15.5px;line-height:1.65;font-weight:500;color:rgba(246,239,230,.78)`)}>{item.a}</div>
-              </details>
+          <h2 data-reveal="" style={sx("margin:0 0 36px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.faq.h2}</h2>
+          <div data-reveal="" data-m="faqgrid" style={sx('display:grid;gap:34px 56px;grid-template-columns:1fr 1fr')}>
+            {L.faq.items.map(item => (
+              <div key={item.q} style={sx('padding-top:22px;border-top:1px solid rgba(246,239,230,.14)')}>
+                <div style={sx('margin-bottom:9px;font-size:18px;font-weight:900;line-height:1.3;color:#F6EFE6;text-wrap:balance')}>{item.q}</div>
+                <div style={sx('font-size:15.5px;line-height:1.62;font-weight:500;color:rgba(246,239,230,.76);text-wrap:pretty')}>{item.a}</div>
+              </div>
             ))}
           </div>
         </div>
@@ -1698,14 +1739,16 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         {this.renderHero()}
         {this.renderModes()}
         {this.renderAnlaesse()}
-        <section style={sx('border-top:1px solid rgba(246,239,230,.10);border-bottom:1px solid rgba(246,239,230,.10);overflow:hidden;background:#0A0814')}>
-          <div data-kinetic="" data-m="kin" style={sx("padding:56px 0;text-align:center;font-family:'League Spartan',sans-serif;font-size:clamp(26px,5vw,54px);font-weight:900;line-height:1.1;color:transparent;-webkit-text-stroke:1.2px rgba(250,75,163,.3);letter-spacing:.02em;white-space:nowrap;transition:letter-spacing .1s linear")}>{L.kinetic}</div>
-        </section>
         {this.renderProbe()}
         {this.renderAblauf()}
         {this.renderJohannes()}
         {this.renderFaq()}
         {this.renderForm()}
+        {/* Wolf am 2026-08-27: der Spruch steht jetzt am Schluss, nicht mehr
+            als Zwischenzeile mitten im Scrollen. */}
+        <section style={sx('border-top:1px solid rgba(246,239,230,.10);overflow:hidden;background:#0A0814')}>
+          <div data-kinetic="" data-m="kin" style={sx("padding:66px 0;text-align:center;font-family:'League Spartan',sans-serif;font-size:clamp(26px,5vw,54px);font-weight:900;line-height:1.1;color:transparent;-webkit-text-stroke:1.2px rgba(250,75,163,.3);letter-spacing:.02em;white-space:nowrap;transition:letter-spacing .1s linear")}>{L.kinetic}</div>
+        </section>
         <footer style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
           <div data-m="foot" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:30px 32px;display:flex;align-items:center;gap:20px;font-size:14px;font-weight:600;color:rgba(246,239,230,.62)')}>
             <img src={LOGO} alt="" width={26} height={26} style={sx('width:26px;height:26px')} />

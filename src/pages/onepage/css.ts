@@ -54,7 +54,6 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
   .cwWortEin,.cwWortAus{animation:none}
   .cwWortAus{display:none}
 }
-@keyframes cwFaq{0%{transform:translateY(-6px);opacity:0}100%{transform:none;opacity:1}}
 @keyframes cwRise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
 @keyframes cwSheen{0%{transform:translateX(-120%)}60%,100%{transform:translateX(220%)}}
 @keyframes cwCardA{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
@@ -106,7 +105,6 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 :focus:not(:focus-visible){outline:none}
 [data-m=sticky]{display:none}
 .cwHovA:hover{filter:brightness(1.06)}
-.cwFaqCard:hover{background:rgba(246,239,230,.05)!important;border-color:rgba(250,75,163,.34)!important}
 .cwSubmit:hover{filter:brightness(1.1)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}html{scroll-behavior:auto}}
 @media (min-width:1500px){
@@ -131,11 +129,19 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 @media (max-width:900px){
 [data-m=modereihe]{grid-template-columns:1fr!important;gap:28px!important;padding:36px 0!important}
 [data-m=modeobjekt]{justify-content:flex-start!important;height:400px!important}
-/* Gestapelt faellt die grosse Ziffer der Anlaesse weg. Sie ist Schmuck und
-   traegt keine Angabe; unter dem Absatz haengend saehe sie aus wie ein
-   abgeschnittener Rest, und die Nummer des Abschnitts steht ohnehin im
-   Kicker darueber. */
-[data-m=anlassnr]{display:none!important}
+/* Die Objekte der Anlaesse: dieselbe Bewegung wie im Hero, Heben beim
+   Zeigen, sonst Ruhe. Die Ruhedrehung steht in der Klasse und nicht inline,
+   sonst schlaegt sie jede Hover-Regel (das war der Fehler bei den
+   Hero-Kacheln am 27.08.). */
+.cwAnlassObj{transform:rotate(var(--r,0deg));transition:transform .34s cubic-bezier(.22,1,.36,1),filter .34s cubic-bezier(.22,1,.36,1)}
+@media (hover:hover) and (pointer:fine){
+  .cwAnlassObj:hover{transform:rotate(calc(var(--r,0deg) * .4)) translateY(-8px) scale(1.08)}
+}
+/* Gestapelt stehen die drei Objekte kleiner und links, nicht rechts aussen.
+   Vorher fiel hier die grosse Ziffer weg, die sie ersetzt haben: die war
+   Schmuck ohne Angabe. Die Objekte sagen dagegen etwas ueber den Anlass,
+   also bleiben sie auch auf dem Handy. */
+[data-m=anlassnr]{max-width:190px!important;margin:0!important}
 }
 @media (max-width:1024px){
 [data-m=beamer]{height:auto!important;min-height:320px!important}
@@ -187,6 +193,7 @@ header a[href="#anfragen"]{display:none!important}
 [data-m=bento]{grid-template-columns:1fr!important;grid-auto-rows:auto!important}
 [data-m=bento]>div{grid-column:auto!important;grid-row:auto!important;padding:22px!important}
 [data-m=kin]{font-size:29px!important;padding:32px 0!important}
+[data-m=faqgrid]{grid-template-columns:1fr!important;gap:26px!important}
 [data-m=ctarow],[data-m=pricerow]{flex-direction:column!important}
 [data-m=foot]{flex-wrap:wrap!important;justify-content:center!important;text-align:center!important;padding-bottom:92px!important}
 [data-m=foot] a{margin-left:0!important}
