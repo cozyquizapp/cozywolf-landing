@@ -32,6 +32,7 @@ import { onePageT } from './onepage/texts';
 import { KACHEL_VERLAUF, kachel, motivAnteil, qqGridSize, teammarke } from '../qqKachel';
 
 import { CREME, GRUND, SPARTAN, HAAR, EASE, Kicker } from './mockups/stil';
+import { HeroFarbe, FARB_ENTWUERFE, type FarbEntwurf } from './mockups/heroFarbe';
 import {
   Ablauf, UeberMich, Fragen, Anfragen,
   ABLAUF_ENTWUERFE, JOH_ENTWUERFE, FAQ_ENTWUERFE, FORM_ENTWUERFE,
@@ -180,7 +181,7 @@ const PROBE_TYPEN = [
 export default function Mockups() {
   const lang = useLang();
   const L = onePageT(lang);
-  type Stat = '01' | '02' | '03' | '04' | '05' | '06' | '07';
+  type Stat = '00' | '01' | '02' | '03' | '04' | '05' | '06' | '07';
   const [station, setStation] = useState<Stat>('01');
   // Fuer die Stationen 04 bis 07 genuegt ein Zaehler je Station: sie haben
   // alle drei Entwuerfe und keine eigene Logik.
@@ -188,6 +189,7 @@ export default function Mockups() {
   const [brief, setBrief] = useState<Brief>('A');
   const [entwurf, setEntwurf] = useState<AnlassEntwurf>(1);
   const [probe, setProbe] = useState<ProbeEntwurf>(1);
+  const [farbe, setFarbe] = useState<FarbEntwurf>(1);
   const [mobil, setMobil] = useState(false);
 
   const modi: Modus[] = [
@@ -214,7 +216,8 @@ export default function Mockups() {
   };
   const w = WEITERE[station];
 
-  const inhalt = w ? w.bau({ L, mobil, entwurf: v })
+  const inhalt = station === '00' ? <HeroFarbe L={L} mobil={mobil} entwurf={farbe} />
+    : w ? w.bau({ L, mobil, entwurf: v })
     : station === '03' ? <Probieren L={L} mobil={mobil} entwurf={probe} />
       : station === '02' ? <Anlaesse L={L} mobil={mobil} entwurf={entwurf} />
         : brief === 'A' ? <LeinwandA L={L} modi={modi} mobil={mobil} />
@@ -228,14 +231,18 @@ export default function Mockups() {
       <header style={sx(`position:sticky;top:0;z-index:20;background:rgba(10,8,20,.92);backdrop-filter:blur(14px);border-bottom:1px solid ${HAAR}`)}>
         <div style={sx('max-width:1240px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap')}>
           <Schalter werte={[
+            { k: '00', label: 'Hero' },
             { k: '01', label: '01' }, { k: '02', label: '02' }, { k: '03', label: '03' },
             { k: '04', label: '04' }, { k: '05', label: '05' }, { k: '06', label: '06' }, { k: '07', label: '07' },
           ]} aktiv={station} waehle={k => setStation(k as Stat)} />
           <span style={sx(`font-family:${SPARTAN};font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap`)}>
-            {station === '01' ? 'Spielarten' : station === '02' ? 'Anlaesse' : station === '03' ? 'Ausprobieren' : w.titel}
+            {station === '00' ? 'Farbwechsel' : station === '01' ? 'Spielarten' : station === '02' ? 'Anlaesse' : station === '03' ? 'Ausprobieren' : w.titel}
           </span>
           <span style={sx('flex:1')}></span>
-          {station === '01'
+          {station === '00'
+            ? <Schalter werte={([1, 2, 3] as FarbEntwurf[]).map(k => ({ k: String(k), label: `F${k}  ${FARB_ENTWUERFE[k].name}` }))}
+              aktiv={String(farbe)} waehle={k => setFarbe(Number(k) as FarbEntwurf)} />
+            : station === '01'
             ? <Schalter werte={(['A', 'B', 'C'] as Brief[]).map(k => ({ k, label: `${k}  ${HANDSCHRIFTEN[k].name}` }))}
               aktiv={brief} waehle={k => setBrief(k as Brief)} />
             : station === '02'
@@ -252,7 +259,9 @@ export default function Mockups() {
             aktiv={lang} waehle={k => setLang(k as 'de' | 'en')} />
         </div>
         <div style={sx(`max-width:1000px;margin:0 auto;padding:0 24px 14px;font-size:14.5px;line-height:1.55;color:rgba(246,239,230,.66)`)}>
-          {station === '01'
+          {station === '00'
+            ? <><b style={sx(`color:${CREME}`)}>F{farbe}. {FARB_ENTWUERFE[farbe].name}.</b> {FARB_ENTWUERFE[farbe].idee[lang]} <i style={sx('opacity:.7')}>Wechselt hier alle 3,4 s statt alle 6,8 s, damit man nicht warten muss.</i></>
+            : station === '01'
             ? <><b style={sx(`color:${CREME}`)}>{brief}. {HANDSCHRIFTEN[brief].name}.</b> {HANDSCHRIFTEN[brief].idee[lang]}</>
             : station === '02'
               ? <><b style={sx(`color:${CREME}`)}>A{entwurf}. {ANLASS_ENTWUERFE[entwurf].name}.</b> {ANLASS_ENTWUERFE[entwurf].idee[lang]} <i style={sx('opacity:.7')}>Die Handschrift steht, es geht nur um die dritte Spalte.</i></>
@@ -901,6 +910,11 @@ body{margin:0;background:${GRUND}}
 *{box-sizing:border-box}
 /* Regel 4: Bewegung nur, wo sie etwas bedeutet. Hier: das Objekt hebt sich,
    wenn man darauf zeigt, wie im Hero. Sonst bewegt sich auf dieser Seite nichts. */
+@keyframes mkWisch{from{background-position:100% 0}to{background-position:0 0}}
+@keyframes mkNachlauf{0%{opacity:.55;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
+.mkWisch{animation:mkWisch .62s cubic-bezier(.4,0,.2,1) both}
+.mkNachlauf{animation:mkNachlauf .95s cubic-bezier(.22,1,.36,1) both}
+@media (prefers-reduced-motion:reduce){.mkWisch,.mkNachlauf{animation:none}.mkNachlauf{display:none}}
 .mkKachel{transform:rotate(var(--r,0deg));transition:transform .34s ${EASE},filter .34s ${EASE}}
 @media (hover:hover) and (pointer:fine){
   .mkKachel:hover{transform:rotate(calc(var(--r,0deg) * .4)) translateY(-8px) scale(1.08);filter:brightness(1.08)}
