@@ -63,6 +63,37 @@ const STIL = (() => {
 })();
 /** Ueberschrift eines Kapitels: gross ab Fassung 2, mit Ziffer ab 4. */
 const H2_GROSS = STIL >= 2 ? 'clamp(40px,5.2vw,84px)' : null;
+
+/**
+ * Der Arbeitsname fuer den grossen Modus.
+ *
+ * Wolf am 27.08.: "bei 160 leuten ist es eher nicht mehr cozy, mehr arena".
+ * Der Einwand stimmt, der Name verspricht das Gegenteil dessen, was passiert.
+ * Zur Probe steht die Landing deshalb auf Zuruf auf dem neuen Namen:
+ *
+ *   /d/?name=8    Acht Fraktionen / 8 Factions statt CozyArena
+ *
+ * Nachgesehen, bevor der Name ueberhaupt zur Wahl stand: die App liest
+ * QQ_MEGA_FACTIONS an jeder Stelle ueber alle acht, es gibt keinen Fall mit
+ * weniger. Die Zahl ist gesetzt, und sie rechnet: acht Fraktionen mal fuenf
+ * Teams mal vier Leute sind die 160, die auf dieser Seite ohnehin stehen.
+ *
+ * ACHTUNG, falls das bleibt: in der App steht CozyArena an 158 Stellen. Solange
+ * die nicht mitgezogen sind, heisst dasselbe Ding an zwei Orten anders. Der
+ * Schalter ist zum Ansehen da, nicht zum Ausliefern.
+ */
+const NAME_PARAM = typeof window === 'undefined'
+  ? null : new URLSearchParams(window.location.search).get('name');
+const NEUER_NAME = NAME_PARAM === '8' || NAME_PARAM === '8z';
+/**
+ * Ausgeschrieben oder als Ziffer. Gemessen in der 290-px-Spalte, in der auch
+ * "CozyQuiz" steht: "Acht Fraktionen" bricht dort auf zwei Zeilen, "CozyQuiz"
+ * steht auf einer. Die beiden Modi haetten damit verschiedene Formen, obwohl
+ * sie nebeneinander stehen. "8 Fraktionen" passt auf eine Zeile.
+ *   ?name=8    Acht Fraktionen
+ *   ?name=8z   8 Fraktionen
+ */
+const NAME_ZIFFER = NAME_PARAM === '8z';
 /** Trennung zwischen Kapiteln: ab Fassung 3 Luft statt Linie. */
 const OHNE_LINIE = STIL >= 3;
 /** Dichtewelle: dicht, mittel, luftig als Polster oben und unten. */
@@ -868,8 +899,24 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         chip: L.modes.quizChip, lead: L.modes.quizLead, bullets: L.modes.quizBullets,
       },
       {
-        key: 'arena', name: 'CozyArena', akzent: '#FACC15',
-        chip: L.modes.arenaChip, lead: L.modes.arenaLead, bullets: L.modes.arenaBullets,
+        key: 'arena',
+        name: NEUER_NAME
+          ? (this.props.lang === 'en'
+            ? '8 Factions'
+            : (NAME_ZIFFER ? '8 Fraktionen' : 'Acht Fraktionen'))
+          : 'CozyArena',
+        akzent: '#FACC15',
+        chip: L.modes.arenaChip,
+        // Unter dem neuen Namen stuende sonst "Acht Fraktionen ... einer von
+        // acht Fraktionen". Statt der Wiederholung die Rechnung, die den Namen
+        // ueberhaupt traegt: acht mal fuenf mal vier sind die 160, die weiter
+        // unten auf dieser Seite ohnehin stehen.
+        lead: NEUER_NAME
+          ? (this.props.lang === 'en'
+            ? 'You play in teams around one phone, just like in CozyQuiz, only each team belongs to a faction. Eight factions, up to five teams each, up to 160 people. Question by question, each side’s bar grows.'
+            : 'Ihr spielt wie im CozyQuiz in Teams an einem Handy, nur gehört jedes Team zu einer Fraktion. Acht Fraktionen, je bis zu fünf Teams, bis zu 160 Personen. Frage für Frage wächst der Balken jeder Seite.')
+          : L.modes.arenaLead,
+        bullets: L.modes.arenaBullets,
       },
     ];
 
