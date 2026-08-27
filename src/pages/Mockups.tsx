@@ -25,16 +25,17 @@
  * die Form geht und nicht ueber neue Formulierungen.
  */
 import { useState } from 'react';
+import type { ReactElement } from 'react';
 import { useLang, setLang } from '../lang';
 import { sx } from './onepage/sx';
 import { onePageT } from './onepage/texts';
 import { KACHEL_VERLAUF, kachel, motivAnteil, qqGridSize, teammarke } from '../qqKachel';
 
-const CREME = '#F6EFE6';
-const GRUND = '#0A0814';
-const SPARTAN = "'League Spartan',sans-serif";
-const HAAR = 'rgba(246,239,230,.14)';
-const EASE = 'cubic-bezier(.22,1,.36,1)';
+import { CREME, GRUND, SPARTAN, HAAR, EASE, Kicker } from './mockups/stil';
+import {
+  Ablauf, UeberMich, Fragen, Anfragen,
+  ABLAUF_ENTWUERFE, JOH_ENTWUERFE, FAQ_ENTWUERFE, FORM_ENTWUERFE,
+} from './mockups/weitere';
 
 // Die Objekte des Quiz-Modus: fuenf Teams, wie auf dem Brett.
 const TEAM_OBJ = [
@@ -179,7 +180,11 @@ const PROBE_TYPEN = [
 export default function Mockups() {
   const lang = useLang();
   const L = onePageT(lang);
-  const [station, setStation] = useState<'01' | '02' | '03'>('01');
+  type Stat = '01' | '02' | '03' | '04' | '05' | '06' | '07';
+  const [station, setStation] = useState<Stat>('01');
+  // Fuer die Stationen 04 bis 07 genuegt ein Zaehler je Station: sie haben
+  // alle drei Entwuerfe und keine eigene Logik.
+  const [va, setVa] = useState<Record<string, number>>({});
   const [brief, setBrief] = useState<Brief>('A');
   const [entwurf, setEntwurf] = useState<AnlassEntwurf>(1);
   const [probe, setProbe] = useState<ProbeEntwurf>(1);
@@ -196,13 +201,25 @@ export default function Mockups() {
     },
   ];
 
-  const inhalt = station === '03'
-    ? <Probieren L={L} mobil={mobil} entwurf={probe} />
-    : station === '02'
-    ? <Anlaesse L={L} mobil={mobil} entwurf={entwurf} />
-    : brief === 'A' ? <LeinwandA L={L} modi={modi} mobil={mobil} />
-      : brief === 'B' ? <SpielfeldB L={L} modi={modi} mobil={mobil} />
-        : <RundeC L={L} modi={modi} mobil={mobil} />;
+  const v = va[station] ?? 1;
+  const WEITERE: Record<string, {
+    titel: string; nr: string;
+    entw: Record<number, { name: string; idee: { de: string; en: string } }>;
+    bau: (p: { L: typeof L; mobil: boolean; entwurf: number }) => ReactElement;
+  }> = {
+    '04': { titel: 'Ablauf', nr: 'B', entw: ABLAUF_ENTWUERFE, bau: Ablauf },
+    '05': { titel: 'Ueber mich', nr: 'C', entw: JOH_ENTWUERFE, bau: UeberMich },
+    '06': { titel: 'Fragen', nr: 'D', entw: FAQ_ENTWUERFE, bau: Fragen },
+    '07': { titel: 'Anfragen', nr: 'E', entw: FORM_ENTWUERFE, bau: Anfragen },
+  };
+  const w = WEITERE[station];
+
+  const inhalt = w ? w.bau({ L, mobil, entwurf: v })
+    : station === '03' ? <Probieren L={L} mobil={mobil} entwurf={probe} />
+      : station === '02' ? <Anlaesse L={L} mobil={mobil} entwurf={entwurf} />
+        : brief === 'A' ? <LeinwandA L={L} modi={modi} mobil={mobil} />
+          : brief === 'B' ? <SpielfeldB L={L} modi={modi} mobil={mobil} />
+            : <RundeC L={L} modi={modi} mobil={mobil} />;
 
   return (
     <div style={sx(`min-height:100dvh;background:${GRUND};color:${CREME};font-family:'Bricolage Grotesque',system-ui,sans-serif`)}>
@@ -210,8 +227,13 @@ export default function Mockups() {
 
       <header style={sx(`position:sticky;top:0;z-index:20;background:rgba(10,8,20,.92);backdrop-filter:blur(14px);border-bottom:1px solid ${HAAR}`)}>
         <div style={sx('max-width:1240px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap')}>
-          <Schalter werte={[{ k: '01', label: '01  Spielarten' }, { k: '02', label: '02  Anlaesse' }, { k: '03', label: '03  Ausprobieren' }]}
-            aktiv={station} waehle={k => setStation(k as '01' | '02' | '03')} />
+          <Schalter werte={[
+            { k: '01', label: '01' }, { k: '02', label: '02' }, { k: '03', label: '03' },
+            { k: '04', label: '04' }, { k: '05', label: '05' }, { k: '06', label: '06' }, { k: '07', label: '07' },
+          ]} aktiv={station} waehle={k => setStation(k as Stat)} />
+          <span style={sx(`font-family:${SPARTAN};font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap`)}>
+            {station === '01' ? 'Spielarten' : station === '02' ? 'Anlaesse' : station === '03' ? 'Ausprobieren' : w.titel}
+          </span>
           <span style={sx('flex:1')}></span>
           {station === '01'
             ? <Schalter werte={(['A', 'B', 'C'] as Brief[]).map(k => ({ k, label: `${k}  ${HANDSCHRIFTEN[k].name}` }))}
@@ -219,8 +241,11 @@ export default function Mockups() {
             : station === '02'
               ? <Schalter werte={([1, 2, 4, 3] as AnlassEntwurf[]).map(k => ({ k: String(k), label: `A${k}  ${ANLASS_ENTWUERFE[k].name}` }))}
                 aktiv={String(entwurf)} waehle={k => setEntwurf(Number(k) as AnlassEntwurf)} />
-              : <Schalter werte={([1, 4, 2, 3] as ProbeEntwurf[]).map(k => ({ k: String(k), label: `P${k}  ${PROBE_ENTWUERFE[k].name}` }))}
-                aktiv={String(probe)} waehle={k => setProbe(Number(k) as ProbeEntwurf)} />}
+              : station === '03'
+                ? <Schalter werte={([1, 4, 2, 3] as ProbeEntwurf[]).map(k => ({ k: String(k), label: `P${k}  ${PROBE_ENTWUERFE[k].name}` }))}
+                  aktiv={String(probe)} waehle={k => setProbe(Number(k) as ProbeEntwurf)} />
+                : <Schalter werte={[1, 2, 3].map(k => ({ k: String(k), label: `${w.nr}${k}  ${w.entw[k].name}` }))}
+                  aktiv={String(v)} waehle={k => setVa(a => ({ ...a, [station]: Number(k) }))} />}
           <Schalter werte={[{ k: 'd', label: 'Desktop' }, { k: 'm', label: 'Mobil' }]}
             aktiv={mobil ? 'm' : 'd'} waehle={k => setMobil(k === 'm')} />
           <Schalter werte={[{ k: 'de', label: 'DE' }, { k: 'en', label: 'EN' }]}
@@ -231,7 +256,9 @@ export default function Mockups() {
             ? <><b style={sx(`color:${CREME}`)}>{brief}. {HANDSCHRIFTEN[brief].name}.</b> {HANDSCHRIFTEN[brief].idee[lang]}</>
             : station === '02'
               ? <><b style={sx(`color:${CREME}`)}>A{entwurf}. {ANLASS_ENTWUERFE[entwurf].name}.</b> {ANLASS_ENTWUERFE[entwurf].idee[lang]} <i style={sx('opacity:.7')}>Die Handschrift steht, es geht nur um die dritte Spalte.</i></>
-              : <><b style={sx(`color:${CREME}`)}>P{probe}. {PROBE_ENTWUERFE[probe].name}.</b> {PROBE_ENTWUERFE[probe].idee[lang]} <i style={sx('opacity:.7')}>Statisch, immer Mu-Cho: es geht um die Form, nicht um die Bedienung.</i></>}
+              : station === '03'
+                ? <><b style={sx(`color:${CREME}`)}>P{probe}. {PROBE_ENTWUERFE[probe].name}.</b> {PROBE_ENTWUERFE[probe].idee[lang]} <i style={sx('opacity:.7')}>Statisch, immer Mu-Cho: es geht um die Form, nicht um die Bedienung.</i></>
+                : <><b style={sx(`color:${CREME}`)}>{w.nr}{v}. {w.entw[v].name}.</b> {w.entw[v].idee[lang]} <i style={sx('opacity:.7')}>Alle drei in der Handschrift A, verglichen wird nur, was der Abschnitt aus seinem Inhalt macht.</i></>}
         </div>
       </header>
 
@@ -260,17 +287,6 @@ function Schalter({ werte, aktiv, waehle }: {
           {w.label}
         </button>
       ))}
-    </div>
-  );
-}
-
-/** Der Kicker aus dem Hero, unveraendert. Er ist Teil des Grundrahmens. */
-function Kicker({ nummer, label }: { nummer: string; label: string }) {
-  return (
-    <div style={sx('display:flex;align-items:center;gap:12px;margin:0 0 18px;font-size:11.5px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap')}>
-      {nummer}
-      <span style={sx('flex:1;height:1px;background:linear-gradient(90deg,rgba(250,75,163,.35),transparent);max-width:180px')}></span>
-      <span style={sx('color:rgba(246,239,230,.5)')}>{label}</span>
     </div>
   );
 }

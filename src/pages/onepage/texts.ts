@@ -156,9 +156,16 @@ const de: OnePageDict = {
     ],
   },
   kinetic: 'STAY COZY. STAY CURIOUS.',
+  // 2026-08-27: die Ueberschrift hiess "Genau so sieht es auf eurem Handy
+  // aus". Das Handy auf dieser Seite ist aber eine Nachbildung, kein Abbild
+  // der Teamansicht der App, und die wird gerade ohnehin neu gestaltet. Was
+  // die Seite wirklich einloest, ist die Mechanik: es sind dieselben fuenf
+  // Fragetypen und dieselben Regeln, und man spielt sie durch. Also
+  // verspricht die Ueberschrift jetzt das. Sobald die Teamansicht steht und
+  // wir sie eins zu eins nachbauen, darf hier wieder "genau so" stehen.
   probe: {
     kicker: 'Fünf Fragetypen, eine Runde', label: 'Ausprobieren',
-    h2: 'Genau so sieht es auf eurem Handy aus',
+    h2: 'So spielt ihr am Handy mit',
     sub: 'Ein Handy pro Team, QR-Code scannen, fertig. Sucht euch einen Fragetyp aus und spielt ihn hier durch, genau wie am Quizabend.',
     zurueck: 'Zurück', weiter: 'Weiter',
     check1: 'Keine App, kein Login, kein Zettel',
@@ -343,7 +350,7 @@ const en: OnePageDict = {
   kinetic: 'STAY COZY. STAY CURIOUS.',
   probe: {
     kicker: 'Five question types, one round', label: 'Try it',
-    h2: 'This is exactly what it looks like on your phone',
+    h2: 'This is how you play along on your phone',
     sub: 'One phone per team, scan a QR code, done. Pick a question type and play it through, just like on quiz night.',
     zurueck: 'Back', weiter: 'Next',
     check1: 'No app, no login, no paper',
