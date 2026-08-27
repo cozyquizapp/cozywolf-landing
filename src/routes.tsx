@@ -13,6 +13,7 @@ import LegalPage from './LegalPage';
 import OnePage from './pages/OnePage';
 import MobileOnePage from './pages/MobileOnePage';
 import NotFoundPage from './pages/NotFoundPage';
+import Mockups from './pages/Mockups';
 
 export function normalizePath(p: string): string {
   return p.replace(/\/+$/, '') || '/';
@@ -23,6 +24,9 @@ function pageFor(path: string): ReactElement {
     case '/': return <OnePage />;
     case '/d': return <OnePage />;
     case '/m': return <MobileOnePage />;
+    // Werkzeug, nicht Produkt: Entwurfsvergleich fuer die Stationen.
+    // Nicht verlinkt, noindex, faellt raus sobald die Handschrift steht.
+    case '/mockups': return <Mockups />;
     case '/impressum': return <LegalPage doc="impressum" />;
     case '/datenschutz': return <LegalPage doc="datenschutz" />;
     // Unbekannte Pfade: echte 404-Seite statt still die Startseite (Soft-404).
@@ -36,4 +40,4 @@ export function AppRoot({ path }: { path: string }) {
 }
 
 /** Alle prerenderbaren Routen (für das Build-Prerender-Skript gespiegelt). */
-export const ROUTES = ['/d', '/m', '/impressum', '/datenschutz'];
+export const ROUTES = ['/d', '/m', '/mockups', '/impressum', '/datenschutz'];

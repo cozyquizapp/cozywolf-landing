@@ -24,12 +24,13 @@ const HOME = {
 const META = {
   '/d':           { ...HOME, canonical: '/' },
   '/m':           { ...HOME, canonical: '/' },
+  '/mockups':     { t: 'Mockups, CozyWolf', d: 'Interner Entwurfsvergleich.' },
   '/impressum':   { t: 'Impressum, CozyWolf', d: 'Impressum und Anbieterkennzeichnung von CozyWolf.' },
   '/datenschutz': { t: 'Datenschutz, CozyWolf', d: 'Datenschutzerklärung von cozywolf.de.' },
   '/404':         { t: 'Seite nicht gefunden, CozyWolf', d: 'Diese Seite gibt es nicht. Zurück zur Startseite von CozyWolf.' },
 };
 const ROUTES = Object.keys(META);
-const NOINDEX = new Set(['/impressum', '/datenschutz', '/404']);
+const NOINDEX = new Set(['/mockups', '/impressum', '/datenschutz', '/404']);
 
 // LocalBusiness/ProfessionalService — Local-SEO-Grundlage, auf jeder Route.
 const ORG_LD = {

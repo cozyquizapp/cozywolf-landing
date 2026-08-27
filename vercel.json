@@ -54,6 +54,10 @@
     {
       "source": "/datenschutz",
       "destination": "/datenschutz/index.html"
+    },
+    {
+      "source": "/mockups",
+      "destination": "/mockups/index.html"
     }
   ],
   "headers": [
