@@ -88,10 +88,46 @@ const HANDSCHRIFTEN = {
 } as const;
 type Brief = keyof typeof HANDSCHRIFTEN;
 
+/**
+ * Station 02, Anlaesse. Drei Entwuerfe INNERHALB der Handschrift A.
+ *
+ * 2026-08-27, Wolfs Einwand: "du hast gar keine mockups vorgeschlagen". Zu
+ * Recht. Dass die Handschrift A ist, ist entschieden; was in der dritten
+ * Spalte steht, ist es nicht. Bei Station 01 steht dort das Spiel selbst
+ * (Brett, Rangfolge). Ein Geburtstag hat kein Spielobjekt, deshalb ist die
+ * Frage hier offen und gehoert gestellt, nicht von mir beantwortet.
+ */
+const ANLASS_ENTWUERFE = {
+  1: {
+    name: 'Die Ziffer',
+    idee: {
+      de: 'Rechts steht die Nummer, gross und leise. Sie behauptet nichts, was es nicht gibt, und nutzt die zweite Saeule des Heros: die Schrift selbst. Am ruhigsten, aber die Spalte sagt nichts ueber den Anlass.',
+      en: 'A large, quiet numeral on the right. It claims nothing that is not there and leans on the hero\u2019s second pillar, the type itself. Calmest, but the column says nothing about the occasion.',
+    },
+  },
+  2: {
+    name: 'Das Format',
+    idee: {
+      de: 'Rechts steht, wie gross die Runde bei diesem Anlass ist, als Kacheln: vier Teams fuer die private Feier, acht Fraktionen fuer die Firma. Die Spalte arbeitet, statt zu schmuecken. Dafuer muss die Angabe stimmen, sonst wird aus Schmuck ein Versprechen.',
+      en: 'The right column shows how big the round is for this occasion, as tiles: four teams for a private party, eight factions for a company night. The column works instead of decorating. The numbers have to be right, or decoration turns into a promise.',
+    },
+  },
+  3: {
+    name: 'Nur Text',
+    idee: {
+      de: 'Keine dritte Spalte. Anlass links, Text rechts, viel Luft dazwischen, groessere Ueberschriften. Am naechsten am Hero und am schnellsten zu lesen. Dafuer sieht die Station der naechsten aehnlicher.',
+      en: 'No third column. Occasion left, text right, generous space between, larger headings. Closest to the hero and quickest to read, but the station looks more like the next one.',
+    },
+  },
+} as const;
+type AnlassEntwurf = keyof typeof ANLASS_ENTWUERFE;
+
 export default function Mockups() {
   const lang = useLang();
   const L = onePageT(lang);
+  const [station, setStation] = useState<'01' | '02'>('01');
   const [brief, setBrief] = useState<Brief>('A');
+  const [entwurf, setEntwurf] = useState<AnlassEntwurf>(1);
   const [mobil, setMobil] = useState(false);
 
   const modi: Modus[] = [
@@ -105,9 +141,11 @@ export default function Mockups() {
     },
   ];
 
-  const inhalt = brief === 'A' ? <LeinwandA L={L} modi={modi} mobil={mobil} />
-    : brief === 'B' ? <SpielfeldB L={L} modi={modi} mobil={mobil} />
-      : <RundeC L={L} modi={modi} mobil={mobil} />;
+  const inhalt = station === '02'
+    ? <Anlaesse L={L} mobil={mobil} entwurf={entwurf} />
+    : brief === 'A' ? <LeinwandA L={L} modi={modi} mobil={mobil} />
+      : brief === 'B' ? <SpielfeldB L={L} modi={modi} mobil={mobil} />
+        : <RundeC L={L} modi={modi} mobil={mobil} />;
 
   return (
     <div style={sx(`min-height:100dvh;background:${GRUND};color:${CREME};font-family:'Bricolage Grotesque',system-ui,sans-serif`)}>
@@ -115,19 +153,23 @@ export default function Mockups() {
 
       <header style={sx(`position:sticky;top:0;z-index:20;background:rgba(10,8,20,.92);backdrop-filter:blur(14px);border-bottom:1px solid ${HAAR}`)}>
         <div style={sx('max-width:1240px;margin:0 auto;padding:14px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap')}>
-          <span style={sx(`font-family:${SPARTAN};font-size:15px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:rgba(246,239,230,.62)`)}>
-            Station 01, Die Spielarten
-          </span>
+          <Schalter werte={[{ k: '01', label: '01  Spielarten' }, { k: '02', label: '02  Anlaesse' }]}
+            aktiv={station} waehle={k => setStation(k as '01' | '02')} />
           <span style={sx('flex:1')}></span>
-          <Schalter werte={(['A', 'B', 'C'] as Brief[]).map(k => ({ k, label: `${k}  ${HANDSCHRIFTEN[k].name}` }))}
-            aktiv={brief} waehle={k => setBrief(k as Brief)} />
+          {station === '01'
+            ? <Schalter werte={(['A', 'B', 'C'] as Brief[]).map(k => ({ k, label: `${k}  ${HANDSCHRIFTEN[k].name}` }))}
+              aktiv={brief} waehle={k => setBrief(k as Brief)} />
+            : <Schalter werte={([1, 2, 3] as AnlassEntwurf[]).map(k => ({ k: String(k), label: `A${k}  ${ANLASS_ENTWUERFE[k].name}` }))}
+              aktiv={String(entwurf)} waehle={k => setEntwurf(Number(k) as AnlassEntwurf)} />}
           <Schalter werte={[{ k: 'd', label: 'Desktop' }, { k: 'm', label: 'Mobil' }]}
             aktiv={mobil ? 'm' : 'd'} waehle={k => setMobil(k === 'm')} />
           <Schalter werte={[{ k: 'de', label: 'DE' }, { k: 'en', label: 'EN' }]}
             aktiv={lang} waehle={k => setLang(k as 'de' | 'en')} />
         </div>
         <div style={sx(`max-width:1000px;margin:0 auto;padding:0 24px 14px;font-size:14.5px;line-height:1.55;color:rgba(246,239,230,.66)`)}>
-          <b style={sx(`color:${CREME}`)}>{brief}. {HANDSCHRIFTEN[brief].name}.</b> {HANDSCHRIFTEN[brief].idee[lang]}
+          {station === '01'
+            ? <><b style={sx(`color:${CREME}`)}>{brief}. {HANDSCHRIFTEN[brief].name}.</b> {HANDSCHRIFTEN[brief].idee[lang]}</>
+            : <><b style={sx(`color:${CREME}`)}>A{entwurf}. {ANLASS_ENTWUERFE[entwurf].name}.</b> {ANLASS_ENTWUERFE[entwurf].idee[lang]} <i style={sx('opacity:.7')}>Die Handschrift steht, es geht nur um die dritte Spalte.</i></>}
         </div>
       </header>
 
@@ -356,6 +398,86 @@ function Fraktionen({ L, px }: { L: ReturnType<typeof onePageT>; px: number }) {
         {name || '\u00a0'}
       </div>
     </div>
+  );
+}
+
+/**
+ * Station 02, Anlaesse. Drei Entwuerfe, alle in der Handschrift A.
+ *
+ * Unterschied ist einzig die dritte Spalte:
+ *   1 Ziffer  - die Nummer, gross und leise.
+ *   2 Format  - die Groesse der Runde als Kacheln.
+ *   3 nichts  - zwei Spalten, dafuer groessere Ueberschriften.
+ *
+ * Die Zahlen in Entwurf 2 kommen aus den vorhandenen Texten und nicht aus
+ * der Fantasie: die Firma spielt als Fraktionen (bis acht), die private
+ * Feier "ab sechs Personen, nach oben bis vierzig", also vier Teams zu je
+ * einem Handy als typische Runde. Fuer das Cafe steht in keinem Text eine
+ * Groesse; dort haette die Spalte nichts zu sagen, und genau das ist das
+ * Argument gegen diesen Entwurf.
+ */
+const ANLASS_FORMAT: { objekte: typeof TEAM_OBJ; label: { de: string; en: string } }[] = [
+  { objekte: FRAKT_OBJ, label: { de: 'Bis acht Fraktionen', en: 'Up to eight factions' } },
+  { objekte: TEAM_OBJ.slice(0, 4), label: { de: 'Vier Teams, ein Handy je Team', en: 'Four teams, one phone each' } },
+  { objekte: TEAM_OBJ, label: { de: 'Feste Reihe, wechselnde Runden', en: 'A regular series, changing crowds' } },
+];
+const ANLASS_ACC = ['#FA4BA3', '#FFC7E4', '#FF7AC0'];
+
+function Anlaesse({ L, mobil, entwurf }: {
+  L: ReturnType<typeof onePageT>; mobil: boolean; entwurf: 1 | 2 | 3;
+}) {
+  const lang = useLang();
+  const spalten = mobil ? '1fr'
+    : entwurf === 3 ? '380px 1fr' : '290px 1fr 340px';
+  return (
+    <section style={sx(`max-width:1240px;margin:0 auto;padding:${mobil ? '52px 22px 70px' : '96px 40px 120px'}`)}>
+      <Kicker nummer="[ 02 ]" label={L.anlaesse.label} />
+      <h2 style={sx(`margin:0 0 14px;font-family:${SPARTAN};`
+        + `font-size:${mobil ? '44px' : 'clamp(52px,6.6vw,96px)'};font-weight:900;line-height:.9;letter-spacing:-.035em;color:${CREME}`)}>
+        {L.anlaesse.h2}
+      </h2>
+      <p style={sx(`margin:0 0 ${mobil ? '18px' : '26px'};max-width:620px;font-size:17px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:500`)}>
+        {L.anlaesse.sub}
+      </p>
+
+      {L.anlaesse.cards.map((k, i) => {
+        const a = ANLASS_ACC[i];
+        const fmt = ANLASS_FORMAT[i];
+        return (
+          <div key={k.title} style={sx(`display:grid;gap:${mobil ? '22px' : '48px'};grid-template-columns:${spalten};`
+            + `align-items:start;padding:${mobil ? '30px 0' : '52px 0'};border-top:1px solid ${HAAR}`
+            + `${i === L.anlaesse.cards.length - 1 ? `;border-bottom:1px solid ${HAAR}` : ''}`)}>
+            <div>
+              <div style={sx(`font-family:${SPARTAN};`
+                + `font-size:${mobil ? '32px' : entwurf === 3 ? 'clamp(36px,3.8vw,54px)' : 'clamp(30px,3.1vw,44px)'};`
+                + `font-weight:900;line-height:.95;letter-spacing:-.028em;color:${CREME};text-wrap:balance`)}>{k.title}</div>
+              <div style={sx(`margin-top:12px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:${a}`)}>{k.badge}</div>
+            </div>
+
+            <div>
+              <p style={sx(`margin:0 0 20px;font-size:${mobil ? '16.5px' : '18px'};line-height:1.6;font-weight:500;color:rgba(246,239,230,.82);max-width:60ch`)}>{k.desc}</p>
+              <span style={sx(`font-size:15.5px;font-weight:900;color:${a}`)}>{L.anlaesse.cta}</span>
+            </div>
+
+            {entwurf === 1 && !mobil && (
+              <div style={sx('display:flex;justify-content:flex-end;min-width:0')}>
+                <span style={sx(`font-family:${SPARTAN};font-size:clamp(90px,9vw,150px);font-weight:900;line-height:.8;letter-spacing:-.05em;color:${a};opacity:.16`)}>
+                  {`0${i + 1}`}
+                </span>
+              </div>
+            )}
+            {entwurf === 2 && (
+              <div style={sx(mobil ? '' : 'display:flex;flex-direction:column;align-items:flex-end;gap:12px')}>
+                <Objekte objekte={fmt.objekte} px={mobil ? 42 : 48} gap={9} />
+                <span style={sx(`${mobil ? 'display:block;margin-top:10px;' : 'text-align:right;'}font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,239,230,.55)`)}>
+                  {fmt.label[lang]}
+                </span>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </section>
   );
 }
 
