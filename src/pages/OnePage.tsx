@@ -58,6 +58,48 @@ const FACTIONS = [
   { id: 'risiko', color: '#EF4444' },
 ];
 
+// ── Die Objektgruppe des Heros ───────────────────────────────────────────
+// Wolfs Referenzen loesen beide dasselbe Problem: der erste Bildschirm traegt
+// ohne ein einziges Foto. Slush stellt Sticker um die Schrift, MindMarket
+// ueberlappende Papierfiguren, beide „directly on the canvas, no frames, no
+// rounded clipping". Diese Rolle spielen hier die Kacheln, die am Abend auf
+// der Leinwand stehen, also kein Dekor, sondern das Produkt.
+//
+// Bewusst NICHT im Raster: gedreht, verschieden gross, ueberlappend. Die
+// Groessen sind eine Tiefenstaffelung; die grosse Truhe vorn traegt als
+// EINZIGE das Ueberschwingen, nach der Hausregel „Overshoot nur fuer den
+// einen Beat pro Bildschirm".
+const GRUPPE = [
+  { av: '/assets/av-qq-treasure-chest.webp', farbe: '#F97316', gr: 40, x: 4,  y: 6,  r: -8,  d: 0.30, beat: true,  tx: '-22px', ty: '-14px', tr: '-13deg' },
+  { av: '/assets/av-qq-crystal-ball.webp',   farbe: '#A855F7', gr: 33, x: 46, y: 0,  r: 10,  d: 0.38, beat: false, tx: '18px',  ty: '-22px', tr: '16deg' },
+  { av: '/assets/av-qq-mushroom.webp',       farbe: '#22C55E', gr: 30, x: 33, y: 44, r: 6,   d: 0.46, beat: false, tx: '-10px', ty: '20px',  tr: '11deg' },
+  { av: '/assets/av-qq-game-die.webp',       farbe: '#FACC15', gr: 24, x: 68, y: 40, r: -14, d: 0.54, beat: false, tx: '26px',  ty: '10px',  tr: '-20deg' },
+  { av: '/assets/av-qq-table-lamp.webp',     farbe: '#3B82F6', gr: 21, x: 12, y: 66, r: 14,  d: 0.62, beat: false, tx: '-26px', ty: '24px',  tr: '20deg' },
+];
+
+/**
+ * Welches Objekt gehoert zu welchem Wort der Ueberschrift.
+ *
+ * Wolfs Idee: "wie waere es wenn jedes wort eine farbe der kachel rechts
+ * haette? das wuerde dem ganzen etwas verknuepfung verleihen und vlt passen
+ * die gewaehlten emojis ja sogar zum wort?" Genau darum geht es: links steht
+ * ein Wort, rechts leuchtet das Objekt auf, das dazugehoert. Aus zwei Dingen
+ * nebeneinander wird ein Satz.
+ *
+ * Index in hero.hooks -> Index in GRUPPE. Beide Sprachen fahren dieselbe
+ * Reihenfolge, deshalb reicht die Position.
+ *
+ *   Wissen      -> Tischlampe      Licht geht auf.        Sitzt.
+ *   Glueck      -> Fliegenpilz     Glueckspilz.           Sitzt.
+ *   Timing      -> Wuerfel         SCHWACH: der Wuerfel ist Zufall, nicht
+ *                                  Timing. Im Objektsatz der App gibt es
+ *                                  weder Uhr noch Sanduhr.
+ *   Teamgeist   -> Truhe           Der gemeinsame Schatz. Mittel; „puzzle"
+ *                                  aus dem Satz waere deutlicher.
+ *   Bauchgefuehl-> Kristallkugel   Ahnung statt Wissen.   Sitzt.
+ */
+const WORT_OBJEKT = [4, 2, 3, 0, 1];
+
 const CAT_META = [
   { key: 'mucho', col: '#3B82F6', icon: '/assets/cat-mucho.webp' },
   { key: 'schaetzchen', col: '#F59E0B', icon: '/assets/cat-schaetzchen.webp' },
@@ -410,28 +452,12 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     };
     const b0 = hb(0), b1 = hb(1);
     const hookI = this.state.hookI ?? 0;
-    const hook = L.hero.hooks[hookI % L.hero.hooks.length];
-    const anim = hookI % 2 ? 'cwLetterB' : 'cwLetter';
-
-    // ── Die Objektgruppe ───────────────────────────────────────────────────
-    // Wolfs Referenzen loesen beide dasselbe Problem: der erste Bildschirm
-    // traegt ohne ein einziges Foto. Slush stellt Sticker um die Schrift,
-    // MindMarket ueberlappende Papierfiguren, beide „directly on the canvas,
-    // no frames, no rounded clipping". Diese Rolle spielen hier die Kacheln,
-    // die am Abend auf der Leinwand stehen - also kein Dekor, sondern das
-    // Produkt.
-    //
-    // Bewusst NICHT im Raster: gedreht, verschieden gross, ueberlappend. Die
-    // Groessen sind nicht zufaellig, sondern eine Tiefenstaffelung; die
-    // grosse Teekanne vorn traegt als EINZIGE das Ueberschwingen, nach der
-    // Hausregel „Overshoot nur fuer den einen Beat pro Bildschirm".
-    const GRUPPE = [
-      { av: '/assets/av-qq-treasure-chest.webp', farbe: '#F97316', gr: 40, x: 4,  y: 6,  r: -8,  d: 0.30, beat: true,  tx: '-22px', ty: '-14px', tr: '-13deg' },
-      { av: '/assets/av-qq-crystal-ball.webp', farbe: '#A855F7', gr: 33, x: 46, y: 0,  r: 10,  d: 0.38, beat: false, tx: '18px',  ty: '-22px', tr: '16deg' },
-      { av: '/assets/av-qq-mushroom.webp',    farbe: '#22C55E', gr: 30, x: 33, y: 44, r: 6,   d: 0.46, beat: false, tx: '-10px', ty: '20px',  tr: '11deg' },
-      { av: '/assets/av-qq-game-die.webp',    farbe: '#FACC15', gr: 24, x: 68, y: 40, r: -14, d: 0.54, beat: false, tx: '26px',  ty: '10px',  tr: '-20deg' },
-      { av: '/assets/av-qq-table-lamp.webp',  farbe: '#3B82F6', gr: 21, x: 12, y: 66, r: 14,  d: 0.62, beat: false, tx: '-26px', ty: '24px',  tr: '20deg' },
-    ];
+    const n = L.hero.hooks.length;
+    const hook = L.hero.hooks[hookI % n];
+    // Das Wort davor bleibt waehrend des Wechsels stehen und laeuft nach oben
+    // hinaus. Beim allerersten Aufbau gibt es keins, dann faellt es weg.
+    const vorher = hookI > 0 ? L.hero.hooks[(hookI - 1) % n] : null;
+    const objekt = GRUPPE[WORT_OBJEKT[hookI % n] % GRUPPE.length];
 
     return (
       <section id="top" style={sx('position:relative;overflow:clip;min-height:100dvh;display:flex;flex-direction:column;border-bottom:1px solid rgba(246,239,230,.10)')}>
@@ -444,10 +470,20 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               <span aria-hidden="true" style={sx('flex:1;max-width:110px;height:1px;background:linear-gradient(90deg,rgba(246,239,230,.20),transparent)')}></span>
             </p>
             <h1 data-aufloesen="" style={sx("margin:0;font-family:'League Spartan',sans-serif;font-weight:900;font-size:clamp(56px,8.6vw,142px);line-height:.84;letter-spacing:-.038em;color:#F6EFE6;will-change:transform")}>
-              <span style={sx('display:block;padding:.14em .1em .06em;margin:-.14em -.1em -.06em;overflow:hidden;white-space:nowrap')}>
-                {hook.split('').map((ch, j) => (
-                  <span key={`${hookI}-${j}`} style={sx(`display:inline-block;animation:${anim} 1.05s ${EASE} both ${(j * 0.06).toFixed(3)}s`)}>{ch === ' ' ? '\u00A0' : ch}</span>
-                ))}
+              <span style={sx('position:relative;display:block;padding:.14em .1em .06em;margin:-.14em -.1em -.06em;overflow:hidden;white-space:nowrap')}>
+                {vorher && (
+                  <span key={`aus-${hookI}`} aria-hidden="true"
+                    style={sx(`position:absolute;left:.1em;top:.14em;white-space:nowrap;color:${GRUPPE[WORT_OBJEKT[(hookI - 1) % n] % GRUPPE.length].farbe}`)}>
+                    {vorher.split('').map((ch, j) => (
+                      <span key={j} className="cwWortAus" style={sx(`animation-delay:${(j * 0.032).toFixed(3)}s`)}>{ch === ' ' ? '\u00A0' : ch}</span>
+                    ))}
+                  </span>
+                )}
+                <span key={`ein-${hookI}`} style={sx(`display:inline-block;color:${objekt.farbe};transition:color .4s ${EASE}`)}>
+                  {hook.split('').map((ch, j) => (
+                    <span key={j} className="cwWortEin" style={sx(`animation-delay:${(j * 0.032).toFixed(3)}s`)}>{ch === ' ' ? '\u00A0' : ch}</span>
+                  ))}
+                </span>
               </span>
               <span style={sx(`display:block;animation:cwRise .9s ${EASE} both .12s`)}>{L.hero.rest}</span>
             </h1>
@@ -472,11 +508,17 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           </div>
 
           <div data-treiben="" data-m="hgruppe" aria-hidden="true" style={sx('position:relative;align-self:center;width:100%;aspect-ratio:1/1;pointer-events:none')}>
-            {GRUPPE.map(k => (
+            {GRUPPE.map((k, i) => {
+              // Das Objekt zum aktuellen Wort steht vorn, die anderen treten
+              // zurueck. Kein Ausblenden, nur weniger Licht: sie bleiben die
+              // Gruppe, aus der eines gerade gemeint ist.
+              const wach = i === WORT_OBJEKT[hookI % n] % GRUPPE.length;
+              return (
               <span key={k.av}
                 className={k.beat ? 'cwKachel cwKachel--beat' : 'cwKachel'}
                 style={sx(`position:absolute;left:${k.x}%;top:${k.y}%;width:${k.gr}%;aspect-ratio:1/1;pointer-events:auto;`
                   + `--r:${k.r}deg;--d:${k.d}s;--tx:${k.tx};--ty:${k.ty};--tr:${k.tr};`
+                  + `--s:${wach ? 1.06 : 1};opacity:${wach ? 1 : 0.52};z-index:${wach ? 4 : 1};`
                   + 'border-radius:16%;'
                   + `background-image:url(${k.av}),linear-gradient(180deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.06) 18%,rgba(255,255,255,0) 50%,rgba(0,0,0,.16) 78%,rgba(0,0,0,.34) 100%);`
                   + `background-color:${k.farbe};`
@@ -484,7 +526,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   + `background-position:center,center;background-repeat:no-repeat,no-repeat;`
                   + `box-shadow:inset 0 1px 0 rgba(255,255,255,.38),inset 2px 0 0 rgba(255,255,255,.07),inset -2px 0 0 rgba(0,0,0,.18),0 3px 4px rgba(0,0,0,.42),0 26px 50px rgba(0,0,0,.45)`)}>
               </span>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

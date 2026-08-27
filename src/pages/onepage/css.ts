@@ -36,8 +36,24 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 @keyframes cwWordA{0%{transform:translateY(102%) rotate(2deg);opacity:0}100%{transform:none;opacity:1}}
 @keyframes cwWordB{0%{transform:translateY(102%) rotate(2deg);opacity:0}100%{transform:none;opacity:1}}
 @keyframes cwNudge{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
-@keyframes cwLetter{0%{transform:translateY(108%) rotate(6deg);opacity:0}100%{transform:none;opacity:1}}
-@keyframes cwLetterB{0%{transform:translateY(108%) rotate(6deg);opacity:0}100%{transform:none;opacity:1}}
+/* Der Wortwechsel in der Ueberschrift, als Walze.
+   Vorher stiegen die Buchstaben des NEUEN Wortes von unten herein, das alte
+   verschwand im selben Moment ohne Bewegung, weil React es einfach ersetzte.
+   Deshalb wirkte der Wechsel billig: es fehlte nicht die Eleganz, es fehlte
+   die Haelfte. Jetzt laeuft das alte Wort nach oben hinaus, waehrend das
+   neue von unten nachrueckt, Buchstabe fuer Buchstabe, wie ein Zaehlwerk.
+   Ausserdem raus: die Drehung um 6 Grad je Buchstabe. Bei einer 142 px
+   grossen Schrift kippt damit jeder Buchstabe einzeln, das liest sich
+   unruhig. Und cwLetterB war zeichengleich zu cwLetter, der Wechsel
+   zwischen beiden hat nie etwas bewirkt. */
+@keyframes cwWortEin{from{transform:translateY(112%);opacity:0}60%{opacity:1}to{transform:none;opacity:1}}
+@keyframes cwWortAus{from{transform:none;opacity:1}62%{opacity:1}to{transform:translateY(-112%);opacity:0}}
+.cwWortEin{display:inline-block;animation:cwWortEin .62s cubic-bezier(.22,1,.36,1) both}
+.cwWortAus{display:inline-block;animation:cwWortAus .62s cubic-bezier(.22,1,.36,1) both}
+@media (prefers-reduced-motion:reduce){
+  .cwWortEin,.cwWortAus{animation:none}
+  .cwWortAus{display:none}
+}
 @keyframes cwFaq{0%{transform:translateY(-6px);opacity:0}100%{transform:none;opacity:1}}
 @keyframes cwRise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
 @keyframes cwSheen{0%{transform:translateX(-120%)}60%,100%{transform:translateX(220%)}}
@@ -64,7 +80,7 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
   .cwKachel{animation:cwKachelEin .62s cubic-bezier(.22,1,.36,1) backwards var(--d,0s)}
   .cwKachel--beat{animation-duration:.7s;animation-timing-function:cubic-bezier(.34,1.56,.64,1)}
 }
-.cwKachel{transform:rotate(var(--r,0deg));transition:transform .34s cubic-bezier(.22,1,.36,1),filter .34s cubic-bezier(.22,1,.36,1)}
+.cwKachel{transform:rotate(var(--r,0deg)) scale(var(--s,1));transition:transform .55s cubic-bezier(.22,1,.36,1),filter .55s cubic-bezier(.22,1,.36,1),opacity .55s cubic-bezier(.22,1,.36,1)}
 @media (hover:hover) and (pointer:fine){
   .cwKachel:hover{transform:rotate(calc(var(--r,0deg) * .4)) translateY(-10px) scale(1.14);filter:brightness(1.08);z-index:9}
 }

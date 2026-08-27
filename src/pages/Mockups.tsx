@@ -113,10 +113,10 @@ const ANLASS_ENTWUERFE = {
     },
   },
   4: {
-    name: 'Ein Objekt',
+    name: 'Objektgruppe',
     idee: {
-      de: 'Rechts steht EIN Objekt fuer den Anlass, auf einer Kachel wie im Spiel: Puzzle fuer Firma und Team, Torte fuer den Geburtstag, Glas fuer Cafe, Bar und Pub. Anders als bei „Das Format" bedeuten die Objekte hier wirklich etwas, sie stehen nicht fuer Teams, die es an dieser Stelle nicht gibt.',
-      en: 'One object per occasion on a tile, as in the game: puzzle for company and team, cake for the birthday, glass for cafe, bar and pub. Unlike \u201cThe format\u201d, these objects actually mean something instead of standing in for teams that are not there.',
+      de: 'Rechts stehen drei Objekte fuer den Anlass, frei und ueberlappend wie die Gruppe im Hero, OHNE Kachel. Die Kachel bedeutet im Spiel ein Feld oder ein Team, beides gibt es hier nicht, und drei pinke Kacheln je Abschnitt waeren ausserdem Pink als Flaeche statt als Marke.',
+      en: 'Three objects per occasion on the right, free and overlapping like the hero cluster, WITHOUT a tile. In the game a tile means a field or a team, and neither exists here; three pink tiles per section would also make pink a surface instead of a brand mark.',
     },
   },
   3: {
@@ -431,24 +431,45 @@ const ANLASS_FORMAT: { objekte: typeof TEAM_OBJ; label: { de: string; en: string
 const ANLASS_ACC = ['#FA4BA3', '#FFC7E4', '#FF7AC0'];
 
 /**
- * Ein Objekt je Anlass, aus dem Objektsatz der App.
+ * Drei Objekte je Anlass, frei angeordnet wie die Gruppe im Hero.
  *
- * Puzzle und Torte und Glas stammen aus KioskQuiz
- * frontend/public/avatars (cozyquiz/puzzle, party/cake, party/martini),
- * sind also derselbe Renderstil wie die Teamobjekte und nicht irgendein
- * Emoji-Satz. Beschnitten auf die Bounding-Box, quadratisch zentriert,
- * 160 px webp.
+ * 2026-08-27, Wolf zur Kachel-Fassung: "noch zu viel pink und die emojis sind
+ * nicht super passend ... ich wuerde vermutlich keine kacheln nehmen, eher
+ * 3 3d emoji objekte (aehnlich wie ganz oben die kacheln angeordnet)".
  *
- * Die Kachel darunter traegt NICHT die Farbe eines Teams, sondern den
- * Markenton des Anlasses. Sonst wuerde die Kachel behaupten, hier spiele
- * ein gruenes Team mit, und genau das war der Fehler bei „Das Format".
+ * Beides stimmt. Die Kachel bedeutet im Spiel ein Feld oder eine Teammarke;
+ * neben "Geburtstag" bedeutet sie nichts. Und drei grosse pinke Flaechen je
+ * Abschnitt machen Pink zur Flaeche, obwohl die Hausregel lautet: Pink ist
+ * Logo und Marke, nicht Produkt. Ohne Kachel bleibt Pink im Abschnitt genau
+ * dort, wo es hingehoert, im Kicker und im Anfragen-Link.
+ *
+ * Drei Objekte statt einem, weil ein einzelnes den Anlass nie trifft: eine
+ * Torte allein ist ein Kuchen, Torte mit Luftballons und Geschenk ist ein
+ * Geburtstag. Alle neun stammen aus dem Objektsatz der App
+ * (KioskQuiz frontend/public/avatars, Ordner party und cozyquiz).
+ *
+ * gr = Kantenlaenge in Prozent des Feldes, x/y = Position, r = Drehung.
+ * Dieselbe Staffelung wie im Hero: das groesste Objekt vorn und leicht
+ * gegen den Uhrzeigersinn, die kleineren dahinter.
  */
-const ANLASS_OBJ = [
-  { av: '/assets/anlass-firma.webp', label: { de: 'Firma', en: 'Company' } },
-  { av: '/assets/anlass-geburtstag.webp', label: { de: 'Geburtstag', en: 'Birthday' } },
-  { av: '/assets/anlass-pub.webp', label: { de: 'Feste Reihe', en: 'Regular series' } },
+type Obj = { av: string; gr: number; x: number; y: number; r: number };
+const ANLASS_GRUPPEN: Obj[][] = [
+  [
+    { av: '/assets/obj-champagne.webp', gr: 58, x: 0,  y: 8,  r: -9 },
+    { av: '/assets/obj-puzzle.webp',    gr: 44, x: 50, y: 0,  r: 11 },
+    { av: '/assets/obj-disco.webp',     gr: 38, x: 40, y: 52, r: -6 },
+  ],
+  [
+    { av: '/assets/obj-cake.webp',      gr: 58, x: 2,  y: 10, r: -7 },
+    { av: '/assets/obj-balloons.webp',  gr: 46, x: 52, y: 0,  r: 9 },
+    { av: '/assets/obj-gift.webp',      gr: 36, x: 44, y: 54, r: -12 },
+  ],
+  [
+    { av: '/assets/obj-martini.webp',      gr: 56, x: 4,  y: 6,  r: -8 },
+    { av: '/assets/obj-croissant.webp',    gr: 44, x: 52, y: 4,  r: 12 },
+    { av: '/assets/obj-playing-card.webp', gr: 40, x: 38, y: 56, r: -5 },
+  ],
 ];
-
 function Anlaesse({ L, mobil, entwurf }: {
   L: ReturnType<typeof onePageT>; mobil: boolean; entwurf: AnlassEntwurf;
 }) {
@@ -493,8 +514,14 @@ function Anlaesse({ L, mobil, entwurf }: {
               </div>
             )}
             {entwurf === 4 && (
-              <div style={sx(mobil ? '' : 'display:flex;justify-content:flex-end')}>
-                <span className="mkKachel" style={sx(teammarke(a, ANLASS_OBJ[i].av, mobil ? 72 : 104))}></span>
+              <div style={sx(`position:relative;${mobil ? 'width:190px;' : 'width:100%;max-width:230px;margin-left:auto;'}aspect-ratio:1/1`)}>
+                {ANLASS_GRUPPEN[i].map(o => (
+                  <span key={o.av} aria-hidden="true" className="mkKachel"
+                    style={sx(`position:absolute;left:${o.x}%;top:${o.y}%;width:${o.gr}%;aspect-ratio:1/1;`
+                      + `--r:${o.r}deg;`
+                      + `background:url(${o.av}) center/contain no-repeat;`
+                      + 'filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))')}></span>
+                ))}
               </div>
             )}
             {entwurf === 2 && (
@@ -616,9 +643,9 @@ body{margin:0;background:${GRUND}}
 *{box-sizing:border-box}
 /* Regel 4: Bewegung nur, wo sie etwas bedeutet. Hier: das Objekt hebt sich,
    wenn man darauf zeigt, wie im Hero. Sonst bewegt sich auf dieser Seite nichts. */
-.mkKachel{transition:transform .34s ${EASE},filter .34s ${EASE}}
+.mkKachel{transform:rotate(var(--r,0deg));transition:transform .34s ${EASE},filter .34s ${EASE}}
 @media (hover:hover) and (pointer:fine){
-  .mkKachel:hover{transform:translateY(-8px) scale(1.08);filter:brightness(1.08)}
+  .mkKachel:hover{transform:rotate(calc(var(--r,0deg) * .4)) translateY(-8px) scale(1.08);filter:brightness(1.08)}
 }
 @media (prefers-reduced-motion:reduce){.mkKachel{transition:none}}
 button:focus-visible{outline:3px solid #FFC7E4;outline-offset:3px}
