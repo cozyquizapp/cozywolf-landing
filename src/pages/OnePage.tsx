@@ -65,102 +65,34 @@ const STIL = (() => {
 const H2_GROSS = STIL >= 2 ? 'clamp(40px,5.2vw,84px)' : null;
 
 /**
- * Der Arbeitsname fuer den grossen Modus.
+ * Der grosse Modus heisst CrowdQuiz.
  *
- * Wolf am 27.08.: "bei 160 leuten ist es eher nicht mehr cozy, mehr arena".
- * Der Einwand stimmt, der Name verspricht das Gegenteil dessen, was passiert.
- * Zur Probe steht die Landing deshalb auf Zuruf auf dem neuen Namen:
+ * Entschieden am 27.08. Der Weg dahin steht hier, weil er die Regel enthaelt,
+ * an die sich jeder weitere Name halten muss.
  *
- *   /d/?name=8    Acht Fraktionen / 8 Factions statt CozyArena
+ * CozyQuiz ist [wie es ist][was es ist], ein Wort, englisch. Wolfs Einwand
+ * gegen CozyArena war, dass bei 160 Leuten nichts mehr cozy ist. Sein Einwand
+ * gegen "Acht Fraktionen" war schaerfer: es nennt eine Menge statt eines
+ * Gefuehls, ein Bauteil statt der Gattung, und es ist deutsch. Dazu die
+ * vierte Bedingung, die er selbst nachgelegt hat: beide Woerter muessen auch
+ * im deutschen Mund liegen, "Factions" tut das nicht.
  *
- * Nachgesehen, bevor der Name ueberhaupt zur Wahl stand: die App liest
- * QQ_MEGA_FACTIONS an jeder Stelle ueber alle acht, es gibt keinen Fall mit
- * weniger. Die Zahl ist gesetzt, und sie rechnet: acht Fraktionen mal fuenf
- * Teams mal vier Leute sind die 160, die auf dieser Seite ohnehin stehen.
+ * Und gegen "wild" hatte er wieder recht: der Modus ist nicht lauter, er ist
+ * groesser. Gewertet wird der ANTEIL richtiger Antworten, damit eine Fraktion
+ * mit acht Leuten keinen Vorteil gegenueber einer mit vier hat; das steht als
+ * Aufzaehlungszeile zwei Zeilen unter dem Namen.
  *
- * ACHTUNG, falls das bleibt: in der App steht CozyArena an 158 Stellen. Solange
- * die nicht mitgezogen sind, heisst dasselbe Ding an zwei Orten anders. Der
- * Schalter ist zum Ansehen da, nicht zum Ausliefern.
+ * Bleibt Crowd: Menge statt Krach, in beiden Sprachen gelaeufig, einzeilig in
+ * der Spalte, Gattung Quiz erhalten, und Cozy gegen Crowd ist ein Paar. Das
+ * Wort steht ausserdem schon im Code der App, die beiden Fragetypen, die es
+ * nur in diesem Modus gibt, heissen crowdTop und crowdEstimate.
+ *
+ * ⚠️ In der App heisst der Modus weiter CozyArena, an 148 Stellen. Bis die
+ * nachgezogen sind, heisst dasselbe Ding an zwei Orten anders. Der interne
+ * Schluessel hier bleibt 'arena', damit Bilder und Bezeichner nicht mitwandern
+ * muessen.
  */
-const NAME_PARAM = typeof window === 'undefined'
-  ? null : new URLSearchParams(window.location.search).get('name');
-
-/**
- * Die Namen des grossen Modus zur Probe.
- *
- * Wolf am 27.08., und der Einwand sitzt: "CozyQuiz beschreibung wie ist es und
- * was ist es und auf englisch, acht fraktionen beschreibt nicht was es ist und
- * wie und auf deutsch". Damit steht die Formel fest, nach der der Name gebaut
- * sein muss:
- *
- *     [wie es ist][was es ist], ein Wort, englisch
- *      Cozy        Quiz
- *
- * "Acht Fraktionen" erfuellt keinen der drei Punkte: es nennt eine Menge statt
- * eines Gefuehls, ein Bauteil statt der Gattung, und es ist deutsch. Es kann
- * also im Text stehen, aber nicht als Name.
- *
- * Was Wolf selbst geschrieben hat, war naeher dran, als es aussah: "bei 160
- * leuten ist es eher nicht mehr cozy, mehr arena". Sein Einwand galt dem
- * Cozy, nicht dem Arena.
- *
- * Wolfs Nachtrag, ebenfalls richtig: "Wild Factions, wobei sich factions auf
- * deutsch nicht so gut liest wie quiz oder cozy". Das ist die vierte
- * Bedingung, und sie war bisher unausgesprochen: BEIDE Woerter muessen auch
- * im deutschen Mund liegen. "Quiz" und "Cozy" tun das, "Factions" nicht, das
- * heisst hier Fraktionen.
- *
- * Damit bleibt das Gattungswort "Quiz" gesetzt, und gesucht ist nur noch das
- * erste Wort, das im Deutschen wie im Englischen gelaeufig ist und den
- * Gegenpol zu "cozy" trifft:
- *
- *   ?name=nur       Arena         das Wort allein, in beiden Sprachen gleich
- *   ?name=rivals    Arena Rivals  Wolfs Vorschlag, siehe Einwand unten
- *   ?name=crowd     CrowdQuiz     Menge statt Krach, Crowd steht schon im Code (crowdTop)
- *   ?name=mega      MegaQuiz      der interne Name des Modus (isMega, largeGroupMode)
- *   ?name=wild      WildQuiz      Gegenpol zu cozy, trifft aber den Ton nicht
- *   ?name=arena     ArenaQuiz     Wolfs eigener Griff, Arena ist in beiden Sprachen dasselbe Wort
- *   ?name=party     PartyQuiz     am verstaendlichsten fuer eine Buchung, dafuer am generischsten
- *   ?name=faction   FactionQuiz   nennt den Unterschied, liest sich deutsch aber schlecht
- *   ?name=8         Acht Fraktionen   die Menge, zum Vergleich
- *   ?name=8z        8 Fraktionen      dieselbe mit Ziffer
- */
-const NAMEN: Record<string, { de: string; en: string }> = {
-  // Wolf am 27.08.: "Wie waere Arena als gesetzt nehmen? Das funktioniert auch
-  // bilingual oder?". Ja, buchstabengleich in beiden Sprachen, kein Umlaut,
-  // kein Plural-Problem. Und in der App heisst der Modus intern laengst so:
-  // arena-bg, ArenaBeamerBg, cozywolf-arena-*, 61 Dateien tragen das Wort.
-  // Der Name waere also keine Erfindung, sondern das Ausschreiben dessen, was
-  // im Code seit jeher steht.
-  nur: { de: 'Arena', en: 'Arena' },
-  // Wolfs Vorschlag "Arena Rivals". Steht hier zum Ansehen, obwohl er drei
-  // der vier Bedingungen verletzt: zwei Woerter statt einem, [Ort][Rolle]
-  // statt [wie][was], und "Rivals" liegt im deutschen Mund so schlecht wie
-  // "Factions", es heisst hier Rivalen. Dazu ein inhaltlicher Widerspruch:
-  // die Wertung der Arena rechnet den ANTEIL richtiger Antworten, damit eine
-  // Fraktion mit acht Leuten keinen Vorteil gegenueber einer mit vier hat.
-  // Das steht als Punkt auf derselben Seite. "Rivals" verspricht Haerte, wo
-  // das Spiel ausdruecklich Fairness eingebaut hat.
-  rivals: { de: 'Arena Rivals', en: 'Arena Rivals' },
-  // Wolf am 27.08.: "Aber es ist nicht wild ... oder? Anderes adjektiv?".
-  // Stimmt, und das laesst sich an der Seite selbst nachlesen: gewertet wird
-  // der ANTEIL richtiger Antworten, damit eine grosse Fraktion keinen Vorteil
-  // hat. Der Modus ist nicht lauter oder wilder, er ist GROESSER. Gesucht ist
-  // also ein Wort fuer Menge, nicht fuer Krach.
-  //
-  // Zwei davon nennt der Code selbst: der Modus heisst intern largeGroupMode
-  // und isMega, und die beiden Fragetypen, die es nur dort gibt, heissen
-  // crowdTop und crowdEstimate. 48 Dateien tragen mega, 22 tragen crowd.
-  crowd: { de: 'CrowdQuiz', en: 'CrowdQuiz' },
-  mega: { de: 'MegaQuiz', en: 'MegaQuiz' },
-  wild: { de: 'WildQuiz', en: 'WildQuiz' },
-  arena: { de: 'ArenaQuiz', en: 'ArenaQuiz' },
-  party: { de: 'PartyQuiz', en: 'PartyQuiz' },
-  faction: { de: 'FactionQuiz', en: 'FactionQuiz' },
-  '8': { de: 'Acht Fraktionen', en: '8 Factions' },
-  '8z': { de: '8 Fraktionen', en: '8 Factions' },
-};
-const NEUER_NAME = !!(NAME_PARAM && NAMEN[NAME_PARAM]);
+const MODUS_GROSS = 'CrowdQuiz';
 /** Trennung zwischen Kapiteln: ab Fassung 3 Luft statt Linie. */
 const OHNE_LINIE = STIL >= 3;
 /** Dichtewelle: dicht, mittel, luftig als Polster oben und unten. */
@@ -946,7 +878,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
    *
    * Rechts steht KEINE Dekoration, sondern das, was der Modus ist:
    *   CozyQuiz  -> das Brett, auf dem Flaeche entsteht.
-   *   CozyArena -> die Rangfolge der Fraktionen, die sich live umsortiert.
+   *   CrowdQuiz -> die Rangfolge der Fraktionen, die sich live umsortiert.
    * Beides laeuft weiter, es haengt nur nicht mehr am Aufklappen.
    */
   renderModes() {
@@ -967,21 +899,14 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       },
       {
         key: 'arena',
-        name: NEUER_NAME ? NAMEN[NAME_PARAM!][this.props.lang] : 'CozyArena',
+        name: MODUS_GROSS,
         akzent: '#FACC15',
         chip: L.modes.arenaChip,
         // Unter dem neuen Namen stuende sonst "Acht Fraktionen ... einer von
         // acht Fraktionen". Statt der Wiederholung die Rechnung, die den Namen
         // ueberhaupt traegt: acht mal fuenf mal vier sind die 160, die weiter
         // unten auf dieser Seite ohnehin stehen.
-        // Die Rechnung im Text ersetzt den urspruenglichen Satz nur bei den
-        // Zahlen-Namen: dort stuende sonst "Acht Fraktionen ... einer von acht
-        // Fraktionen". ArenaQuiz und FactionQuiz wiederholen nichts.
-        lead: (NAME_PARAM === '8' || NAME_PARAM === '8z')
-          ? (this.props.lang === 'en'
-            ? 'You play in teams around one phone, just like in CozyQuiz, only each team belongs to a faction. Eight factions, up to five teams each, up to 160 people. Question by question, each side’s bar grows.'
-            : 'Ihr spielt wie im CozyQuiz in Teams an einem Handy, nur gehört jedes Team zu einer Fraktion. Acht Fraktionen, je bis zu fünf Teams, bis zu 160 Personen. Frage für Frage wächst der Balken jeder Seite.')
-          : L.modes.arenaLead,
+        lead: L.modes.arenaLead,
         bullets: L.modes.arenaBullets,
       },
     ];

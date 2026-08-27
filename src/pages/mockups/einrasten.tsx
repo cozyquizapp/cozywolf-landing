@@ -18,7 +18,7 @@
  *   07            1008     1,29
  *
  * Der Befund ist nicht "die Abschnitte sind zu lang", sondern "zwei Abschnitte
- * enthalten mehrere vollstaendige Inhalte": 01 traegt CozyQuiz UND CozyArena,
+ * enthalten mehrere vollstaendige Inhalte": 01 traegt CozyQuiz UND CrowdQuiz,
  * 02 traegt drei Anlaesse. Als Ganzes koennen die nie auf einen Bildschirm,
  * ohne dass man sie staucht. Die Einheit zum Einrasten ist also die ZEILE und
  * nicht der Abschnitt. Aus sieben Abschnitten werden zehn Halte, und jeder
@@ -64,7 +64,7 @@ export type SnapEntwurf = keyof typeof SNAP_ENTWUERFE;
 const HALTE = [
   { nr: 'Hero', titel: 'Bauchgefühl ist nicht alles', hoehe: 1.00, inhalt: 'Wortwechsel, Objektgruppe, zwei Knöpfe' },
   { nr: '01 a', titel: 'CozyQuiz', hoehe: 0.80, inhalt: 'Text, Punkte, das Brett' },
-  { nr: '01 b', titel: 'CozyArena', hoehe: 0.81, inhalt: 'Text, Punkte, die Rangfolge' },
+  { nr: '01 b', titel: 'CrowdQuiz', hoehe: 0.81, inhalt: 'Text, Punkte, die Rangfolge' },
   { nr: '02 a', titel: 'Firmenfeier', hoehe: 0.59, inhalt: 'Text, Verweis, drei Objekte' },
   { nr: '02 b', titel: 'Geburtstag', hoehe: 0.59, inhalt: 'Text, Verweis, drei Objekte' },
   { nr: '02 c', titel: 'Kneipenabend', hoehe: 0.58, inhalt: 'Text, Verweis, drei Objekte' },

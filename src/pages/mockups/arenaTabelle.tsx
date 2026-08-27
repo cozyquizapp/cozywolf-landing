@@ -1,5 +1,5 @@
 /**
- * Vier Fassungen fuer die Rangfolge in Station 01, Zeile CozyArena.
+ * Vier Fassungen fuer die Rangfolge in Station 01, Zeile CrowdQuiz.
  *
  * 2026-08-27, Wolf: "der tabelle unten auch eine umrandung geben, leuchten je
  * nach team das fuehrt wie oben und als test die tabelle unten nach links
@@ -35,8 +35,8 @@ export const ARENA_ENTWUERFE = {
     name: 'Wie jetzt',
     rahmen: false, links: false, wappen: 'normal',
     idee: {
-      de: 'Der heutige Stand: die Rangfolge steht frei in der Spalte, rechtsbuendig wie das Brett darueber, ohne Rahmen. Ruhig, aber die Zeile CozyArena hat damit kein Gegenstueck zum gerahmten Brett in der Zeile darueber.',
-      en: 'What is live today: the ranking sits free in its column, right-aligned like the board above, with no frame. Calm, but the CozyArena row then has no counterpart to the framed board in the row above.',
+      de: 'Der heutige Stand: die Rangfolge steht frei in der Spalte, rechtsbuendig wie das Brett darueber, ohne Rahmen. Ruhig, aber die Zeile CrowdQuiz hat damit kein Gegenstueck zum gerahmten Brett in der Zeile darueber.',
+      en: 'What is live today: the ranking sits free in its column, right-aligned like the board above, with no frame. Calm, but the CrowdQuiz row then has no counterpart to the framed board in the row above.',
     },
   },
   2: {
@@ -175,7 +175,7 @@ export function ArenaTabelle({ mobil, entwurf }: { mobil: boolean; entwurf: Aren
       <div style={sx(`display:grid;grid-template-columns:${mobil ? '1fr' : '290px 1fr 340px'};gap:48px;align-items:start;`
         + `padding:52px 0;border-top:1px solid ${HAAR};border-bottom:1px solid ${HAAR}`)}>
         <div>
-          <div style={sx("font-family:'League Spartan',sans-serif;font-size:clamp(38px,4vw,58px);font-weight:900;line-height:.9;letter-spacing:-.03em;color:" + CREME)}>CozyArena</div>
+          <div style={sx("font-family:'League Spartan',sans-serif;font-size:clamp(38px,4vw,58px);font-weight:900;line-height:.9;letter-spacing:-.03em;color:" + CREME)}>CrowdQuiz</div>
           <div style={sx('margin-top:12px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>Ab 40 Personen</div>
         </div>
         <div>

@@ -210,7 +210,7 @@ export default function Mockups() {
       bullets: L.modes.quizBullets, objekte: TEAM_OBJ, akzent: '#FA4BA3',
     },
     {
-      name: 'CozyArena', chip: L.modes.arenaChip, calm: L.modes.arenaCalm, lead: L.modes.arenaLead,
+      name: 'CrowdQuiz', chip: L.modes.arenaChip, calm: L.modes.arenaCalm, lead: L.modes.arenaLead,
       bullets: L.modes.arenaBullets, objekte: FRAKT_OBJ, akzent: '#FFC7E4',
     },
   ];

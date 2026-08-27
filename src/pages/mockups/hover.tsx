@@ -52,7 +52,7 @@ const EASE = 'cubic-bezier(.22,1,.36,1)';
 
 const FRAGEN = [
   { q: 'Brauche ich eigene Technik?', a: 'Nein. Beamer und Sound bringe ich mit. Ihr braucht eine freie Wand, Strom und WLAN.' },
-  { q: 'Wie viele Leute gehen?', a: 'Von sechs bis 160. Bis 40 spielt ihr CozyQuiz, darueber CozyArena.' },
+  { q: 'Wie viele Leute gehen?', a: 'Von sechs bis 160. Bis 40 spielt ihr CozyQuiz, darueber CrowdQuiz.' },
   { q: 'Was kostet ein Abend?', a: 'Ab 350 Euro, je nach Gruppe, Anfahrt und Laenge des Abends.' },
   { q: 'Wie lange dauert das?', a: 'Etwa zweieinhalb Stunden, Aufbau kommt eine Stunde vorher dazu.' },
 ];

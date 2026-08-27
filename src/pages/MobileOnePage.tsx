@@ -442,7 +442,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
 
           <div onClick={() => this.open(s.open === 'arena' ? null : 'arena')} style={sx(this.card(s.open === 'arena', 'rgba(96,165,250,.45)'))}>
             <div style={sx('display:flex;align-items:center;gap:12px')}>
-              <span style={sx("font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;color:#60A5FA")}>CozyArena</span>
+              <span style={sx("font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;color:#60A5FA")}>CrowdQuiz</span>
               <span style={sx('margin-left:auto;padding:5px 11px;border-radius:999px;background:rgba(96,165,250,.14);border:1px solid rgba(96,165,250,.3);font-size:11.5px;font-weight:900;color:#BFDBFE;white-space:nowrap')}>{L.modes.arenaChip}</span>
               <span style={sx(this.plus(s.open === 'arena', '#60A5FA'))}>+</span>
             </div>

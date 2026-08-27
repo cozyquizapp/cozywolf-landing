@@ -62,7 +62,7 @@ export const KAPITEL_ENTWUERFE = {
 export type KapitelEntwurf = keyof typeof KAPITEL_ENTWUERFE;
 
 const KAPITEL = [
-  { nr: '01', h2: 'Zwei Modi, ein Abend', dichte: 'dicht', zeilen: ['CozyQuiz · bis 40 Personen', 'CozyArena · ab 40 Personen'] },
+  { nr: '01', h2: 'Zwei Modi, ein Abend', dichte: 'dicht', zeilen: ['CozyQuiz · bis 40 Personen', 'CrowdQuiz · ab 40 Personen'] },
   { nr: '02', h2: 'Für welchen Anlass?', dichte: 'luftig', zeilen: ['Firmenfeier', 'Geburtstag', 'Kneipenabend'] },
   { nr: '03', h2: 'So spielt ihr am Handy mit', dichte: 'mittel', zeilen: ['Fünf Fragetypen, eine Runde'] },
   { nr: '04', h2: 'Mehr als eine freie Wand braucht ihr nicht', dichte: 'dicht', zeilen: ['Die Leinwand', 'Ihr braucht · Ich bringe mit'] },
