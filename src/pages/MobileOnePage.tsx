@@ -235,7 +235,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
   // ------------------------------------------------- Bausteine
   kicker(num: string, label: string) {
     return (
-      <div data-rv="" style={sx('display:flex;align-items:center;gap:10px;margin:0 0 10px;font-size:10.5px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:#FA4BA3')}>
+      <div data-rv="" style={sx('display:flex;align-items:center;gap:10px;margin:0 0 10px;font-size:10.5px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>
         {num}
         <span style={sx('flex:1;height:1px;background:linear-gradient(90deg,rgba(250,75,163,.35),transparent)')}></span>
         <span style={sx('color:rgba(246,239,230,.42)')}>{label}</span>
@@ -319,7 +319,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
           <h1 style={sx("margin:0;font-family:'League Spartan',sans-serif;font-weight:900;font-size:44px;line-height:.94;letter-spacing:-.03em")}>
             <span style={sx('display:block;padding:.14em .1em .06em;margin:-.14em -.1em -.06em;overflow:hidden;white-space:nowrap')}>
               {hook.split('').map((ch, j) => (
-                <span key={`${hookI}-${j}`} style={sx(`display:inline-block;color:#FA4BA3;animation:${anim} 1.05s ${EASE} both ${(j * 0.07).toFixed(3)}s`)}>{ch === ' ' ? ' ' : ch}</span>
+                <span key={`${hookI}-${j}`} style={sx(`display:inline-block;color:#F6EFE6;animation:${anim} 1.05s ${EASE} both ${(j * 0.07).toFixed(3)}s`)}>{ch === ' ' ? ' ' : ch}</span>
               ))}
             </span>
             <span style={sx(`display:block;animation:mRise .8s ${EASE} both .12s`)}>{L.hero.rest}</span>
@@ -334,11 +334,11 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             <div style={sx('display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap')}>
               <span style={sx('font-size:14.5px;font-weight:600;color:rgba(246,239,230,.62)')}>{L.hero.bookQ}</span>
               <a href="#anfragen" onClick={() => this.setState({ tab: 'event', formStatus: 'idle' })}
-                style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(246,239,230,.20);color:#FFC7E4;font-weight:800;font-size:14.5px')}>{L.hero.bookCta}</a>
+                style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(246,239,230,.20);color:#F6EFE6;font-weight:800;font-size:14.5px')}>{L.hero.bookCta}</a>
             </div>
           </div>
           <div style={sx('margin-top:22px;display:flex;align-items:center;gap:9px;font-size:14px;font-weight:700;letter-spacing:.01em;color:rgba(246,239,230,.72)')}>
-            <span style={sx('flex:none;width:7px;height:7px;border-radius:50%;background:#FA4BA3;box-shadow:0 0 10px #FA4BA3')}></span>
+            <span style={sx('flex:none;width:7px;height:7px;border-radius:50%;background:#FA4BA3')}></span>
             <span style={sx('text-wrap:pretty')}>{L.hero.avail}</span>
           </div>
         </div>
@@ -368,8 +368,8 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
         <div data-rv="" style={sx('display:flex;flex-direction:column;gap:14px')}>
           <div onClick={() => this.open(s.open === 'quiz' ? null : 'quiz')} style={sx(this.card(s.open === 'quiz', 'rgba(250,75,163,.45)'))}>
             <div style={sx('display:flex;align-items:center;gap:12px')}>
-              <span style={sx("font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;color:#FA4BA3")}>CozyQuiz</span>
-              <span style={sx('margin-left:auto;padding:5px 11px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);font-size:11.5px;font-weight:900;color:#FFC7E4;white-space:nowrap')}>{L.modes.quizChip}</span>
+              <span style={sx("font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;color:#F6EFE6")}>CozyQuiz</span>
+              <span style={sx('margin-left:auto;padding:5px 11px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);font-size:11.5px;font-weight:900;color:#F6EFE6;white-space:nowrap')}>{L.modes.quizChip}</span>
               <span style={sx(this.plus(s.open === 'quiz', '#FA4BA3'))}>+</span>
             </div>
             <p style={sx('margin:10px 0 0;font-size:15px;line-height:1.55;color:rgba(246,239,230,.78);font-weight:600;text-wrap:pretty')}>{L.modes.quizP}</p>
@@ -588,14 +588,14 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                 <span key={c.key} style={sx(`display:block;width:44px;height:44px;background:url(${c.icon}) center/contain no-repeat;filter:drop-shadow(0 4px 14px rgba(0,0,0,.5))`)}></span>
               ))}
             </div>
-            <div style={sx('margin-top:18px;font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#FFC7E4')}>{L.probe.doneKicker}</div>
+            <div style={sx('margin-top:18px;font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{L.probe.doneKicker}</div>
             <div style={sx("margin-top:8px;font-family:'League Spartan',sans-serif;font-size:24px;font-weight:900;line-height:1.15;color:#F6EFE6;text-wrap:balance")}>{L.probe.doneTitle}</div>
             <p style={sx('margin:12px 0 0;font-size:15px;line-height:1.6;font-weight:600;color:rgba(246,239,230,.78);text-wrap:pretty')}>{L.probe.doneText}</p>
             <a href="#anfragen" onClick={() => this.setState({ tab: 'test', formStatus: 'idle' })}
               style={sx('margin-top:22px;display:flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;min-height:54px;padding:0 20px;border-radius:18px;background:#FA4BA3;color:#0A0814;font-weight:900;font-size:16px;box-shadow:0 10px 26px rgba(0,0,0,.5)')}>{L.probe.doneCta}</a>
             <button type="button"
               onClick={() => { clearTimeout(this._catT); clearInterval(this._cdT); this.setState({ done: false, splash: false, count: 3, cat: 0, picked: null, guess: 180, guessDone: false, pts: [0, 0, 0], ptsDone: false }); }}
-              style={sx('margin-top:10px;display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:999px;border:1px solid rgba(246,239,230,.20);background:transparent;color:#FFC7E4;font-weight:800;font-size:14.5px;cursor:pointer')}>{L.probe.doneAgain}</button>
+              style={sx('margin-top:10px;display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:999px;border:1px solid rgba(246,239,230,.20);background:transparent;color:#F6EFE6;font-weight:800;font-size:14.5px;cursor:pointer')}>{L.probe.doneAgain}</button>
           </div>
         )}
 
@@ -637,13 +637,13 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
           {L.anlaesse.cards.map((c, i) => (
             <div key={i} style={sx('padding:20px;border-radius:20px;background:rgba(246,239,230,.03);border:1px solid rgba(246,239,230,.20)')}>
               <div style={sx('display:flex;align-items:center;gap:10px;margin-bottom:8px')}>
-                <span style={sx('font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#FA4BA3')}>{c.badge}</span>
+                <span style={sx('font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{c.badge}</span>
                 <span style={sx("margin-left:auto;font-family:'League Spartan',sans-serif;font-size:15px;font-weight:900;color:rgba(250,75,163,.35)")}>{`0${i + 1}`}</span>
               </div>
               <div style={sx("font-family:'League Spartan',sans-serif;font-size:21px;font-weight:900;margin-bottom:8px")}>{c.title}</div>
               <p style={sx('margin:0 0 14px;font-size:14.5px;line-height:1.6;color:rgba(246,239,230,.78);font-weight:600;text-wrap:pretty')}>{c.p}</p>
               <a href="#anfragen" onClick={() => this.setState({ tab: 'event', formStatus: 'idle', anlass: this.T.form.anlassOpts[Math.min(i, 2)] })}
-                style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);color:#FFC7E4;font-weight:900;font-size:14.5px')}>{L.anlaesse.cta}</a>
+                style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);color:#F6EFE6;font-weight:900;font-size:14.5px')}>{L.anlaesse.cta}</a>
             </div>
           ))}
         </div>
@@ -660,8 +660,8 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
         <h2 data-rv="" style={sx("margin:0 0 6px;font-family:'League Spartan',sans-serif;font-size:29px;font-weight:900;text-wrap:balance")}>{L.ablauf.h2}</h2>
         <p data-rv="" style={sx('margin:0 0 14px;font-size:15.5px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:600')}>{L.ablauf.sub}</p>
         <div data-rv="" style={sx('display:inline-flex;align-items:baseline;gap:9px;padding:11px 18px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);margin:0 0 20px')}>
-          <span style={sx("font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;color:#FA4BA3;white-space:nowrap")}>{L.ablauf.priceBig}</span>
-          <span style={sx('font-size:13.5px;font-weight:700;color:#FFC7E4;white-space:nowrap')}>{L.ablauf.priceSub}</span>
+          <span style={sx("font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;color:#F6EFE6;white-space:nowrap")}>{L.ablauf.priceBig}</span>
+          <span style={sx('font-size:13.5px;font-weight:700;color:#F6EFE6;white-space:nowrap')}>{L.ablauf.priceSub}</span>
         </div>
         <div ref={el => { this._wall = el; }} data-rv="" style={sx('position:relative;overflow:hidden;margin:0 -20px 26px')}>
           <img src="/assets/wand.webp" loading="lazy" decoding="async" alt={L.ablauf.wallAltOff} style={sx('display:block;width:100%;height:auto')} />
@@ -670,8 +670,8 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
           <div style={sx(`position:absolute;left:29.1%;top:13.7%;width:44.7%;height:31.4%;border-radius:8px;overflow:hidden;container-type:inline-size;display:flex;align-items:center;justify-content:center;background:${s.wallOn ? '#0b0714' : 'transparent'};box-shadow:${s.wallOn ? '0 0 46px rgba(255,242,250,.2)' : 'none'};transition:background 1.1s ease,box-shadow 1.3s ease`)}>
             <div style={sx(`display:flex;flex-direction:column;align-items:center;opacity:${s.wallOn ? 1 : 0};transform:scale(${s.wallOn ? 1 : .92});transition:opacity .9s ease ${s.wallOn ? '1.15s' : '0s'},transform 1.1s ${EASE} ${s.wallOn ? '1.15s' : '0s'}`)}>
               <div style={sx('display:flex;flex-direction:column;align-items:center;gap:.4cqw;padding:2cqw 5cqw;border-radius:3cqw;border:1px solid rgba(246,239,230,.20);background:rgba(246,239,230,.05)')}>
-                <span style={sx('font-size:2.6cqw;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#FA4BA3;white-space:nowrap;line-height:1.2')}>{L.ablauf.welcomeKicker}</span>
-                <span style={sx("font-family:'League Spartan',sans-serif;font-size:9.4cqw;font-weight:900;letter-spacing:.02em;line-height:1;color:#FA4BA3")}>{L.ablauf.welcomeTitle}</span>
+                <span style={sx('font-size:2.6cqw;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap;line-height:1.2')}>{L.ablauf.welcomeKicker}</span>
+                <span style={sx("font-family:'League Spartan',sans-serif;font-size:9.4cqw;font-weight:900;letter-spacing:.02em;line-height:1;color:#F6EFE6")}>{L.ablauf.welcomeTitle}</span>
               </div>
               <div style={sx('display:flex;align-items:center;gap:2.4cqw;margin-top:2.2cqw')}>
                 <img src={LOGO} alt="" loading="lazy" width={26} height={26} style={sx('width:8.6cqw;height:8.6cqw;object-fit:contain')} />
@@ -720,7 +720,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             <img src="/assets/johannes-rund.jpg" loading="lazy" decoding="async" width={150} height={150} alt={L.johannes.photoAlt}
               style={sx(`position:absolute;inset:0;width:150px;height:150px;border-radius:50%;object-fit:cover;border:2px solid rgba(250,75,163,.45);box-shadow:0 12px 30px rgba(0,0,0,.45);z-index:2;transform:scale(${a ? .94 : 1});transition:transform .9s ${EASE}`)} />
           </div>
-          <div style={sx('font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:#FFC7E4')}>{L.johannes.kicker}</div>
+          <div style={sx('font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{L.johannes.kicker}</div>
           <h2 style={sx("margin:0;font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;line-height:1.28;text-wrap:pretty")}>
             {L.johannes.quote.map((seg, i) => seg.hot
               ? <span key={i} style={sx('color:#FA4BA3')}>{seg.t}</span>
@@ -742,7 +742,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             <details key={i} style={sx('border-radius:16px;background:rgba(246,239,230,.03);border:1px solid rgba(246,239,230,.20);overflow:hidden')}>
               <summary style={sx('display:flex;align-items:center;gap:12px;padding:18px;min-height:56px;box-sizing:border-box;font-size:16px;font-weight:800;list-style:none;cursor:pointer')}>
                 <span style={sx('flex:1')}>{item.q}</span>
-                <span style={sx('font-size:19px;font-weight:900;color:#FA4BA3')}>+</span>
+                <span style={sx('font-size:19px;font-weight:900;color:#F6EFE6')}>+</span>
               </summary>
               <div style={sx('padding:0 18px 18px;font-size:15px;line-height:1.65;font-weight:600;color:rgba(246,239,230,.78)')}>{item.a}</div>
             </details>
@@ -772,10 +772,10 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
         </div>
 
         <div style={sx('display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);margin-bottom:18px')}>
-          <span style={sx("font-family:'League Spartan',sans-serif;font-size:24px;font-weight:900;color:#FA4BA3;white-space:nowrap")}>{isTest ? L.form.priceTest : L.form.priceEvent}</span>
+          <span style={sx("font-family:'League Spartan',sans-serif;font-size:24px;font-weight:900;color:#F6EFE6;white-space:nowrap")}>{isTest ? L.form.priceTest : L.form.priceEvent}</span>
           <span style={sx('flex:1;min-width:0;font-size:13.5px;font-weight:700;line-height:1.45;color:rgba(246,239,230,.78)')}>
             {isTest ? L.form.noteTest : L.form.noteEvent}
-            <span style={sx('display:block;margin-top:3px;font-weight:800;color:#FFC7E4')}>{L.form.avail}</span>
+            <span style={sx('display:block;margin-top:3px;font-weight:800;color:#F6EFE6')}>{L.form.avail}</span>
           </span>
         </div>
 
