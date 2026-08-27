@@ -28,7 +28,7 @@ import { useState } from 'react';
 import { useLang, setLang } from '../lang';
 import { sx } from './onepage/sx';
 import { onePageT } from './onepage/texts';
-import { kachel, teammarke } from '../qqKachel';
+import { KACHEL_VERLAUF, kachel, motivAnteil, teammarke } from '../qqKachel';
 
 const CREME = '#F6EFE6';
 const GRUND = '#0A0814';
@@ -55,6 +55,8 @@ const FRAKT_OBJ = [
   { av: '/assets/crest-einspruch.webp', farbe: '#EC4899' },
   { av: '/assets/crest-risiko.webp', farbe: '#EF4444' },
 ];
+
+const FRAKT_IDS = FRAKT_OBJ.map(o => o.av.replace('/assets/crest-', '').replace('.webp', ''));
 
 type Modus = {
   name: string; chip: string; calm: string; lead: string;
@@ -178,7 +180,7 @@ function Objekte({ objekte, px, gap = 10, spalten }: {
 }) {
   const raster = spalten ?? (objekte.length <= 5 ? objekte.length : 4);
   return (
-    <div style={sx(`display:grid;grid-template-columns:repeat(${raster},max-content);gap:${gap}px`)}>
+    <div style={sx(`display:grid;grid-template-columns:repeat(${raster},max-content);gap:${gap.toFixed(2)}px`)}>
       {objekte.map(o => (
         <span key={o.av} className="mkKachel" style={sx(teammarke(o.farbe, o.av, px))}></span>
       ))}
@@ -221,15 +223,135 @@ function LeinwandA({ L, modi, mobil }: { L: ReturnType<typeof onePageT>; modi: M
               ))}
             </ul>
           </div>
-          {/* 52 + 10 mal fuenf ergibt genau die 300 der Spalte: die fuenf Teams
-              stehen in einer Reihe, die acht Fraktionen in zwei. Kein Umbruch
-              nach vier, der wie ein Versehen aussieht. */}
+          {/* Rechts steht das, was der Modus WIRKLICH ist. Beim Quiz das
+              Spielfeld, denn darum geht es dort; bei der Arena die acht
+              Fraktionen, die beim Zeigen ihren Namen sagen. */}
           <div style={sx(mobil ? '' : 'display:flex;justify-content:flex-end')}>
-            <Objekte objekte={m.objekte} px={mobil ? 46 : 52} gap={10} />
+            {m.name === 'CozyQuiz'
+              ? <Brett cs={mobil ? 44 : 41} />
+              : <Fraktionen L={L} px={mobil ? 46 : 52} />}
           </div>
         </div>
       ))}
     </section>
+  );
+}
+
+/**
+ * Das Spielfeld, 7 mal 7, als ruhiges Standbild.
+ *
+ * Geometrie eins zu eins aus OnePage.gameVals(): Abstand 3,7 Prozent der
+ * Zelle, Radius 16 Prozent, beides gemessen an der Beamer-Ansicht der App
+ * (dort 107 px Zelle bei 4 px Abstand). Zu einem gleichfarbigen Nachbarn
+ * faellt die Kante weg und ein Verbindungsstueck fuellt die Luecke, sonst
+ * wuerden aus zwei Kanten eine doppelt so dicke Linie und aus einer Flaeche
+ * fuenf Einzelfelder.
+ *
+ * Bewusst OHNE Simulation: hier steht ein Endstand, kein laufendes Spiel.
+ * Auf der Leinwand soll ein Bild haengen, das man lesen kann, ohne zu warten.
+ */
+const BRETT_BESITZ: (string | null)[] = [
+  null, 'o', 'o', null, null, 'p', null,
+  null, 'o', null, null, 'p', 'p', null,
+  'g', null, null, null, 'p', null, 'y',
+  'g', 'g', null, null, null, 'y', 'y',
+  'g', null, null, 'b', null, 'y', null,
+  null, null, 'b', 'b', null, null, null,
+  null, null, 'b', null, null, null, null,
+];
+const BRETT_TEAMS: Record<string, { farbe: string; av: string }> = {
+  o: { farbe: '#F97316', av: '/assets/av-qq-treasure-chest.webp' },
+  p: { farbe: '#A855F7', av: '/assets/av-qq-crystal-ball.webp' },
+  g: { farbe: '#22C55E', av: '/assets/av-qq-mushroom.webp' },
+  y: { farbe: '#FACC15', av: '/assets/av-qq-game-die.webp' },
+  b: { farbe: '#3B82F6', av: '/assets/av-qq-table-lamp.webp' },
+};
+
+function Brett({ cs }: { cs: number }) {
+  const GS = 7;
+  // Nicht runden: bei 41 px Zelle macht ein gerundeter Abstand aus 3,7 Prozent
+  // gemessene 4,9 Prozent, das Brett wird sichtbar luftiger als in der App.
+  // Bruchteile von Bildpunkten sind in CSS erlaubt, also nimm sie.
+  const gap = cs * 0.037;
+  const rad = cs * 0.16;
+  const at = (r: number, c: number) =>
+    (r < 0 || c < 0 || r >= GS || c >= GS) ? null : BRETT_BESITZ[r * GS + c];
+
+  return (
+    <div style={sx(`display:grid;grid-template-columns:repeat(${GS},${cs}px);gap:${gap.toFixed(2)}px`)}>
+      {BRETT_BESITZ.map((id, i) => {
+        const r = Math.floor(i / GS), c = i % GS;
+        const basis = `position:relative;width:${cs}px;height:${cs}px;box-sizing:border-box;`
+          + 'display:flex;align-items:center;justify-content:center;';
+        if (!id) return (
+          <span key={i} style={sx(basis + `border-radius:${rad.toFixed(2)}px;`
+            + 'background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20)')}></span>
+        );
+
+        const tm = BRETT_TEAMS[id];
+        const nT = at(r - 1, c) === id, nR = at(r, c + 1) === id;
+        const nB = at(r + 1, c) === id, nL = at(r, c - 1) === id;
+        const ecke = (a: boolean, b: boolean) => (a || b) ? 0 : rad;
+        const kanten = [
+          nT ? '' : 'inset 0 1px 0 rgba(255,255,255,.38)',
+          nL ? '' : 'inset 2px 0 0 rgba(255,255,255,.07)',
+          nR ? '' : 'inset -2px 0 0 rgba(0,0,0,.18)',
+          nB ? '' : 'inset 0 -3px 0 rgba(0,0,0,.2)',
+          (nR && nB) ? '' : `${nR ? 0 : 2}px ${nB ? 0 : 3}px 0 rgba(0,0,0,.45)`,
+          '0 5px 9px rgba(0,0,0,.3)',
+        ].filter(Boolean).join(',');
+        const flaeche = `${KACHEL_VERLAUF},${tm.farbe}`;
+        const av = Math.round(cs * motivAnteil(tm.av));
+
+        return (
+          <span key={i} style={sx(basis
+            + `border-radius:${ecke(nT, nL).toFixed(2)}px ${ecke(nT, nR).toFixed(2)}px ${ecke(nB, nR).toFixed(2)}px ${ecke(nB, nL).toFixed(2)}px;`
+            + `background:${flaeche};box-shadow:${kanten}`)}>
+            {/* Verbindungsstuecke nach rechts und nach unten, sie fuellen den
+                Abstand samt der beiden runden Ecken. */}
+            {nR && <span aria-hidden="true" style={sx(`position:absolute;z-index:2;left:${(cs - rad).toFixed(2)}px;top:${rad.toFixed(2)}px;`
+              + `width:${(gap + rad * 2).toFixed(2)}px;height:${(cs - rad * 2).toFixed(2)}px;background:${flaeche}`)}></span>}
+            {nB && <span aria-hidden="true" style={sx(`position:absolute;z-index:2;top:${(cs - rad).toFixed(2)}px;left:${rad.toFixed(2)}px;`
+              + `height:${(gap + rad * 2).toFixed(2)}px;width:${(cs - rad * 2).toFixed(2)}px;background:${flaeche}`)}></span>}
+            <span aria-hidden="true" style={sx(`position:relative;z-index:8;width:${av}px;height:${av}px;`
+              + `background:url(${tm.av}) center/contain no-repeat`)}></span>
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+/**
+ * Die acht Fraktionen. Beim Zeigen sagt jede ihren Namen, in ihrer Farbe.
+ *
+ * Der Name steht in einer eigenen Zeile unter der Gruppe, nicht an der Kachel:
+ * acht Namen gleichzeitig waeren eine Liste, und ein Name AN der Kachel wuerde
+ * die Reihe beim Zeigen umbrechen lassen. Die Zeile ist auf ihre Hoehe
+ * vorgehalten, damit nichts springt. Ohne Mauszeiger (Handy) tut es der Tipp.
+ */
+function Fraktionen({ L, px }: { L: ReturnType<typeof onePageT>; px: number }) {
+  const [zeigt, setZeigt] = useState<number | null>(null);
+  const f = zeigt === null ? null : FRAKT_OBJ[zeigt];
+  const name = zeigt === null ? '' : L.sim.factions[FRAKT_IDS[zeigt]];
+  return (
+    <div>
+      <div style={sx('display:grid;grid-template-columns:repeat(4,max-content);gap:10px')}>
+        {FRAKT_OBJ.map((o, i) => (
+          <button key={o.av} type="button" className="mkKachel"
+            onMouseEnter={() => setZeigt(i)} onMouseLeave={() => setZeigt(null)}
+            onFocus={() => setZeigt(i)} onBlur={() => setZeigt(null)}
+            onClick={() => setZeigt(z => z === i ? null : i)}
+            aria-label={L.sim.factions[FRAKT_IDS[i]]}
+            style={sx(`padding:0;border:0;cursor:pointer;background:transparent;${teammarke(o.farbe, o.av, px)}`)}>
+          </button>
+        ))}
+      </div>
+      <div aria-live="polite" style={sx('margin-top:14px;min-height:20px;font-size:14px;font-weight:900;'
+        + `letter-spacing:.02em;color:${f ? f.farbe : 'transparent'};transition:color .25s ${EASE}`)}>
+        {name || '\u00a0'}
+      </div>
+    </div>
   );
 }
 
