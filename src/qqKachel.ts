@@ -51,6 +51,10 @@ const FILL: Record<string, number> = {
   // kleinerer Anteil, sonst stossen sie an die Kachelkante.
   '/assets/obj-sanduhr.webp': 0.74,
   '/assets/obj-puzzle.webp': 0.78,
+  // Die acht Fraktionswappen sind auf ihre Bounding-Box beschnitten und
+  // quadratisch zentriert, wie die Anlass-Motive. Das Schild ist hoch und
+  // schmal, bei 0.9 stiess es oben und unten an die Kachelkante.
+  'crest': 0.8,
   'crystal-ball': 0.89,
   'game-die': 0.78,
   'mushroom': 0.92,
@@ -66,6 +70,7 @@ const NUDGE: Record<string, [number, number]> = {
 function slugAus(av: string): string {
   // Pfade ohne das Praefix av-qq- (etwa die Anlass-Motive) bleiben, wie sie
   // sind, und werden in FILL unter dem vollen Pfad nachgeschlagen.
+  if (av.includes('/crest-')) return 'crest';
   if (!av.includes('av-qq-')) return av;
   return av.replace(/^.*av-qq-/, '').replace(/\.webp$/, '');
 }

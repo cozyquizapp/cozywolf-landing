@@ -757,7 +757,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     return (
       <div data-reveal="" style={sx('display:flex;align-items:center;gap:12px;margin:0 0 14px;font-size:11.5px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap')}>
         {label.split('|')[0]}
-        <span style={sx('flex:1;height:1px;background:linear-gradient(90deg,rgba(250,75,163,.35),transparent);max-width:180px')}></span>
+        <span style={sx('flex:1;height:1px;background:linear-gradient(90deg,rgba(249,115,22,.4),transparent);max-width:180px')}></span>
         <span style={sx('color:rgba(246,239,230,.5)')}>{label.split('|')[1]}</span>
       </div>
     );
@@ -874,7 +874,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                     + `border:1px solid ${frakAn ? frakAn.color + '4d' : 'transparent'};`
                     + `opacity:${frakAn ? 1 : 0};transform:translateY(${frakAn ? '0' : '6px'});`
                     + `transition:opacity .34s ${EASE},transform .34s ${EASE},background .34s ${EASE},border-color .34s ${EASE}`)}>
-                    <span style={sx(`flex:none;width:42px;height:42px;background:${frakAn ? `url(/assets/crest-${frakAn.id}.webp) center/contain no-repeat` : 'none'};filter:drop-shadow(0 3px 6px rgba(0,0,0,.5))`)}></span>
+                    <span style={sx(frakAn ? teammarke(frakAn.color, `/assets/crest-${frakAn.id}.webp`, 42) : 'flex:none;width:42px;height:42px')}></span>
                     <span style={sx('min-width:0;display:flex;flex-direction:column;gap:3px')}>
                       <span style={sx(`font-size:12px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:${frakAn ? frakAn.color : 'transparent'}`)}>{frakAn ? L.sim.factions[frakAn.id] : '\u00a0'}</span>
                       <span style={sx('font-size:15.5px;line-height:1.4;font-weight:600;color:rgba(246,239,230,.82);text-wrap:pretty')}>{frakAn ? `\u201e${L.sim.mottos[frakAn.id]}\u201c` : '\u00a0'}</span>
@@ -938,12 +938,16 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           onMouseLeave={() => { if (!this._coarse) this.setState({ frak: null }); }}
           style={sx(`position:absolute;left:0;right:0;top:0;height:${H}%;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:12px;box-sizing:border-box;transform:translateY(${r * 100}%);transition:transform 1.5s ${EASE},background .35s ease,border-color .35s ease,box-shadow .35s ease;cursor:default;${rahmen}`)}>
           <span style={sx(`flex:none;width:18px;text-align:center;font-size:15px;font-weight:900;color:${leadNow || hov ? '#F6EFE6' : 'rgba(246,239,230,.5)'};transition:color .5s ease`)}>{r + 1}</span>
-          {/* Die Kolosseum-Wappen der App tragen Rahmen und Farbe selbst mit,
-              deshalb flach und ohne Farbkachel dahinter, genau wie CrestAvatar
-              in der App (cozyArenaCrests.ts, Stand 2026-07-17). */}
-          <span style={sx(`flex:none;width:34px;height:34px;background:url(/assets/crest-${f.id}.webp) center/contain no-repeat;`
-            + `filter:drop-shadow(0 3px 5px rgba(0,0,0,.5))${hov ? ` drop-shadow(0 0 9px ${f.color}88)` : ''};`
-            + `transform:scale(${hov ? 1.12 : 1});transition:transform .3s ${EASE},filter .3s ${EASE}`)}></span>
+          {/* Wappensatz vom 27.08.: cremefarbenes Schild mit farbigem Zeichen,
+              im Knet-Look des Avatarsatzes. Loest die Kolosseum-Wappen vom
+              17.07. ab, die ich am selben Tag noch eingebaut hatte, bevor
+              Wolf auf das Datum hingewiesen hat.
+              Wichtig und in cozyArenaCrests.ts eigens vermerkt: die
+              Fraktionsfarbe steckt NICHT mehr im Wappen. Sie muss von der
+              Flaeche darunter kommen, sonst unterscheiden sich die acht
+              Fraktionen nur noch am Zeichen. Also wieder auf der Kachel. */}
+          <span style={sx(teammarke(f.color, `/assets/crest-${f.id}.webp`, 34)
+            + `transform:scale(${hov ? 1.1 : 1});transition:transform .3s ${EASE}`)}></span>
           <span style={sx('flex:none;width:124px;min-width:0')}>
             <span style={sx(`display:block;font-size:13.5px;font-weight:900;line-height:1.15;color:${f.color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>{L.sim.factions[f.id]}</span>
           </span>
@@ -1429,14 +1433,25 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
     return (
       <section id="probieren" data-ton="59,130,246" style={sx('border-top:1px solid rgba(246,239,230,.10);border-bottom:1px solid rgba(246,239,230,.10);background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.04),transparent 65%)')}>
-        <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:80px 32px;display:grid;grid-template-columns:1fr 600px;gap:40px;align-items:center')} data-m="two2">
+        <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:84px 32px;display:grid;grid-template-columns:1fr 600px;gap:48px;align-items:center')} data-m="two2">
           <div>
-            <div data-reveal="" style={sx('font-size:13px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{L.probe.kicker}</div>
+            {/* Wolf am 27.08.: "passt sektion 03 jetzt noch zum rest der
+                seite?". Nein, an drei Stellen. Erstens standen hier zwei
+                Grossbuchstabenzeilen uebereinander, die Kennzeile des
+                Abschnitts und L.probe.kicker, und sie ueberdeckten sich sogar.
+                Jetzt gilt dieselbe Folge wie ueberall: Kennzeile, Ueberschrift,
+                Text, und die zweite Zeile steht klein und ohne Versalien
+                darunter. */}
             {this.kicker(`[ 03 ]|${L.probe.label}`)}
-            <h2 data-reveal="" style={sx("margin:12px 0 14px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.probe.h2}</h2>
+            <h2 data-reveal="" style={sx("margin:12px 0 10px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.probe.h2}</h2>
+            <div data-reveal="" style={sx('margin-bottom:14px;font-size:14px;font-weight:700;color:rgba(246,239,230,.55)')}>{L.probe.kicker}</div>
             <p data-reveal="" style={sx('margin:0 0 26px;max-width:520px;font-size:17px;line-height:1.6;color:rgba(246,239,230,.78);font-weight:500')}>{L.probe.sub}</p>
-            <div style={sx(`margin-bottom:26px;padding:20px 22px;border-radius:18px;border:1px solid ${col}40;border-left:3px solid ${col};background:${col}0f;transition:border-color .3s ${EASE},background .3s ${EASE}`)}>
-              <div style={sx(`font-size:18px;font-weight:900;line-height:1.35;color:${col};margin-bottom:7px`)}>{catT.claim}</div>
+            {/* Zweitens war das hier der letzte Kasten der Seite: Rahmen,
+                Fuellung, dicker Balken links. 01, 02, 04 und 06 tragen
+                Haarlinien, also traegt 03 jetzt auch eine. Die Farbe des
+                Fragetyps bleibt, sie steht nur nicht mehr als Flaeche da. */}
+            <div style={sx(`margin-bottom:26px;padding:20px 0 0;border-top:1px solid rgba(246,239,230,.14);transition:border-color .3s ${EASE}`)}>
+              <div style={sx(`font-size:18px;font-weight:900;line-height:1.35;color:${col};margin-bottom:7px;transition:color .3s ${EASE}`)}>{catT.claim}</div>
               <div style={sx('font-size:15.5px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78)')}>{catT.detail}</div>
             </div>
             <div data-reveal="" style={sx('display:flex;flex-direction:column;gap:10px;font-size:15.5px;font-weight:700;color:#F6EFE6')}>
@@ -1453,7 +1468,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             }}
             onMouseLeave={() => this.setState({ ptilt: null })}
             data-m="probe" style={sx('display:flex;align-items:center;gap:52px;perspective:1200px')}>
-            <div style={sx('display:flex;flex-direction:column;gap:11px;flex:none')}>
+            <div style={sx('display:flex;flex-direction:column;flex:none;min-width:250px')}>
               {PROBE_ORDER.map((k, i) => {
                 const mt = CAT_META.find(c => c.key === k);
                 const ct = L.probe.cats[k];
@@ -1463,9 +1478,20 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 const arc = Math.round(20 * Math.sin((i + 0.5) / n * Math.PI));
                 const pick = () => this.setState({ probeCat: k, probePick: null, guessRaw: '', guessDone: false, points: [4, 3, 3], pointsDone: false });
                 return (
+                  // Drittens: das hier waren die einzigen Kapseln in einer
+                  // Liste auf der ganzen Seite. Jetzt sind es Zeilen mit
+                  // Haarlinie, wie die Punkte in 01 und die Fragen in 06. Der
+                  // gewaehlte Fragetyp traegt einen Strich in seiner Farbe und
+                  // rueckt ein, statt sich aufzublasen. Der Bogen bleibt, er
+                  // war Wolfs Idee und stoert die Zeilenform nicht.
                   <button key={k} type="button" onMouseEnter={pick} onClick={pick}
-                    style={sx(`display:inline-flex;align-items:center;gap:12px;padding:14px 22px;border-radius:999px;cursor:pointer;font-family:inherit;font-size:16px;font-weight:900;white-space:nowrap;transform:translateX(${arc}px) scale(${onT ? 1.05 : 1});transform-origin:left center;background:${onT ? mt.col + '26' : 'rgba(246,239,230,.03)'};border:1px solid ${onT ? mt.col : 'rgba(246,239,230,.1)'};color:${onT ? mt.col : 'rgba(246,239,230,.78)'};box-shadow:${onT ? '0 0 26px ' + mt.col + '3d' : 'none'};transition:transform .55s ${EASE},background .3s ${EASE},border-color .3s ${EASE},color .3s ${EASE},box-shadow .4s ${EASE}`)}>
-                    <span style={sx(`display:block;width:30px;height:30px;flex:none;background:url(${mt.icon}) center/contain no-repeat;opacity:${onT ? 1 : .8}`)}></span>
+                    style={sx('display:flex;align-items:center;gap:14px;width:100%;box-sizing:border-box;padding:13px 0;cursor:pointer;'
+                      + 'font-family:inherit;font-size:16px;font-weight:900;white-space:nowrap;text-align:left;background:none;'
+                      + `border:none;border-top:1px solid rgba(246,239,230,.14);color:${onT ? mt.col : 'rgba(246,239,230,.7)'};`
+                      + `transform:translateX(${arc + (onT ? 8 : 0)}px);`
+                      + `transition:transform .55s ${EASE},color .3s ${EASE}`)}>
+                    <span aria-hidden="true" style={sx(`flex:none;width:${onT ? 26 : 14}px;height:2px;border-radius:2px;background:${onT ? mt.col : 'rgba(246,239,230,.3)'};transition:width .35s ${EASE},background .3s ${EASE}`)}></span>
+                    <span style={sx(`display:block;width:30px;height:30px;flex:none;background:url(${mt.icon}) center/contain no-repeat;opacity:${onT ? 1 : .7};transition:opacity .3s ${EASE}`)}></span>
                     {ct.name}
                   </button>
                 );
