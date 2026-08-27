@@ -404,6 +404,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
         <div style={sx('position:relative;z-index:2;flex:1;display:flex;align-items:center;width:100%;max-width:1180px;margin:0 auto;padding:72px 32px')} data-shell="" data-m="hero">
           <div style={sx('width:100%;max-width:660px')}>
+<p data-reveal="" style={sx(`margin:0 0 20px;display:flex;align-items:center;gap:13px;font-size:12px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);animation:cwRise .8s ${EASE} both`)}>
+  {L.hero.kicker}
+  <span aria-hidden="true" style={sx('flex:1;max-width:120px;height:1px;background:linear-gradient(90deg,rgba(246,239,230,.20),transparent)')}></span>
+</p>
             <h1 style={sx("margin:0;font-family:'League Spartan',sans-serif;font-weight:900;font-size:clamp(52px,6.6vw,104px);line-height:.9;letter-spacing:-.035em;color:#F6EFE6")}>
               <span style={sx('display:block;padding:.14em .1em .06em;margin:-.14em -.1em -.06em;overflow:hidden;white-space:nowrap')}>
                 {hook.split('').map((ch, j) => (

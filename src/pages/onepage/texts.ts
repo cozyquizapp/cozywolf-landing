@@ -18,7 +18,7 @@ export type ProbeDef =
 export type OnePageDict = {
   nav: { spielarten: string; probieren: string; ablauf: string; ueber: string; cta: string };
   hero: {
-    hooks: string[]; rest: string; sub: string;
+    kicker: string; hooks: string[]; rest: string; sub: string;
     btn0: string; btn0Sub: string; btn1: string; btn1Sub: string;
     availability: string; imgAlt: string;
     phoneApp: string; phoneTeamA: string; phoneTeamB: string; phoneReady: string;
@@ -84,6 +84,7 @@ export type OnePageDict = {
 const de: OnePageDict = {
   nav: { spielarten: 'Spielarten', probieren: 'Ausprobieren', ablauf: 'Ablauf', ueber: 'Über mich', cta: 'Termin anfragen' },
   hero: {
+    kicker: 'Live-Quiz in Hamburg',
     hooks: ['Wissen', 'Glück', 'Timing', 'Teamgeist', 'Bauchgefühl'],
     rest: 'ist nicht alles.',
     sub: 'Der gemütlichste Quizabend in Hamburg, den ihr je gespielt habt.',
@@ -268,6 +269,7 @@ const de: OnePageDict = {
 const en: OnePageDict = {
   nav: { spielarten: 'Formats', probieren: 'Try it', ablauf: 'How it works', ueber: 'About me', cta: 'Request a date' },
   hero: {
+    kicker: 'Live quiz in Hamburg',
     hooks: ['Knowledge', 'Luck', 'Timing', 'Team spirit', 'Gut feeling'],
     rest: 'isn’t everything.',
     sub: 'The coziest quiz night in Hamburg you’ve ever played.',

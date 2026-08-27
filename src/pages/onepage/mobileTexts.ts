@@ -15,7 +15,7 @@ export type MobileCat = {
 export type MobileDict = {
   nav: { items: { href: string; label: string }[]; menuLabel: string };
   hero: {
-    hooks: string[]; rest: string; sub: string; sub2: string; imgAlt: string;
+    kicker: string; hooks: string[]; rest: string; sub: string; sub2: string; imgAlt: string;
     cta: string; ctaSub: string; bookQ: string; bookCta: string; avail: string;
   };
   modes: {
@@ -80,6 +80,7 @@ const de: MobileDict = {
     menuLabel: 'Menü',
   },
   hero: {
+    kicker: 'Live-Quiz in Hamburg',
     hooks: ['Wissen', 'Glück', 'Timing', 'Teamgeist', 'Bauchgefühl'],
     rest: 'ist nicht alles.',
     sub: 'Der gemütlichste Quizabend in Hamburg, den ihr je gespielt habt.',
@@ -249,6 +250,7 @@ const en: MobileDict = {
     menuLabel: 'Menu',
   },
   hero: {
+    kicker: 'Live quiz in Hamburg',
     hooks: ['Knowledge', 'Luck', 'Timing', 'Team spirit', 'Gut feeling'],
     rest: 'isn’t everything.',
     sub: 'The coziest quiz night in Hamburg you’ve ever played.',

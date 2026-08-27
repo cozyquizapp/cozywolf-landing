@@ -313,6 +313,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     return (
       <section id="top" style={sx('position:relative;overflow:hidden')}>
         <div style={sx('position:relative;padding:28px 20px 34px')}>
+<p style={sx(`margin:0 0 14px;font-size:11px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);animation:mRise .8s ${EASE} both`)}>{L.hero.kicker}</p>
           <h1 style={sx("margin:0;font-family:'League Spartan',sans-serif;font-weight:900;font-size:44px;line-height:.94;letter-spacing:-.03em")}>
             <span style={sx('display:block;padding:.14em .1em .06em;margin:-.14em -.1em -.06em;overflow:hidden;white-space:nowrap')}>
               {hook.split('').map((ch, j) => (
