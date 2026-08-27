@@ -71,7 +71,7 @@ export type OnePageDict = {
     datum: string; datumPh: string; name: string; email: string;
     stadt: string; stadtPh: string; groesse: string; groesseOpts: string[];
     termin: string; terminPh: string;
-    msgEvent: string; msgTest: string;
+    msgEvent: string; msgTest: string; mehr: string; direkt: string;
     sending: string; submitEvent: string; submitTest: string;
     okTitleEvent: string; okBodyEvent: string; okTitleTest: string; okBodyTest: string;
     errorPre: string; errorPost: string;
@@ -250,6 +250,8 @@ const de: OnePageDict = {
     groesseOpts: ['6–10 Leute', 'Mehr als 10', 'Weniger als 6', 'Weiß ich noch nicht'],
     termin: 'Wann würde es passen?', terminPh: 'z. B. ein Freitag im Dezember, abends',
     msgEvent: 'Nachricht (optional)', msgTest: 'Noch was? (optional)',
+    mehr: 'Mehr Angaben, das hilft mir beim Vorschlag',
+    direkt: 'Lieber direkt schreiben?',
     sending: 'Senden …', submitEvent: 'Anfrage absenden', submitTest: 'Als Test-Team anmelden',
     okTitleEvent: 'Danke, ist angekommen!',
     okBodyEvent: 'Ich melde mich mit einem Vorschlag bei dir. Meist geht das schnell.',
@@ -431,6 +433,8 @@ const en: OnePageDict = {
     groesseOpts: ['6–10 people', 'More than 10', 'Fewer than 6', 'Don’t know yet'],
     termin: 'When would suit you?', terminPh: 'e.g. a Friday evening in December',
     msgEvent: 'Message (optional)', msgTest: 'Anything else? (optional)',
+    mehr: 'More details, so I can propose something that fits',
+    direkt: 'Rather write directly?',
     sending: 'Sending …', submitEvent: 'Send request', submitTest: 'Sign up as a test team',
     okTitleEvent: 'Thanks, got it!',
     okBodyEvent: 'I’ll get back to you with a proposal. Usually quickly.',

@@ -11,7 +11,7 @@
 import { Component } from 'react';
 import type { FormEvent, ReactNode } from 'react';
 import { useLang, setLang, type Lang } from '../lang';
-import { FORMSPREE_ID } from '../brand';
+import { EMAIL, FORMSPREE_ID, INSTA_HANDLE, INSTA_URL } from '../brand';
 import { sx } from './onepage/sx';
 import { KACHEL_VERLAUF, motivAnteil, teammarke } from '../qqKachel';
 import { ONEPAGE_CSS } from './onepage/css';
@@ -385,7 +385,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         style: `position:relative;display:flex;align-items:center;justify-content:center;flex:none;min-width:0;box-sizing:border-box;overflow:hidden;border-radius:999px;white-space:nowrap;font-weight:900;min-height:66px;`
           + `width:${hot ? 'calc(60% - 7px)' : (cold ? 'calc(40% - 7px)' : 'calc(50% - 7px)')};`
           + `padding:${hot ? '16px 26px 15px' : '19px 22px'};font-size:${cold ? 16 : (hot ? 18 : 17)}px;`
-          + (primary ? 'background:#F6EFE6;' : 'background:transparent;border:1.5px solid rgba(246,239,230,.20);')
+          + (primary ? 'background:#F6EFE6;' : 'background:transparent;border:1.5px solid rgba(246,239,230,.38);')
           + `box-shadow:${primary ? (hot ? '0 18px 44px rgba(0,0,0,.5)' : '0 12px 30px rgba(0,0,0,.38)') : 'none'};`
           + `transition:width .7s ${EASE},padding .7s ${EASE},font-size .7s ${EASE},box-shadow .5s ${EASE}`,
         fill: `position:absolute;inset:0;background:${primary ? '#FFFDF9' : 'rgba(246,239,230,.12)'};transform:scaleY(${hot ? 1 : 0});transform-origin:bottom center;transition:transform .6s ${EASE}`,
@@ -444,7 +444,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       <div data-reveal="" style={sx('display:flex;align-items:center;gap:12px;margin:0 0 14px;font-size:11.5px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap')}>
         {label.split('|')[0]}
         <span style={sx('flex:1;height:1px;background:linear-gradient(90deg,rgba(250,75,163,.35),transparent);max-width:180px')}></span>
-        <span style={sx('color:rgba(246,239,230,.42)')}>{label.split('|')[1]}</span>
+        <span style={sx('color:rgba(246,239,230,.5)')}>{label.split('|')[1]}</span>
       </div>
     );
   }
@@ -557,7 +557,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       const p = pts[f.id] || 0, r = ranked.indexOf(f.id), leadNow = r === 0 && p > 0;
       return (
         <div key={f.id} style={sx(`position:absolute;left:0;right:0;top:0;height:${H}%;display:flex;align-items:center;gap:9px;padding:0 10px;border-radius:12px;box-sizing:border-box;transform:translateY(${r * 100}%);transition:transform 1.5s ${EASE},background .6s ease,border-color .6s ease,box-shadow .6s ease;${leadNow ? `background:linear-gradient(90deg,${f.color}26,transparent);border:1px solid ${f.color}80;box-shadow:0 0 22px ${f.color}33` : 'border:1px solid transparent'}`)}>
-          <span style={sx(`flex:none;width:18px;text-align:center;font-size:15px;font-weight:900;color:${leadNow ? '#F6EFE6' : 'rgba(246,239,230,.42)'};transition:color .5s ease`)}>{r + 1}</span>
+          <span style={sx(`flex:none;width:18px;text-align:center;font-size:15px;font-weight:900;color:${leadNow ? '#F6EFE6' : 'rgba(246,239,230,.5)'};transition:color .5s ease`)}>{r + 1}</span>
           <span style={sx(`flex:none;width:30px;height:30px;background:url(/assets/crest-${f.id}.webp) center/contain no-repeat`)}></span>
           <span style={sx('flex:none;width:104px;min-width:0')}>
             <span style={sx(`font-size:13.5px;font-weight:900;line-height:1.15;color:${f.color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>{L.sim.factions[f.id]}</span>
@@ -1242,7 +1242,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const test = this.state.formMode === 'test';
     const st = this.state.formStatus;
     const tab = (on: boolean) => `padding:10px 20px;border-radius:999px;border:none;cursor:pointer;white-space:nowrap;font-family:inherit;font-size:14.5px;font-weight:900;transition:background .25s ${EASE},color .25s ${EASE};background:${on ? '#F6EFE6' : 'transparent'};color:${on ? '#0A0814' : 'rgba(246,239,230,.78)'}`;
-    const inputStyle = 'width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;background:rgba(246,239,230,.05);border:1.5px solid rgba(246,239,230,.12);color:#F6EFE6;font-family:inherit;font-size:15px;font-weight:600';
+    const inputStyle = 'width:100%;box-sizing:border-box;padding:11px 14px;border-radius:12px;background:rgba(246,239,230,.05);border:1.5px solid rgba(246,239,230,.38);color:#F6EFE6;font-family:inherit;font-size:15px;font-weight:600';
     const labelStyle = 'font-size:13px;font-weight:800;color:rgba(246,239,230,.78);letter-spacing:.01em';
     const fieldWrap = 'display:flex;flex-direction:column;gap:6px';
     const req = <span aria-hidden="true" style={sx('color:#FA4BA3')}> *</span>;
@@ -1296,10 +1296,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                         <input id="f-personen" name="personen" type="text" maxLength={20} placeholder={L.form.personenPh} style={sx(inputStyle)} />
                       </div>
                       <div style={sx(fieldWrap)}>
-                        <label htmlFor="f-datum" style={sx(labelStyle)}>{L.form.datum}</label>
-                        <input id="f-datum" name="datum" type="text" maxLength={120} placeholder={L.form.datumPh} style={sx(inputStyle)} />
-                      </div>
-                      <div style={sx(fieldWrap)}>
                         <label htmlFor="f-name" style={sx(labelStyle)}>{L.form.name}{req}</label>
                         <input id="f-name" name="name" type="text" maxLength={100} required style={sx(inputStyle)} />
                       </div>
@@ -1331,16 +1327,24 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                         <label htmlFor="t-email" style={sx(labelStyle)}>{L.form.email}{req}</label>
                         <input id="t-email" name="email" type="email" maxLength={150} required style={sx(inputStyle)} />
                       </div>
-                      <div style={sx(fieldWrap + ';grid-column:1/-1')}>
-                        <label htmlFor="t-termin" style={sx(labelStyle)}>{L.form.termin}</label>
-                        <input id="t-termin" name="termin" type="text" maxLength={120} placeholder={L.form.terminPh} style={sx(inputStyle)} />
-                      </div>
                     </>
                   )}
-                  <div style={sx(fieldWrap + ';grid-column:1/-1')}>
-                    <label htmlFor="f-nachricht" style={sx(labelStyle)}>{test ? L.form.msgTest : L.form.msgEvent}</label>
-                    <textarea id="f-nachricht" name="nachricht" rows={4} maxLength={2000} style={sx(inputStyle + ';resize:vertical')}></textarea>
-                  </div>
+                  <details style={sx('grid-column:1/-1')}>
+                    <summary style={sx('display:flex;align-items:center;gap:9px;min-height:44px;font-size:14px;font-weight:700;color:rgba(246,239,230,.78);cursor:pointer;list-style:none')}>
+                      <span aria-hidden="true" style={sx('display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;border:1px solid rgba(246,239,230,.38);font-size:14px;font-weight:900;line-height:1')}>+</span>
+                      {L.form.mehr}
+                    </summary>
+                    <div style={sx('display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));padding-top:14px')}>
+                      <div style={sx(fieldWrap + ';grid-column:1/-1')}>
+                        <label htmlFor="f-datum" style={sx(labelStyle)}>{test ? L.form.termin : L.form.datum}</label>
+                        <input id="f-datum" name={test ? 'termin' : 'datum'} type="text" maxLength={120} placeholder={test ? L.form.terminPh : L.form.datumPh} style={sx(inputStyle)} />
+                      </div>
+                      <div style={sx(fieldWrap + ';grid-column:1/-1')}>
+                        <label htmlFor="f-nachricht" style={sx(labelStyle)}>{test ? L.form.msgTest : L.form.msgEvent}</label>
+                        <textarea id="f-nachricht" name="nachricht" rows={4} maxLength={2000} style={sx(inputStyle + ';resize:vertical')}></textarea>
+                      </div>
+                    </div>
+                  </details>
                 </div>
 
                 {st === 'error' && (
@@ -1350,10 +1354,16 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 )}
 
                 <div style={sx('text-align:center;margin-top:20px')}>
-                  <button type="submit" className="cwSubmit" style={sx(`padding:14px 30px;border-radius:999px;border:1.5px solid rgba(246,239,230,.18);background:#F6EFE6;color:#0A0814;font-family:inherit;font-weight:900;font-size:16px;cursor:pointer;transition:transform .2s ${EASE},filter .2s ${EASE}`)}>
+                  <button type="submit" className="cwSubmit" style={sx(`padding:14px 30px;border-radius:999px;border:1.5px solid rgba(246,239,230,.38);background:#F6EFE6;color:#0A0814;font-family:inherit;font-weight:900;font-size:16px;cursor:pointer;transition:transform .2s ${EASE},filter .2s ${EASE}`)}>
                     {st === 'sending' ? L.form.sending : (test ? L.form.submitTest : L.form.submitEvent)}
                   </button>
                 </div>
+                <p style={sx('margin:16px auto 0;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;font-size:13.5px;font-weight:600;color:rgba(246,239,230,.62)')}>
+                  {L.form.direkt}
+                  <a href={`mailto:${EMAIL}`} style={sx('color:#F6EFE6;font-weight:700')}>{EMAIL}</a>
+                  <span aria-hidden="true" style={sx('opacity:.5')}>&middot;</span>
+                  <a href={INSTA_URL} target="_blank" rel="noopener" style={sx('color:#F6EFE6;font-weight:700')}>{INSTA_HANDLE}</a>
+                </p>
                 <p style={sx('margin:14px auto 0;max-width:440px;text-align:center;font-size:12.5px;line-height:1.5;color:rgba(246,239,230,.62);font-weight:500')}>
                   {L.form.privacy1}<a href="/datenschutz" style={sx('color:#FFC7E4;font-weight:700')}>{L.form.privacyLink}</a>{L.form.privacy2}
                 </p>
@@ -1391,7 +1401,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             <a href="/datenschutz" style={sx('color:#FFC7E4')}>{L.footer.privacy}</a>
             <a href="https://instagram.com/cozywolf.events" style={sx('margin-left:auto;display:flex;align-items:center;gap:8px;color:#FFC7E4')}>@cozywolf.events</a>
           </div>
-          <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:0 32px 26px;font-size:12.5px;font-weight:600;color:rgba(246,239,230,.42)')}>{L.footer.aiNote}</div>
+          <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:0 32px 26px;font-size:12.5px;font-weight:600;color:rgba(246,239,230,.5)')}>{L.footer.aiNote}</div>
         </footer>
         <a href="#anfragen" data-m="sticky" style={sx('position:fixed;left:14px;right:14px;bottom:14px;z-index:40;align-items:center;justify-content:center;padding:15px 20px;border-radius:999px;background:#F6EFE6;color:#0A0814;font-weight:900;font-size:16px;box-shadow:0 14px 34px rgba(0,0,0,.55)')}>{L.sticky}</a>
       </div>

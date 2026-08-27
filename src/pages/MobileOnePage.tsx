@@ -240,7 +240,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
       <div data-rv="" style={sx('display:flex;align-items:center;gap:10px;margin:0 0 10px;font-size:10.5px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>
         {num}
         <span style={sx('flex:1;height:1px;background:linear-gradient(90deg,rgba(250,75,163,.35),transparent)')}></span>
-        <span style={sx('color:rgba(246,239,230,.42)')}>{label}</span>
+        <span style={sx('color:rgba(246,239,230,.5)')}>{label}</span>
       </div>
     );
   }
@@ -285,7 +285,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
               <button type="button" onClick={() => setLang('en')} style={sx(langBtn(this.props.lang === 'en'))}>EN</button>
             </div>
             <button type="button" aria-label={L.nav.menuLabel} aria-expanded={!!s.menu} onClick={() => this.setState(p => ({ menu: !p.menu }))}
-              style={sx('flex:none;width:44px;height:44px;border-radius:14px;border:1px solid rgba(246,239,230,.09);background:rgba(246,239,230,.04);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer')}>
+              style={sx('flex:none;width:44px;height:44px;border-radius:14px;border:1px solid rgba(246,239,230,.38);background:rgba(246,239,230,.04);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer')}>
               <span style={sx(`width:18px;height:2px;border-radius:2px;background:rgba(246,239,230,.78);transition:transform .4s ${EASE};transform:translateY(${s.menu ? '3.5px' : '0'}) rotate(${s.menu ? 45 : 0}deg)`)}></span>
               <span style={sx(`width:18px;height:2px;border-radius:2px;background:rgba(246,239,230,.78);transition:transform .4s ${EASE};transform:translateY(${s.menu ? '-3.5px' : '0'}) rotate(${s.menu ? -45 : 0}deg)`)}></span>
             </button>
@@ -331,7 +331,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             <div style={sx('display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap')}>
               <span style={sx('font-size:14.5px;font-weight:600;color:rgba(246,239,230,.62)')}>{L.hero.bookQ}</span>
               <a href="#anfragen" onClick={() => this.setState({ tab: 'event', formStatus: 'idle' })}
-                style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(246,239,230,.20);color:#F6EFE6;font-weight:800;font-size:14.5px')}>{L.hero.bookCta}</a>
+                style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(246,239,230,.38);color:#F6EFE6;font-weight:800;font-size:14.5px')}>{L.hero.bookCta}</a>
             </div>
           </div>
           <div style={sx('margin-top:22px;display:flex;align-items:center;gap:9px;font-size:14px;font-weight:700;letter-spacing:.01em;color:rgba(246,239,230,.72)')}>
@@ -376,7 +376,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                   <span key={t.id} style={sx(teammarke(t.color, t.av, 32) + `border:2px solid #0f0a1a;margin-left:${i ? '-10px' : '0'};`)}></span>
                 ))}
               </div>
-              <span style={sx('font-size:12.5px;font-weight:800;letter-spacing:.04em;color:rgba(246,239,230,.42)')}>{L.modes.quizTeams}</span>
+              <span style={sx('font-size:12.5px;font-weight:800;letter-spacing:.04em;color:rgba(246,239,230,.5)')}>{L.modes.quizTeams}</span>
             </div>
             <div style={sx(this.bodyStyle(s.open === 'quiz'))}>
               <div style={sx('min-height:0;overflow:hidden;padding-top:16px;display:flex;flex-direction:column;gap:12px')}>
@@ -425,7 +425,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                     </div>
                   </div>
                 </div>
-                <div style={sx(`margin-top:12px;min-height:38px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13.5px;font-weight:900;line-height:1.4;color:${s.act < 0 ? 'rgba(246,239,230,.42)' : (actTeam ? actTeam.color : 'rgba(246,239,230,.42)')};transition:color .4s ease`)}>
+                <div style={sx(`margin-top:12px;min-height:38px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13.5px;font-weight:900;line-height:1.4;color:${s.act < 0 ? 'rgba(246,239,230,.5)' : (actTeam ? actTeam.color : 'rgba(246,239,230,.5)')};transition:color .4s ease`)}>
                   {s.act < 0 ? L.modes.actIdle : L.modes.actions[s.act]}
                 </div>
               </div>
@@ -445,7 +445,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                   <span key={fa.file} style={sx(`width:32px;height:32px;border-radius:50%;flex:none;background:#111827 url(/assets/crest-${fa.file}.webp) center/78% no-repeat;border:2px solid ${fa.color}88;margin-left:${i ? '-11px' : '0'};box-shadow:0 3px 8px rgba(0,0,0,.45)`)}></span>
                 ))}
               </div>
-              <span style={sx('font-size:12.5px;font-weight:800;letter-spacing:.04em;color:rgba(246,239,230,.42)')}>{L.modes.arenaFactions}</span>
+              <span style={sx('font-size:12.5px;font-weight:800;letter-spacing:.04em;color:rgba(246,239,230,.5)')}>{L.modes.arenaFactions}</span>
             </div>
             <div style={sx(this.bodyStyle(s.open === 'arena'))}>
               <div style={sx('min-height:0;overflow:hidden;padding-top:16px;display:flex;flex-direction:column;gap:12px')}>
@@ -479,7 +479,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     const N: MobileCat = L.probe.cats[(s.cat + 1) % L.probe.cats.length];
 
     let body: ReactNode = null;
-    let hint = '', hintCol = 'rgba(246,239,230,.42)';
+    let hint = '', hintCol = 'rgba(246,239,230,.5)';
 
     if (C.kind === 'pick') {
       if (s.picked !== null) {
@@ -551,7 +551,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
               <div key={i} style={sx(`display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:15px;background:${s.ptsDone && i === C.correct ? 'rgba(52,211,153,.14)' : 'rgba(246,239,230,.04)'};border:1.5px solid ${s.ptsDone && i === C.correct ? 'rgba(52,211,153,.5)' : 'rgba(246,239,230,.1)'};transition:background .4s ease,border-color .4s ease`)}>
                 <span style={sx('flex:1;min-width:0;font-size:15px;font-weight:800')}>{o}</span>
                 <button type="button" onClick={() => { if (s.ptsDone) return; clearTimeout(this._catT); this.setState(p => { const n = [...p.pts]; if (n[i] > 0) n[i]--; return { pts: n, ptsDone: false }; }); }}
-                  style={sx('flex:none;width:38px;height:38px;border-radius:12px;border:1px solid rgba(246,239,230,.14);background:rgba(246,239,230,.05);color:#F6EFE6;font-size:19px;font-weight:900;cursor:pointer')}>−</button>
+                  style={sx('flex:none;width:38px;height:38px;border-radius:12px;border:1px solid rgba(246,239,230,.38);background:rgba(246,239,230,.05);color:#F6EFE6;font-size:19px;font-weight:900;cursor:pointer')}>−</button>
                 <span style={sx('flex:none;width:26px;text-align:center;font-size:17px;font-weight:900;color:#F6EFE6')}>{pts[i]}</span>
                 <button type="button" onClick={() => {
                   if (s.ptsDone) return;
@@ -565,7 +565,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                   this.setState({ pts: n, ptsDone: fin });
                   if (fin) this.nextCat(4200);
                 }}
-                  style={sx('flex:none;width:38px;height:38px;border-radius:12px;border:1px solid rgba(246,239,230,.14);background:rgba(246,239,230,.05);color:#F6EFE6;font-size:19px;font-weight:900;cursor:pointer')}>+</button>
+                  style={sx('flex:none;width:38px;height:38px;border-radius:12px;border:1px solid rgba(246,239,230,.38);background:rgba(246,239,230,.05);color:#F6EFE6;font-size:19px;font-weight:900;cursor:pointer')}>+</button>
               </div>
             ))}
           </div>
@@ -601,7 +601,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
               style={sx('margin-top:22px;display:flex;align-items:center;justify-content:center;width:100%;box-sizing:border-box;min-height:54px;padding:0 20px;border-radius:18px;background:#F6EFE6;color:#0A0814;font-weight:900;font-size:16px;box-shadow:0 10px 26px rgba(0,0,0,.5)')}>{L.probe.doneCta}</a>
             <button type="button"
               onClick={() => { clearTimeout(this._catT); clearInterval(this._cdT); this.setState({ done: false, splash: false, count: 3, cat: 0, picked: null, guess: 180, guessDone: false, pts: [0, 0, 0], ptsDone: false }); }}
-              style={sx('margin-top:10px;display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:999px;border:1px solid rgba(246,239,230,.20);background:transparent;color:#F6EFE6;font-weight:800;font-size:14.5px;cursor:pointer')}>{L.probe.doneAgain}</button>
+              style={sx('margin-top:10px;display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:999px;border:1px solid rgba(246,239,230,.38);background:transparent;color:#F6EFE6;font-weight:800;font-size:14.5px;cursor:pointer')}>{L.probe.doneAgain}</button>
           </div>
         )}
 
@@ -612,7 +612,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             <div style={sx(`margin-top:16px;font-family:'League Spartan',sans-serif;font-size:38px;font-weight:900;letter-spacing:-.02em;line-height:1;color:${N.col}`)}>{N.name}</div>
             <div style={sx('margin-top:8px;font-size:15px;line-height:1.5;font-weight:800;color:rgba(246,239,230,.78);text-align:center;text-wrap:pretty')}>{N.claim}</div>
             <div style={sx(`margin-top:22px;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'League Spartan',sans-serif;font-size:24px;font-weight:900;color:#0A0814;background:${N.col};box-shadow:0 0 24px ${N.col}66`)}>{s.count}</div>
-            <div style={sx('margin-top:12px;font-size:12.5px;font-weight:800;letter-spacing:.06em;color:rgba(246,239,230,.42)')}>{L.probe.skipHint}</div>
+            <div style={sx('margin-top:12px;font-size:12.5px;font-weight:800;letter-spacing:.06em;color:rgba(246,239,230,.5)')}>{L.probe.skipHint}</div>
           </div>
         )}
 
@@ -621,7 +621,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             style={sx(`border-radius:26px;padding:18px;min-height:470px;box-sizing:border-box;background:radial-gradient(ellipse at 50% 0%,${C.col}1f,#0b0714 62%);border:1.5px solid ${C.col}66;box-shadow:0 18px 44px rgba(0,0,0,.45),0 0 26px ${C.col}22;transition:border-color .5s ease,box-shadow .5s ease,background .5s ease`)}>
             <div style={sx('display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px')}>
               <span style={sx(`padding:6px 13px;border-radius:999px;background:${C.col}22;border:1px solid ${C.col}66;font-size:11.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:${C.col};white-space:nowrap;flex:none`)}>{C.name}</span>
-              <span style={sx('font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(246,239,230,.42)')}>{`${L.probe.progress(s.cat + 1, L.probe.cats.length)} · ${L.probe.team}`}</span>
+              <span style={sx('font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:rgba(246,239,230,.5)')}>{`${L.probe.progress(s.cat + 1, L.probe.cats.length)} · ${L.probe.team}`}</span>
             </div>
             <div style={sx('font-size:14px;font-weight:800;line-height:1.4;color:rgba(246,239,230,.62);margin-bottom:14px')}>{C.claim}</div>
             {body}
@@ -764,7 +764,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     const isTest = s.tab === 'test';
     const st = s.formStatus;
     const tab = (on: boolean) => `min-height:46px;padding:0 12px;border:0;border-radius:999px;font-size:14px;font-weight:900;cursor:pointer;background:${on ? '#F6EFE6' : 'transparent'};color:${on ? '#0A0814' : 'rgba(246,239,230,.62)'};transition:background .3s ease,color .3s ease`;
-    const inputStyle = 'width:100%;box-sizing:border-box;min-height:52px;padding:0 14px;border-radius:14px;background:rgba(246,239,230,.05);border:1.5px solid rgba(246,239,230,.20);color:#F6EFE6;font-size:16px;font-weight:700;outline:none';
+    const inputStyle = 'width:100%;box-sizing:border-box;min-height:52px;padding:0 14px;border-radius:14px;background:rgba(246,239,230,.05);border:1.5px solid rgba(246,239,230,.38);color:#F6EFE6;font-size:16px;font-weight:700;outline:none';
     const labelStyle = 'display:flex;flex-direction:column;gap:7px;font-size:12.5px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:rgba(246,239,230,.62)';
     return (
       <section id="anfragen" style={sx('padding:36px 20px 46px;border-top:1px solid rgba(246,239,230,.10);background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.05),transparent 66%)')}>
@@ -822,7 +822,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             <button type="submit" style={sx('min-height:56px;border:0;border-radius:18px;background:#F6EFE6;color:#0A0814;font-size:17px;font-weight:900;box-shadow:0 10px 26px rgba(0,0,0,.5);cursor:pointer')}>
               {st === 'sending' ? L.form.sending : L.form.submit}
             </button>
-            <p style={sx('margin:0;font-size:12.5px;line-height:1.5;color:rgba(246,239,230,.42);font-weight:600')}>
+            <p style={sx('margin:0;font-size:12.5px;line-height:1.5;color:rgba(246,239,230,.5);font-weight:600')}>
               {L.form.privacy1}<a href="/datenschutz" style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 4px;font-weight:800')}>{L.form.privacyLink}</a>{L.form.privacy2}
             </p>
           </form>
@@ -854,11 +854,11 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
               <span style={sx("font-family:'League Spartan',sans-serif;font-weight:900;font-size:17px")}>CozyWolf</span>
             </div>
             <div style={sx('display:flex;flex-wrap:wrap;gap:8px')}>
-              <a href="/impressum" style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:12px;background:rgba(246,239,230,.04);border:1px solid rgba(246,239,230,.20);font-size:14.5px;font-weight:800')}>{L.footer.imprint}</a>
-              <a href="/datenschutz" style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:12px;background:rgba(246,239,230,.04);border:1px solid rgba(246,239,230,.20);font-size:14.5px;font-weight:800')}>{L.footer.privacy}</a>
-              <a href={INSTA_URL} style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:12px;background:rgba(246,239,230,.04);border:1px solid rgba(246,239,230,.20);font-size:14.5px;font-weight:800')}>{L.footer.instagram}</a>
+              <a href="/impressum" style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:12px;background:rgba(246,239,230,.04);border:1px solid rgba(246,239,230,.38);font-size:14.5px;font-weight:800')}>{L.footer.imprint}</a>
+              <a href="/datenschutz" style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:12px;background:rgba(246,239,230,.04);border:1px solid rgba(246,239,230,.38);font-size:14.5px;font-weight:800')}>{L.footer.privacy}</a>
+              <a href={INSTA_URL} style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:12px;background:rgba(246,239,230,.04);border:1px solid rgba(246,239,230,.38);font-size:14.5px;font-weight:800')}>{L.footer.instagram}</a>
             </div>
-            <div style={sx('font-size:12.5px;line-height:1.6;color:rgba(246,239,230,.42);font-weight:600')}>{L.footer.aiNote}</div>
+            <div style={sx('font-size:12.5px;line-height:1.6;color:rgba(246,239,230,.5);font-weight:600')}>{L.footer.aiNote}</div>
           </footer>
 
           <div style={sx(`position:fixed;left:0;right:0;bottom:0;z-index:50;transform:translateY(${this.state.stickyOn ? '0' : '130%'});transition:transform .3s ${EASE};display:flex;justify-content:center;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(10,8,20,0),rgba(10,8,20,.94) 42%);pointer-events:none`)}>
