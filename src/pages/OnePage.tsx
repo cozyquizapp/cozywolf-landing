@@ -13,7 +13,7 @@ import type { FormEvent, ReactNode } from 'react';
 import { useLang, setLang, type Lang } from '../lang';
 import { FORMSPREE_ID } from '../brand';
 import { sx } from './onepage/sx';
-import { KACHEL_VERLAUF, teammarke } from '../qqKachel';
+import { KACHEL_VERLAUF, motivAnteil, teammarke } from '../qqKachel';
 import { ONEPAGE_CSS } from './onepage/css';
 import { onePageT, type OnePageDict, type ProbeDef } from './onepage/texts';
 
@@ -739,8 +739,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     // Feld nutzt die volle Breite der rechten Spalte, die Tabelle sitzt darunter
     const budget = (this.state.boardWinW || 440) - 26;
     const hBudget = (this.state.boardWinH || 520) - 16;
-    const CS = Math.max(26, Math.min(56, Math.floor((budget - 6 * 8) / GS), Math.floor((hBudget - 6 * 8) / GS)));
-    const GAP = CS >= 46 ? 8 : 6, RAD = CS >= 46 ? 9 : 7;
+    const GAP = 4;
+    const CS = Math.max(26, Math.min(56, Math.floor((budget - 6 * GAP) / GS), Math.floor((hBudget - 6 * GAP) / GS)));
+    const RAD = Math.max(4, Math.round(CS * 0.16));
     const at = (r: number, c: number) => (r < 0 || c < 0 || r >= GS || c >= GS) ? null : (owner[r * GS + c] || null);
 
     // Connect-Welle: BFS ueber das verbundene Gebiet des frisch gesetzten
@@ -782,7 +783,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       if (!tm) return {
         owned: false, av: '', fresh: false, wave: false, bridgeR: false, bridgeB: false,
         sparks: [], shards: [], ghost: false, burst: false, stacked: false, dust: false,
-        style: base + duck + `border-radius:${RAD}px;background:rgba(246,239,230,.028);border:1px solid rgba(246,239,230,.05)`,
+        style: base + duck + `border-radius:${RAD}px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20)`,
       };
 
       const own = owner[i], col = tm.color;
@@ -815,7 +816,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
       const avMain = (() => {
         const anim = fresh ? (stolenNow ? 'animation:cwSlam .5s cubic-bezier(.34,1.56,.64,1) .18s both;' : 'animation:cwDrop .6s cubic-bezier(.34,1.56,.64,1) .28s both;') : '';
-        if (!isStacked) return `width:${Math.round(CS * 0.62)}px;height:${Math.round(CS * 0.62)}px;display:block;position:relative;z-index:8;background:url(${tm.av}) center/contain no-repeat;` + anim;
+        if (!isStacked) return `width:${Math.round(CS * motivAnteil(tm.av))}px;height:${Math.round(CS * motivAnteil(tm.av))}px;display:block;position:relative;z-index:8;background:url(${tm.av}) center/contain no-repeat;` + anim;
         const szv = Math.max(8, Math.round(CS * 0.54)), h = szv / 2;
         return `width:${szv}px;height:${szv}px;position:absolute;left:${Math.round(0.27 * CS - h)}px;top:${Math.round(0.27 * CS - h)}px;z-index:8;background:url(${tm.av}) center/contain no-repeat;` + anim;
       })();
@@ -836,7 +837,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         dustStyle: `position:absolute;inset:-6px;border-radius:${RAD + 6}px;border:2.5px solid ${col}cc;animation:cwDust .6s ease-out .1s both;pointer-events:none;z-index:3`,
         ghost: !!ghost,
         ghostStyle: ghost ? `position:absolute;inset:0;z-index:9;display:flex;align-items:center;justify-content:center;pointer-events:none;animation:cwYank .5s cubic-bezier(.45,0,.7,.35) both` : '',
-        ghostAvStyle: ghost ? `width:${Math.round(CS * 0.62)}px;height:${Math.round(CS * 0.62)}px;background:url(${ghost.av}) center/contain no-repeat` : '',
+        ghostAvStyle: ghost ? `width:${Math.round(CS * motivAnteil(ghost.av))}px;height:${Math.round(CS * motivAnteil(ghost.av))}px;background:url(${ghost.av}) center/contain no-repeat` : '',
         shards: stolenNow ? Array.from({ length: 8 }, (_, kk) => {
           const a = (kk * 45 + 10) * Math.PI / 180, d = CS * (0.75 + (kk % 3) * 0.16), szv = Math.max(4, Math.round(CS * 0.14));
           return { style: `position:absolute;width:${szv}px;height:${szv}px;border-radius:2px;background:${col};box-shadow:0 0 8px ${col};top:50%;left:50%;margin:${-szv / 2}px 0 0 ${-szv / 2}px;--shx:${(Math.cos(a) * d).toFixed(1)}px;--shy:${(Math.sin(a) * d).toFixed(1)}px;--shr:${(kk * 37 % 300 - 150)}deg;animation:cwShard .7s ease-out ${(0.05 + kk * 0.02).toFixed(2)}s both;pointer-events:none;z-index:6` };

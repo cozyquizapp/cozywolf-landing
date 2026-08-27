@@ -14,7 +14,7 @@ import type { FormEvent, ReactNode } from 'react';
 import { useLang, setLang, type Lang } from '../lang';
 import { FORMSPREE_ID, INSTA_URL, EMAIL } from '../brand';
 import { sx } from './onepage/sx';
-import { teammarke } from '../qqKachel';
+import { motivAnteil, teammarke } from '../qqKachel';
 import { mobileT, type MobileDict, type MobileCat } from './onepage/mobileTexts';
 
 const EASE = 'cubic-bezier(.22,1,.36,1)';
@@ -391,7 +391,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                         const ov = acts[i];
                         const t = id ? TEAMS.find(x => x.id === id) : null;
                         const cellBase = 'position:relative;aspect-ratio:1;box-sizing:border-box;display:flex;align-items:center;justify-content:center;transition:background .45s ' + EASE + ',box-shadow .45s ' + EASE + ';';
-                        if (!t) return <span key={i} style={sx(cellBase + `border-radius:${RAD}px;background:rgba(246,239,230,.028);border:1px solid rgba(246,239,230,.05)`)}></span>;
+                        if (!t) return <span key={i} style={sx(cellBase + `border-radius:${RAD}px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20)`)}></span>;
                         const r = Math.floor(i / GS), c = i % GS, col = t.color;
                         const nT = at(r - 1, c) === id, nR = at(r, c + 1) === id, nB = at(r + 1, c) === id, nL = at(r, c - 1) === id;
                         const rTL = (nT || nL) ? 0 : RAD, rTR = (nT || nR) ? 0 : RAD, rBR = (nB || nR) ? 0 : RAD, rBL = (nB || nL) ? 0 : RAD;
@@ -410,8 +410,8 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                           <span key={i} style={sx(cellBase
                             + `border-radius:${rTL}px ${rTR}px ${rBR}px ${rBL}px;background:${col};box-shadow:${shadow};`
                             + `border-top:${edge(nT)};border-right:${edge(nR)};border-bottom:${edge(nB)};border-left:${edge(nL)}`)}>
-                            <span style={sx(`width:74%;height:74%;background:url(${t.av}) center/contain no-repeat;filter:drop-shadow(0 2px 3px rgba(0,0,0,.45));animation:${ov && ov.kind === 'joker' ? 'mFlip .8s ' + EASE + ' both' : 'mPop .42s cubic-bezier(.34,1.56,.64,1) both'}`)}></span>
-                            {isStack && <span style={sx(`position:absolute;right:6%;bottom:6%;width:46%;height:46%;background:url(${t.av}) center/contain no-repeat;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6));animation:mPop .5s cubic-bezier(.34,1.56,.64,1) both .12s`)}></span>}
+                            <span style={sx(`width:${(motivAnteil(t.av) * 100).toFixed(0)}%;height:${(motivAnteil(t.av) * 100).toFixed(0)}%;background:url(${t.av}) center/contain no-repeat;animation:${ov && ov.kind === 'joker' ? 'mFlip .8s ' + EASE + ' both' : 'mPop .42s cubic-bezier(.34,1.56,.64,1) both'}`)}></span>
+                            {isStack && <span style={sx(`position:absolute;right:6%;bottom:6%;width:${(motivAnteil(t.av) * 52).toFixed(0)}%;height:${(motivAnteil(t.av) * 52).toFixed(0)}%;background:url(${t.av}) center/contain no-repeat;animation:mPop .5s cubic-bezier(.34,1.56,.64,1) both .12s`)}></span>}
                             {!!ov && (ov.kind === 'steal' || ov.kind === 'joker') && <span style={sx(`position:absolute;inset:-3px;border-radius:${RAD + 3}px;border:2px solid ${col};pointer-events:none;animation:mBurst .7s ease-out both`)}></span>}
                           </span>
                         );
