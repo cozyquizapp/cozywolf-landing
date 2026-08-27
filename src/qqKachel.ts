@@ -42,6 +42,13 @@ const KANTEN = 'inset 0 1px 0 rgba(255,255,255,.38),inset 2px 0 0 rgba(255,255,2
 // NUDGE = Verschiebung in Prozent der Kachelkante, nur fuer Motive, deren
 //         Schwerpunkt deutlich neben der Mitte der Bounding-Box liegt.
 const FILL: Record<string, number> = {
+  // Die drei Anlass-Motive sind hier auf ihre Bounding-Box beschnitten und
+  // quadratisch zentriert worden, anders als die Team-Motive aus der App.
+  // Deshalb brauchen sie einen kleineren Anteil, sonst stossen sie an die
+  // Kachelkante. 0.72 gemessen gegen die Team-Kacheln daneben.
+  '/assets/anlass-firma.webp': 0.72,
+  '/assets/anlass-geburtstag.webp': 0.72,
+  '/assets/anlass-pub.webp': 0.72,
   'crystal-ball': 0.89,
   'game-die': 0.78,
   'mushroom': 0.92,
@@ -55,6 +62,9 @@ const NUDGE: Record<string, [number, number]> = {
 
 /** Slug aus einem Avatar-Pfad `/assets/av-qq-<slug>.webp`. */
 function slugAus(av: string): string {
+  // Pfade ohne das Praefix av-qq- (etwa die Anlass-Motive) bleiben, wie sie
+  // sind, und werden in FILL unter dem vollen Pfad nachgeschlagen.
+  if (!av.includes('av-qq-')) return av;
   return av.replace(/^.*av-qq-/, '').replace(/\.webp$/, '');
 }
 

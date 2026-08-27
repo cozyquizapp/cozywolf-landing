@@ -112,6 +112,13 @@ const ANLASS_ENTWUERFE = {
       en: 'The right column shows how big the round is for this occasion, as tiles: four teams for a private party, eight factions for a company night. The column works instead of decorating. The numbers have to be right, or decoration turns into a promise.',
     },
   },
+  4: {
+    name: 'Ein Objekt',
+    idee: {
+      de: 'Rechts steht EIN Objekt fuer den Anlass, auf einer Kachel wie im Spiel: Puzzle fuer Firma und Team, Torte fuer den Geburtstag, Glas fuer Cafe, Bar und Pub. Anders als bei „Das Format" bedeuten die Objekte hier wirklich etwas, sie stehen nicht fuer Teams, die es an dieser Stelle nicht gibt.',
+      en: 'One object per occasion on a tile, as in the game: puzzle for company and team, cake for the birthday, glass for cafe, bar and pub. Unlike \u201cThe format\u201d, these objects actually mean something instead of standing in for teams that are not there.',
+    },
+  },
   3: {
     name: 'Nur Text',
     idee: {
@@ -159,7 +166,7 @@ export default function Mockups() {
           {station === '01'
             ? <Schalter werte={(['A', 'B', 'C'] as Brief[]).map(k => ({ k, label: `${k}  ${HANDSCHRIFTEN[k].name}` }))}
               aktiv={brief} waehle={k => setBrief(k as Brief)} />
-            : <Schalter werte={([1, 2, 3] as AnlassEntwurf[]).map(k => ({ k: String(k), label: `A${k}  ${ANLASS_ENTWUERFE[k].name}` }))}
+            : <Schalter werte={([1, 2, 4, 3] as AnlassEntwurf[]).map(k => ({ k: String(k), label: `A${k}  ${ANLASS_ENTWUERFE[k].name}` }))}
               aktiv={String(entwurf)} waehle={k => setEntwurf(Number(k) as AnlassEntwurf)} />}
           <Schalter werte={[{ k: 'd', label: 'Desktop' }, { k: 'm', label: 'Mobil' }]}
             aktiv={mobil ? 'm' : 'd'} waehle={k => setMobil(k === 'm')} />
@@ -423,12 +430,31 @@ const ANLASS_FORMAT: { objekte: typeof TEAM_OBJ; label: { de: string; en: string
 ];
 const ANLASS_ACC = ['#FA4BA3', '#FFC7E4', '#FF7AC0'];
 
+/**
+ * Ein Objekt je Anlass, aus dem Objektsatz der App.
+ *
+ * Puzzle und Torte und Glas stammen aus KioskQuiz
+ * frontend/public/avatars (cozyquiz/puzzle, party/cake, party/martini),
+ * sind also derselbe Renderstil wie die Teamobjekte und nicht irgendein
+ * Emoji-Satz. Beschnitten auf die Bounding-Box, quadratisch zentriert,
+ * 160 px webp.
+ *
+ * Die Kachel darunter traegt NICHT die Farbe eines Teams, sondern den
+ * Markenton des Anlasses. Sonst wuerde die Kachel behaupten, hier spiele
+ * ein gruenes Team mit, und genau das war der Fehler bei „Das Format".
+ */
+const ANLASS_OBJ = [
+  { av: '/assets/anlass-firma.webp', label: { de: 'Firma', en: 'Company' } },
+  { av: '/assets/anlass-geburtstag.webp', label: { de: 'Geburtstag', en: 'Birthday' } },
+  { av: '/assets/anlass-pub.webp', label: { de: 'Feste Reihe', en: 'Regular series' } },
+];
+
 function Anlaesse({ L, mobil, entwurf }: {
-  L: ReturnType<typeof onePageT>; mobil: boolean; entwurf: 1 | 2 | 3;
+  L: ReturnType<typeof onePageT>; mobil: boolean; entwurf: AnlassEntwurf;
 }) {
   const lang = useLang();
   const spalten = mobil ? '1fr'
-    : entwurf === 3 ? '380px 1fr' : '290px 1fr 340px';
+    : entwurf === 3 ? '380px 1fr' : entwurf === 4 ? '290px 1fr 200px' : '290px 1fr 340px';
   return (
     <section style={sx(`max-width:1240px;margin:0 auto;padding:${mobil ? '52px 22px 70px' : '96px 40px 120px'}`)}>
       <Kicker nummer="[ 02 ]" label={L.anlaesse.label} />
@@ -464,6 +490,11 @@ function Anlaesse({ L, mobil, entwurf }: {
                 <span style={sx(`font-family:${SPARTAN};font-size:clamp(90px,9vw,150px);font-weight:900;line-height:.8;letter-spacing:-.05em;color:${a};opacity:.16`)}>
                   {`0${i + 1}`}
                 </span>
+              </div>
+            )}
+            {entwurf === 4 && (
+              <div style={sx(mobil ? '' : 'display:flex;justify-content:flex-end')}>
+                <span className="mkKachel" style={sx(teammarke(a, ANLASS_OBJ[i].av, mobil ? 72 : 104))}></span>
               </div>
             )}
             {entwurf === 2 && (
