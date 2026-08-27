@@ -40,6 +40,43 @@ const LOGO = '/logo.webp';
  */
 const AKZENT = '#F6EFE6';
 
+/**
+ * Der Stilschalter fuer die Kapitelfassungen aus dem Mockup.
+ *
+ * Wolf am 27.08.: "dafuer waere ein replizieren klonen der website nice um mal
+ * wirklich zu sehen wie es werden koennte final". Ein Klon waere aber ab dem
+ * ersten Tag ein zweiter Stand, der auseinanderlaeuft. Stattdessen traegt die
+ * ECHTE Seite die Fassungen und zeigt sie auf Zuruf:
+ *
+ *   /d/?stil=2   zwei Stufen: Kapitel gross, alles darin klein
+ *   /d/?stil=3   dazu Luft statt Linien zwischen den Kapiteln, Dichtewelle
+ *   /d/?stil=4   dazu die Kapitelziffer als Bauteil
+ *   /d/?stil=5   keine Linien, jedes Kapitel in eigenem sehr dunklen Ton
+ *
+ * Ohne den Zusatz bleibt alles, wie es ist. Wer sich entschieden hat, macht
+ * aus der Zahl einen Vorgabewert und die Zeile hier faellt weg.
+ */
+const STIL = (() => {
+  if (typeof window === 'undefined') return 1;
+  const n = Number(new URLSearchParams(window.location.search).get('stil'));
+  return n >= 1 && n <= 5 ? n : 1;
+})();
+/** Ueberschrift eines Kapitels: gross ab Fassung 2, mit Ziffer ab 4. */
+const H2_GROSS = STIL >= 2 ? 'clamp(40px,5.2vw,84px)' : null;
+/** Trennung zwischen Kapiteln: ab Fassung 3 Luft statt Linie. */
+const OHNE_LINIE = STIL >= 3;
+/** Dichtewelle: dicht, mittel, luftig als Polster oben und unten. */
+const DICHTE: Record<string, string> = STIL >= 3
+  ? { dicht: '96px 32px 72px', mittel: '120px 32px 88px', luftig: '148px 32px 108px' }
+  : { dicht: '60px 32px', mittel: '60px 32px', luftig: '60px 32px' };
+/** Eigener Grundton je Kapitel, nur in Fassung 5. */
+const KAPITELTON: Record<string, string> = {
+  spielarten: '#0d0a1a', anlaesse: '#0a0c18', probieren: '#090e19',
+  ablauf: '#080f14', johannes: '#100c12', fragen: '#0b0a16', anfragen: '#110b16',
+};
+const tonVon = (id: string) => (STIL === 5 ? `background:${KAPITELTON[id]};` : '');
+const linieOben = () => (OHNE_LINIE ? '' : 'border-top:1px solid rgba(246,239,230,.10);');
+
 // Spielstand-Daten der Brett-Simulation (aus dem Entwurf, Wolfs Choreografie)
 // Team-Avatare: das CozyQuiz-Objektset der App (48 Motive). Die Objekte sind
 // farbneutral, die Teamfarbe kommt aus der Kachel darunter - deshalb sind hier
@@ -837,7 +874,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     ];
 
     return (
-      <section id="spielarten" data-ton="168,85,247" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:84px 32px')}>
+      <section id="spielarten" data-ton="168,85,247" data-shell="" style={sx(`max-width:1180px;margin:0 auto;padding:${DICHTE.dicht};${tonVon('spielarten')}`)}>
         {this.kicker(`${L.modes.kicker}|${L.modes.label}`)}
         <h2 data-reveal="" style={sx("margin:0 0 40px;font-family:'League Spartan',sans-serif;"
           + 'font-size:clamp(40px,5.2vw,84px);font-weight:900;line-height:.9;letter-spacing:-.032em;color:#F6EFE6')}>
@@ -1331,7 +1368,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const ACC = ['rgba(246,239,230,.62)', 'rgba(246,239,230,.62)', 'rgba(246,239,230,.62)'];
     const HAAR = 'rgba(246,239,230,.14)';
     return (
-      <section id="anlaesse" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:84px 32px')}>
+      <section id="anlaesse" data-shell="" style={sx(`max-width:1180px;margin:0 auto;padding:${DICHTE.luftig};${tonVon('anlaesse')}`)}>
         {this.kicker(`[ 02 ]|${L.anlaesse.label}`)}
         <h2 data-reveal="" style={sx("margin:0 0 14px;font-family:'League Spartan',sans-serif;"
           + 'font-size:clamp(40px,5.2vw,84px);font-weight:900;line-height:.9;letter-spacing:-.032em;color:#F6EFE6')}>
@@ -1516,7 +1553,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     }
 
     return (
-      <section id="probieren" data-ton="59,130,246" data-halt="" style={sx('border-top:1px solid rgba(246,239,230,.10);border-bottom:1px solid rgba(246,239,230,.10);background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.04),transparent 65%)')}>
+      <section id="probieren" data-ton="59,130,246" data-halt="" style={sx(`${linieOben()}${OHNE_LINIE ? '' : 'border-bottom:1px solid rgba(246,239,230,.10);'}${tonVon('probieren')}background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.04),transparent 65%)`)}>
         <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:60px 32px;box-sizing:border-box;display:grid;grid-template-columns:1fr 600px;gap:48px;align-items:center')} data-m="two2">
           <div>
             {/* Wolf am 27.08.: "passt sektion 03 jetzt noch zum rest der
@@ -1527,7 +1564,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 Text, und die zweite Zeile steht klein und ohne Versalien
                 darunter. */}
             {this.kicker(`[ 03 ]|${L.probe.label}`)}
-            <h2 data-reveal="" style={sx("margin:12px 0 10px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.probe.h2}</h2>
+            <h2 data-reveal="" style={sx(`margin:12px 0 10px;font-family:'League Spartan',sans-serif;font-size:${H2_GROSS ?? '34px'};line-height:${H2_GROSS ? '.9' : '1.1'};letter-spacing:${H2_GROSS ? '-.032em' : '0'};font-weight:900;color:#F6EFE6`)}>{L.probe.h2}</h2>
             <div data-reveal="" style={sx('margin-bottom:14px;font-size:14px;font-weight:700;color:rgba(246,239,230,.55)')}>{L.probe.kicker}</div>
             <p data-reveal="" style={sx('margin:0 0 26px;max-width:520px;font-size:17px;line-height:1.6;color:rgba(246,239,230,.78);font-weight:500')}>{L.probe.sub}</p>
             {/* Zweitens war das hier der letzte Kasten der Seite: Rahmen,
@@ -1671,10 +1708,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       this.setState({ beam: false, beamWelcome: false });
     };
     return (
-      <section id="ablauf" data-ton="34,197,94" data-halt="" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
+      <section id="ablauf" data-ton="34,197,94" data-halt="" style={sx(`${linieOben()}${tonVon('ablauf')}`)}>
         <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:34px 32px;box-sizing:border-box')}>
           {this.kicker(`[ 04 ]|${L.ablauf.label}`)}
-          <h2 data-reveal="" style={sx("margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.ablauf.h2}</h2>
+          <h2 data-reveal="" style={sx(`margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:${H2_GROSS ?? '34px'};line-height:${H2_GROSS ? '.9' : '1.1'};letter-spacing:${H2_GROSS ? '-.032em' : '0'};font-weight:900;color:#F6EFE6`)}>{L.ablauf.h2}</h2>
           <p data-reveal="" style={sx('margin:0 0 22px;max-width:620px;font-size:17px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:500')}>{L.ablauf.sub}</p>
 
           {/* Wolf am 27.08.: "beamer kleiner und gekippt". Also keine Leinwand
@@ -1908,7 +1945,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   renderJohannes() {
     const L = this.T;
     return (
-      <section id="johannes" data-ton="249,115,22" data-halt="" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
+      <section id="johannes" data-ton="249,115,22" data-halt="" style={sx(`${linieOben()}${tonVon('johannes')}`)}>
         <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:60px 32px;box-sizing:border-box;display:grid;grid-template-columns:300px 1fr;gap:52px;align-items:center')} data-m="joh">
           {/* Wolf am 27.08.: das echte Foto bleibt, die auffaechernden Arme und
               der pinke Ring gehen. Die beiden Nebenbilder waren Schmuck, der
@@ -1983,10 +2020,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   renderFaq() {
     const L = this.T;
     return (
-      <section id="fragen" data-halt="" style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
+      <section id="fragen" data-halt="" style={sx(`${linieOben()}${tonVon('fragen')}`)}>
         <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:60px 32px;box-sizing:border-box')}>
           {this.kicker(`[ 05 ]|${L.faq.label}`)}
-          <h2 data-reveal="" style={sx("margin:0 0 36px;font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;color:#F6EFE6")}>{L.faq.h2}</h2>
+          <h2 data-reveal="" style={sx(`margin:0 0 36px;font-family:'League Spartan',sans-serif;font-size:${H2_GROSS ?? '34px'};line-height:${H2_GROSS ? '.9' : '1.1'};letter-spacing:${H2_GROSS ? '-.032em' : '0'};font-weight:900;color:#F6EFE6`)}>{L.faq.h2}</h2>
           <div data-reveal="" data-m="faqgrid" style={sx('display:grid;gap:34px 56px;grid-template-columns:1fr 1fr')}>
             {/* Wolf am 27.08.: "h1 bei Kacheln, h2 bei text". Also hier das
                 Anruecken: die Frage rueckt 10 px nach rechts und bekommt einen
@@ -2040,7 +2077,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           + 'display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:56px;align-items:start')}>
           <div>
             {this.kicker(`[ 06 ]|${L.form.label}`)}
-            <h2 data-reveal="" style={sx("margin:0 0 12px;font-family:'League Spartan',sans-serif;font-size:clamp(30px,3.2vw,44px);font-weight:900;line-height:1.02;letter-spacing:-.028em;color:#F6EFE6;text-wrap:balance")}>{L.form.h2}</h2>
+            <h2 data-reveal="" style={sx("margin:0 0 12px;font-family:'League Spartan',sans-serif;font-weight:900;line-height:1.02;letter-spacing:-.028em;color:#F6EFE6;text-wrap:balance;"
+              + `font-size:${H2_GROSS ? 'clamp(38px,4vw,64px)' : 'clamp(30px,3.2vw,44px)'}`)}>{L.form.h2}</h2>
             <p style={sx('margin:0 0 8px;font-size:17px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78)')}>{L.form.sub}</p>
             <p style={sx('margin:0 0 26px;font-size:14px;font-weight:800;letter-spacing:.02em;color:rgba(246,239,230,.62)')}>{L.form.avail}</p>
 
