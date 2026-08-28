@@ -285,6 +285,25 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
    @supports, weil Firefox die Zeitleiste bis heute nicht kennt. Dort greift
    nichts und der Inhalt steht einfach da. Das ist der richtige Rueckfall. */
 @keyframes cwEinfahren{from{transform:translateY(34px);opacity:0}to{transform:none;opacity:1}}
+/* Wolf am 28.08.: "beim scrollen machen mir die subtitles etwas zu wenig,
+   du weisst dieses hero ist so maechtig, danach wirds so ruhig, also der
+   effekt von den sublines darf etwas auffaelliger sein".
+
+   Stimmt, und das Argument ist das richtige: der Kopf loest sich beim
+   Verlassen komplett auf, danach kam eine Zeile 34 px hochgeschoben. Der
+   Sprung in der Lautstaerke ist zu gross. Also derselbe Griff wie oben, nur
+   leiser: weiter Weg (52 statt 34 px), eine Spur kleiner am Anfang, und
+   Unschaerfe statt blosser Deckkraft. Unschaerfe ist der Unterschied
+   zwischen "war noch nicht da" und "kommt gerade an".
+
+   Nicht fuer die Leinwand in 04: die ist gross, traegt vier bewegte
+   Schichten, und eine Weichzeichnung darauf waehrend des Scrollens kostet
+   mehr, als sie zeigt. Sie behaelt den ruhigen Lauf. */
+@keyframes cwEinfahrenStark{
+  from{transform:translateY(52px) scale(.988);opacity:0;filter:blur(6px)}
+  62%{opacity:1}
+  to{transform:none;opacity:1;filter:blur(0)}
+}
 /* Der Spruch am Ende waechst, waehrend sein Halt durchs Fenster faehrt. */
 @keyframes cwHinaus{from{transform:none;opacity:1}to{transform:translateY(-16px);opacity:.45}}
 /* Der leise Hinweis am Spruch: ohne Zeiger wandert ein schmaler Streifen
@@ -367,9 +386,10 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
       animation:cwEinfahren linear both;animation-timeline:view();
       animation-range:cover 0% cover 26%;
     }
-    [data-bew] [data-reveal]:nth-child(2){animation-range:cover 3% cover 29%}
-    [data-bew] [data-reveal]:nth-child(3){animation-range:cover 6% cover 32%}
-    [data-bew] [data-reveal]:nth-child(n+4){animation-range:cover 9% cover 35%}
+    [data-bew] [data-reveal]:not([data-m=wall]){animation-name:cwEinfahrenStark}
+    [data-bew] [data-reveal]:nth-child(2){animation-range:cover 3% cover 30%}
+    [data-bew] [data-reveal]:nth-child(3){animation-range:cover 6% cover 33%}
+    [data-bew] [data-reveal]:nth-child(n+4){animation-range:cover 9% cover 36%}
     /* Wolf am 28.08.: "manchmal koennte es noch ein bisschen mehr sein zb
        beim rausscrollen". Also ein zweiter, sehr viel leiserer Lauf beim
        Verlassen nach oben: der Halt sinkt ein wenig und nimmt Deckkraft ab,

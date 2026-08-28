@@ -2810,7 +2810,15 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                         auf 440 px Hoehe gerechnet. Ein Video von einem
                         Megabyte fuer eine Geste, die auf der Landing niemand
                         zweimal sieht, waere die Ladezeit nicht wert. */}
-                    <div aria-hidden="true" style={sx('position:absolute;inset:0;z-index:9;border-radius:22px;overflow:hidden;pointer-events:none;'
+                    {/* Wolf am 28.08.: "ecken komisch waehrend beamer aktiv".
+                        Dieselbe Ursache wie beim Lichtblitz gestern, nur an
+                        drei weiteren Schichten: Begruessung, Reflexion und
+                        Abdunklung trugen 22 px Eckradius, der Kasten darunter
+                        4. In den vier Ecken blieb damit ein dunkler Zwickel
+                        stehen, der nicht zum Bild gehoert. Eine Projektion hat
+                        keine runden Ecken; die Rundung schneidet ohnehin der
+                        Kasten, keine dieser Schichten braucht eine eigene. */}
+                    <div aria-hidden="true" style={sx('position:absolute;inset:0;z-index:9;overflow:hidden;pointer-events:none;'
                       + 'background:radial-gradient(ellipse 62% 46% at 50% 40%,rgba(190,24,93,.30),transparent 68%),'
                       + 'radial-gradient(ellipse at 50% 45%,#1a1226,#0b0714 74%);'
                       + `opacity:${this.state.beamWelcome ? 1 : 0};transition:opacity .8s ${EASE} ${this.state.beamWelcome ? '.75s' : '0s'}`)}>
@@ -2825,7 +2833,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                         <span style={sx('margin-top:10px;font-size:19px;font-weight:900;line-height:1.3;color:#F6EFE6;text-align:center')}>{L.sim.welcomeSub}</span>
                       </div>
                     </div>
-                    <span aria-hidden="true" style={sx('position:absolute;inset:0;border-radius:22px;pointer-events:none;overflow:hidden')}>
+                    <span aria-hidden="true" style={sx('position:absolute;inset:0;pointer-events:none;overflow:hidden')}>
                       {/* Kein runder Fleck mehr. Wolf: "eher diese reflektion
                           und nicht rund". Also ein schraeger Lichtstreifen wie
                           auf Glas, der mit der Kippung ueber die Flaeche
@@ -2843,7 +2851,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                         den hat Wolf am 27.08. noch gesehen, nachdem der
                         eigentliche Lichtfleck schon weg war. Jetzt dunkelt es
                         nur noch an den vier Kanten ab, gerade und ohne Mitte. */}
-                    <span aria-hidden="true" style={sx('position:absolute;inset:0;border-radius:22px;pointer-events:none;'
+                    <span aria-hidden="true" style={sx('position:absolute;inset:0;pointer-events:none;'
                       + 'background:linear-gradient(180deg,rgba(0,0,0,.26),transparent 16%,transparent 84%,rgba(0,0,0,.26)),'
                       + 'linear-gradient(90deg,rgba(0,0,0,.22),transparent 12%,transparent 88%,rgba(0,0,0,.22))')}></span>
                     <div style={sx('position:relative;display:flex;align-items:center;gap:14px;flex:none')}>
