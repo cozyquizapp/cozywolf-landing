@@ -69,6 +69,14 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 @keyframes cwRise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
 @keyframes cwSheen{0%{transform:translateX(-120%)}60%,100%{transform:translateX(220%)}}
 @keyframes cwWeiter{from{width:0}to{width:100%}}
+/* Das Schweben der acht Fraktionswappen in 01. Klein gehalten: hoechstens
+   5 px, sonst stossen zwei Wappen aneinander -- zwischen ihren Plaetzen liegen
+   nach der Rechnung mindestens 31 px, und beim Zeigen kommen 10 Prozent
+   Vergroesserung dazu. Zwei Kurven, damit die acht nicht im Gleichschritt
+   gehen. */
+@keyframes cwSchweb0{0%,100%{transform:translate(0,0)}50%{transform:translate(0,-5px)}}
+@keyframes cwSchweb1{0%,100%{transform:translate(0,0)}50%{transform:translate(4px,5px)}}
+@media (prefers-reduced-motion:reduce){[data-schwebt]{animation:none!important}}
 @keyframes cwCardA{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes cwCardB{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
 /* Das Aufwaermen der Lampe. Wolf am 2026-08-27: "so blendet es und sieht
@@ -143,6 +151,12 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
    (Brett, Rangfolge) darf dann die volle Breite nehmen. */
 @media (max-width:1080px){
 [data-m=modereihe]{grid-template-columns:220px 1fr 300px!important;gap:32px!important}
+/* Die Fahne der drei linken Wappen zeigt nach rechts, in die Luecke zwischen
+   Namens- und Textspalte. Bei 290 px Spalte plus 48 px Luecke passen Name UND
+   Spruch (gemessen rund 196 px). Bei 220 plus 32 passen sie nicht mehr, der
+   Spruch liefe in den Fliesstext. Also steht links dann nur der Name -- die
+   fuenf rechts haben weiter Platz fuer beides. */
+[data-frakfeld=links] [data-frakspruch]{display:none}
 }
 /* Die Objekte der Anlaesse: dieselbe Bewegung wie im Hero, Heben beim
    Zeigen, sonst Ruhe. Die Ruhedrehung steht in der Klasse und nicht inline,

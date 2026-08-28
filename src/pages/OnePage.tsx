@@ -267,6 +267,51 @@ const CAT_META = [
   { key: 'tuete', col: '#EF4444', icon: '/assets/cat-buntetuete.webp' },
 ];
 const PROBE_ORDER = ['mucho', 'schaetzchen', 'cheese', 'zehn', 'tuete'];
+
+/**
+ * Die acht Fraktionswappen in der Zeile CrowdQuiz, Fassung W1 mit N1.
+ *
+ * Wolf am 28.08.: "W1 und N1 aber die 3 linken arena wappen sollen unter
+ * crowdquiz in die luecke und die 5 rechts so wie sie sind gut plaztiert um es
+ * etwas aufzusplitten".
+ *
+ * Damit ist die Tabelle raus. Sie war an dieser Stelle nie das, was CrowdQuiz
+ * ausmacht -- Wolfs eigener Satz dazu: "die tabelle ist nicht gerade die
+ * staerke von crowdquiz eher eine loesung um so viele teams unter einen hut zu
+ * bekommen". Gemessen kam dazu, dass fuer den Balken in der 340 px breiten
+ * Spalte nur 28 Pixel uebrig blieben, nachdem Rangzahl, Wappen, Name und
+ * Punktzahl ihren Platz hatten. Ein Balkendiagramm mit 28-px-Balken ist keine
+ * Buehne.
+ *
+ * Jetzt schweben acht Wappen, drei in der Luecke unter dem Namen und fuenf in
+ * der Objektspalte. Kein Rang, kein Rennen, keine Zahl: die Zeile sagt, dass es
+ * acht Fraktionen gibt und wie sie heissen, und das ist bei acht festen
+ * Fraktionen die ganze Aussage. Der Stand gehoert auf die Leinwand, nicht auf
+ * die Website.
+ *
+ * Die Plaetze sind von Hand gesetzt, nicht gerechnet. Eine Formel verteilt
+ * gleichmaessig, und gleichmaessig sieht nach Raster aus statt nach
+ * Konstellation. Zwei Bedingungen halten sie zusammen, beide nachgerechnet und
+ * im Browser gemessen:
+ *   1. Keine zwei Wappen ueberschneiden sich, auch nicht beim Schweben.
+ *   2. Jedes Wappen hat nach innen genug Platz fuer seine Fahne (Name und
+ *      Spruch, rund 196 px), ohne aus seiner Spalte zu laufen.
+ */
+const FRAK_LINKS = [
+  { id: 'allwissen', x: 16, y: 14, gr: 86 },
+  { id: 'einspruch', x: 34, y: 48, gr: 72 },
+  { id: 'feierabend', x: 14, y: 82, gr: 64 },
+];
+const FRAK_RECHTS = [
+  { id: 'bauchgefuehl', x: 24, y: 10, gr: 84 },
+  { id: 'improvisation', x: 72, y: 26, gr: 76 },
+  { id: 'letztesekunde', x: 30, y: 48, gr: 68 },
+  { id: 'risiko', x: 78, y: 68, gr: 62 },
+  { id: 'glueckstreffer', x: 31, y: 88, gr: 56 },
+];
+/** Hoehe der beiden Felder. Links passt unter den Namen, rechts steht an der
+ *  Stelle, an der vorher die Tabelle war (376 px), und darf etwas hoeher. */
+const FRAK_H_LINKS = 340, FRAK_H_RECHTS = 420;
 /**
  * Wolf am 28.08.: "ich faende gut wenn der reveal von einer kategorie kam,
  * dass man entweder nach ein paar sekunden oder durch klick auch zur naechsten
@@ -289,15 +334,10 @@ const STERNE = Array.from({ length: 26 }, (_, i) => ({
 
 type OPState = {
   formMode: 'event' | 'test'; formStatus: 'idle' | 'sending' | 'ok' | 'error';
-  arenaPts?: Record<string, number>;
-  arenaGain?: Record<string, { g: number; hits: number }>;
-  arenaRound?: number;
   wallScale?: number;
   beam?: boolean; beamWelcome?: boolean;
   johFan?: boolean; hookI?: number; hookVor?: number | null;
   b01?: number; b01Hand?: Record<number, string>; frak?: string | null;
-  /** Fraktionen, die gerade den Platz gewechselt haben. Kurz umrandet. */
-  frakZug?: Record<string, true>;
   /** Lage des Zeigers auf der Leinwand, 0 bis 1, fuer den Lichtkegel. */
   beamXY?: { x: number; y: number } | null;
   /** Worauf gerade gezeigt wird, in 05, 06 und 07. Schluessel ist der Text. */
@@ -324,7 +364,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   _b01T: ReturnType<typeof setInterval> | undefined;
   /** Welche Felder gerade belegt sind, fuer brettSetzen. */
   _b01Feld: boolean[] = [];
-  _frakZugT: ReturnType<typeof setTimeout> | undefined;
   /** Laeuft gerade der Abraeum-Zeitgeber? Dann nicht noch einen starten. */
   _b01Voll = false;
   _b01Neu: ReturnType<typeof setTimeout> | undefined;
@@ -335,7 +374,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   io: IntersectionObserver | undefined;
   private _beamT: ReturnType<typeof setTimeout> | undefined;
   private _weiterT: ReturnType<typeof setTimeout> | undefined;
-  private _arenaT: ReturnType<typeof setInterval> | undefined;
   private _hookT: ReturnType<typeof setInterval> | undefined;
   private _boardWinEl: HTMLElement | null = null;
   private _boardWinRO: ResizeObserver | undefined;
@@ -385,48 +423,13 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     }, 300);
   }
 
-  /** Wer gerade fuehrt. Null, solange keine Punkte stehen. */
-  frakFuehrt() {
-    const pts = this.state.arenaPts || {};
-    let best: typeof FACTIONS[number] | null = null, bp = 0;
-    FACTIONS.forEach(f => { const p = pts[f.id] || 0; if (p > bp) { bp = p; best = f; } });
-    return best as typeof FACTIONS[number] | null;
-  }
-
-  arenaTick() {
-    const round = (this.state.arenaRound || 0) + 1;
-    // Nach acht Runden stehen bleiben statt auf null zuruecksetzen. Der
-    // Ruecksprung erzeugte ein 20-Sekunden-Fenster, in dem acht Fraktionen mit
-    // 0 Punkten dastanden. Ein Endstand ist ein Bild, eine Nullreihe ist ein
-    // Fehler, auch wenn sie keiner ist.
-    if (round > 8) return;
-    const pts = { ...(this.state.arenaPts || {}) };
-    const gain: Record<string, { g: number; hits: number }> = {};
-    FACTIONS.forEach(f => {
-      if (pts[f.id] == null) pts[f.id] = 0;
-      const hits = Math.random() < 0.28 ? 3 : Math.random() < 0.5 ? 2 : Math.random() < 0.7 ? 1 : 0;
-      if (hits) { const g = hits * 40; gain[f.id] = { g, hits }; pts[f.id] += g; }
-    });
-    // Wer den Platz wechselt, wird kurz umrandet. Die Reihenfolge davor
-    // steht noch in this.state.arenaPts, die danach in pts, also lassen sich
-    // beide Rangfolgen hier vergleichen, ohne sie im Zeichnen zu rechnen.
-    const rang = (q: Record<string, number>) => {
-      const r: Record<string, number> = {};
-      FACTIONS.slice().sort((a, b) => (q[b.id] || 0) - (q[a.id] || 0))
-        .forEach((f, i) => { r[f.id] = i; });
-      return r;
-    };
-    const vorher = rang(this.state.arenaPts || {}), nachher = rang(pts);
-    const zug: Record<string, true> = {};
-    FACTIONS.forEach(f => { if (vorher[f.id] !== nachher[f.id]) zug[f.id] = true; });
-
-    this.setState({ arenaPts: pts, arenaGain: gain, arenaRound: round, frakZug: zug });
-    clearTimeout(this._frakZugT);
-    // 1,5 s: die Zeile braucht selbst 1,5 s zum Umsortieren, der Rahmen soll
-    // also so lange stehen wie die Bewegung dauert und dann verschwinden.
-    this._frakZugT = setTimeout(() => this.setState({ frakZug: {} }), 1500);
-  }
-
+  /* Hier standen frakFuehrt() und arenaTick(): die simulierte Wertung der
+     acht Fraktionen, acht Runden lang, mit Rangfolge und kurzem Rahmen fuer
+     jede Zeile, die den Platz wechselte. Sie hat nur die Tabelle in der Zeile
+     CrowdQuiz gefuettert, und die ist am 28.08. rausgeflogen (siehe dort).
+     Ohne Tabelle gibt es keinen Stand mehr anzuzeigen, und acht feste
+     Fraktionen brauchen auf einer Website keinen Punktestand -- der gehoert
+     auf die Leinwand am Abend. */
   /**
    * Das Brett in Station 01 spielt weiter, solange der Zeiger darauf liegt.
    *
@@ -505,11 +508,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       this._spielSichtbar = e.isIntersecting;
       if (!e.isIntersecting) { this.brettLauf(false); return; }
       if ((this.state.b01 ?? 0) < MOVES.length) this.brettLauf(true);
-      if (this.state.arenaRound || 0) return;
-      this.arenaTick();
-      // Bei „weniger Bewegung" den Endstand in einem Rutsch setzen, statt ihn
-      // ueber zwanzig Sekunden wachsen zu lassen.
-      if (this._reduziert) for (let i = 0; i < 8; i++) this.arenaTick();
     }, { rootMargin: '0px 0px -12% 0px' });
     this._spielIO.observe(el);
   }
@@ -569,11 +567,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     setTimeout(() => this.watchWall(), 60);
     this.fussMessen();
     this._coarse = window.matchMedia('(hover:none)').matches || window.innerWidth < 861;
-    this._arenaT = setInterval(() => {
-      if (document.hidden) return;
-      if (!this._spielSichtbar || this._reduziert) return;
-      this.arenaTick();
-    }, 2600);
     this._hookT = setInterval(() => {
       if (document.hidden || this._wortHalt) return;
       this.setState(s => ({ hookVor: s.hookI ?? 0, hookI: (s.hookI ?? 0) + 1 }));
@@ -669,9 +662,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     clearInterval(this.gameTimer);
     clearInterval(this._b01T);
     clearTimeout(this._b01Neu);
-    clearTimeout(this._frakZugT);
     clearTimeout(this._beamT);
-    clearInterval(this._arenaT);
     clearInterval(this._hookT);
     this._fussRO?.disconnect();
     this.io?.disconnect();
@@ -956,7 +947,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     // wie viele gespielt sind; b01Hand haelt die Felder, die jemand selbst
     // gesetzt hat. Ein Tick der alten Uhr entspricht CYCLE Schritten, deshalb
     // die Umrechnung: so bleibt die gesamte Zeichenschicht unveraendert.
-    const frakAn = FACTIONS.find(f => f.id === (this.state.frak ?? null)) || null;
     const zuege = this.state.b01 ?? 0;
     const g = this.gameVals(zuege ? CYCLE * (zuege - 1) + R_END + 1 : 0, this.state.b01Hand);
     this._b01Feld = g.cells.map(c => c.owned);
@@ -999,6 +989,17 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   bleibt als Strich vor den Punkten, die Schrift wird creme. */}
               <div style={sx('margin-top:12px;font-size:12px;font-weight:900;letter-spacing:.16em;'
                 + 'text-transform:uppercase;color:rgba(246,239,230,.62)')}>{r.chip}</div>
+              {/* Wolf am 28.08.: "die 3 linken arena wappen sollen unter
+                  crowdquiz in die luecke". Unter dem Namen stand bisher nichts
+                  ausser Luft, und die Zeile war deshalb rechtslastig: alles
+                  Sehenswerte lag in der Objektspalte. Drei Wappen fuellen die
+                  Luecke und teilen die acht auf zwei Seiten auf, statt sie zu
+                  einem Block zu stapeln. */}
+              {r.key === 'arena' && (
+                <div style={sx('margin-top:34px')}>
+                  {this.renderFrakFeld(FRAK_LINKS, FRAK_H_LINKS, 'links')}
+                </div>
+              )}
             </div>
 
             <div data-reveal="">
@@ -1014,31 +1015,15 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 ))}
               </ul>
 
-              {/* Fassung R7 aus dem Mockup, Lage nach Wolfs Vorschlag vom
-                  27.08.: die Spruchkarte steht unter dem Text der Zeile, nicht
-                  unter der Tabelle. Zwei Gruende, beide von ihm: unter dem Text
-                  ist ohnehin Platz frei, die Karte kostet dort also keine
-                  Hoehe, und die Tabelle bleibt so hoch wie das Brett in der
-                  Zeile darueber. Das Wappen steht hier gross, 76 statt 42 px,
-                  weil die Wappen in der Tabelle selbst zu klein sind, um das
-                  Zeichen zu erkennen.
-                  Die Hoehe ist vorgehalten, sonst springt der Text beim
-                  Zeigen. Die Karte blendet weich auf statt zu blinken. */}
-              {r.key === 'arena' && (
-                <div aria-live="polite" style={sx('margin-top:26px;min-height:118px')}>
-                  <div style={sx('display:flex;align-items:center;gap:18px;padding:16px 20px;border-radius:18px;box-sizing:border-box;max-width:520px;'
-                    + `background:${frakAn ? `linear-gradient(90deg,${frakAn.color}22,rgba(246,239,230,.02))` : 'transparent'};`
-                    + `border:1px solid ${frakAn ? frakAn.color + '4d' : 'transparent'};`
-                    + `opacity:${frakAn ? 1 : 0};transform:translateY(${frakAn ? '0' : '6px'});`
-                    + `transition:opacity .34s ${EASE},transform .34s ${EASE},background .34s ${EASE},border-color .34s ${EASE}`)}>
-                    <span style={sx(frakAn ? teammarke(frakAn.color, `/assets/crest-${frakAn.id}.webp`, 76) : 'flex:none;width:76px;height:76px')}></span>
-                    <span style={sx('min-width:0;display:flex;flex-direction:column;gap:5px')}>
-                      <span style={sx(`font-size:12.5px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:${frakAn ? frakAn.color : 'transparent'}`)}>{frakAn ? L.sim.factions[frakAn.id] : '\u00a0'}</span>
-                      <span style={sx('font-size:17px;line-height:1.35;font-weight:600;color:rgba(246,239,230,.86);text-wrap:pretty')}>{frakAn ? `\u201e${L.sim.mottos[frakAn.id]}\u201c` : '\u00a0'}</span>
-                    </span>
-                  </div>
-                </div>
-              )}
+              {/* Hier stand die Spruchkarte: ein Kasten mit Wappen, Namen und
+                  Spruch der Fraktion, auf die man gerade zeigte.
+                  Wolf am 28.08.: "ausserdem brauchen wir eine andere art den
+                  teamnamen und slogan anzuzeigen, der kasten gefaellt mir
+                  nicht", und danach die Wahl auf N1. Name und Spruch stehen
+                  jetzt direkt am Wappen, an dem sie haengen, mit einer
+                  Haarlinie dorthin. Kein Kasten, kein Grund, keine Kante -- und
+                  man liest genau dort, wo man hinzeigt, statt am anderen Ende
+                  der Zeile. */}
             </div>
 
             {r.key === 'quiz' ? (
@@ -1049,29 +1034,20 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               </div>
             ) : (
               <div data-m="modeobjekt" style={sx('min-width:0')}>
-                {/* Rahmen wie am Brett darueber, nur traegt er hier die Farbe
-                    der fuehrenden Fraktion statt der Seite am Zug. Beide
-                    Zeilen tragen damit dasselbe Zeichen. */}
-                <div style={sx(`padding:8px;border-radius:14px;background:rgba(246,239,230,.015);`
-                  + `border:2px solid ${this.frakFuehrt()?.color ?? 'rgba(246,239,230,.1)'};`
-                  + `box-shadow:${this.frakFuehrt() ? `0 0 36px ${this.frakFuehrt()!.color}55, inset 0 0 30px ${this.frakFuehrt()!.color}14` : 'inset 0 0 40px rgba(0,0,0,.5)'};`
-                  + `transition:border-color .8s ${EASE},box-shadow .8s ${EASE}`)}>
-                  {/* Wolf am 27.08. zur Karte in der mittleren Spalte: "hier bringts uns
-                      aber so nicht so viel, wir gewinnen keine groesse". Stimmt,
-                      die Karte allein hat nichts gewonnen. Der Gewinn liegt
-                      woanders: seit jeder Halt einen ganzen Bildschirm hat und
-                      diese Zeile davon 0,61 braucht, ist Platz nach unten da.
-                      Also waechst die Tabelle von 300 auf 376 px, die Zeile von
-                      37 auf 47, und damit das Wappen von 34 auf 44. Das war
-                      Fassung R5, die vorher an der Hoehe gescheitert waere. */}
-                  <div style={sx('position:relative;height:376px')}>{this.renderFactions()}</div>
-                </div>
-                {/* Die Spruchkarte steht nicht mehr hier, sondern in der
-                    mittleren Spalte unter dem Text. Wolf am 27.08. hat sie
-                    dorthin kopiert und gefragt, was ich davon halte: sie
-                    kostet dort keine Hoehe, weil unter dem Text ohnehin Platz
-                    frei ist, und die Tabelle bleibt so hoch wie das Brett in
-                    der Zeile darueber. */}
+                {/* Hier stand die Rangfolge der acht Fraktionen als Tabelle,
+                    mit Rahmen in der Farbe der fuehrenden.
+                    Wolf am 28.08.: "ich finde leider crowdquiz am schwaechsten
+                    aktuell als bereich ... vlt doch keine tabelle sondern nur
+                    die floating wappen?" und danach "W1 und N1".
+                    Der Grund war messbar: die Spalte ist 340 px breit, und
+                    nach Rangzahl, Wappen, Name und Punktzahl blieben fuer den
+                    Balken 28 Pixel. Der laengste Balken war damit halb so lang
+                    wie das Wappen daneben hoch ist. In derselben Spalte steht
+                    eine Zeile darueber das Brett, und das ist ein Gegenstand.
+                    Mit dem Rahmen ist auch frakFuehrt() weg, und mit der
+                    Rangfolge die ganze Wertungssimulation: ohne Tabelle gibt
+                    es keinen Stand mehr anzuzeigen. */}
+                {this.renderFrakFeld(FRAK_RECHTS, FRAK_H_RECHTS, 'rechts')}
               </div>
             )}
           </div>
@@ -1095,67 +1071,69 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
    * und dieselben Kanten wie eine Kachel (src/qqKachel.ts), das Wappen sitzt
    * auf einer Kachel in seiner Fraktionsfarbe. Ein Vokabular, zwei Formen.
    */
-  renderFactions() {
+  /**
+   * Ein Feld schwebender Wappen. Fassung W1 mit N1, siehe FRAK_LINKS.
+   *
+   * Die Fahne mit Namen und Spruch haengt am Wappen selbst: eine Haarlinie
+   * fuehrt hin, mehr nicht. Kein Kasten -- Wolf am 28.08.: "ausserdem brauchen
+   * wir eine andere art den teamnamen und slogan anzuzeigen, der kasten
+   * gefaellt mir nicht". Sie zeigt immer nach innen, also von links nach
+   * rechts und von rechts nach links, damit sie nicht aus der Spalte laeuft.
+   *
+   * Waehrend jemand hinzeigt, treten die uebrigen Wappen zurueck. Ohne das
+   * liefe die Fahne ueber das Wappen daneben, und freistellen sollte sie ja
+   * gerade kein Kasten.
+   */
+  renderFrakFeld(plaetze: { id: string; x: number; y: number; gr: number }[], hoehe: number, seite: 'links' | 'rechts') {
     const L = this.T;
-    const pts = this.state.arenaPts || {};
-    const vals = FACTIONS.map(f => pts[f.id] || 0);
-    const max = Math.max(1, ...vals);
-    const ranked = FACTIONS.slice().sort((a, b) => (pts[b.id] || 0) - (pts[a.id] || 0)).map(f => f.id);
-    const H = 100 / FACTIONS.length;
-    return FACTIONS.map(f => {
-      const p = pts[f.id] || 0, r = ranked.indexOf(f.id), leadNow = r === 0 && p > 0;
-      // Wolf am 2026-08-27: "die staendige umrandung raus, vlt kurz bei
-      // tabellen wechsel und bei hovern aber nicht dauerhaft". Der Rahmen
-      // haengt also an zwei Ereignissen und an keinem Zustand: er kommt,
-      // wenn eine Zeile ihren Platz wechselt, und wenn jemand hinzeigt.
-      // Wer auf die Zeile zeigt, die gerade gewechselt hat, bekommt trotzdem
-      // nur einen Rahmen, weil beide denselben schreiben.
-      // Gemessen am 27.08.: waehrend die Rangfolge laeuft wechseln bis zu
-      // fuenf von acht Zeilen gleichzeitig den Platz. Ein Rahmen an jeder
-      // davon sah aus wie die dauerhafte Umrandung, die weg sollte. Deshalb
-      // tragen die beiden Ereignisse verschiedene Mittel: der Platzwechsel
-      // nur einen kurzen Schein hinter der Zeile, das Zeigen den Rahmen.
-      // Damit koennen sie sich auch nicht doppeln.
-      const hov = this.state.frak === f.id;
-      const bewegt = !!(this.state.frakZug || {})[f.id];
-      const rahmen = hov
-        ? `background:linear-gradient(90deg,${f.color}2e,${f.color}08);border:1px solid ${f.color};box-shadow:0 0 26px ${f.color}40`
-        : bewegt
-          ? `background:linear-gradient(90deg,${f.color}1f,transparent);border:1px solid transparent`
-          : 'background:transparent;border:1px solid transparent';
-      return (
-        <div key={f.id}
-          onMouseEnter={() => { if (!this._coarse) this.setState({ frak: f.id }); }}
-          onMouseLeave={() => { if (!this._coarse) this.setState({ frak: null }); }}
-          style={sx(`position:absolute;left:0;right:0;top:0;height:${H}%;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:12px;box-sizing:border-box;transform:translateY(${r * 100}%);transition:transform 1.5s ${EASE},background .35s ease,border-color .35s ease,box-shadow .35s ease;cursor:default;${rahmen}`)}>
-          <span style={sx(`flex:none;width:18px;text-align:center;font-size:15px;font-weight:900;color:${leadNow || hov ? '#F6EFE6' : 'rgba(246,239,230,.5)'};transition:color .5s ease`)}>{r + 1}</span>
-          {/* Wappensatz vom 27.08.: cremefarbenes Schild mit farbigem Zeichen,
-              im Knet-Look des Avatarsatzes. Loest die Kolosseum-Wappen vom
-              17.07. ab, die ich am selben Tag noch eingebaut hatte, bevor
-              Wolf auf das Datum hingewiesen hat.
-              Wichtig und in cozyArenaCrests.ts eigens vermerkt: die
-              Fraktionsfarbe steckt NICHT mehr im Wappen. Sie muss von der
-              Flaeche darunter kommen, sonst unterscheiden sich die acht
-              Fraktionen nur noch am Zeichen. Also wieder auf der Kachel. */}
-          <span style={sx(teammarke(f.color, `/assets/crest-${f.id}.webp`, 44)
-            + `transform:scale(${hov ? 1.08 : 1});transition:transform .3s ${EASE}`)}></span>
-          <span style={sx('flex:none;width:124px;min-width:0')}>
-            <span style={sx(`display:block;font-size:15px;font-weight:900;line-height:1.15;color:${f.color};white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>{L.sim.factions[f.id]}</span>
-          </span>
-          {/* Der Balken ist eine liegende Kachel: gleicher Lichtverlauf, gleiche
-              Kanten, nur 12 px hoch. Die Rinne dahinter bleibt eine Rinne. */}
-          <span style={sx('flex:1;min-width:0;height:14px;border-radius:7px;background:rgba(246,239,230,.06);box-shadow:inset 0 1px 2px rgba(0,0,0,.4);overflow:hidden;display:block')}>
-            <span style={sx(`display:block;height:100%;width:${Math.round((p / max) * 100)}%;border-radius:7px;`
-              + `background:${KACHEL_VERLAUF},${f.color};`
-              + 'box-shadow:inset 0 1px 0 rgba(255,255,255,.38),inset -2px 0 0 rgba(0,0,0,.18),0 2px 3px rgba(0,0,0,.42);'
-              + `transition:width 1.8s ${EASE}`)}></span>
-          </span>
-          <span style={sx(`flex:none;width:44px;text-align:right;font-size:15px;font-weight:900;color:${f.color};font-variant-numeric:tabular-nums`)}>{p}</span>
-        </div>
-      );
-    });
+    const an = this.state.frak ?? null;
+    return (
+      <div data-frakfeld={seite} style={sx(`position:relative;min-width:0;height:${hoehe}px`)}
+        onMouseLeave={() => { if (!this._coarse) this.setState({ frak: null }); }}>
+        {plaetze.map((pl, i) => {
+          const f = FACTIONS.find(x => x.id === pl.id);
+          if (!f) return null;
+          const auf = an === f.id, still = !!an && !auf;
+          const nachRechts = pl.x < 50;
+          const zeig = () => { if (!this._coarse) this.setState({ frak: f.id }); };
+          return (
+            <button key={f.id} type="button"
+              onMouseEnter={zeig} onFocus={zeig}
+              onMouseLeave={() => { if (!this._coarse) this.setState({ frak: null }); }}
+              onBlur={() => this.setState({ frak: null })}
+              aria-label={`${L.sim.factions[f.id]} \u2014 ${L.sim.mottos[f.id]}`}
+              style={sx(`position:absolute;left:${pl.x}%;top:${pl.y}%;padding:0;border:none;background:none;cursor:default;`
+                + `z-index:${auf ? 6 : 2}`)}>
+              <span data-schwebt="" style={sx('display:block;position:relative;'
+                + `animation:cwSchweb${i % 2} ${11 + (i % 3) * 1.6}s ease-in-out ${(i * 0.8).toFixed(1)}s infinite`)}>
+                {/* Der Schein liegt auf einem eigenen Kasten darunter und nicht
+                    in box-shadow, sonst ueberschriebe er die Kanten der Kachel. */}
+                <span aria-hidden="true" style={sx('position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;'
+                  + `width:${Math.round(pl.gr * 1.6)}px;height:${Math.round(pl.gr * 1.6)}px;background:radial-gradient(circle,${f.color}55,transparent 68%);`
+                  + `opacity:${auf ? 1 : 0};transition:opacity .4s ${EASE}`)}></span>
+                {/* teammarke() setzt kein display. Ohne bleibt der span inline,
+                    und dann greifen Breite und Hoehe nicht. */}
+                <span style={sx('display:block;position:relative;' + teammarke(f.color, `/assets/crest-${f.id}.webp`, pl.gr)
+                  + `transform:scale(${auf ? 1.1 : 1});opacity:${still ? .28 : 1};`
+                  + `filter:saturate(${auf ? 1.15 : .84}) brightness(${auf ? 1.12 : .86});`
+                  + `transition:transform .4s ${EASE},opacity .4s ${EASE},filter .4s ${EASE}`)}></span>
+                <span aria-hidden="true" style={sx('position:absolute;top:50%;display:flex;align-items:center;gap:10px;white-space:nowrap;pointer-events:none;'
+                  + `${nachRechts ? 'left:100%;flex-direction:row' : 'right:100%;flex-direction:row-reverse'};`
+                  + `transform:translateY(-50%) translateX(${auf ? '0' : (nachRechts ? '-8px' : '8px')});`
+                  + `opacity:${auf ? 1 : 0};transition:opacity .3s ${EASE},transform .35s ${EASE}`)}>
+                  <span style={sx(`display:block;flex:none;width:${auf ? 26 : 0}px;height:1px;background:${f.color};transition:width .4s ${EASE}`)}></span>
+                  <span style={sx(`display:flex;flex-direction:column;gap:3px;text-align:${nachRechts ? 'left' : 'right'}`)}>
+                    <span style={sx(`font-size:11.5px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:${f.color}`)}>{L.sim.factions[f.id]}</span>
+                    <span data-frakspruch="" style={sx('font-size:15px;font-weight:600;color:rgba(246,239,230,.86)')}>{`\u201e${L.sim.mottos[f.id]}\u201c`}</span>
+                  </span>
+                </span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    );
   }
-
   // ------------------------------------------------- Brett-Simulation
   /**
    * @param festerStand Statt der laufenden Uhr einen festen Zeitpunkt rechnen.
