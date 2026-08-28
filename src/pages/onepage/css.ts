@@ -323,13 +323,28 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
        Die Staffelung kommt aus der Geschwisterfolge: das zweite Element faengt
        spaeter an als das erste, das dritte noch spaeter. Alles ab dem vierten
        teilt sich einen Bereich, sonst wuerde der Aufbau am Ende zaeh. */
+    /* Wolf am 28.08.: "beim scrollen haben die subtitel keinen effekt, das
+       ist vlt ein bug? aber diesen effekt den wir vorhin mal eingebaut haben,
+       der funktioniert definitiv gerade nicht".
+
+       Es war einer, und zwar ein feiner: "entry" ist genau so lang wie das
+       Element selbst. Bei einer Ueberschrift von 90 px faellt das kaum auf,
+       bei einer einzeiligen Unterzeile sind es 25 px -- die ganze Einfahrt
+       lag also in 25 px Scrollweg, mal 62 Prozent: 15 px. Gemessen sprang
+       die Unterzeile in Station 02 zwischen Scrollstand 2139 und 2239 von
+       Deckkraft 0 auf 1, in einem Bild.
+
+       "cover" haengt dagegen an der Fensterhoehe und ist damit fuer jedes
+       Element gleich lang: 900 plus Elementhoehe. 26 Prozent davon sind rund
+       240 px Scrollweg, gleich viel fuer die Ueberschrift wie fuer die Zeile
+       darunter. Die Staffelung bleibt, sie verschiebt jetzt nur den Beginn. */
     [data-bew] [data-reveal]{
       animation:cwEinfahren linear both;animation-timeline:view();
-      animation-range:entry 0% entry 62%;
+      animation-range:cover 0% cover 26%;
     }
-    [data-bew] [data-reveal]:nth-child(2){animation-range:entry 6% entry 70%}
-    [data-bew] [data-reveal]:nth-child(3){animation-range:entry 12% entry 78%}
-    [data-bew] [data-reveal]:nth-child(n+4){animation-range:entry 18% entry 86%}
+    [data-bew] [data-reveal]:nth-child(2){animation-range:cover 3% cover 29%}
+    [data-bew] [data-reveal]:nth-child(3){animation-range:cover 6% cover 32%}
+    [data-bew] [data-reveal]:nth-child(n+4){animation-range:cover 9% cover 35%}
     /* Wolf am 28.08.: "manchmal koennte es noch ein bisschen mehr sein zb
        beim rausscrollen". Also ein zweiter, sehr viel leiserer Lauf beim
        Verlassen nach oben: der Halt sinkt ein wenig und nimmt Deckkraft ab,
@@ -373,6 +388,12 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 }
 
 @media (max-width:900px){
+/* Unter 900 px steht Text ueber Leinwand, die Wandflaeche liegt dann quer
+   ueber dem Absatz. Sie nimmt dort keine Mausbewegungen mehr an -- den
+   Lichtfleck gibt es auf Touchgeraeten ohnehin nicht, und markieren
+   koennen soll man den Text trotzdem. */
+[data-wandfeld]{pointer-events:none!important}
+
 [data-m=modereihe]{grid-template-columns:1fr!important;gap:28px!important;padding:36px 0!important}
 [data-m=modeobjekt]{justify-content:flex-start!important;height:400px!important}
 /* Gestapelt stehen die drei Objekte kleiner und links, nicht rechts aussen.

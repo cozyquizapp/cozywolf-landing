@@ -2442,6 +2442,12 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const L = this.T;
     const on = !!this.state.beam;
     const kipp = this.state.beamXY ? { x: this.state.beamXY.x - 0.5, y: this.state.beamXY.y - 0.5 } : null;
+    // Der Lichtfleck des Zeigers auf den Fugen. Feste 230 px statt eines
+    // masslosen "circle": ohne Mass rechnet ein Radialverlauf bis zur
+    // entferntesten Ecke, und auf 914 px Breite wird daraus ein weicher
+    // Schein statt eines Flecks. Zwei Ebenen benutzen ihn, deshalb steht er
+    // einmal hier.
+    const fleck = 'radial-gradient(circle 230px at var(--wx,50%) var(--wy,50%),#000 0%,rgba(0,0,0,.62) 38%,transparent 100%)';
     const g = this.gameVals();
     const beamStart = () => this.beamAn();
     return (
@@ -2555,10 +2561,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               }
               this.setState({ beamXY: { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height } });
             }}
-            onMouseLeave={() => {
-              this._wand?.style.setProperty('--wo', '0');
-              this.setState({ beamXY: null });
-            }}
+            onMouseLeave={() => this.setState({ beamXY: null })}
             style={sx('position:relative;margin:0;width:100%;cursor:pointer;perspective:1100px')}>
             {/* Perspektive gehoert auf den Eltern, die Drehung auf das Kind.
                 Standen beide auf demselben Element, greift die Perspektive
@@ -2666,8 +2669,23 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 Grenze, das Ziegelraster sorgt dafuer, dass am Rand ganze
                 Steine verschwinden statt halber Fugen. intersect multipliziert
                 beide. */}
+            {/* Die Flaeche nimmt Mausbewegungen selbst an. Vorher hing der
+                Lichtfleck am Kasten der Projektion, und der ist viel kleiner
+                als die Wand -- ueber den Ziegeln, also genau dort, wo man
+                hinfaehrt, passierte nichts. Das war der eigentliche Grund fuer
+                Wolfs "hover nicht wirklich ersichtlich". Sie liegt hinter der
+                Projektion und hat nichts zu klicken, faengt also nichts weg. */}
             <div aria-hidden="true" data-wandfeld="" ref={el => { this._wand = el; }}
-              style={sx('position:absolute;inset:-25.5% -25%;z-index:0;pointer-events:none;'
+              onMouseMove={e => {
+                if (this._coarse) return;
+                const el = e.currentTarget as HTMLElement;
+                const q = el.getBoundingClientRect();
+                el.style.setProperty('--wx', `${(e.clientX - q.left).toFixed(0)}px`);
+                el.style.setProperty('--wy', `${(e.clientY - q.top).toFixed(0)}px`);
+                el.style.setProperty('--wo', '1');
+              }}
+              onMouseLeave={e => (e.currentTarget as HTMLElement).style.setProperty('--wo', '0')}
+              style={sx('position:absolute;inset:-25.5% -25%;z-index:0;'
               + `mask-image:url("${WAND_RAND}"),url("${WAND_STEINE}");`
               + `-webkit-mask-image:url("${WAND_RAND}"),url("${WAND_STEINE}");`
               + 'mask-size:100% 100%,540px 216px;-webkit-mask-size:100% 100%,540px 216px;'
@@ -2728,9 +2746,20 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   Mausbewegung die ganze Station neu. */}
               <div aria-hidden="true" data-fugenlicht="" style={sx('position:absolute;inset:0;mix-blend-mode:screen;'
                 + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
-                + 'mask-image:radial-gradient(circle at var(--wx,50%) var(--wy,50%),#000 0%,rgba(0,0,0,.5) 24%,transparent 56%);'
-                + '-webkit-mask-image:radial-gradient(circle at var(--wx,50%) var(--wy,50%),#000 0%,rgba(0,0,0,.5) 24%,transparent 56%);'
+                + `mask-image:${fleck};-webkit-mask-image:${fleck};`
                 + `opacity:var(--wo,0);transition:opacity .45s ${EASE}`)}></div>
+              {/* Wolf am 28.08.: "hover nicht wirklich ersichtlich". Der Fleck
+                  war mit "circle" ohne Mass angegeben, und ohne Mass rechnet
+                  ein Radialverlauf bis zur entferntesten Ecke -- auf einer
+                  914 px breiten Flaeche waren die 56 Prozent also rund 300 px
+                  weiches Nichts. Jetzt sind es feste 230 px mit hartem Kern,
+                  und derselbe Fleck liegt ein zweites Mal darueber: zweimal
+                  screen an derselben Stelle ist heller als einmal, ohne dass
+                  die Fugen ausserhalb etwas abbekommen. */}
+              <div aria-hidden="true" style={sx('position:absolute;inset:0;mix-blend-mode:screen;'
+                + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
+                + `mask-image:${fleck};-webkit-mask-image:${fleck};`
+                + `opacity:calc(var(--wo,0) * .7);transition:opacity .45s ${EASE}`)}></div>
             </div>
             {/* Hier lagen noch zwei Lichtschichten: eine Koernung, die die
                 Streifen des grauen Verlaufs brechen sollte, und ein
@@ -2757,7 +2786,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   + 'font-size:14px;font-weight:800;letter-spacing:.02em;color:rgba(246,239,230,.62)')}>{L.ablauf.wandHint}</span>
               </div>
               <div data-m="screenbox" style={sx(`position:absolute;inset:0;overflow:hidden;pointer-events:none;background:${on ? '#0b0714' : 'transparent'};transition:background .45s ${EASE} ${on ? '0s' : '.35s'}`)}>
-                <div aria-hidden="true" style={sx(`position:absolute;inset:0;z-index:12;pointer-events:none;border-radius:14px;opacity:0;background:linear-gradient(160deg,#efe4dc,#cdbfcb);animation:${on ? 'cwBeamOn 1.9s cubic-bezier(.4,0,.3,1) both' : 'none'};transition:opacity .8s ease`)}></div>
+                <div aria-hidden="true" style={sx(`position:absolute;inset:0;z-index:12;pointer-events:none;opacity:0;background:linear-gradient(160deg,#efe4dc,#cdbfcb);animation:${on ? 'cwBeamOn 1.9s cubic-bezier(.4,0,.3,1) both' : 'none'};transition:opacity .8s ease`)}></div>
                 <div style={sx(`position:absolute;left:50%;top:50%;width:${WALL_W}px;height:${WALL_H}px;transform-origin:center center;opacity:${on ? 1 : 0};transition:opacity .5s ${EASE} ${on ? '1.1s' : '0s'};transform:translate(-50%,-50%) scale(${this.state.wallScale ?? 0.8})`)}>
                   <div data-m="wallscreen" style={sx('width:640px;height:354px;box-sizing:border-box;padding:22px 26px;border-radius:4px;display:flex;flex-direction:column;overflow:hidden;position:relative;'
                     + `background:radial-gradient(ellipse 120% 90% at 50% 0%,${g.catFarbe}1f,transparent 62%),`
