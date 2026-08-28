@@ -336,6 +336,24 @@ const AV_FARBEN = ['#F97316', '#22C55E', '#14B8A6', '#A855F7', '#FACC15', '#3B82
 const AV_TAKT = 620;
 
 /**
+ * Feine Koernung fuer die Wand in 04.
+ *
+ * Zwei Aufgaben in einem Bild. Erstens bricht sie die Streifen, die ein
+ * dunkler Verlauf ueber wenige Stufen unweigerlich zeigt -- Wolf hat sie am
+ * 28.08. als "verpixelt" gesehen, und sie sind es tatsaechlich: 8 Bit pro Kanal
+ * reichen bei so kleinen Helligkeitsunterschieden nicht. Zweitens gibt sie der
+ * Flaeche die matte Oberflaeche einer gestrichenen Wand statt eines Verlaufs.
+ *
+ * Als SVG im Datenpfad statt als Bilddatei: 300 Byte, kein zweiter Aufruf, und
+ * die Koernung laesst sich in einer Zeile aendern.
+ */
+const WAND_KORN = 'data:image/svg+xml;utf8,'
+  + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180">'
+    + '<filter id="k"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>'
+    + '<feColorMatrix type="saturate" values="0"/></filter>'
+    + '<rect width="180" height="180" filter="url(%23k)" opacity="0.055"/></svg>');
+
+/**
  * Wolf am 28.08.: "crowdquiz avatare machen kein rennen absicht? beim rennen
  * koennte man freistehend sowas machen wie +85 punkte bei einem team, dann
  * aendert sich die reihenfolge, das waere nice, weil genau das im spiel
@@ -444,6 +462,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   wallRO: ResizeObserver | undefined;
   io: IntersectionObserver | undefined;
   private _beamT: ReturnType<typeof setTimeout> | undefined;
+  private _ablaufIO: IntersectionObserver | undefined;
+  /** Der Beamer springt je Besuch nur einmal von allein an. */
+  private _beamAuto = false;
   private _weiterT: ReturnType<typeof setTimeout> | undefined;
   private _avT: ReturnType<typeof setInterval> | undefined;
   private _hookT: ReturnType<typeof setInterval> | undefined;
@@ -572,6 +593,43 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
    * Das Brett daneben braucht keinen Zeitgeber, es zeigt einen festen
    * Endstand (siehe gameVals). Die laufende Runde steht im Abschnitt Ablauf.
    */
+  /**
+   * Der Beamer geht beim Scrollen von allein an.
+   *
+   * Wolf am 28.08.: "es muss irgendeine art von anschalt motion bei scroll
+   * geben". Bisher startete die Projektion nur bei onMouseEnter oder Klick,
+   * und onMouseLeave schaltete sie wieder aus. Wer an 04 vorbeiscrollte, ohne
+   * die Maus auf die Wand zu legen, sah nie etwas -- und auf einem Touchgeraet
+   * gibt es Hover ueberhaupt nicht.
+   *
+   * Ausgeloest wird bei 45 Prozent Sichtbarkeit, nicht beim ersten Pixel: die
+   * Lampe soll angehen, wenn der Abschnitt steht, nicht waehrend er noch
+   * hereinfaehrt. Und nur EINMAL je Besuch -- ein Beamer, der bei jedem
+   * Vorbeiscrollen neu hochfaehrt, ist ein Blinker.
+   */
+  ablaufBeobachten() {
+    const el = document.getElementById('ablauf');
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    this._ablaufIO = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting || this._beamAuto) return;
+      this._beamAuto = true;
+      this._ablaufIO?.disconnect();
+      this.beamAn();
+    }, { threshold: 0.45 });
+    this._ablaufIO.observe(el);
+  }
+
+  /** Die Lampe an und die Folge starten. Aus beamStart herausgeloest, weil
+   *  jetzt zwei Stellen sie brauchen: der Zeiger und der Beobachter. */
+  beamAn() {
+    if (this.state.beam) return;
+    this._ablaufIO?.disconnect();
+    clearTimeout(this._beamT);
+    clearInterval(this.gameTimer);
+    this.setState({ beam: true, beamWelcome: true });
+    this._beamT = setTimeout(() => { this.setState({ beamWelcome: false }); this.startGame(); }, 3800);
+  }
+
   spielartenBeobachten() {
     const el = document.getElementById('spielarten');
     if (!el || typeof IntersectionObserver === 'undefined') return;
@@ -687,6 +745,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       document.querySelectorAll('section').forEach(s => this.io?.observe(s));
       this.grundfarbenBeobachten();
       this.spielartenBeobachten();
+      this.ablaufBeobachten();
       document.querySelectorAll<HTMLElement>('section[data-ton]').forEach(el => {
         el.style.setProperty('--cw-band', el.dataset.ton || '10,8,20');
       });
@@ -1304,7 +1363,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             );
           })}
         </div>
-        <div style={sx('margin-top:13px;font-size:13px;font-weight:800;color:rgba(246,239,230,.55)')}>{L.modes.avZeile}</div>
+        <div style={sx('margin-top:13px;text-align:center;font-size:13px;font-weight:800;color:rgba(246,239,230,.55)')}>{L.modes.avZeile}</div>
       </div>
     );
   }
@@ -2116,18 +2175,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const on = !!this.state.beam;
     const kipp = this.state.beamXY ? { x: this.state.beamXY.x - 0.5, y: this.state.beamXY.y - 0.5 } : null;
     const g = this.gameVals();
-    const beamStart = () => {
-      if (this.state.beam) return;
-      clearTimeout(this._beamT);
-      clearInterval(this.gameTimer);
-      this.setState({ beam: true, beamWelcome: true });
-      this._beamT = setTimeout(() => { this.setState({ beamWelcome: false }); this.startGame(); }, 3800);
-    };
-    const beamStop = () => {
-      clearTimeout(this._beamT);
-      clearInterval(this.gameTimer);
-      this.setState({ beam: false, beamWelcome: false });
-    };
+    const beamStart = () => this.beamAn();
     return (
       <section id="ablauf" data-ton="34,197,94" data-halt="" style={sx('')}>
         <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:26px 32px;box-sizing:border-box')}>
@@ -2145,11 +2193,46 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               etwas, das breiter ist als es selbst. Unter 900 px fallen die
               Spalten wieder untereinander, dort ist die Leinwand zurecht die
               volle Breite. */}
-          <div data-m="ablaufraum" style={sx('display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:clamp(36px,4.6vw,72px);align-items:center')}>
+          <div data-m="ablaufraum" style={sx('position:relative;display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:clamp(36px,4.6vw,72px);align-items:center')}>
+            {/* Der Lichtkegel liegt ueber beiden Spalten, deshalb haengt er am
+                Raster und nicht am Geraet: er muss von links unten bis auf die
+                Leinwand rechts reichen.
+
+                Wolf am 28.08.: "nehmen wir die harte kante raus und weniger
+                glow generell". Der Keil war vorher ein clip-path-Polygon, also
+                eine Form mit Kanten -- Licht hat keine. Jetzt eine sehr weite
+                Ellipse, die nach aussen ausblendet, dazu eine Maske entlang
+                der Laufrichtung, damit er am Geraet anfaengt und zur Wand hin
+                ausduennt. Keine einzige gerade Kante mehr.
+
+                mix-blend-mode:screen bleibt: ein Lichtstrahl verdeckt nichts,
+                er macht heller. Ueber dem dunklen Grund ist er zu sehen, auf
+                der hellen Projektion tut er fast nichts. */}
+            <span aria-hidden="true" style={sx('position:absolute;left:9%;top:64%;width:74%;height:30%;z-index:2;pointer-events:none;'
+              + 'mix-blend-mode:screen;transform-origin:left center;transform:rotate(-17deg);'
+              + 'background:radial-gradient(ellipse 120% 58% at 1% 50%,rgba(255,246,232,.28),rgba(255,246,232,.13) 40%,rgba(255,246,232,.04) 70%,transparent 88%);'
+              + 'mask-image:linear-gradient(90deg,#000,#000 58%,rgba(0,0,0,.5) 84%,transparent);'
+              + `filter:blur(10px);opacity:${on ? 1 : 0};transition:opacity 1.4s ${EASE}`)}></span>
             <div>
               {this.kicker(`[ 04 ]|${L.ablauf.label}`)}
               <h2 data-reveal="" style={sx(`margin:0 0 10px;font-family:'League Spartan',sans-serif;font-size:clamp(34px,3.4vw,56px);line-height:.96;letter-spacing:-.03em;font-weight:900;color:#F6EFE6;text-wrap:balance`)}>{L.ablauf.h2}</h2>
               <p data-reveal="" style={sx('margin:0;' + UNTERZEILE)}>{L.ablauf.sub}</p>
+              {/* Wolf am 28.08.: "verschieben wir den beamer links unter den
+                  text und nicht vor den screen". Damit steht er nicht mehr in
+                  der 3D-Szene der Wand, kippt also auch nicht mit ihr -- was
+                  richtiger ist: er steht auf einem Moebel im Raum, nicht an
+                  der Wand.
+                  Der Schein um die Silhouette ist von 0,20 auf 0,09 zurueck
+                  ("weniger glow generell"). Im Bild selbst ist kein Licht,
+                  sonst gaebe es keinen Unterschied zwischen aus und an. */}
+              <div data-beamer="" style={sx('position:relative;margin-top:38px;width:186px;max-width:52%')}>
+                <span aria-hidden="true" style={sx('position:absolute;left:54%;top:50%;transform:translate(-50%,-50%);border-radius:50%;'
+                  + 'width:118%;height:150%;z-index:0;background:radial-gradient(circle,rgba(255,246,232,.09),transparent 66%);'
+                  + `opacity:${on ? 1 : 0};transition:opacity 1.4s ${EASE}`)}></span>
+                <img src="/assets/obj-beamer.webp" alt="" width={420} height={264}
+                  style={sx('position:relative;z-index:1;display:block;width:100%;height:auto;'
+                    + `filter:brightness(${on ? 1.03 : .84}) saturate(${on ? 1 : .9});transition:filter 1.4s ${EASE}`)} />
+              </div>
             </div>
             <div>
 
@@ -2165,13 +2248,16 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               stand der Schein fest bei 62 Prozent Breite. Jetzt liegt er dort,
               wo der Zeiger ist, wie der helle Fleck, den eine Beamerlampe auf
               die Wand wirft. Auf Geraeten ohne Zeiger bleibt er in der Mitte. */}
+          {/* Kein Ausschalten mehr beim Verlassen: solange die Lampe von allein
+              angeht, waere es widersinnig, sie bei jeder Mausbewegung wieder
+              auszupusten. Der Zeiger lenkt nur noch den hellen Fleck. */}
           <div data-reveal="" data-m="wall" onMouseEnter={beamStart} onClick={beamStart}
             onMouseMove={e => {
               if (this._coarse) return;
               const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
               this.setState({ beamXY: { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height } });
             }}
-            onMouseLeave={() => { beamStop(); this.setState({ beamXY: null }); }}
+            onMouseLeave={() => this.setState({ beamXY: null })}
             style={sx('position:relative;margin:0;width:100%;cursor:pointer;perspective:1100px')}>
             {/* Perspektive gehoert auf den Eltern, die Drehung auf das Kind.
                 Standen beide auf demselben Element, greift die Perspektive
@@ -2217,36 +2303,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 Der Lichtkegel ist ein Keil aus CSS, kein Teil des Bildes: er
                 muss sich mitdrehen und beim Anschalten aufgehen, und beides
                 kann ein gerendertes Bild nicht. */}
-            {/* Der Lichtkegel, zweiter Anlauf.
-                Erst lag er UEBER der Projektion und zog als grauer Streifen
-                quer ueber die Frage. Dann UNTER ihr -- und war damit ganz weg,
-                weil die Wand das Bild fuellt und ihn vollstaendig verdeckte.
-                Beides falsch, und der Fehler war derselbe: ein Lichtstrahl ist
-                keine Flaeche, die verdeckt oder verdeckt wird, sondern etwas,
-                das HELLER macht.
-                Also liegt er wieder vorn, aber mit mix-blend-mode:screen. Damit
-                addiert er nur Licht: ueber dem dunklen Grund zwischen Geraet
-                und Wand ist er deutlich zu sehen, auf der ohnehin hellen
-                Projektion tut er fast nichts. Genau so verhaelt sich Licht in
-                der Luft vor einer beleuchteten Flaeche. */}
-            <span aria-hidden="true" style={sx('position:absolute;left:27%;top:80%;width:62%;height:42%;z-index:3;pointer-events:none;'
-              + 'mix-blend-mode:screen;transform-origin:left center;transform:rotate(-24deg);'
-              + 'background:linear-gradient(90deg,rgba(255,246,232,.26),rgba(255,246,232,.10) 42%,rgba(255,246,232,.02) 80%,rgba(255,246,232,0));'
-              + 'clip-path:polygon(0 47%,100% 4%,100% 96%,0 53%);filter:blur(14px);'
-              + `opacity:${on ? 1 : 0};transition:opacity 1.1s ${EASE}`)}></span>
-
-            <div aria-hidden="true" style={sx('position:absolute;left:-4%;top:72%;width:34%;z-index:4;pointer-events:none')}>
-              {/* Der Lichtsaum um die Silhouette: das Licht laeuft am Gehaeuse
-                  vorbei. Kein Schein im Bild selbst, sonst gaebe es keinen
-                  Unterschied zwischen aus und an. */}
-              <span style={sx('position:absolute;left:56%;top:48%;transform:translate(-50%,-50%);border-radius:50%;'
-                + 'width:120%;height:150%;z-index:0;background:radial-gradient(circle,rgba(255,246,232,.20),transparent 64%);'
-                + `opacity:${on ? 1 : 0};transition:opacity 1.1s ${EASE}`)}></span>
-              <img src="/assets/obj-beamer.webp" alt="" width={420} height={264}
-                style={sx('position:relative;z-index:1;display:block;width:100%;height:auto;'
-                  + `filter:brightness(${on ? 1.06 : .8}) saturate(${on ? 1 : .88});transition:filter 1.1s ${EASE}`)} />
-            </div>
-
             {/* Wolf am 28.08.: "fehlt hinter dem beamer in 04 eigentlich noch
                 die angedeutete wall? weil wir davon sprechen a free wall ist
                 all you need, aber jetzt sieht es nur aus wie ein tablet oder
@@ -2275,11 +2331,39 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 vier Kanten ausserhalb der Ellipse. Gemessen: in der ersten
                 Fassung lag die Maske an der Oberkante noch bei 0,68, und das
                 war die sichtbare Linie. */}
+            {/* Wolf am 28.08.: "ich sehe auch immernoch keine wand? ich sehe
+                einen runden verpixelten schimmer an der flaeche aber keine
+                wand und da der hook wand ist, sollte das irgendwie rein".
+
+                Beides trifft, und beides hat dieselbe Ursache: die Maske war
+                eine Ellipse. Eine Ellipse aus Licht ist ein Scheinwerferfleck,
+                keine Wand -- eine Wand ist eine FLAECHE mit Kanten. Aus Angst,
+                wieder einen Raum zu behaupten wie die ausgemusterten KI-Bilder,
+                hatte ich jede Kante vermieden, und damit auch die Wand.
+
+                Jetzt zwei Verlaeufe, die sich schneiden (mask-composite:
+                intersect): rechteckig, mit weichen Raendern an allen vier
+                Seiten. Das liest sich als breite Flaeche, die ins Dunkle
+                ausblendet, nicht als Fleck. Ein Raum wird daraus trotzdem
+                nicht: es gibt keine Fussleiste, keine zweite Wand, keinen
+                Boden -- nur eine Flaeche, auf die Licht faellt.
+
+                Dazu eine feine Koernung. Sie loest das zweite Problem: ein
+                dunkler Verlauf ueber wenige Stufen zeigt Streifen, und genau
+                die hat Wolf als "verpixelt" gesehen. Die Koernung bricht sie
+                auf und gibt der Flaeche nebenbei die matte Oberflaeche einer
+                gestrichenen Wand. */}
             <div aria-hidden="true" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;'
               + 'background:linear-gradient(174deg,rgba(246,239,230,.30),rgba(246,239,230,.235) 40%,rgba(246,239,230,.205) 70%,rgba(246,239,230,.19));'
-              + 'mask-image:radial-gradient(54% 50% at 50% 50%,#000 30%,transparent 100%);'
-              + '-webkit-mask-image:radial-gradient(54% 50% at 50% 50%,#000 30%,transparent 100%);'
+              + 'mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(180deg,transparent,#000 12%,#000 84%,transparent);'
+              + '-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(180deg,transparent,#000 12%,#000 84%,transparent);'
+              + 'mask-composite:intersect;'
               + `opacity:${on ? .55 : 1};transition:opacity 1.2s ${EASE}`)}></div>
+            <div aria-hidden="true" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;opacity:.5;'
+              + `background-image:url("${WAND_KORN}");background-size:180px 180px;`
+              + 'mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(180deg,transparent,#000 12%,#000 84%,transparent);'
+              + '-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(180deg,transparent,#000 12%,#000 84%,transparent);'
+              + 'mask-composite:intersect')}></div>
             <div aria-hidden="true" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;'
               + 'background:radial-gradient(47% 43% at 50% 47%,rgba(255,246,232,.30),rgba(255,246,232,.10) 52%,transparent 100%);'
               + `opacity:${on ? 1 : 0};transition:opacity 1.2s ${EASE}`)}></div>
