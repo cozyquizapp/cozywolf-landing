@@ -174,19 +174,13 @@ export function UeberMich({ L, mobil, entwurf }: P) {
             {koerper}
             {signatur}
           </div>
-          {entwurf === 2 ? (
-            <ul style={sx('margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:14px')}>
-              {J.chips.map(c => (
-                <li key={c} style={sx(`display:flex;gap:14px;padding-bottom:14px;border-bottom:1px solid ${HAAR};font-size:15.5px;line-height:1.45;font-weight:700;color:rgba(246,239,230,.82)`)}>
-                  <span style={sx(`flex:none;width:6px;height:6px;margin-top:8px;border-radius:2px;background:${PINK}`)}></span>
-                  {c}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div aria-hidden="true" style={sx(`${mobil ? '' : 'margin-left:auto;'}width:100%;max-width:260px;aspect-ratio:1/1;`
-              + 'background:url(/assets/wolf-party.webp) center/contain no-repeat;filter:drop-shadow(0 18px 30px rgba(0,0,0,.6))')}></div>
-          )}
+          {/* Entwurf 2 zeigte hier die vier Kapseln als Liste. Die Kapseln
+              sind am 28.08. aus texts.ts geflogen (Wolf: "brauchen wir die
+              noch?"), also zeigt auch dieser Entwurf jetzt das Bild. Ein
+              Entwurfsvergleich, der auf geloeschte Texte zeigt, vergleicht
+              nichts mehr. */}
+          <div aria-hidden="true" style={sx(`${mobil ? '' : 'margin-left:auto;'}width:100%;max-width:260px;aspect-ratio:1/1;`
+            + 'background:url(/assets/wolf-party.webp) center/contain no-repeat;filter:drop-shadow(0 18px 30px rgba(0,0,0,.6))')}></div>
         </Zeile>
       )}
     </section>

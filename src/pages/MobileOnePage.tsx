@@ -1079,8 +1079,8 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
               <video ref={el => { this._wolfV = el; }}
                 src="/assets/wolf-willkommen.webm" poster="/assets/wolf-3d.webp"
                 muted playsInline preload="none"
-                style={sx('position:absolute;left:-3%;bottom:-4%;height:74%;width:auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.55))')} />
-              <div style={sx('position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4cqw;padding:0 5cqw 0 30cqw;box-sizing:border-box')}>
+                style={sx('position:absolute;left:1%;bottom:-2%;height:74%;width:auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.55))')} />
+              <div style={sx('position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4cqw;padding:0 4cqw 0 41cqw;box-sizing:border-box')}>
                 <span style={sx('font-size:2.6cqw;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.78);white-space:nowrap')}>{L.ablauf.welcomeKicker}</span>
                 <span style={sx("font-family:'League Spartan',sans-serif;font-size:9.2cqw;font-weight:900;letter-spacing:.05em;line-height:.92;color:#F6EFE6;text-transform:uppercase")}>{L.ablauf.welcomeTitle}</span>
                 <span style={sx('margin-top:1.2cqw;font-size:3cqw;font-weight:900;line-height:1.3;color:#F6EFE6;text-align:center;text-wrap:balance')}>{L.ablauf.welcomeSub}</span>

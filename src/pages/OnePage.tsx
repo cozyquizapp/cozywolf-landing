@@ -2810,7 +2810,15 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                       <video ref={el => { this._wolfV = el; }}
                         src="/assets/wolf-willkommen.webm" poster="/assets/wolf-3d.webp"
                         muted playsInline preload="none" width={384} height={440}
-                        style={sx('position:absolute;left:-34px;bottom:-26px;width:auto;height:74%;'
+                        // Wolf am 28.08.: "wolf abgeschnitten, etwas nach
+                        // rechts schieben ohne in den mittigen text rein".
+                        // Stimmt: bei left:-34px lagen 34 px des linken Arms
+                        // ausserhalb der Projektion und wurden abgeschnitten.
+                        // Das liest sich als Fehler, nicht als Absicht. Jetzt
+                        // steht er ganz drin; das Polster des Textblocks
+                        // wandert entsprechend mit, damit er weiter neben der
+                        // Marke steht und nicht davor.
+                        style={sx('position:absolute;left:12px;bottom:-26px;width:auto;height:74%;'
                           + 'filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))')} />
                       {/* Wolf am 28.08.: "wolf sieht super aus, jetzt noch text
                           kleiner dann liegt der wolf nicht vorne dran".
@@ -2821,7 +2829,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                           jetzt in dem, was daneben uebrig ist, statt in der
                           ganzen Flaeche. Damit steht der Wolf neben der Marke
                           und nicht davor. */}
-                      <div style={sx('position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:0 34px 0 206px;box-sizing:border-box')}>
+                      <div style={sx('position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:0 30px 0 258px;box-sizing:border-box')}>
                         <span style={sx('font-size:12px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.78)')}>{L.sim.welcomeKicker}</span>
                         <span style={sx("font-family:'League Spartan',sans-serif;font-size:58px;font-weight:900;letter-spacing:.05em;line-height:.92;color:#F6EFE6;text-transform:uppercase")}>{L.sim.welcomeTitle}</span>
                         <span style={sx('margin-top:8px;font-size:17px;font-weight:900;line-height:1.3;color:#F6EFE6;text-align:center')}>{L.sim.welcomeSub}</span>
@@ -2971,7 +2979,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const L = this.T;
     return (
       <section id="johannes" data-ton="249,115,22" data-halt="" style={sx('')}>
-        <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:60px 32px;box-sizing:border-box;display:grid;grid-template-columns:300px 1fr;gap:52px;align-items:center')} data-m="joh">
+        <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:60px 32px;box-sizing:border-box;display:grid;grid-template-columns:300px 1fr;gap:52px;align-items:start')} data-m="joh">
           {/* Wolf am 27.08.: das echte Foto bleibt, die auffaechernden Arme und
               der pinke Ring gehen. Die beiden Nebenbilder waren Schmuck, der
               beim Zeigen aufsprang und sonst nichts sagte, und der Ring hat
@@ -2998,7 +3006,16 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             <div style={sx('font-size:18px;font-weight:900;color:#F6EFE6')}>{L.johannes.name}</div>
           </div>
           <div>
-            <div data-reveal="" style={sx('font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62);margin-bottom:12px')}>{L.johannes.kicker}</div>
+            {/* Wolf am 28.08. zu den Kapseln: "denk daran den text dann
+                wieder richtig auszurichten ans bild". Vorher standen beide
+                Spalten mittig zueinander, und das ging, solange die rechte
+                durch die Kapseln laenger war als die linke. Ohne sie ist sie
+                kuerzer, und mittig heisst dann: der Text schwebt neben dem
+                Foto. Jetzt oben ausgerichtet -- das Zitat faengt dort an, wo
+                das Foto anfaengt. Die 6 px Versatz gleichen die Zeilenhoehe
+                des Kickers aus, damit seine Oberkante wirklich auf der des
+                Fotos liegt und nicht seine Zeilenkante. */}
+            <div data-reveal="" style={sx('margin-top:6px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62);margin-bottom:12px')}>{L.johannes.kicker}</div>
             <h2 data-reveal="" style={sx("margin:0 0 18px;max-width:700px;font-family:'League Spartan',sans-serif;font-size:30px;font-weight:900;line-height:1.18;color:#F6EFE6;cursor:default;hyphens:none")}>
               {/* Ohne zweite Farbe traegt die Helligkeit die Betonung: das
                   Hervorgehobene steht in vollem Creme, der Rest gedaempft.
@@ -3028,24 +3045,20 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               })}
             </h2>
             <p style={sx('margin:0 0 22px;max-width:680px;font-size:17px;line-height:1.65;font-weight:500;color:rgba(246,239,230,.78)')}>{L.johannes.body}</p>
-            <div data-reveal="" data-stagger="" style={sx('display:flex;flex-wrap:wrap;gap:10px')}>
-              {/* Die Kacheln bekommen das Aufhellen: worauf man zeigt, steht
-                  in vollem Creme, die anderen fallen auf 45 Prozent. Nichts
-                  bewegt sich, die Zeile bricht also nicht um. */}
-              {L.johannes.chips.map(chip => {
-                const an = this.state.zeig === chip;
-                const still = !!this.state.zeig && !an;
-                return (
-                  <span key={chip}
-                    onMouseEnter={() => { if (!this._coarse) this.setState({ zeig: chip }); }}
-                    onMouseLeave={() => { if (!this._coarse) this.setState({ zeig: null }); }}
-                    style={sx('padding:9px 16px;border-radius:999px;background:rgba(246,239,230,.05);'
-                      + `border:1px solid rgba(246,239,230,${an ? '.5' : '.20'});`
-                      + 'font-size:14px;font-weight:700;color:#F6EFE6;white-space:nowrap;'
-                      + `opacity:${still ? .45 : 1};transition:opacity .3s ${EASE},border-color .3s ${EASE}`)}>{chip}</span>
-                );
-              })}
-            </div>
+            {/* Hier standen vier Kapseln: "Persoenliche Moderation vor Ort",
+                "Fuer Gruppen von sechs bis 160 Personen", "Individuell auf
+                eure Gruppe abgestimmt", "Region Hamburg und Umland".
+                Wolf am 28.08.: "brauchen wir die noch?" Nein. Alle vier
+                stehen schon woanders, und zwar konkreter: die Moderation im
+                Kicker oben, in 04 und im Zitat direkt darueber; die
+                Personenzahl in 01 ("Bis 40" / "Ab 40") und in der Antwort auf
+                "Fuer wie viele Personen funktioniert das?" ("bis zu 160");
+                das Abstimmen in 02 und 04; die Region im Kicker oben und in
+                der Antwort auf "Wie weit faehrst du?".
+                Dazu die Form: es war die einzige Wolke aus Kapseln auf der
+                Seite. Das Muster kommt aus Lebenslaeufen, und unter einem
+                persoenlichen Zitat liest es sich als Faehigkeitsliste statt
+                als Aussage. */}
           </div>
         </div>
       </section>

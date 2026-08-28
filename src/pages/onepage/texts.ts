@@ -78,7 +78,7 @@ export type OnePageDict = {
   };
   ablauf: { label: string; h2: string; sub: string; wandHint: string; duo0Title: string; duo0: string[]; duo1Title: string; duo1: string[] };
   johannes: {
-    kicker: string; quote: QuoteWord[]; body: string; chips: string[];
+    kicker: string; quote: QuoteWord[]; body: string;
     name: string; role: string; photoAlt: string;
   };
   faq: { label: string; h2: string; items: { q: string; a: string }[] };
@@ -266,7 +266,6 @@ const de: OnePageDict = {
       { w: 'lange' }, { w: 'sprecht."' },
     ],
     body: 'Ich bin Johannes und moderiere jeden Abend selbst. Technik, Aufbau und die Fragen kommen von mir.',
-    chips: ['Persönliche Moderation vor Ort', 'Für Gruppen von sechs bis 160 Personen', 'Individuell auf eure Gruppe abgestimmt', 'Region Hamburg und Umland'],
     name: 'Johannes', role: 'Gründer & Quizmaster',
     photoAlt: 'Johannes, Quizmaster von CozyWolf',
   },
@@ -470,7 +469,6 @@ const en: OnePageDict = {
       { w: 'vibes,', hot: true }, { w: 'that' }, { w: 'you’ll' }, { w: 'still' }, { w: 'talk' }, { w: 'about.”' },
     ],
     body: 'I’m Johannes and I host every evening myself. The tech, the setup and the questions come from me.',
-    chips: ['Personal hosting on site', 'For groups of six to 160 people', 'Tailored to your group', 'Hamburg and around'],
     name: 'Johannes', role: 'Founder & quizmaster',
     photoAlt: 'Johannes, quizmaster of CozyWolf',
   },

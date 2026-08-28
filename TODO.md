@@ -18,44 +18,6 @@ Also mittige Anordnung statt der zweispaltigen, Wortmarke und eine kurze
 Aussage in der Mitte, Objekte darum herum. Danach beide Zuschnitte pruefen,
 das ganze Bild und das Quadrat.
 
-### 2. Der Wolf auf der Begruessungsfolie ist links angeschnitten
-
-Gemeldet am 28.08. mit einem Bildschirmfoto: der linke Arm laeuft aus der
-Projektion heraus. Er steht auf dem Desktop bei left:-34px, im Handy bei
-left:-3%, beides absichtlich, damit er "auf der Kante steht" -- aber der
-Anschnitt trifft den Arm und sieht nach Fehler aus, nicht nach Absicht.
-
-Zu tun: etwas nach rechts schieben, ohne in den mittigen Text zu geraten. Der
-Textblock hat auf dem Desktop 206 px Polster links, da ist Luft. Beide
-Fassungen, und danach bei 1280, 1440 und 390 px nachmessen.
-
-### 3. Die vier Kapseln bei "Ueber mich"
-
-Gemeldet am 28.08.: "brauchen wir die noch?" Meine Antwort: nein, alle vier
-stehen schon woanders, und zwar konkreter.
-
-* "Persoenliche Moderation vor Ort" -- der Kicker im Kopf sagt "Moderiertes
-  Live-Quiz", 04 sagt "Moderation bringe ich mit", und das Zitat direkt
-  darueber sagt es in der ersten Person.
-* "Fuer Gruppen von sechs bis 160 Personen" -- 01 sagt "Bis 40 Personen" und
-  "Ab 40 Personen", und die Frage "Fuer wie viele Personen funktioniert das?"
-  antwortet mit "bis zu 160 Personen".
-* "Individuell auf eure Gruppe abgestimmt" -- 02 sagt "Ich stimme Fragen,
-  Laenge und Spielart auf eure Runde ab", 04 sagt "die Fragen, auf eure Runde
-  abgestimmt".
-* "Region Hamburg und Umland" -- steht im Kicker im Kopf und in der Antwort
-  "Wie weit faehrst du?".
-
-Dazu die Form: es ist die einzige Stelle der Seite mit einer Wolke aus
-Kapseln. Das Muster kommt aus Lebenslaeufen und Profilseiten, und unter einem
-persoenlichen Zitat liest es sich als Faehigkeitsliste.
-
-Zu tun: raus, samt chips aus texts.ts in beiden Sprachen. Wolf am 28.08.
-dazu: "denk daran den text dann wieder richtig auszurichten ans bild" -- die
-rechte Spalte steht heute mittig zur linken, weil die Kapseln sie nach unten
-verlaengern. Ohne sie muss die Ausrichtung neu gesetzt werden, sonst haengt
-der Text neben dem Foto in der Luft.
-
 ## Handy, gemeldet am 28.08. nach dem Umbau
 
 Reihenfolge laut Wolf: erst die drei Desktop-Punkte oben, dann diese hier.
@@ -124,6 +86,19 @@ Wolf schickt noch die drei restlichen Abschnitte mit Bildern nach.
 
 ## Erledigt
 
+* **2. Der Wolf auf der Begruessungsfolie war links angeschnitten.** Er steht
+  auf dem Desktop jetzt bei left:12px statt -34px, im Handy bei left:1% statt
+  -3%; der Textblock daneben bekam entsprechend mehr Polster links (Desktop
+  258 statt 206 px, Handy 41 statt 30 cqw), damit der Wolf nicht in die
+  Schrift laeuft. Gemessen, Ueberstand nach links: Desktop -11 px, Handy
+  -4 px, also beide Male vollstaendig innerhalb der Projektion (606 bzw.
+  320 px breit). Kein Ueberschneiden mit dem Text.
+* **3. Die vier Kapseln bei "Ueber mich" sind raus.** Samt chips aus texts.ts
+  in beiden Sprachen; der Entwurf in mockups/weitere.tsx, der sie noch
+  auslas, zeigt an der Stelle jetzt das Wolfsbild. Die Ausrichtung ist neu
+  gesetzt: die zwei Spalten stehen oben buendig statt mittig zueinander, der
+  Kicker sitzt mit 6 px Versatz auf der Hoehe des Fotorands. Gemessen bei
+  1440x900: beide Spalten beginnen bei 366 px.
 * **4. Der Aufbau von 03 auf dem Desktop.** Anspruch und Satz des gewaehlten
   Fragetyps stehen jetzt direkt unter der Kategorienliste, in derselben
   Spalte, statt weit darunter in einer anderen. Die zwei Haken folgen in der
