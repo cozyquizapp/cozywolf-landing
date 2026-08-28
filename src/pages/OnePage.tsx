@@ -2197,6 +2197,56 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 selbst: eine dunkle Flaeche mit Haarlinie, die aufleuchtet,
                 sobald das Spiel laeuft. Sie behauptet keinen Raum, den es
                 nicht gibt, und der Inhalt darin ist echt. */}
+            {/* Der Beamer selbst, seit dem 28.08. Wolf hat ihn gerendert und
+                gefragt: "aber die linse in unsere richtung waere doch falsch,
+                er soll ja an eine wand VOR uns strahlen, oder nicht?"
+
+                Genau, und darum steht er so herum. Das gelieferte Bild zeigt
+                das Geraet von schraeg hinten links: uns zugewandt sind das
+                Lueftungsgitter und der Knopf, die Nase zeigt nach rechts in
+                die Tiefe. Wir sehen also die RUECKSEITE, die Linse zeigt von
+                uns weg -- auf die Wand. Ein sichtbares Objektiv braeuchte es
+                dafuer gar nicht, und das gelieferte hat auch keins.
+
+                Er sitzt unten links vor der Leinwand und ueberlappt ihre Ecke
+                leicht. Diese Ueberlappung ist der einzige eindeutige Hinweis
+                auf Tiefe: was etwas verdeckt, steht davor. Er liegt im selben
+                gekippten Eltern-Element wie die Projektion, kippt also mit,
+                wenn die Wand sich beim Anspringen aufrichtet.
+
+                Der Lichtkegel ist ein Keil aus CSS, kein Teil des Bildes: er
+                muss sich mitdrehen und beim Anschalten aufgehen, und beides
+                kann ein gerendertes Bild nicht. */}
+            {/* Der Lichtkegel, zweiter Anlauf.
+                Erst lag er UEBER der Projektion und zog als grauer Streifen
+                quer ueber die Frage. Dann UNTER ihr -- und war damit ganz weg,
+                weil die Wand das Bild fuellt und ihn vollstaendig verdeckte.
+                Beides falsch, und der Fehler war derselbe: ein Lichtstrahl ist
+                keine Flaeche, die verdeckt oder verdeckt wird, sondern etwas,
+                das HELLER macht.
+                Also liegt er wieder vorn, aber mit mix-blend-mode:screen. Damit
+                addiert er nur Licht: ueber dem dunklen Grund zwischen Geraet
+                und Wand ist er deutlich zu sehen, auf der ohnehin hellen
+                Projektion tut er fast nichts. Genau so verhaelt sich Licht in
+                der Luft vor einer beleuchteten Flaeche. */}
+            <span aria-hidden="true" style={sx('position:absolute;left:27%;top:80%;width:62%;height:42%;z-index:3;pointer-events:none;'
+              + 'mix-blend-mode:screen;transform-origin:left center;transform:rotate(-24deg);'
+              + 'background:linear-gradient(90deg,rgba(255,246,232,.26),rgba(255,246,232,.10) 42%,rgba(255,246,232,.02) 80%,rgba(255,246,232,0));'
+              + 'clip-path:polygon(0 47%,100% 4%,100% 96%,0 53%);filter:blur(14px);'
+              + `opacity:${on ? 1 : 0};transition:opacity 1.1s ${EASE}`)}></span>
+
+            <div aria-hidden="true" style={sx('position:absolute;left:-4%;top:72%;width:34%;z-index:4;pointer-events:none')}>
+              {/* Der Lichtsaum um die Silhouette: das Licht laeuft am Gehaeuse
+                  vorbei. Kein Schein im Bild selbst, sonst gaebe es keinen
+                  Unterschied zwischen aus und an. */}
+              <span style={sx('position:absolute;left:56%;top:48%;transform:translate(-50%,-50%);border-radius:50%;'
+                + 'width:120%;height:150%;z-index:0;background:radial-gradient(circle,rgba(255,246,232,.20),transparent 64%);'
+                + `opacity:${on ? 1 : 0};transition:opacity 1.1s ${EASE}`)}></span>
+              <img src="/assets/obj-beamer.webp" alt="" width={420} height={264}
+                style={sx('position:relative;z-index:1;display:block;width:100%;height:auto;'
+                  + `filter:brightness(${on ? 1.06 : .8}) saturate(${on ? 1 : .88});transition:filter 1.1s ${EASE}`)} />
+            </div>
+
             {/* Wolf am 28.08.: "fehlt hinter dem beamer in 04 eigentlich noch
                 die angedeutete wall? weil wir davon sprechen a free wall ist
                 all you need, aber jetzt sieht es nur aus wie ein tablet oder

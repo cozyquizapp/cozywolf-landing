@@ -45,36 +45,49 @@ nicht dafür. Nicht neu erfinden, sondern übernehmen:
 
 ## 3. Kamera und Ausrichtung — der beamerspezifische Teil
 
-Hier weicht der Auftrag vom Avatarsatz ab, und zwar aus einem gemessenen Grund.
+> **Korrektur vom 28.08., nach Wolfs Einwand.** Hier stand zuerst, die Linse
+> solle nach rechts zeigen und sichtbar sein. Das war falsch. Wolf:
+> „aber die linse in unsere richtung wäre doch falsch, er soll ja an eine wand
+> VOR uns strahlen, oder nicht?" — genau so ist es. Die Leinwand auf der Seite
+> steht vor uns und ist uns zugewandt. Ein Beamer, der darauf wirft, steht
+> also **zwischen uns und der Wand** und strahlt **von uns weg**. Wer seine
+> Linse sieht, sieht einen Beamer, der ins Publikum leuchtet.
 
-Die Leinwand auf der Seite steht nicht frontal. Sie ist um die Hochachse
-gedreht: in Ruhe `rotateY(-11°)`, während das Bild läuft `rotateY(-2.6°)`, dazu
-eine leichte Kippung um die Querachse. Am 28.08. bei 1440 px nachgemessen sind
-die projizierten Kanten in Ruhe:
+### Wo er steht
 
-    linke Kante  310 px hoch
-    rechte Kante 343 px hoch
+Zwischen Betrachter und Leinwand, also **näher als die Wand**, tiefer und
+etwas seitlich, so dass er die untere Ecke der Projektion leicht überlappt.
+Diese Überlappung ist kein Zufall, sie ist der einzige eindeutige Hinweis auf
+Tiefe: was etwas verdeckt, steht davor.
 
-Die rechte Seite steht also näher am Betrachter, die linke läuft in die Tiefe.
-Der Beamer steht auf der Seite, wo Platz ist — unten links, unter dem Text —
-und wirft von dort nach rechts.
+### Wie er gedreht ist
 
-Daraus folgt für das Rendering:
+**Dreiviertelansicht von HINTEN.** Das Gerät ist von uns weggedreht: wir sehen
+seine Rückseite und einen Streifen der Seitenwand, die Vorderseite zeigt in die
+Tiefe. Auf die Wand zu.
 
-* **Blickwinkel:** Dreiviertelansicht von vorn links, leicht von unten
-  (Augenhöhe knapp unter der Oberkante des Geräts). Nicht von oben.
-* **Die Linse zeigt nach RECHTS und leicht nach OBEN.** Sie muss im Bild
-  sichtbar sein, also nicht in reiner Seitenansicht verschwinden und nicht
-  frontal auf den Betrachter zielen. Richtwert: die Blickachse der Linse
-  läuft etwa 25 bis 35 Grad nach rechts aus dem Bild heraus und 10 bis 15 Grad
-  nach oben.
-* **Warum das genau so sein muss:** der Lichtkegel wird nicht mitgerendert,
-  sondern liegt in CSS über dem Bild und läuft von der Linse zur Leinwand.
-  Zeigt die Linse frontal auf den Betrachter, lässt sich kein Kegel ansetzen,
-  der zur Wand führt. Er würde aus dem Bild heraus auf den Leser zielen.
-* **Die Linse muss am Rand des Objekts sitzen**, nicht in einer tiefen Nische.
-  Der Kegel setzt an ihrer Vorderkante an; liegt sie 20 px tief im Gehäuse,
-  klafft dort eine Lücke.
+* **Die Linse ist NICHT zu sehen.** Sie zeigt von uns weg. Es braucht sie also
+  auch nicht im Modell — was in der ersten Fassung dieses Auftrags noch die
+  wichtigste Forderung war, ist damit hinfällig.
+* Uns zugewandt ist die **Rückseite**: Gehäuse, Lüftungsgitter, meinetwegen
+  eine angedeutete Buchse. Ein Gitter auf der Rückseite ist richtig, ein Gitter
+  auf der Vorderseite wäre falsch.
+* Der Körper dreht sich leicht **nach rechts hinten**, in die Richtung, in die
+  der Lichtkegel läuft.
+
+### Kamerahöhe
+
+Der Beamer steht tiefer als die Leinwand, wir schauen also **leicht von oben**
+auf ihn. Das ist die einzige Angabe, die in der ersten Fassung schon richtig
+war — nur die Drehung stimmte nicht.
+
+### Warum die Richtung „nach rechts hinten"
+
+Die Leinwand steht nicht frontal, sondern in Ruhe bei `rotateY(-11°)`. Am
+28.08. bei 1440 px nachgemessen sind ihre projizierten Kanten 310 px links und
+343 px rechts hoch: die rechte Seite steht näher am Betrachter, die linke läuft
+in die Tiefe. Der Kegel läuft also von unten rechts nach oben links in das Bild
+hinein — und der Beamer steht entsprechend rechts unterhalb der Projektion.
 
 ## 4. Was NICHT ins Bild darf
 
@@ -92,15 +105,19 @@ das Licht dazwischen sind ehrlich, ein Zimmer wäre wieder derselbe Fehler.
 * **Kein Kabel**, es hinge im Nichts.
 * **Keine Marke, keine Beschriftung, keine Knöpfe mit Symbolen.**
 
-## 5. Die Linse: dunkel liefern, nicht leuchtend
+## 5. Das Anschalten: kein Licht im Bild
 
 Wichtig, weil das Anschalten in CSS passiert.
 
-Die Linse im Bild ist **dunkel und matt**, wie eine ausgeschaltete Lampe: ein
-tiefes Glas, ein leichter Ring darum. Das Leuchten legt die Seite darüber,
-damit der Beamer beim Scrollen tatsächlich angehen kann. Wäre die Linse schon
-im Bild hell, gäbe es keinen Unterschied zwischen aus und an, und genau der ist
-der Effekt.
+Da die Linse von uns weg zeigt, ist sie ohnehin nicht zu sehen — das Anschalten
+zeigt sich anders, und besser: das Gerät bekommt einen Lichtsaum um seine
+Silhouette, weil das Licht an ihm vorbei zur Wand läuft. Dieser Saum kommt aus
+CSS.
+
+Deshalb: **kein Licht im gerenderten Bild.** Kein Schein, kein Halo, keine
+helle Kante. Das Gerät wird ausgeschaltet geliefert, gleichmäßig beleuchtet von
+der einen Hauptlichtquelle aus Abschnitt 2. Wäre der Schein schon im Bild,
+gäbe es keinen Unterschied zwischen aus und an, und genau der ist der Effekt.
 
 ## 6. Technische Abgabe
 
@@ -129,13 +146,15 @@ Dateiname dafür: `beamer-an.png`.
 
 Damit klar ist, wofür die Auflagen gut sind:
 
-1. Der Beamer steht unten links in Sektion 04, in derselben 3D-Szene wie die
-   Leinwand (gleiche `perspective`, gleiches gekipptes Eltern-Element). Er
-   kippt also mit, wenn die Wand sich beim Anspringen aufrichtet.
+1. Der Beamer steht unten rechts vor der Leinwand, in derselben 3D-Szene wie
+   sie (gleiche `perspective`, gleiches gekipptes Eltern-Element). Er kippt
+   also mit, wenn die Wand sich beim Anspringen aufrichtet, und überlappt ihre
+   untere Ecke leicht.
 2. Beim Scrollen in die Sektion geht er von allein an. Heute startet die
    Projektion nur bei `onMouseEnter` oder Klick, und `onMouseLeave` schaltet
    sie wieder aus — wer vorbeiscrollt, ohne die Maus auf die Wand zu legen,
    sieht nie etwas. Auf einem Touchgerät gibt es gar keinen Hover.
-3. Der Kegel läuft in CSS von der Linse zur Leinwand, als weicher Keil ohne
-   Kante, und wird beim Anschalten breiter.
+3. Der Kegel läuft in CSS vom Gerät weg in die Tiefe zur Leinwand, als
+   weicher Keil ohne Kante, und wird beim Anschalten breiter. Dazu ein
+   Lichtsaum um die Silhouette.
 4. Hover lenkt danach nur noch den hellen Fleck auf der Wand, so wie bisher.
