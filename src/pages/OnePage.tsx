@@ -380,11 +380,10 @@ const WAND_FUGEN = 'data:image/svg+xml,'
     + '<path d="M90.7 60V120M270.7 60V120"/>'
     + '</g></svg>');
 
-const WAND_KORN = 'data:image/svg+xml,'
-  + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180">'
-    + '<filter id="k"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>'
-    + '<feColorMatrix type="saturate" values="0"/></filter>'
-    + '<rect width="180" height="180" filter="url(%23k)" opacity="0.055"/></svg>');
+/* Hier stand WAND_KORN, eine feine Koernung als SVG. Sie sollte die Streifen
+   brechen, die der graue Verlauf auf der Wand zeigte. Der Verlauf ist am
+   28.08. rausgeflogen ("grau licht auf wand darf ganz weg"), damit hat die
+   Koernung nichts mehr zu brechen. */
 
 /**
  * Wolf am 28.08.: "crowdquiz avatare machen kein rennen absicht? beim rennen
@@ -2371,56 +2370,45 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   ("weniger glow generell"). Im Bild selbst ist kein Licht,
                   sonst gaebe es keinen Unterschied zwischen aus und an. */}
               <div data-beamer="" style={sx('position:relative;margin-top:38px;width:186px;max-width:52%')}>
-                {/* Der Lichtkegel, dritter Anlauf.
-                    Wolf am 28.08. zum Bildschirmfoto: "hier muessen wir
-                    optimieren, siehst du es?" -- ja: es war ein STRAHL, kein
-                    Kegel. Das Licht eines Beamers oeffnet sich, bis es so gross
-                    ist wie das Bild; unseres kam als schmales Band an der Wand
-                    an, etwa ein Sechstel ihrer Hoehe. Damit liest es sich als
-                    Taschenlampe und nicht als Projektor.
-                    Ein Kegel aus einem gedrehten Kasten mit Verlauf geht nicht,
-                    der ist ueberall gleich breit. Ein clip-path-Keil hat harte
-                    Kanten, die sollten ja gerade weg. Beides loest ein
-                    KEGELVERLAUF: er ist von Natur aus winkelfoermig, oeffnet
-                    sich also mit der Entfernung von selbst, und seine Raender
-                    sind weich, weil sie Farbstopps sind und keine Form.
-                    Achse 14 Grad nach oben (also 76 statt 90 Grad in der
-                    Rechnung des Verlaufs), Oeffnung rund 18 Grad zu jeder
-                    Seite. Auf 330 px bis zur Leinwandkante sind das etwa
-                    215 px Hoehe, auf ganzer Strecke deutlich mehr -- der Kegel
-                    kommt also breiter an, als er losfaehrt.
-                    Wolf am 28.08.: "wir muessen uns was mit dem strahl
-                    ueberlegen der vorm beamer ausgeht, der sieht immoment
-                    nicht gut aus". Er hat recht, und es waren zwei Fehler:
+                {/* Der Lichtkegel.
+                    Wolf am 28.08.: "die beamerlinse ist etwas hoeher also
+                    liegt der beginn des strahls etwas niedrig am beamer vorne
+                    ... da vorne dran setzen" und "das blurry licht aussenrum
+                    kann eigentlich weg, da das licht der strahl des beamers
+                    sich auf die begrenzung der beameransicht begrenzt (beamer
+                    strahlt ja mainly das bild, nicht random licht aussenrum)".
 
-                    Erstens lag der Kegel UEBER dem Gehaeuse (z-Index 0 im
-                    Beamer, das Bild bei 1 -- aber im selben Kasten und damit
-                    sichtbar rundherum). Licht kam also auch dort an, wo das
-                    Geraet steht, und leuchtete seine Vorderseite an. Die Linse
-                    zeigt aber nach hinten: vor dem Geraet darf gar nichts
-                    hell werden. Jetzt liegt der Kegel dahinter und das Gehaeuse
-                    verdeckt seinen Ansatz, wie es soll.
+                    Beides eingebaut, und der zweite Punkt hat den Kegel erst
+                    richtig gemacht: er ist keine beliebige Lichtkeule, sondern
+                    der Raum zwischen der Linse und den Kanten des Bildes. Also
+                    ist sein Oeffnungswinkel keine Geschmacksfrage, sondern
+                    ergibt sich aus der Geometrie.
 
-                    Zweitens war er am Ansatz am hellsten und duennte nach
-                    aussen aus. Das ist rueckwaerts. Sichtbar ist nicht der
-                    Strahl selbst, sondern der Staub in der Luft, den er
-                    beleuchtet -- und davon liegt direkt an der Linse fast
-                    nichts und ueber eine lange Strecke viel. Der Kegel faengt
-                    jetzt schwach an, wird auf halbem Weg am hellsten und
-                    verliert sich zur Wand hin.
+                    Am 28.08. im Browser nachgemessen, Winkel von der Linse zur
+                    oberen und unteren linken Ecke der Projektion:
+                      1440 px:  +40,8 bis  -9,4 Grad   (Abstand 338 px)
+                      1280 px:  +38,7 bis -14,7 Grad   (Abstand 330 px)
+                      1024 px:  +34,2 bis  -9,6 Grad   (Abstand 317 px)
+                    Also eine Achse von rund 14 Grad ueber der Waagerechten und
+                    eine Oeffnung von rund 25 Grad zu jeder Seite. Im
+                    Kegelverlauf zeigt 0 Grad nach oben, rechts sind 90 -- die
+                    Achse liegt damit bei 76, der Verlauf laeuft von 51 bis 101.
 
-                    Die Maske laesst ihn ausduennen, screen laesst ihn nur
-                    heller machen und nie verdecken. */}
-                <span aria-hidden="true" style={sx('position:absolute;left:78%;top:46%;width:min(900px,60vw);height:min(900px,60vw);'
+                    Die Linse sitzt vorne oben am Gehaeuse, gemessen bei
+                    93 Prozent der Breite und 30 der Hoehe. Vorher setzte der
+                    Kegel bei 78/46 an, also zu weit hinten und zu tief -- genau
+                    das, was Wolf gesehen hat.
+
+                    Die Maske endet dort, wo der Strahl auf die Wand trifft:
+                    338 px von 864 sind 39 Prozent, also ist bei 48 Schluss.
+                    Weiter braucht es ihn nicht, dort ist das Licht schon Bild. */}
+                <span aria-hidden="true" style={sx('position:absolute;left:93%;top:30%;width:min(900px,60vw);height:min(900px,60vw);'
                   + 'transform:translateY(-50%);z-index:0;pointer-events:none;mix-blend-mode:screen;'
-                  + 'background:conic-gradient(from 58deg at 0% 50%,'
-                  + 'transparent 0deg,rgba(255,246,232,.04) 7deg,rgba(255,246,232,.17) 14deg,'
-                  + 'rgba(255,246,232,.17) 22deg,rgba(255,246,232,.04) 29deg,transparent 36deg);'
-                  + 'mask-image:radial-gradient(circle at 0% 50%,transparent 0%,rgba(0,0,0,.15) 12%,rgba(0,0,0,.85) 34%,rgba(0,0,0,.55) 66%,transparent 96%);'
-                  + `filter:blur(7px);opacity:${on ? 1 : 0};transition:opacity 1.4s ${EASE}`)}></span>
-                <span aria-hidden="true" style={sx('position:absolute;left:54%;top:50%;transform:translate(-50%,-50%);border-radius:50%;'
-                  + 'width:118%;height:150%;z-index:0;background:radial-gradient(circle,rgba(255,246,232,.09),transparent 66%);'
-                  + `opacity:${on ? 1 : 0};transition:opacity 1.4s ${EASE}`)}></span>
+                  + 'background:conic-gradient(from 51deg at 0% 50%,'
+                  + 'transparent 0deg,rgba(255,246,232,.10) 5deg,rgba(255,246,232,.17) 12deg,'
+                  + 'rgba(255,246,232,.17) 38deg,rgba(255,246,232,.10) 45deg,transparent 50deg);'
+                  + 'mask-image:radial-gradient(circle at 0% 50%,transparent 0%,rgba(0,0,0,.2) 9%,rgba(0,0,0,.9) 26%,rgba(0,0,0,.75) 38%,transparent 48%);'
+                  + `filter:blur(6px);opacity:${on ? 1 : 0};transition:opacity 1.4s ${EASE}`)}></span>
                 {/* Das Gehaeuse liegt ueber dem Kegel und verdeckt dessen
                     Ansatz. Das ist der Grund, warum das Licht ueberhaupt
                     aussieht, als kaeme es von hinten aus dem Geraet. */}
@@ -2465,7 +2453,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 Die Ausschlaege sind klein gehalten: 7 Grad zur Seite und 4
                 nach oben. Mehr sieht auf einer Flaeche von 880 px nicht mehr
                 nach einer Wand aus, sondern nach einer Spielkarte. */}
-            <div style={sx(`transform:rotateY(${(on ? -2.6 + (kipp?.x ?? 0) * 7 : -11).toFixed(2)}deg) `
+            <div style={sx(`transform:rotateY(${(on ? -5.2 + (kipp?.x ?? 0) * 7 : -15).toFixed(2)}deg) `
               + `rotateX(${(on ? 0.5 - (kipp?.y ?? 0) * 4 : 2.4).toFixed(2)}deg) scale(${on ? 1 : .95});`
               + `transform-origin:center center;transition:transform ${kipp && on ? '.18s' : '1.1s'} ${EASE}`)}>
             {/* Hier lag ein KI-Bild: ein Wohnzimmer mit sechs Leuten von hinten
@@ -2526,34 +2514,14 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 vier Kanten ausserhalb der Ellipse. Gemessen: in der ersten
                 Fassung lag die Maske an der Oberkante noch bei 0,68, und das
                 war die sichtbare Linie. */}
-            {/* Wolf am 28.08.: "ich sehe auch immernoch keine wand? ich sehe
-                einen runden verpixelten schimmer an der flaeche aber keine
-                wand und da der hook wand ist, sollte das irgendwie rein".
-
-                Beides trifft, und beides hat dieselbe Ursache: die Maske war
-                eine Ellipse. Eine Ellipse aus Licht ist ein Scheinwerferfleck,
-                keine Wand -- eine Wand ist eine FLAECHE mit Kanten. Aus Angst,
-                wieder einen Raum zu behaupten wie die ausgemusterten KI-Bilder,
-                hatte ich jede Kante vermieden, und damit auch die Wand.
-
-                Jetzt zwei Verlaeufe, die sich schneiden (mask-composite:
-                intersect): rechteckig, mit weichen Raendern an allen vier
-                Seiten. Das liest sich als breite Flaeche, die ins Dunkle
-                ausblendet, nicht als Fleck. Ein Raum wird daraus trotzdem
-                nicht: es gibt keine Fussleiste, keine zweite Wand, keinen
-                Boden -- nur eine Flaeche, auf die Licht faellt.
-
-                Dazu eine feine Koernung. Sie loest das zweite Problem: ein
-                dunkler Verlauf ueber wenige Stufen zeigt Streifen, und genau
-                die hat Wolf als "verpixelt" gesehen. Die Koernung bricht sie
-                auf und gibt der Flaeche nebenbei die matte Oberflaeche einer
-                gestrichenen Wand. */}
-            <div aria-hidden="true" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;'
-              + 'background:linear-gradient(174deg,rgba(246,239,230,.30),rgba(246,239,230,.235) 40%,rgba(246,239,230,.205) 70%,rgba(246,239,230,.19));'
-              + 'mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(180deg,transparent,#000 12%,#000 84%,transparent);'
-              + '-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(180deg,transparent,#000 12%,#000 84%,transparent);'
-              + 'mask-composite:intersect;'
-              + `opacity:${on ? .55 : 1};transition:opacity 1.2s ${EASE}`)}></div>
+            {/* Hier lag ein graues Lichtfeld: ein Verlauf, der die Wand als
+                beleuchtete Flaeche zeigte.
+                Wolf am 28.08.: "grau licht auf wand darf ganz weg". Er hat
+                recht, und der Grund ist derselbe wie beim Saum um den Beamer:
+                ein Beamer wirft ein BILD, kein Streulicht. Alles, was um die
+                Projektion herum hell ist, widerspricht dem Kegel, den wir zwei
+                Zeilen vorher genau auf die Bildkanten begrenzt haben.
+                Uebrig bleibt die Wand als das, was sie ist: Fugen im Dunkeln. */}
             {/* Die Fugen. Sie liegen im selben gekippten Eltern-Element wie
                 die Projektion, teilen also deren Neigung -- Wolfs Auflage:
                 "sie hat die gleiche neigung wie die beamer view". Und sie
@@ -2565,33 +2533,42 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 behauptete Flaeche mit Kante. */}
             <div aria-hidden="true" data-fugen="" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;'
               + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
-              + `opacity:${on ? .30 : .19};`
-              + 'mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 14%,#000 82%,transparent);'
-              + '-webkit-mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 14%,#000 82%,transparent);'
-              + `mask-composite:intersect;transition:opacity 1.2s ${EASE}`)}></div>
-            {/* Der Schimmer: ein schmaler Lichtstreifen, der schraeg ueber die
-                Fugen wandert. Er laeuft immer, aber sehr langsam und sehr
-                schwach; beim Zeigen wird er heller. Wolf: "die leicht
-                satisfying schimmer ... beim hovern schimmert sie mehr". */}
-            <div aria-hidden="true" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;overflow:hidden;'
-              + 'mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 14%,#000 82%,transparent);'
-              + '-webkit-mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 14%,#000 82%,transparent);'
-              + 'mask-composite:intersect')}>
-              <span style={sx('position:absolute;inset:-40% -60%;'
-                + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
-                + `opacity:${on ? .5 : .34};`
-                + 'mask-image:linear-gradient(104deg,transparent 40%,#000 47%,#000 53%,transparent 60%);'
-                + '-webkit-mask-image:linear-gradient(104deg,transparent 40%,#000 47%,#000 53%,transparent 60%);'
-                + `animation:cwFugenSchimmer ${on ? 9 : 14}s linear infinite;transition:opacity 1.2s ${EASE}`)}></span>
-            </div>
-            <div aria-hidden="true" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;opacity:.5;'
-              + `background-image:url("${WAND_KORN}");background-size:180px 180px;`
-              + 'mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(180deg,transparent,#000 12%,#000 84%,transparent);'
-              + '-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(180deg,transparent,#000 12%,#000 84%,transparent);'
-              + 'mask-composite:intersect')}></div>
-            <div aria-hidden="true" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;'
-              + 'background:radial-gradient(47% 43% at 50% 47%,rgba(255,246,232,.30),rgba(255,246,232,.10) 52%,transparent 100%);'
-              + `opacity:${on ? 1 : 0};transition:opacity 1.2s ${EASE}`)}></div>
+              + `opacity:${on ? .34 : .22};`
+              + 'mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 80%,transparent),radial-gradient(74% 74% at 50% 48%,#000 34%,transparent 100%);'
+              + '-webkit-mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 80%,transparent),radial-gradient(74% 74% at 50% 48%,#000 34%,transparent 100%);'
+              + `mask-composite:intersect,intersect;transition:opacity 1.2s ${EASE}`)}></div>
+            {/* Die Welle ueber den Fugen.
+                Wolf am 28.08.: "was der screenshot zeigt ist, dass die fugen
+                sich parallel nebendran bilden? das soll kein schimmer sein,
+                die beleuchtung der fugen soll sich wie eine welle bewegen".
+
+                Genau das war der Fehler, und er steckte in der Bauart: ich
+                hatte eine ZWEITE KOPIE des Musters verschoben. Damit wandern
+                auch ihre Fugen, laufen aus dem Takt mit den stehenden und man
+                sieht doppelte Linien nebeneinander.
+
+                Richtig ist das Gegenteil: das Muster steht still, nur das
+                LICHT wandert. Also liegt hier dieselbe Zeichnung an derselben
+                Stelle wie die Grundlage darunter -- gleicher Kasten, gleiche
+                Kachelgroesse, keine Verschiebung -- und bewegt wird allein ihre
+                Maske. mask-position laesst sich animieren wie
+                background-position; die Flaeche bleibt, das Fenster darauf
+                laeuft. Deshalb leuchten immer genau die Fugen auf, die schon da
+                sind, und keine neuen daneben. */}
+            <div aria-hidden="true" data-welle="" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;mix-blend-mode:screen;'
+              + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
+              + `opacity:${on ? .95 : .66};`
+              + 'mask-image:linear-gradient(104deg,transparent 0%,rgba(0,0,0,.55) 9%,#000 15%,rgba(0,0,0,.55) 21%,transparent 30%);'
+              + '-webkit-mask-image:linear-gradient(104deg,transparent 0%,rgba(0,0,0,.55) 9%,#000 15%,rgba(0,0,0,.55) 21%,transparent 30%);'
+              + 'mask-size:280% 160%;-webkit-mask-size:280% 160%;'
+              + 'mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;'
+              + `animation:cwFugenWelle ${on ? 8 : 13}s linear infinite;transition:opacity 1.2s ${EASE}`)}></div>
+            {/* Hier lagen noch zwei Lichtschichten: eine Koernung, die die
+                Streifen des grauen Verlaufs brechen sollte, und ein
+                Lichtfleck, der beim Anspringen aufging. Beide sind mit dem
+                Verlauf hinfaellig -- die Koernung hatte nichts mehr zu
+                brechen, und der Fleck war genau das "graue Licht auf der
+                Wand", das weg sollte. */}
             {/* In Ruhe hat die Projektion weder Rand noch Grund: der Beamer ist
                 aus, also ist dort nichts ausser der Wand. Genau das behauptet
                 die Ueberschrift, und ein dunkles Rechteck mit Haarlinie

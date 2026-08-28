@@ -75,11 +75,18 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 @keyframes cwRise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
 @keyframes cwSheen{0%{transform:translateX(-120%)}60%,100%{transform:translateX(220%)}}
 @keyframes cwWeiter{from{width:0}to{width:100%}}
-/* Der Schimmer ueber den Fugen in 04: ein schmales Lichtband, das schraeg
-   ueber die Wand wandert. Bewegt wird die Flaeche, nicht die Maske -- eine
-   Maske zu animieren ist teuer, eine Verschiebung nicht. */
-@keyframes cwFugenSchimmer{from{transform:translateX(-34%)}to{transform:translateX(34%)}}
-@media (prefers-reduced-motion:reduce){[data-fugen]~div span{animation:none!important}}
+/* Die Welle ueber den Fugen in 04.
+   Bewegt wird die MASKE, nicht die Flaeche. Der erste Anlauf verschob eine
+   zweite Kopie des Musters -- dann wandern auch deren Fugen, laufen aus dem
+   Takt mit den stehenden, und man sieht doppelte Linien nebeneinander. Genau
+   das hat Wolf am 28.08. gesehen. So bleibt die Zeichnung stehen und nur das
+   Fenster darauf laeuft, es leuchten also immer die Fugen auf, die schon da
+   sind. */
+@keyframes cwFugenWelle{
+  from{mask-position:-90% 0%;-webkit-mask-position:-90% 0%}
+  to{mask-position:190% 0%;-webkit-mask-position:190% 0%}
+}
+@media (prefers-reduced-motion:reduce){[data-welle]{animation:none!important;opacity:0!important}}
 /* Die Punktzahl in 01: steigt auf, haelt kurz, loest sich auf. Kein Sprung am
    Anfang -- sie faengt schon leicht angehoben an, sonst zuckt sie erst nach
    unten, bevor sie steigt. */
