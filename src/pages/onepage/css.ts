@@ -207,6 +207,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 @keyframes cwEinfahren{from{transform:translateY(34px);opacity:0}to{transform:none;opacity:1}}
 @keyframes cwEindrehen{from{transform:translateY(34px) rotate(-7deg) scale(.94);opacity:0}to{transform:none;opacity:1}}
 /* Der Spruch am Ende waechst, waehrend sein Halt durchs Fenster faehrt. */
+@keyframes cwHinaus{from{transform:none;opacity:1}to{transform:translateY(-16px);opacity:.45}}
 @keyframes cwSpruchWaechst{from{transform:scale(.32);opacity:.35}to{transform:scale(1);opacity:1}}
 @supports (animation-timeline: view()){
   @media (min-width:901px) and (prefers-reduced-motion:no-preference){
@@ -226,6 +227,15 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
     /* T2: nur der Gegenstand dreht sich ein, nie der Text. */
     [data-bew="2"] [data-m=modereihe]>*:nth-child(3),
     [data-bew="2"] [data-m=modeobjekt]{animation-name:cwEindrehen}
+    /* Wolf am 28.08.: "manchmal koennte es noch ein bisschen mehr sein zb
+       beim rausscrollen". Also ein zweiter, sehr viel leiserer Lauf beim
+       Verlassen nach oben: der Halt sinkt ein wenig und nimmt Deckkraft ab,
+       aber nur bis 0,45 und 16 px. Mehr waere eine Seite, die einem den
+       gelesenen Inhalt wegnimmt, waehrend man noch hinsieht. */
+    [data-bew] [data-halt]:not([data-spruch]){
+      animation:cwHinaus linear both;animation-timeline:view();
+      animation-range:exit 20% exit 100%;
+    }
   }
   @media (prefers-reduced-motion:no-preference){
     [data-kinetic]{

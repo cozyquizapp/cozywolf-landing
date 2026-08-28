@@ -75,6 +75,26 @@ const STIL = (() => {
 const OHNE_SCHATTEN = STIL >= 3;
 
 /**
+ * Die Unterzeile eines Kapitels.
+ *
+ * Wolf am 28.08.: "die subtitel wirken jetzt lame". Nachgerechnet, und er hat
+ * recht: seit die Ueberschriften auf 75 px stehen, springt die Seite von 75
+ * direkt auf 17, und 17 ist genau die Groesse des Fliesstexts darunter. Damit
+ * hat das Kapitel eine Ueberschrift und danach nichts mehr, was es traegt.
+ *
+ * Die Referenzen halten dieses Verhaeltnis viel enger: Apple 56 zu 21, Custo
+ * 38 zu 19, Air 32 zu 16, also Faktor 2 bis 2,7. Unsere 75 zu 17 sind Faktor
+ * 4,4.
+ *
+ * Also eine eigene Stufe dazwischen: 22 px, halbwegs hell, auf 46 Zeichen
+ * begrenzt. Der Fliesstext darunter bleibt bei 16 bis 17 und ist damit zum
+ * ersten Mal wirklich eine Stufe tiefer.
+ */
+const UNTERZEILE = STIL >= 2
+  ? 'font-size:22px;line-height:1.5;font-weight:500;color:rgba(246,239,230,.72);max-width:46ch;text-wrap:pretty'
+  : 'font-size:17px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.62);max-width:620px';
+
+/**
  * Der Auftritt der Abschnitte, zum Vergleichen.
  *
  *   /d/?bew=3   T3, versetzt hereinfahren: die Spalten eines Halts kommen
@@ -93,9 +113,12 @@ const OHNE_SCHATTEN = STIL >= 3;
  * nichts fehlt.
  */
 const BEWEGUNG = (() => {
-  if (typeof window === 'undefined') return 0;
+  // Wolf am 28.08.: "wir haben zu wenig Gegenstaende fuer T2 ... ich finde T3
+  // gut". Also ist T3 der Normalfall. /d/?bew=0 stellt alles still,
+  // /d/?bew=2 zeigt das Eindrehen zum Vergleich.
+  if (typeof window === 'undefined') return 3;
   const n = Number(new URLSearchParams(window.location.search).get('bew'));
-  return n === 2 || n === 3 ? n : 0;
+  return n === 0 || n === 2 || n === 3 ? n : 3;
 })();
 const schatten = (wert: string) => (OHNE_SCHATTEN ? '' : wert);
 /** Ueberschrift eines Kapitels: gross ab Fassung 2, mit Ziffer ab 4. */
@@ -526,6 +549,19 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     this._spielIO.observe(el);
   }
 
+  /** Hoehe des Fussbereichs als CSS-Variable, fuer die Mitte des Spruchs. */
+  fussMessen = () => {
+    const f = document.querySelector('footer');
+    if (!f) return;
+    const setzen = () => document.documentElement.style.setProperty('--fuss', `${Math.round(f.getBoundingClientRect().height)}px`);
+    setzen();
+    if (typeof ResizeObserver !== 'undefined') {
+      this._fussRO = new ResizeObserver(setzen);
+      this._fussRO.observe(f);
+    }
+  };
+  _fussRO: ResizeObserver | undefined;
+
   watchWall() {
     const box = document.querySelector('[data-m="screenbox"]');
     if (!box || typeof ResizeObserver === 'undefined') return;
@@ -566,6 +602,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   // ------------------------------------------------- Lifecycle
   componentDidMount() {
     setTimeout(() => this.watchWall(), 60);
+    this.fussMessen();
     this._coarse = window.matchMedia('(hover:none)').matches || window.innerWidth < 861;
     this._arenaT = setInterval(() => {
       if (document.hidden) return;
@@ -648,6 +685,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     clearTimeout(this._beamT);
     clearInterval(this._arenaT);
     clearInterval(this._hookT);
+    this._fussRO?.disconnect();
     this.io?.disconnect();
     this._grundIO?.disconnect();
     this.wallRO?.disconnect();
@@ -1440,8 +1478,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           + 'font-size:clamp(40px,5.2vw,84px);font-weight:900;line-height:.9;letter-spacing:-.032em;color:#F6EFE6')}>
           {L.anlaesse.h2}
         </h2>
-        <p data-reveal="" style={sx('margin:0 0 26px;max-width:620px;font-size:17px;line-height:1.6;'
-          + 'color:rgba(246,239,230,.62);font-weight:500;text-wrap:pretty')}>{L.anlaesse.sub}</p>
+        <p data-reveal="" style={sx('margin:0 0 30px;' + UNTERZEILE)}>{L.anlaesse.sub}</p>
 
         {L.anlaesse.cards.map((cardT, i) => {
           const a = ACC[i];
@@ -1631,7 +1668,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 darunter. */}
             {this.kicker(`[ 03 ]|${L.probe.label}`)}
             <h2 data-reveal="" style={sx(`margin:12px 0 10px;font-family:'League Spartan',sans-serif;font-size:${H2_GROSS ?? '34px'};line-height:${H2_GROSS ? '.9' : '1.1'};letter-spacing:${H2_GROSS ? '-.032em' : '0'};font-weight:900;color:#F6EFE6`)}>{L.probe.h2}</h2>
-            <div data-reveal="" style={sx('margin-bottom:14px;font-size:14px;font-weight:700;color:rgba(246,239,230,.55)')}>{L.probe.kicker}</div>
+            <div data-reveal="" style={sx('margin-bottom:16px;' + UNTERZEILE)}>{L.probe.kicker}</div>
             <p data-reveal="" style={sx('margin:0 0 26px;max-width:520px;font-size:17px;line-height:1.6;color:rgba(246,239,230,.78);font-weight:500')}>{L.probe.sub}</p>
             {/* Zweitens war das hier der letzte Kasten der Seite: Rahmen,
                 Fuellung, dicker Balken links. 01, 02, 04 und 06 tragen
@@ -1775,10 +1812,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     };
     return (
       <section id="ablauf" data-ton="34,197,94" data-halt="" style={sx(`${linieOben()}${tonVon('ablauf')}`)}>
-        <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:34px 32px;box-sizing:border-box')}>
+        <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:26px 32px;box-sizing:border-box')}>
           {this.kicker(`[ 04 ]|${L.ablauf.label}`)}
           <h2 data-reveal="" style={sx(`margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:${H2_GROSS ?? '34px'};line-height:${H2_GROSS ? '.9' : '1.1'};letter-spacing:${H2_GROSS ? '-.032em' : '0'};font-weight:900;color:#F6EFE6`)}>{L.ablauf.h2}</h2>
-          <p data-reveal="" style={sx('margin:0 0 22px;max-width:620px;font-size:17px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:500')}>{L.ablauf.sub}</p>
+          <p data-reveal="" style={sx('margin:0 0 26px;' + UNTERZEILE)}>{L.ablauf.sub}</p>
 
           {/* Wolf am 27.08.: "beamer kleiner und gekippt". Also keine Leinwand
               ueber die volle Breite mehr, sondern 880 px, mittig, und leicht
@@ -1799,7 +1836,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               this.setState({ beamXY: { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height } });
             }}
             onMouseLeave={() => { beamStop(); this.setState({ beamXY: null }); }}
-            style={sx('position:relative;margin:0 auto 24px;max-width:640px;cursor:pointer;perspective:1100px')}>
+            style={sx('position:relative;margin:0 auto 16px;max-width:520px;cursor:pointer;perspective:1100px')}>
             {/* Perspektive gehoert auf den Eltern, die Drehung auf das Kind.
                 Standen beide auf demselben Element, greift die Perspektive
                 nicht und die Kippung sah flach aus statt raeumlich. */}
@@ -2145,7 +2182,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             {this.kicker(`[ 06 ]|${L.form.label}`)}
             <h2 data-reveal="" style={sx("margin:0 0 12px;font-family:'League Spartan',sans-serif;font-weight:900;line-height:1.02;letter-spacing:-.028em;color:#F6EFE6;text-wrap:balance;"
               + `font-size:${H2_GROSS ? 'clamp(38px,4vw,64px)' : 'clamp(30px,3.2vw,44px)'}`)}>{L.form.h2}</h2>
-            <p style={sx('margin:0 0 8px;font-size:17px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78)')}>{L.form.sub}</p>
+            <p style={sx('margin:0 0 10px;' + UNTERZEILE)}>{L.form.sub}</p>
             <p style={sx('margin:0 0 26px;font-size:14px;font-weight:800;letter-spacing:.02em;color:rgba(246,239,230,.62)')}>{L.form.avail}</p>
 
             {/* Die beiden Wege. Der gewaehlte steht hell und traegt einen
@@ -2335,7 +2372,17 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             Scrollbehaelter, der nicht scrollt, und darin bleibt eine
             Ansichts-Zeitleiste stehen. Gemessen war der Spruch vorher an
             beiden Scrollstaenden exakt gleich gross. */}
-        <section data-halt="" style={sx('background:#0A0814')}>
+        {/* Wolf am 28.08.: "platziere die schrift mittig wenn die scrollbar ganz
+            unten ist, aktuell schiebt sich der text noch leicht ueber die
+            mitte". Stimmt, und es ist Arithmetik: am Seitenende zeigt das
+            Fenster die letzten 100svh, davon belegt der Fussbereich die
+            unteren F Pixel. Der Text steht in einem Halt der Hoehe 100svh
+            mittig, also svh/2 ueber dessen Unterkante; mittig im FENSTER
+            waere svh/2 minus F. Ein Polster von 2F oben schiebt die Mitte um
+            genau F nach unten und loest das exakt.
+            F wird gemessen und nicht geschaetzt, der Fussbereich ist in
+            beiden Sprachen verschieden hoch. */}
+        <section data-halt="" data-spruch="" style={sx('background:#0A0814;height:100svh;min-height:0;padding-top:calc(var(--fuss,192px) * 2)')}>
           <div data-kinetic="" data-m="kin" style={sx("width:100%;text-align:center;font-family:'League Spartan',sans-serif;"
             + 'font-size:clamp(30px,7.2vw,124px);font-weight:900;line-height:1;color:transparent;'
             + '-webkit-text-stroke:1.4px rgba(246,239,230,.42);letter-spacing:-.01em;white-space:nowrap')}>{L.kinetic}</div>
