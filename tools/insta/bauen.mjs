@@ -67,8 +67,11 @@ const brett = (hervor = null) => {
     const unten = at(r + 1, c) === id, links = at(r, c - 1) === id;
     const eck = (a, b) => (a || b) ? '0' : '16%';
     const still = hervor && hervor !== id;
-    const stege = (rechts ? `<i style="right:-4%;top:16%;width:4.4%;height:68%;background:${team.farbe}"></i>` : '')
-      + (unten ? `<i style="bottom:-4%;left:16%;height:4.4%;width:68%;background:${team.farbe}"></i>` : '');
+    // Der Steg ist genau so breit wie die Luecke und so lang wie die Kante
+    // ohne ihre beiden Rundungen. Gezeichnet wird nur nach rechts und unten,
+    // sonst laege jede Verbindung doppelt uebereinander.
+    const stege = (rechts ? `<i style="right:calc(var(--luecke) * -1);top:16%;width:var(--luecke);height:68%;background:${team.farbe}"></i>` : '')
+      + (unten ? `<i style="bottom:calc(var(--luecke) * -1);left:16%;height:var(--luecke);width:68%;background:${team.farbe}"></i>` : '');
     return `<span class="feld" style="--farbe:${team.farbe};--motiv:url(${team.motiv});`
       + `border-radius:${eck(oben, links)} ${eck(oben, rechts)} ${eck(unten, rechts)} ${eck(unten, links)};`
       + `opacity:${still ? .18 : 1};filter:saturate(${still ? .3 : 1})">${stege}</span>`;
@@ -76,14 +79,50 @@ const brett = (hervor = null) => {
   return `<div class="brett" style="grid-template-columns:repeat(${K},1fr)">${zellen}</div>`;
 };
 
-// 1. Karussell "Die fuenf Fragetypen": ein Deckblatt und fuenf Typen.
-dazu('cozyquiz', 'typen-0-titel', 'typ', `
-  <div class="kicker">CozyQuiz<i></i></div>
-  <h1>Fünf Fragetypen.<br>Keine Runde<br>wie die andere.</h1>
-  <p class="gross">Ein Abend läuft über alle fünf. Wer nur Wissen mitbringt, gewinnt nicht.</p>
+/* 1. Karussell "Wissen ist nicht alles", drei Blaetter.
+
+   Der erste Anlauf hatte sechs: ein Deckblatt und je eins pro Fragetyp. Wolf
+   dazu: "keiner swiped 15 seiten ohne hook". Er hat in beidem recht. Ein
+   Deckblatt, das "Fuenf Fragetypen" ankuendigt, beschreibt nur, was kommt,
+   und beschreiben ist kein Grund zu wischen. Und sechs Bilder fuer eine
+   Aufzaehlung sind fuenf zu viel.
+
+   Also: erst eine Behauptung, die man anzweifelt, dann der Beleg, dann der
+   Abschluss. Die fuenf Einzelblaetter bleiben, aber nicht als Karussell,
+   sondern als fuenf einzelne Beitraege ueber fuenf Wochen -- dort tragen sie
+   allein, weil sie nicht gegen einen Wisch antreten muessen. */
+const symReihe = () => `<div class="reihe">${TYPEN.map(t =>
+  `<span class="kachel" style="${kachel(t.farbe, t.sym)}"></span>`).join('')}</div>`;
+
+dazu('cozyquiz', 'wissen-1', 'typ', `
+  <div class="inhalt">
+    <div class="kicker">CozyQuiz<i></i></div>
+    <h1>Wissen ist<br>nicht alles.</h1>
+    <p class="gross">Bei drei von fünf Fragetypen bringt es euch fast nichts.</p>
+    ${symReihe()}
+  </div>
+  ${marke('Welche drei? →')}`);
+
+dazu('cozyquiz', 'wissen-2', 'typ', `
+  <div class="inhalt">
+    <div class="kicker">Fünf Fragetypen<i></i></div>
+    <div class="liste">${TYPEN.map(t => `<div class="zeile">
+      <span class="kachel" style="${kachel(t.farbe, t.sym)}"></span>
+      <div><b style="color:${t.farbe}">${esc(t.name)}</b><i>${esc(t.anspruch)}</i></div>
+    </div>`).join('')}</div>
+  </div>
   ${marke('Wischen →')}`);
 
-TYPEN.forEach((t, i) => dazu('cozyquiz', `typen-${i + 1}-${t.datei}`, 'typ', `
+dazu('cozyquiz', 'wissen-3', 'typ', `
+  <div class="inhalt">
+    <div class="kicker">Ein Abend<i></i></div>
+    <h1 style="font-size:88px">Schätzen,<br>erkennen,<br>setzen, raten.</h1>
+    <p class="gross">40 bis 60 Fragen über alle fünf Typen. Wer nur Wissen mitbringt, gewinnt nicht.</p>
+  </div>
+  ${marke('cozywolf.de')}`);
+
+/* Die fuenf Einzelblaetter. Kein Karussell, sondern je ein Beitrag. */
+TYPEN.forEach((t, i) => dazu('cozyquiz', `einzel-${i + 1}-${t.datei}`, 'typ', `
   <div class="zahl">${i + 1}</div>
   <div class="inhalt">
     <div class="kicker">Fragetyp ${i + 1} von 5<i></i></div>
@@ -92,7 +131,7 @@ TYPEN.forEach((t, i) => dazu('cozyquiz', `typen-${i + 1}-${t.datei}`, 'typ', `
     <div class="anspruch">${esc(t.anspruch)}</div>
     <div class="regel">${esc(t.regel)}</div>
   </div>
-  ${marke(i === TYPEN.length - 1 ? 'cozywolf.de' : 'Wischen →')}`));
+  ${marke('cozywolf.de')}`));
 
 // 2. Fragekarten: je Frage ein Blatt mit der Frage und eins mit der Aufloesung.
 FRAGEN.forEach(f => {
@@ -114,30 +153,35 @@ FRAGEN.forEach(f => {
     ${marke('cozywolf.de')}`);
 });
 
-// 3. Das Brett. Drei Blaetter, die eine Erwartung aufbauen und sie brechen:
-// erst der Spielstand, dann das Team mit den meisten Feldern, dann der
-// Gewinner, der weniger Felder hat.
+/* 3. Karussell "Welches Team gewinnt?", drei Blaetter.
+
+   Vorher hiess das erste Blatt "Jede richtige Antwort ist ein Zug auf dem
+   Feld". Wahr, aber es beschreibt. Jetzt steht dort eine Frage, die man im
+   Kopf beantwortet, bevor man wischt, und die Antwort ist die
+   ueberraschende: nicht das Team mit den meisten Feldern.
+
+   Der Spielstand ist der von der Website und beweist die Regel von selbst:
+   Gruen hat 7 Felder und davon nur 3 am Stueck, Gelb hat 4 und alle vier
+   zusammenhaengend. */
 dazu('cozyquiz', 'brett-1', 'brett-blatt', `
   <div class="kicker">CozyQuiz<i></i></div>
-  <h2 style="font-size:72px">Jede richtige Antwort<br>ist ein Zug auf dem Feld.</h2>
+  <h2>Welches Team gewinnt?</h2>
   ${brett()}
-  <div class="unter">Vier Teams, ein Brett, 40 bis 60 Fragen. Setzen, klauen, stapeln oder Joker.</div>
-  ${marke('Wischen →')}`);
+  <div class="unter">Vier Teams, 36 Felder, Endstand.</div>
+  ${marke('Auflösung →')}`);
 
 dazu('cozyquiz', 'brett-2', 'brett-blatt', `
-  <div class="kicker">CozyQuiz<i></i></div>
-  <h2 style="font-size:72px">Grün hat die<br>meisten Felder.</h2>
+  <div class="kicker">Die meisten Felder<i></i></div>
+  <h2>Grün führt. Sieben.</h2>
   ${brett('g')}
-  <div class="unter"><b style="color:#22C55E;font-size:52px;font-family:'League Spartan',sans-serif">7</b>
-    <span>von 21 gesetzten Feldern. Mehr als jedes andere Team.</span></div>
+  <div class="unter">Mehr als jedes andere Team. Und trotzdem nicht der Sieger.</div>
   ${marke('Wischen →')}`);
 
 dazu('cozyquiz', 'brett-3', 'brett-blatt', `
-  <div class="kicker">CozyQuiz<i></i></div>
-  <h2 style="font-size:72px">Gewonnen hat<br>trotzdem Gelb.</h2>
+  <div class="kicker">Der Sieger<i></i></div>
+  <h2>Gelb. Vier am Stück.</h2>
   ${brett('y')}
-  <div class="unter"><b style="color:#FACC15;font-size:52px;font-family:'League Spartan',sans-serif">4</b>
-    <span>Felder, aber am Stück. Es zählt die größte zusammenhängende Fläche, nicht die Menge.</span></div>
+  <div class="unter">Es zählt die größte zusammenhängende Fläche, nicht die Menge.</div>
   ${marke('cozywolf.de')}`);
 
 // 4. Die Fraktionen. Ein Blatt, alle acht, zum Selbsteinordnen.
