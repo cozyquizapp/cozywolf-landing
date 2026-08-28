@@ -1197,7 +1197,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               aria-hidden bleibt, es ist Bild und kein Inhalt; die Objekte sind
               trotzdem mit der Tastatur erreichbar, weil sie als Gruppe den
               Wortwechsel steuern. */}
-          <div data-treiben="" data-m="hgruppe" aria-hidden="true" style={sx('position:relative;z-index:3;align-self:center;width:100%;aspect-ratio:1/1;pointer-events:none')}>
+          <div data-treiben="" data-m="hgruppe" aria-hidden="true" style={sx('position:relative;z-index:3;align-self:center;width:100%;aspect-ratio:1/1;pointer-events:none;will-change:transform,filter,opacity')}>
             {GRUPPE.map((k, i) => {
               // Das Objekt zum aktuellen Wort steht vorn, die anderen treten
               // zurueck. Kein Ausblenden, nur weniger Licht: sie bleiben die

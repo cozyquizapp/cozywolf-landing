@@ -116,16 +116,22 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 /* Hero-Ueberschrift loest sich beim Verlassen im Grund auf (superplay.co).
    Kein Ausblenden: die Schrift waechst und nimmt die Grundfarbe an. */
 @keyframes cwAufloesen{to{transform:scale(1.85);color:#0A0814;letter-spacing:-.05em}}
-/* Die Objekte der Marke treiben dabei leicht auseinander, wie Sticker, die
-   von der Folie rutschen. Sie bleiben sichtbar, sie weichen nur aus. */
-@keyframes cwTreiben{to{transform:translate3d(var(--tx,0),var(--ty,0),0) rotate(var(--tr,0deg)) scale(.86)}}
+/* Wolf, 2026-08-28: "wie waere es im header wenn der effekt der buchstaben
+   links mit dem zoom auch bei den avatarkacheln rechts passiert". Vorher sind
+   die Objekte beim Verlassen leicht geschrumpft, die Schrift daneben ist
+   gewachsen: zwei Bewegungen in entgegengesetzte Richtungen, im selben Bild.
+   Jetzt macht die Gruppe dasselbe wie die Ueberschrift. Sie kann nur nicht die
+   Grundfarbe annehmen, sie ist ja Bild, also uebernimmt Unschaerfe die Rolle
+   des Farbwechsels: naeher, weicher, weg. Dieselbe Strecke, damit beide
+   Haelften im selben Moment im Grund ankommen. */
+@keyframes cwTreiben{to{transform:scale(1.9);filter:blur(22px);opacity:0}}
 /* Auftritt der Objektgruppe: fallen von oben ein, gestaffelt. */
 @keyframes cwKachelEin{from{opacity:0;transform:translate3d(0,-38px,0) rotate(var(--r,0deg)) scale(.82)}to{opacity:1;transform:translate3d(0,0,0) rotate(var(--r,0deg)) scale(1)}}
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion:no-preference){
     [data-aufloesen]{animation-name:cwAufloesen;animation-duration:auto;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:view();animation-range:exit 0% exit 92%}
-    [data-treiben]{animation-name:cwTreiben;animation-duration:auto;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:view();animation-range:exit 0% exit 100%}
+    [data-treiben]{animation-name:cwTreiben;animation-duration:auto;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:view();animation-range:exit 0% exit 92%}
   }
 }
 @media (prefers-reduced-motion:no-preference){
