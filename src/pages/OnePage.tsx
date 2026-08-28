@@ -335,6 +335,37 @@ const AV_FARBEN = ['#F97316', '#22C55E', '#14B8A6', '#A855F7', '#FACC15', '#3B82
 /** Wie schnell eine Kachel durchwechselt, solange der Zeiger auf ihr liegt. */
 const AV_TAKT = 620;
 
+/**
+ * Wolf am 28.08.: "crowdquiz avatare machen kein rennen absicht? beim rennen
+ * koennte man freistehend sowas machen wie +85 punkte bei einem team, dann
+ * aendert sich die reihenfolge, das waere nice, weil genau das im spiel
+ * passiert".
+ *
+ * Ja, Absicht -- und die falsche. Mit der Tabelle ist auch das Rennen
+ * rausgeflogen, und uebrig blieben acht Logos. Sein Einwand trifft: was
+ * CrowdQuiz von acht Wappen unterscheidet, ist nicht die Liste, sondern das
+ * Ereignis. Eine Fraktion punktet, und die Reihenfolge kippt.
+ *
+ * Das Rennen kommt also zurueck, aber nicht als Tabelle, sondern als das, was
+ * am Abend wirklich passiert: eine Zahl steigt an einem Wappen auf, und danach
+ * stehen die Wappen anders.
+ *
+ * Die Bedingung von vorhin bleibt bestehen ("duerfen sich nicht total
+ * verdecken"), und sie ist der Grund fuer die Bauart:
+ *
+ *   Die SEITE ist je Fraktion fest. Drei gehoeren nach links, fuenf nach
+ *   rechts, und daran aendert kein Punktestand etwas. Sonst spraenge ein
+ *   Wappen quer ueber die Textspalte, wenn es von Platz 4 auf 3 zieht.
+ *
+ *   Der PLATZ innerhalb der Seite folgt dem Gesamtstand. Wer von den dreien
+ *   links vorn liegt, steht oben links; wer von den fuenfen rechts vorn liegt,
+ *   steht oben rechts. Bewegt wird also nur senkrecht in der eigenen Spalte.
+ *
+ * Der Preis ist ehrlich zu benennen: eine durchgehende Rangfolge von 1 bis 8
+ * laesst sich so nicht ablesen. Das ist die Aufgabe der Tabelle, und die
+ * gehoert auf die Leinwand am Abend. Hier geht es darum, dass es sich bewegt
+ * und warum.
+ */
 const FRAK_LINKS = [
   { id: 'allwissen', x: 16, y: 14, gr: 86 },
   { id: 'einspruch', x: 34, y: 48, gr: 72 },
@@ -1122,6 +1153,14 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   bleibt als Strich vor den Punkten, die Schrift wird creme. */}
               <div style={sx('margin-top:12px;font-size:12px;font-weight:900;letter-spacing:.16em;'
                 + 'text-transform:uppercase;color:rgba(246,239,230,.62)')}>{r.chip}</div>
+              {/* Wolf am 28.08.: "mach die position nach links unter die
+                  ueberschrift neben den text". Damit steht die Avatarwand in
+                  der Zeile CozyQuiz genau dort, wo in der Zeile CrowdQuiz die
+                  drei Wappen stehen: unter dem Namen, in der Luecke. Beide
+                  Zeilen tragen dieselbe Form, und was sie zeigen ist gerade
+                  der Unterschied zwischen den Modi -- links acht feste
+                  Fraktionen, hier ein Feld, das man selbst zusammenstellt. */}
+              {r.key === 'quiz' && this.renderAvatarWand()}
               {/* Wolf am 28.08.: "die 3 linken arena wappen sollen unter
                   crowdquiz in die luecke". Unter dem Namen stand bisher nichts
                   ausser Luft, und die Zeile war deshalb rechtslastig: alles
@@ -1147,12 +1186,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   </li>
                 ))}
               </ul>
-
-              {/* Wolf am 28.08.: "du machst v1 unter cozyquiz, da ist perfekt
-                  platz dafuer!". Stimmt, gemessen: die Zeile ist 738 px hoch,
-                  die Textspalte darin 255. Unter dem Text stehen also rund
-                  400 px frei, und die Wand braucht 150. */}
-              {r.key === 'quiz' && this.renderAvatarWand()}
 
               {/* Hier stand die Spruchkarte: ein Kasten mit Wappen, Namen und
                   Spruch der Fraktion, auf die man gerade zeigte.
@@ -1227,19 +1260,28 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
    * Die Avatarwand: acht Kacheln, vier mal zwei, unter der Aufzaehlung der
    * Zeile CozyQuiz. Siehe AV_MOTIVE fuer das Warum.
    *
-   * Die Zeile darunter nennt 48 Objekte, weil die App 48 hat. Hier liegen 25 --
-   * mehr braucht eine Wand aus acht Kacheln nicht, und die Aussage gilt dem
-   * Produkt, nicht diesem Feld.
+   * Die Zeile darunter ist woertlich die aus der App: "Sucht euch ein
+   * Team-Emoji aus", so wie sie am Abend auf der Leinwand steht
+   * (CozyQuizPausedView, Folie 'avatare'). Wolf: "schreib nur irgendwie waehle
+   * dein avatar oder sowas, das reicht". Vorher stand dort "48 Objekte × 8
+   * Farben, frei kombinierbar" -- richtig, aber eine Angabe statt einer
+   * Aufforderung, und die Aufforderung ist das, was man hier tun kann.
    */
   renderAvatarWand() {
     const L = this.T;
     const obj = this.state.avObj ?? AV_MOTIVE.map((_, k) => k).slice(0, 8);
     const far = this.state.avFarbe ?? AV_FARBEN.map((_, k) => k);
     const an = this.state.avAn ?? null;
+    // Die Kacheln sind nicht fest breit, sondern teilen sich die Spalte.
+    // Grund: die Namensspalte ist 290 px breit und unter 1080 px nur noch 220.
+    // Vier Kacheln zu 54 plus drei Fugen brauchen 237 -- das passt in 290, aber
+    // nicht in 220. teammarke() liefert feste Pixel, die drei Angaben danach
+    // ueberschreiben sie; 90 Prozent ist genau der Fuellanteil, den
+    // motivAnteil() fuer diesen Satz zurueckgibt.
     const KW = 54;
     return (
-      <div data-avwand="" style={sx('margin-top:30px')}>
-        <div style={sx(`display:grid;grid-template-columns:repeat(4,${KW}px);gap:7px;width:max-content`)}>
+      <div data-avwand="" style={sx(`margin-top:28px;width:100%;max-width:${KW * 4 + 21}px`)}>
+        <div style={sx('display:grid;grid-template-columns:repeat(4,1fr);gap:7px')}>
           {obj.map((mi, i) => {
             const auf = an === i;
             const farbe = AV_FARBEN[far[i]];
@@ -1250,12 +1292,13 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 onFocus={() => this.avStart(i)} onBlur={() => this.avStop()}
                 onClick={() => { if (this._coarse) this.avSchritt(i); }}
                 aria-label={L.modes.avAria}
-                style={sx('display:block;padding:0;border:none;background:none;cursor:pointer;line-height:0;'
+                style={sx('display:block;width:100%;padding:0;border:none;background:none;cursor:pointer;line-height:0;'
                   + `transform:scale(${auf ? 1.08 : 1});transition:transform .28s ${EASE}`)}>
                 {/* Der Wechsel selbst braucht keine Blende: das Motiv springt,
                     die Farbe blendet. Genau das ist der Punkt -- die beiden
                     haengen nicht aneinander. */}
                 <span style={sx('display:block;' + teammarke(farbe, `/assets/av-qq-${AV_MOTIVE[mi]}.webp`, KW)
+                  + 'width:100%;height:auto;aspect-ratio:1;background-size:90% auto,auto;'
                   + `transition:background-color .45s ${EASE}`)}></span>
               </button>
             );
