@@ -83,6 +83,31 @@ Mein Vorschlag, statt beider Varianten aus der Meldung:
  * Damit ist die linke Spalte kuerzer, endet hoeher, und die Unschaerfe faellt
    ohnehin weniger auf.
 
+### 5. Der Spruch am Seitenende steht nicht mittig
+
+Gemeldet am 28.08.: "text ist nicht mittig wenn ganz unten (ist das browser
+abhaengig?)".
+
+Teils. Der Hauptgrund ist aber ein anderer, und der ist eindeutig: der
+Ausgleich, der im Kommentar steht, ist im Code gar nicht da. Dort heisst es,
+ein Polster von zwei Fusshoehen oben schiebe die Mitte um genau eine Fusshoehe
+nach unten. Gemessen steht --fuss korrekt auf 113 px, das padding-top des
+Abschnitts aber auf 0. Der Ausgleich ist also entweder nie eingebaut oder
+irgendwann mit rausgeflogen.
+
+Was ich messen konnte (Chromium, ganz unten gescrollt, Abweichung nach oben):
+16 px bei 2000x1013, 21 px bei 1440x900, 25 px bei 1280x800. In Wolfs
+Bildschirmfoto sieht es nach deutlich mehr aus, und das ist der browserabhaengige
+Teil: 92svh faellt je nach Browser und Werkzeugleisten verschieden aus, und
+je hoeher der Abschnitt gegenueber dem freien Bereich ist, desto weiter
+rutscht seine Mitte nach oben.
+
+Zu tun, und zwar so, dass die Frage nach dem Browser gar nicht mehr aufkommt:
+dem Abschnitt height:calc(100svh - var(--fuss)) geben statt clamp(...92svh...).
+Dann ist seine Unterkante genau die Oberkante des Fusses, und seine eigene
+Mitte ist die Mitte des freien Bereichs -- ohne Ausgleichsrechnung. Danach bei
+1280, 1440 und 2000 nachmessen, Abweichung muss 0 sein.
+
 ## Ideen, die wir verworfen haben (damit sie nicht zweimal kommen)
 
 * Pfote als Mauszeiger. Verworfen am 28.08., "die neue pfote sieht doof aus".
