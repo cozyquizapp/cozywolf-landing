@@ -347,7 +347,40 @@ const AV_TAKT = 620;
  * Als SVG im Datenpfad statt als Bilddatei: 300 Byte, kein zweiter Aufruf, und
  * die Koernung laesst sich in einer Zeile aendern.
  */
-const WAND_KORN = 'data:image/svg+xml;utf8,'
+/**
+ * Die angedeutete Backsteinwand hinter der Projektion in 04.
+ *
+ * Wolf am 28.08.: "die idee waere eine angedeutete backsteinwand im creme
+ * farben hinter der beamer view (angedeutet) die leicht satisfying schimmer,
+ * sie hat die gleiche neigung wie die beamer view" und praezisiert: "nur die
+ * LINIEN zwischen den backsteinen sollen angedeutet sichtbar sein, der bg muss
+ * zwischendrin durchkommen".
+ *
+ * Also keine gefuellten Steine, nur die Fugen: Haarlinien in Creme, sehr
+ * schwach, und dazwischen der Seitengrund. Das ist auch der Grund, warum die
+ * Idee hier funktioniert und ein Foto nicht wuerde -- gezeichnete Fugen sind
+ * eine Zeichnung, ein Ziegelfoto waere ein behaupteter Raum, und genau den
+ * haben wir mit den KI-Bildern rausgeworfen.
+ *
+ * Als SVG im Datenpfad und nicht als Bilddatei: rund 400 Byte, kein zweiter
+ * Aufruf, bei jeder Groesse scharf, und der Laeuferverband (jede zweite Reihe
+ * um einen halben Stein versetzt) laesst sich damit exakt zeichnen. Mit zwei
+ * CSS-Verlaeufen ginge das nicht: die geben ein Gitter, keinen Verband.
+ *
+ * Format 3 zu 1, also 180 zu 60 -- das ist das Verhaeltnis eines echten
+ * Ziegels samt Fuge (rund 225 zu 75 mm).
+ */
+const WAND_FUGEN = 'data:image/svg+xml,'
+  + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="360" height="120">'
+    + '<g stroke="rgb(246,239,230)" stroke-width="1.4" fill="none" stroke-linecap="square">'
+    // Die zwei Lagerfugen, waagerecht
+    + '<path d="M0 .7H360M0 60.7H360"/>'
+    // Stossfugen der unteren Reihe, und der oberen um einen halben Stein versetzt
+    + '<path d="M.7 0V60M180.7 0V60"/>'
+    + '<path d="M90.7 60V120M270.7 60V120"/>'
+    + '</g></svg>');
+
+const WAND_KORN = 'data:image/svg+xml,'
   + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180">'
     + '<filter id="k"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>'
     + '<feColorMatrix type="saturate" values="0"/></filter>'
@@ -2356,20 +2389,43 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                     Seite. Auf 330 px bis zur Leinwandkante sind das etwa
                     215 px Hoehe, auf ganzer Strecke deutlich mehr -- der Kegel
                     kommt also breiter an, als er losfaehrt.
-                    Die Maske laesst ihn mit der Entfernung ausduennen, screen
-                    laesst ihn nur heller machen und nie verdecken. */}
-                <span aria-hidden="true" style={sx('position:absolute;left:92%;top:44%;width:min(900px,60vw);height:min(900px,60vw);'
+                    Wolf am 28.08.: "wir muessen uns was mit dem strahl
+                    ueberlegen der vorm beamer ausgeht, der sieht immoment
+                    nicht gut aus". Er hat recht, und es waren zwei Fehler:
+
+                    Erstens lag der Kegel UEBER dem Gehaeuse (z-Index 0 im
+                    Beamer, das Bild bei 1 -- aber im selben Kasten und damit
+                    sichtbar rundherum). Licht kam also auch dort an, wo das
+                    Geraet steht, und leuchtete seine Vorderseite an. Die Linse
+                    zeigt aber nach hinten: vor dem Geraet darf gar nichts
+                    hell werden. Jetzt liegt der Kegel dahinter und das Gehaeuse
+                    verdeckt seinen Ansatz, wie es soll.
+
+                    Zweitens war er am Ansatz am hellsten und duennte nach
+                    aussen aus. Das ist rueckwaerts. Sichtbar ist nicht der
+                    Strahl selbst, sondern der Staub in der Luft, den er
+                    beleuchtet -- und davon liegt direkt an der Linse fast
+                    nichts und ueber eine lange Strecke viel. Der Kegel faengt
+                    jetzt schwach an, wird auf halbem Weg am hellsten und
+                    verliert sich zur Wand hin.
+
+                    Die Maske laesst ihn ausduennen, screen laesst ihn nur
+                    heller machen und nie verdecken. */}
+                <span aria-hidden="true" style={sx('position:absolute;left:78%;top:46%;width:min(900px,60vw);height:min(900px,60vw);'
                   + 'transform:translateY(-50%);z-index:0;pointer-events:none;mix-blend-mode:screen;'
                   + 'background:conic-gradient(from 58deg at 0% 50%,'
-                  + 'transparent 0deg,rgba(255,246,232,.05) 6deg,rgba(255,246,232,.20) 13deg,'
-                  + 'rgba(255,246,232,.20) 23deg,rgba(255,246,232,.05) 30deg,transparent 36deg);'
-                  + 'mask-image:radial-gradient(circle at 0% 50%,#000 0%,rgba(0,0,0,.9) 26%,rgba(0,0,0,.5) 62%,transparent 96%);'
-                  + `filter:blur(5px);opacity:${on ? 1 : 0};transition:opacity 1.4s ${EASE}`)}></span>
+                  + 'transparent 0deg,rgba(255,246,232,.04) 7deg,rgba(255,246,232,.17) 14deg,'
+                  + 'rgba(255,246,232,.17) 22deg,rgba(255,246,232,.04) 29deg,transparent 36deg);'
+                  + 'mask-image:radial-gradient(circle at 0% 50%,transparent 0%,rgba(0,0,0,.15) 12%,rgba(0,0,0,.85) 34%,rgba(0,0,0,.55) 66%,transparent 96%);'
+                  + `filter:blur(7px);opacity:${on ? 1 : 0};transition:opacity 1.4s ${EASE}`)}></span>
                 <span aria-hidden="true" style={sx('position:absolute;left:54%;top:50%;transform:translate(-50%,-50%);border-radius:50%;'
                   + 'width:118%;height:150%;z-index:0;background:radial-gradient(circle,rgba(255,246,232,.09),transparent 66%);'
                   + `opacity:${on ? 1 : 0};transition:opacity 1.4s ${EASE}`)}></span>
+                {/* Das Gehaeuse liegt ueber dem Kegel und verdeckt dessen
+                    Ansatz. Das ist der Grund, warum das Licht ueberhaupt
+                    aussieht, als kaeme es von hinten aus dem Geraet. */}
                 <img src="/assets/obj-beamer.webp" alt="" width={420} height={264}
-                  style={sx('position:relative;z-index:1;display:block;width:100%;height:auto;'
+                  style={sx('position:relative;z-index:2;display:block;width:100%;height:auto;'
                     + `filter:brightness(${on ? 1.03 : .84}) saturate(${on ? 1 : .9});transition:filter 1.4s ${EASE}`)} />
               </div>
             </div>
@@ -2498,6 +2554,36 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               + '-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(180deg,transparent,#000 12%,#000 84%,transparent);'
               + 'mask-composite:intersect;'
               + `opacity:${on ? .55 : 1};transition:opacity 1.2s ${EASE}`)}></div>
+            {/* Die Fugen. Sie liegen im selben gekippten Eltern-Element wie
+                die Projektion, teilen also deren Neigung -- Wolfs Auflage:
+                "sie hat die gleiche neigung wie die beamer view". Und sie
+                liegen unter ihr, die Projektion deckt ihren Teil der Wand ab,
+                wie es eine Projektion tut.
+                Die Maske ist dieselbe wie beim Lichtfeld darunter, damit Wand
+                und Fugen an derselben Stelle ins Dunkle ausblenden. Sonst
+                haette man Fugen im Nichts, und das waere wieder eine
+                behauptete Flaeche mit Kante. */}
+            <div aria-hidden="true" data-fugen="" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;'
+              + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
+              + `opacity:${on ? .30 : .19};`
+              + 'mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 14%,#000 82%,transparent);'
+              + '-webkit-mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 14%,#000 82%,transparent);'
+              + `mask-composite:intersect;transition:opacity 1.2s ${EASE}`)}></div>
+            {/* Der Schimmer: ein schmaler Lichtstreifen, der schraeg ueber die
+                Fugen wandert. Er laeuft immer, aber sehr langsam und sehr
+                schwach; beim Zeigen wird er heller. Wolf: "die leicht
+                satisfying schimmer ... beim hovern schimmert sie mehr". */}
+            <div aria-hidden="true" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;overflow:hidden;'
+              + 'mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 14%,#000 82%,transparent);'
+              + '-webkit-mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent),linear-gradient(180deg,transparent,#000 14%,#000 82%,transparent);'
+              + 'mask-composite:intersect')}>
+              <span style={sx('position:absolute;inset:-40% -60%;'
+                + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
+                + `opacity:${on ? .5 : .34};`
+                + 'mask-image:linear-gradient(104deg,transparent 40%,#000 47%,#000 53%,transparent 60%);'
+                + '-webkit-mask-image:linear-gradient(104deg,transparent 40%,#000 47%,#000 53%,transparent 60%);'
+                + `animation:cwFugenSchimmer ${on ? 9 : 14}s linear infinite;transition:opacity 1.2s ${EASE}`)}></span>
+            </div>
             <div aria-hidden="true" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;opacity:.5;'
               + `background-image:url("${WAND_KORN}");background-size:180px 180px;`
               + 'mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(180deg,transparent,#000 12%,#000 84%,transparent);'

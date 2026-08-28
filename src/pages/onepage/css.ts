@@ -75,6 +75,11 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 @keyframes cwRise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
 @keyframes cwSheen{0%{transform:translateX(-120%)}60%,100%{transform:translateX(220%)}}
 @keyframes cwWeiter{from{width:0}to{width:100%}}
+/* Der Schimmer ueber den Fugen in 04: ein schmales Lichtband, das schraeg
+   ueber die Wand wandert. Bewegt wird die Flaeche, nicht die Maske -- eine
+   Maske zu animieren ist teuer, eine Verschiebung nicht. */
+@keyframes cwFugenSchimmer{from{transform:translateX(-34%)}to{transform:translateX(34%)}}
+@media (prefers-reduced-motion:reduce){[data-fugen]~div span{animation:none!important}}
 /* Die Punktzahl in 01: steigt auf, haelt kurz, loest sich auf. Kein Sprung am
    Anfang -- sie faengt schon leicht angehoben an, sonst zuckt sie erst nach
    unten, bevor sie steigt. */
