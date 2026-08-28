@@ -290,10 +290,35 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 /* Der leise Hinweis am Spruch: ohne Zeiger wandert ein schmaler Streifen
    Licht ueber die Zeile, damit man sieht, dass da etwas zu holen ist. Kommt
    die Maus, verschwindet er. */
-@keyframes cwSpruchWandern{from{mask-position:0% 50%;-webkit-mask-position:0% 50%}to{mask-position:100% 50%;-webkit-mask-position:100% 50%}}
-[data-spruchidle]{opacity:.34;transition:opacity .4s linear}
+/* Wolf am 28.08.: "wollen wir den effekt ohne hover bei stay cozy stay
+   curious eher wie einen vorbeihuschenden schatten machen?" und "noch
+   subtiler".
+
+   Ja, und zwar am Takt, nicht an der Richtung. Vorher pendelte ein Streifen
+   11 Sekunden hin und zurueck: etwas, das nie aufhoert, sich zu bewegen, und
+   was nie aufhoert, sieht man nach zwei Sekunden nicht mehr. Ein Huschen ist
+   ein Ereignis -- kurz, in eine Richtung, dann lange nichts. Der Durchgang
+   dauert jetzt 1,0 s, danach sind 9,8 s Ruhe, und der Streifen steht in
+   dieser Zeit ausserhalb der Zeile, ist also wirklich weg und nicht nur
+   blass.
+
+   Licht und nicht Schatten, obwohl Wolf vom Schatten spricht: die Zeile ist
+   nur eine Kontur auf fast schwarzem Grund. Da ist nichts, was dunkler
+   werden koennte -- ein Schatten waere unsichtbar. Was man sieht, wenn ein
+   Schatten vorbeihuscht, ist ohnehin die Kante zwischen hell und dunkel, und
+   genau die laeuft hier durch.
+
+   Subtiler heisst hier schmaler statt blasser: 180 statt 280 px Breite bei
+   Deckkraft 0,28. Ein blasser breiter Streifen ist Dunst, ein schmaler
+   heller ist eine Bewegung. */
+@keyframes cwSpruchHuschen{
+  0%{mask-position:-16% 50%;-webkit-mask-position:-16% 50%}
+  9.2%{mask-position:116% 50%;-webkit-mask-position:116% 50%}
+  100%{mask-position:116% 50%;-webkit-mask-position:116% 50%}
+}
+[data-spruchidle]{opacity:.28;transition:opacity .4s linear}
 @media (prefers-reduced-motion:no-preference){
-  [data-spruchidle]{animation:cwSpruchWandern 11s ease-in-out infinite alternate}
+  [data-spruchidle]{animation:cwSpruchHuschen 10.8s linear infinite}
 }
 @media (prefers-reduced-motion:reduce){[data-spruchidle]{opacity:0}}
 @media (hover:hover) and (pointer:fine){

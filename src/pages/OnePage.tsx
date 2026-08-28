@@ -3368,17 +3368,20 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
                 Berechtigt: eine Kontur, die sich nur beim Hovern fuellt, ist
                 ein Angebot, das niemand sieht. Also wandert ohne Zeiger ein
-                schmaler Lichtstreifen langsam hin und her -- 11 Sekunden fuer
-                eine Strecke, Deckkraft 0,34, also gerade genug, dass es
-                auffaellt. Sobald die Maus da ist, geht dieser Streifen weg
-                und ueberlaesst der Hand das Licht. */}
+                schmaler Lichtstreifen einmal durch die Zeile -- 1,0 Sekunde
+                fuer den Durchgang, danach 9,8 Sekunden nichts. Wolf dazu:
+                "eher wie einen vorbeihuschenden schatten" und "noch
+                subtiler". Der Takt macht das Huschen, die Breite die
+                Zurueckhaltung; das Naehere steht bei cwSpruchHuschen in
+                css.ts. Sobald die Maus da ist, bleibt der Streifen weg und
+                ueberlaesst ihr das Licht. */}
             <span aria-hidden="true" data-spruchidle="" style={sx('position:absolute;left:0;top:0;width:100%;'
               + 'color:#F6EFE6;-webkit-text-stroke:0;pointer-events:none;'
               + 'background:linear-gradient(92deg,#FFF6E8,#F6EFE6 46%,#FFE9C9);'
               + '-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;'
               + 'mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.5) 46%,transparent 100%);'
               + '-webkit-mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.5) 46%,transparent 100%);'
-              + 'mask-size:280px 300%;-webkit-mask-size:280px 300%;'
+              + 'mask-size:180px 300%;-webkit-mask-size:180px 300%;'
               + 'mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat')}>{L.kinetic}</span>
             <span aria-hidden="true" data-spruchlicht="" style={sx('position:absolute;left:0;top:0;width:100%;'
               + 'color:#F6EFE6;-webkit-text-stroke:0;pointer-events:none;'
