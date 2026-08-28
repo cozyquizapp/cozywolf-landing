@@ -809,8 +809,32 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     this._pStageIO.observe(el);
   };
 
+
+  /**
+   * Wer ueber cozywolf.de/testen kommt, soll das Test-Team-Formular sehen.
+   *
+   * Wolf bewirbt diesen Link in seinen Instagram-Beitraegen ("Alles zum
+   * Testen: cozywolf.de/testen"). Die Weiterleitung fuehrte auf /#anfragen,
+   * und dort stand das Formular in seiner Vorgabe: "Event anfragen", also die
+   * kostenpflichtige Anfrage. Wer auf "euer Abend geht aufs Haus" klickt und
+   * auf einem Formular landet, das nach einem Termin fuer ein bezahltes Event
+   * fragt, hat den Faden verloren -- und zwar an der einzigen Stelle, an der
+   * Wolf gerade aktiv Leute hinschickt.
+   *
+   * Jetzt fuehrt /testen auf /#testen, und das liest diese Funktion aus. Der
+   * Abschnitt heisst weiter "anfragen", der Sprung geht also von Hand.
+   */
+  vomTestlink(): boolean {
+    if (typeof window === 'undefined') return false;
+    if (window.location.hash !== '#testen') return false;
+    // Der Sprung von Hand, weil kein Element diese Kennung traegt.
+    setTimeout(() => document.getElementById('anfragen')?.scrollIntoView({ block: 'start' }), 60);
+    return true;
+  }
+
   // ------------------------------------------------- Lifecycle
   componentDidMount() {
+    if (this.vomTestlink()) this.setState({ formMode: 'test' });
     setTimeout(() => this.watchWall(), 60);
     this.fussMessen();
     this._coarse = window.matchMedia('(hover:none)').matches || window.innerWidth < 861;
