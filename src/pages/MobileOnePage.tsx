@@ -1320,7 +1320,15 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
           <button type="button" onClick={() => this.setState({ tab: 'test', formStatus: 'idle' })} style={sx(tab(isTest))}>{L.form.tabTest}</button>
         </div>
 
-        <div style={sx('display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);margin-bottom:18px')}>
+        {/* Auch dieser Kasten sprang beim Wechsel, weil die zwei Texte
+            unterschiedlich lang sind: gemessen 111 gegen 92 px bei 390, und
+            bei 360 und 320 lief der laengere auf 150 und 170. Der Text der
+            Event-Fassung ist deshalb um "Keine versteckten Posten" gekuerzt
+            (der Satz davor sagt schon, was enthalten ist), und die
+            Mindesthoehe ist die des laengeren bei 320: 131 px. Damit steht
+            der Kasten bei 390, 360 und 320 in beiden Fassungen gleich hoch,
+            und unter ihm rutscht nichts mehr. */}
+        <div style={sx('display:flex;align-items:center;gap:12px;min-height:131px;box-sizing:border-box;padding:14px 16px;border-radius:18px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);margin-bottom:18px')}>
           <span style={sx("font-family:'League Spartan',sans-serif;font-size:24px;font-weight:900;color:#F6EFE6;white-space:nowrap")}>{isTest ? L.form.priceTest : L.form.priceEvent}</span>
           <span style={sx('flex:1;min-width:0;font-size:13.5px;font-weight:700;line-height:1.45;color:rgba(246,239,230,.78)')}>
             {isTest ? L.form.noteTest : L.form.noteEvent}
@@ -1356,16 +1364,23 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                 wissen muss, ist wo ihr seid und wie viele ungefaehr. Genau so
                 trennt es der Desktop auch. */}
             {isTest ? (
-              <>
-                <label style={sx(labelStyle)}>{L.form.stadt}
+              /* Wolf am 28.08.: "request form ist zu hoch fuer mobile und
+                 veraendert hoehe je nach auswahl". Der Hoehensprung kam von
+                 hier: die zwei Fragen des Testformulars standen untereinander,
+                 die zwei des Eventformulars nebeneinander, also hatte das eine
+                 eine Zeile mehr. Gemessen waren es 651 gegen 565 px. Jetzt
+                 stehen beide Paare als Zweierreihe, damit haben beide
+                 Formulare denselben Aufbau. */
+              <div style={sx('display:grid;grid-template-columns:1fr 1fr;gap:12px')}>
+                <label style={sx(labelStyle + ';min-width:0')}>{L.form.stadt}
                   <input type="text" name="stadt" required maxLength={80} placeholder={L.form.stadtPh} style={sx(inputStyle)} />
                 </label>
-                <label style={sx(labelStyle)}>{L.form.groesse}
+                <label style={sx(labelStyle + ';min-width:0')}>{L.form.groesse}
                   <select name="groesse" defaultValue={L.form.groesseOpts[0]} style={sx(inputStyle)}>
                     {L.form.groesseOpts.map(o => <option key={o} value={o} style={sx('background:#171126;color:#F6EFE6')}>{o}</option>)}
                   </select>
                 </label>
-              </>
+              </div>
             ) : (
               <div style={sx('display:grid;grid-template-columns:1fr 108px;gap:12px')}>
                 <label style={sx(labelStyle + ';min-width:0')}>{L.form.anlass}
@@ -1378,9 +1393,22 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                 </label>
               </div>
             )}
-            <label style={sx(labelStyle)}>{L.form.nachricht}
-              <textarea name="nachricht" rows={3} maxLength={2000} placeholder={L.form.nachrichtPh} style={sx(inputStyle.replace('min-height:52px;padding:0 14px', 'min-height:104px;padding:14px') + ';line-height:1.5;resize:vertical')}></textarea>
-            </label>
+            {/* Die Nachricht steht hinter einem Aufklapper, wie auf dem
+                Desktop. Dort sind sichtbar nur die vier Pflichtangaben, alles
+                Weitere liegt unter "Mehr Angaben, das hilft mir beim
+                Vorschlag"; im Handy stand das Feld offen und kostete mit
+                Beschriftung rund 130 px. Wolf am 28.08.: "request form ist zu
+                hoch fuer mobile". Wer etwas zu sagen hat, klappt auf; wer nur
+                anfragen will, tippt vier Felder und drueckt ab. */}
+            <details>
+              <summary style={sx('display:flex;align-items:center;gap:9px;min-height:44px;font-size:14px;font-weight:700;color:rgba(246,239,230,.78);cursor:pointer;list-style:none')}>
+                <span aria-hidden="true" style={sx('display:inline-flex;align-items:center;justify-content:center;flex:none;width:20px;height:20px;border-radius:6px;border:1px solid rgba(246,239,230,.38);font-size:14px;font-weight:900;line-height:1')}>+</span>
+                {L.form.mehr}
+              </summary>
+              <label style={sx(labelStyle + ';padding-top:12px')}>{L.form.nachricht}
+                <textarea name="nachricht" rows={3} maxLength={2000} placeholder={L.form.nachrichtPh} style={sx(inputStyle.replace('min-height:52px;padding:0 14px', 'min-height:104px;padding:14px') + ';line-height:1.5;resize:vertical')}></textarea>
+              </label>
+            </details>
             {st === 'error' && (
               <p role="alert" style={sx('margin:0;font-size:13.5px;line-height:1.5;color:#FCA5A5;font-weight:700;text-align:center')}>
                 {L.form.errorPre}<a href={`mailto:${EMAIL}`} style={sx('color:#F6EFE6;text-decoration:underline')}>{EMAIL}</a>{L.form.errorPost}

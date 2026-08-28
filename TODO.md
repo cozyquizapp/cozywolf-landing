@@ -44,16 +44,6 @@ Zaehlskript selbst hosten, und die Sprachwahl auf sessionStorage umstellen.
 
 Reihenfolge laut Wolf: erst die drei Desktop-Punkte oben, dann diese hier.
 
-### H7. 06 Formular: zu hoch, und die Hoehe springt
-
-"request form ist zu hoch fuer mobile und veraendert hoehe je nach auswahl,
-das ist nicht so schoen, kann man das optimieren?"
-
-Zu tun: die Hoehe zwischen den beiden Fassungen angleichen (auf dem Desktop
-ist das schon so, dort stehen beide bei 575 px) und die Gesamthoehe druecken.
-Zu messen, bevor ich etwas verschiebe: wie hoch ist das Formular heute je
-Fassung, und welcher Teil traegt die Hoehe.
-
 ### H8. Der Spruch darf groesser, und der Fuss muss anders
 
 "stay cozy stay curious darf groesser sein, 2 zeilig ist auf mobile gut /
@@ -72,6 +62,22 @@ Zu tun:
 
 ## Erledigt
 
+* **H7 das Formular springt nicht mehr und ist kuerzer.** Der Hoehensprung
+  hatte zwei Ursachen. Erstens standen die zwei Fragen des Testformulars
+  untereinander, die des Eventformulars nebeneinander, also hatte eines eine
+  Zeile mehr (gemessen 651 gegen 565 px); jetzt stehen beide als Zweierreihe.
+  Zweitens sprang der Preiskasten (111 gegen 92 bei 390, 150 und 170 bei 360
+  und 320), weil die Texte unterschiedlich lang sind; der Event-Text ist um
+  "Keine versteckten Posten" gekuerzt und die Mindesthoehe steht auf 131 px.
+  Kuerzer wurde es durch den Aufklapper: die Nachricht liegt jetzt hinter
+  "Mehr Angaben", wie auf dem Desktop, wo sichtbar nur die Pflichtangaben
+  stehen.
+  Gemessen, beide Fassungen gegeneinander: bei 390 und 360 px exakt gleich
+  hoch (912 und 931 px Abschnitt, 483 und 502 px Formular), kein Ueberlauf.
+  Bei 320 px bleiben 15 px Unterschied, weil dort die Beschriftung "Stadt /
+  Region" umbricht; das ist ein Fuenftel des alten Sprungs und betrifft nur
+  sehr alte Geraete.
+  Der Abschnitt faellt von 1041 auf 912 px.
 * **H5 die Gegenstaende, H6 der Beamer-Abschnitt, und der Kicker.**
   Die drei Gegenstaende je Anlass standen als eigener Block ueber dem Namen
   und kosteten ihre volle Hoehe. Sie stehen jetzt rechts daneben, auf Hoehe

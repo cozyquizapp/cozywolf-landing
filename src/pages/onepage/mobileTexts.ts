@@ -62,7 +62,7 @@ export type MobileDict = {
     priceEvent: string; noteEvent: string; priceTest: string; noteTest: string; avail: string;
     okTitle: string; okBody: string;
     name: string; email: string; anlass: string; anlassOpts: string[];
-    personen: string; nachricht: string; nachrichtPh: string;
+    personen: string; nachricht: string; nachrichtPh: string; mehr: string;
     stadt: string; stadtPh: string; groesse: string; groesseOpts: string[];
     betreffEvent: string; betreffTest: string; artEvent: string; artTest: string;
     submit: string; sending: string;
@@ -225,15 +225,16 @@ const de: MobileDict = {
     label: 'Anfragen', h2: 'Lust auf ein Quiz?',
     sub: 'Schreib kurz, worum es geht, ich melde mich mit einem Vorschlag.',
     tabEvent: 'Event anfragen', tabTest: 'Test-Team, gratis',
-    priceEvent: 'ab 350 €', noteEvent: 'Moderation, Beamer, Sound und Aufbau sind enthalten. Keine versteckten Posten.',
+    priceEvent: 'ab 350 €', noteEvent: 'Moderation, Beamer, Sound und Aufbau sind enthalten.',
     priceTest: '0 €', noteTest: 'CozyWolf startet gerade. Deshalb die ersten Runden kostenlos.',
     avail: `Termine ab ${TERMIN_AB.de}.`,
     okTitle: 'Danke, ist angekommen.', okBody: 'Ich melde mich so schnell ich kann bei dir.',
     name: 'Name', email: 'E-Mail',
     anlass: 'Anlass', anlassOpts: ['Firma oder Team', 'Private Feier', 'Café, Bar oder Pub', 'Etwas anderes'],
     personen: 'Personen', nachricht: 'Nachricht', nachrichtPh: 'Wann, wo, und was ist der Anlass?',
+    mehr: 'Mehr Angaben, das hilft mir beim Vorschlag',
     stadt: 'Stadt / Region', stadtPh: 'z. B. Hamburg',
-    groesse: 'Wie viele seid ihr?',
+    groesse: 'Personen',
     groesseOpts: ['6–10 Leute', 'Mehr als 10', 'Weniger als 6', 'Weiß ich noch nicht'],
     betreffEvent: 'Quiz-Anfrage', betreffTest: 'Neues Test-Team',
     artEvent: 'Event-Anfrage', artTest: 'Test-Team',
@@ -399,15 +400,16 @@ const en: MobileDict = {
     label: 'Requests', h2: 'Up for a quiz?',
     sub: 'Tell me briefly what you have in mind, and I’ll get back to you with a proposal.',
     tabEvent: 'Request an event', tabTest: 'Test team, free',
-    priceEvent: 'from €350', noteEvent: 'Hosting, projector, sound and setup included. No hidden extras.',
+    priceEvent: 'from €350', noteEvent: 'Hosting, projector, sound and setup included.',
     priceTest: '€0', noteTest: 'CozyWolf is just getting started. That’s why the first rounds are free.',
     avail: `Dates from ${TERMIN_AB.en}.`,
     okTitle: 'Thanks, got it.', okBody: 'I’ll get back to you as soon as I can.',
     name: 'Name', email: 'Email',
     anlass: 'Occasion', anlassOpts: ['Company or team', 'Private party', 'Café, bar or pub', 'Something else'],
     personen: 'People', nachricht: 'Message', nachrichtPh: 'When, where, and what’s the occasion?',
+    mehr: 'More details, so I can propose something that fits',
     stadt: 'City / region', stadtPh: 'e.g. Hamburg',
-    groesse: 'How many are you?',
+    groesse: 'People',
     groesseOpts: ['6–10 people', 'More than 10', 'Fewer than 6', 'Don’t know yet'],
     betreffEvent: 'Quiz request', betreffTest: 'New test team',
     artEvent: 'Event request', artTest: 'Test team',
