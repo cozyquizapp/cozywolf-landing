@@ -77,9 +77,9 @@ const de: MobileDict = {
   nav: {
     items: [
       { href: '#spielarten', label: '01  Die Spielarten' },
-      { href: '#probieren', label: '02  So spielt ihr' },
-      { href: '#anlaesse', label: '03  Anlässe' },
-      { href: '#ablauf', label: '04  Der Abend' },
+      { href: '#anlaesse', label: '02  Anlässe' },
+      { href: '#probieren', label: '03  Ausprobieren' },
+      { href: '#ablauf', label: '04  Ablauf' },
       { href: '#johannes', label: 'Über mich' },
       { href: '#fragen', label: '05  Häufige Fragen' },
       { href: '#anfragen', label: '06  Anfragen' },
@@ -255,9 +255,9 @@ const en: MobileDict = {
   nav: {
     items: [
       { href: '#spielarten', label: '01  The formats' },
-      { href: '#probieren', label: '02  How you play' },
-      { href: '#anlaesse', label: '03  Occasions' },
-      { href: '#ablauf', label: '04  The evening' },
+      { href: '#anlaesse', label: '02  Occasions' },
+      { href: '#probieren', label: '03  Try it' },
+      { href: '#ablauf', label: '04  How it works' },
       { href: '#johannes', label: 'About me' },
       { href: '#fragen', label: '05  FAQ' },
       { href: '#anfragen', label: '06  Requests' },

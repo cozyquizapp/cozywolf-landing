@@ -548,12 +548,12 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             </button>
           </div>
         </div>
-        <nav style={sx(`position:absolute;left:12px;right:12px;top:calc(100% - 4px);z-index:60;border-radius:20px;background:rgba(13,10,25,.97);backdrop-filter:blur(16px);border:1px solid rgba(250,75,163,.26);box-shadow:0 22px 50px rgba(0,0,0,.6);overflow:hidden;transform-origin:100% 0;transform:translateY(${s.menu ? '0' : '-10px'}) scale(${s.menu ? 1 : .96});opacity:${s.menu ? 1 : 0};pointer-events:${s.menu ? 'auto' : 'none'};transition:transform .42s ${EASE},opacity .3s ease`)}>
+        <nav style={sx(`position:absolute;left:12px;right:12px;top:calc(100% - 4px);z-index:60;border-radius:20px;background:rgba(13,10,25,.97);backdrop-filter:blur(16px);border:1px solid rgba(246,239,230,.20);box-shadow:0 22px 50px rgba(0,0,0,.6);overflow:hidden;transform-origin:100% 0;transform:translateY(${s.menu ? '0' : '-10px'}) scale(${s.menu ? 1 : .96});opacity:${s.menu ? 1 : 0};pointer-events:${s.menu ? 'auto' : 'none'};transition:transform .42s ${EASE},opacity .3s ease`)}>
           <div style={sx('display:flex;flex-direction:column')}>
             {L.nav.items.map((it, i) => (
               <a key={it.href} href={it.href} onClick={() => this.setState({ menu: false })}
                 style={sx(i === L.nav.items.length - 1
-                  ? 'display:flex;align-items:center;min-height:50px;padding:0 18px;font-size:16px;font-weight:800;color:#FA4BA3'
+                  ? 'display:flex;align-items:center;min-height:50px;padding:0 18px;font-size:16px;font-weight:900;color:#F6EFE6'
                   : 'display:flex;align-items:center;min-height:50px;padding:0 18px;font-size:16px;font-weight:800;color:#F6EFE6;border-bottom:1px solid rgba(246,239,230,.20)')}>{it.label}</a>
             ))}
           </div>
