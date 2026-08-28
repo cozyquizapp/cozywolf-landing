@@ -1994,11 +1994,52 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 selbst: eine dunkle Flaeche mit Haarlinie, die aufleuchtet,
                 sobald das Spiel laeuft. Sie behauptet keinen Raum, den es
                 nicht gibt, und der Inhalt darin ist echt. */}
-            <div style={sx('position:relative;width:100%;aspect-ratio:16/9;border-radius:22px;overflow:hidden;'
-              + `border:1px solid ${on ? 'rgba(246,239,230,.22)' : 'rgba(246,239,230,.10)'};`
-              + 'background:linear-gradient(180deg,#141024,#0a0714);'
+            {/* Wolf am 28.08.: "fehlt hinter dem beamer in 04 eigentlich noch
+                die angedeutete wall? weil wir davon sprechen a free wall ist
+                all you need, aber jetzt sieht es nur aus wie ein tablet oder
+                so?"
+                Er hat recht, und der Grund waren zwei Details. Erstens hatte
+                die Projektion 22 px runde Ecken -- eine Beamerprojektion hat
+                die nicht, ein Geraet schon. Zweitens endete das Bild an seiner
+                eigenen Kante, es lag also auf nichts. Beides zusammen ergibt
+                genau die Lesart Tablet.
+                Jetzt steht dahinter eine Flaeche, die groesser ist als das
+                Bild und an den Raendern ausblendet -- angedeutet, nicht
+                behauptet: ein Rechteck mit harter Kante waere wieder ein
+                Gegenstand, und einen Raum zu bauen hiesse, den Fehler der
+                KI-Bilder zu wiederholen. Dazu faellt Licht darauf, sobald die
+                Lampe an ist, denn ein Beamer erhellt immer auch die Wand um
+                das Bild herum. Die Ecken der Projektion sind auf 4 px runter,
+                also praktisch scharf.
+                In Ruhe ist die Wand am deutlichsten -- dann ist sie das
+                Einzige, was da ist, und genau das sagt die Ueberschrift.
+                Springt die Lampe an, geht sie auf die Haelfte zurueck und das
+                Licht des Beamers uebernimmt, so wie im Raum das Licht ausgeht,
+                wenn das Bild kommt.
+                Die Maske muss INNERHALB ihres Kastens auf null sein, sonst
+                schneidet dessen Kante den Verlauf ab und man sieht wieder ein
+                Rechteck. Bei Mitte 50/47 und Radien 48/44 Prozent liegen alle
+                vier Kanten ausserhalb der Ellipse. Gemessen: in der ersten
+                Fassung lag die Maske an der Oberkante noch bei 0,68, und das
+                war die sichtbare Linie. */}
+            <div aria-hidden="true" style={sx('position:absolute;inset:-30% -8%;z-index:0;pointer-events:none;'
+              + 'background:linear-gradient(166deg,rgba(246,239,230,.17),rgba(246,239,230,.075) 46%,rgba(246,239,230,.012) 82%,rgba(246,239,230,0));'
+              + 'mask-image:radial-gradient(48% 44% at 50% 47%,#000 26%,transparent 100%);'
+              + '-webkit-mask-image:radial-gradient(48% 44% at 50% 47%,#000 26%,transparent 100%);'
+              + `opacity:${on ? .5 : 1};transition:opacity 1.2s ${EASE}`)}></div>
+            <div aria-hidden="true" style={sx('position:absolute;inset:-30% -8%;z-index:0;pointer-events:none;'
+              + 'background:radial-gradient(46% 42% at 50% 47%,rgba(255,246,232,.12),transparent 100%);'
+              + `opacity:${on ? 1 : 0};transition:opacity 1.2s ${EASE}`)}></div>
+            {/* In Ruhe hat die Projektion weder Rand noch Grund: der Beamer ist
+                aus, also ist dort nichts ausser der Wand. Genau das behauptet
+                die Ueberschrift, und ein dunkles Rechteck mit Haarlinie
+                behauptete stattdessen ein Geraet. Erst wenn die Lampe angeht,
+                bekommt sie eine Flaeche und eine Kante. */}
+            <div style={sx('position:relative;z-index:1;width:100%;aspect-ratio:16/9;border-radius:4px;overflow:hidden;'
+              + `border:1px solid ${on ? 'rgba(246,239,230,.22)' : 'transparent'};`
+              + `background:${on ? 'linear-gradient(180deg,#141024,#0a0714)' : 'transparent'};`
               + `box-shadow:${on ? '0 0 60px rgba(255,242,250,.06),inset 0 0 90px rgba(255,242,250,.03)' : 'none'};`
-              + `transition:border-color .9s ${EASE},box-shadow 1.1s ${EASE}`)}>
+              + `transition:border-color .9s ${EASE},box-shadow 1.1s ${EASE},background .9s ${EASE}`)}>
               {/* In Ruhe war die Leinwand eine leere dunkle Flaeche, und seit
                   sie kleiner ist faellt das staerker auf. Also steht dort
                   jetzt, was zu tun ist. Geht weg, sobald die Lampe angeht. */}
@@ -2010,7 +2051,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               <div data-m="screenbox" style={sx(`position:absolute;inset:0;overflow:hidden;pointer-events:none;background:${on ? '#0b0714' : 'transparent'};transition:background .45s ${EASE} ${on ? '0s' : '.35s'}`)}>
                 <div aria-hidden="true" style={sx(`position:absolute;inset:0;z-index:12;pointer-events:none;border-radius:14px;opacity:0;background:linear-gradient(160deg,#efe4dc,#cdbfcb);animation:${on ? 'cwBeamOn 1.9s cubic-bezier(.4,0,.3,1) both' : 'none'};transition:opacity .8s ease`)}></div>
                 <div style={sx(`position:absolute;left:50%;top:50%;width:${WALL_W}px;height:${WALL_H}px;transform-origin:center center;opacity:${on ? 1 : 0};transition:opacity .5s ${EASE} ${on ? '1.1s' : '0s'};transform:translate(-50%,-50%) scale(${this.state.wallScale ?? 0.8})`)}>
-                  <div data-m="wallscreen" style={sx('width:640px;height:354px;box-sizing:border-box;padding:22px 26px;border-radius:22px;display:flex;flex-direction:column;overflow:hidden;position:relative;'
+                  <div data-m="wallscreen" style={sx('width:640px;height:354px;box-sizing:border-box;padding:22px 26px;border-radius:4px;display:flex;flex-direction:column;overflow:hidden;position:relative;'
                     + `background:radial-gradient(ellipse 120% 90% at 50% 0%,${g.catFarbe}1f,transparent 62%),`
                     + `linear-gradient(180deg,${g.catFarbe}14,#07060d 70%);`
                     + `transition:background .6s ${EASE}`)}>
@@ -2495,9 +2536,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             genau F nach unten und loest das exakt.
             F wird gemessen und nicht geschaetzt, der Fussbereich ist in
             beiden Sprachen verschieden hoch. */}
-        <section data-halt="" data-spruch="" style={sx('background:#0A0814;height:100svh;min-height:0;padding-top:calc(var(--fuss,192px) * 2)')}>
+        <section data-halt="" data-spruch="" style={sx('background:#0A0814;height:clamp(380px,72svh,760px);min-height:0;padding:0 32px;box-sizing:border-box')}>
           <div data-kinetic="" data-m="kin" style={sx("width:100%;text-align:center;font-family:'League Spartan',sans-serif;"
-            + 'font-size:clamp(30px,7.2vw,124px);font-weight:900;line-height:1;color:transparent;'
+            + 'font-size:clamp(30px,6.8vw,118px);font-weight:900;line-height:1;color:transparent;'
             + '-webkit-text-stroke:1.4px rgba(246,239,230,.42);letter-spacing:-.01em;white-space:nowrap')}>{L.kinetic}</div>
         </section>
         <footer style={sx('border-top:1px solid rgba(246,239,230,.10)')}>

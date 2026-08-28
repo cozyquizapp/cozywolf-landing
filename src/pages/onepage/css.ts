@@ -251,7 +251,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
   @media (prefers-reduced-motion:no-preference){
     [data-kinetic]{
       animation:cwSpruchWaechst linear both;animation-timeline:view();
-      animation-range:entry 0% cover 40%;transform-origin:center center;
+      animation-range:entry 0% entry 100%;transform-origin:center center;
     }
   }
 }
