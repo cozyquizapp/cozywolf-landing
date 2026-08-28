@@ -360,7 +360,7 @@ const en: OnePageDict = {
     questions: [
       { art: 'mucho', cat: 'Mu-Cho', col: '#3B82F6', text: 'What did Netflix ship before streaming existed?',
         opts: ['DVDs by mail', 'VHS tapes', 'Music CDs'], correct: 0 },
-      { art: 'zehn', cat: 'All In', col: '#22C55E', text: 'Which country has the most time zones?',
+      { art: 'zehn', cat: 'Ten Chips', col: '#22C55E', text: 'Which country has the most time zones?',
         opts: ['Russia', 'USA', 'France'], correct: 2,
         punkte: [[6, 3, 1], [2, 2, 6], [3, 0, 7]] },
       { art: 'schaetz', cat: 'Close Call', col: '#F59E0B', text: 'How tall is Hamburg’s Michel?',
@@ -419,7 +419,7 @@ const en: OnePageDict = {
       mucho: { name: 'Mu-Cho', claim: 'Pick the right answer.', detail: '4 options, only 1 is right. Speed decides.' },
       schaetzchen: { name: 'Close Call', claim: 'Who guesses closest?', detail: 'The closest guess wins. Nearly right counts too.' },
       cheese: { name: 'Picture This', claim: 'What is that?', detail: 'Recognise the picture and type your answer on the phone.' },
-      zehn: { name: 'All In', claim: 'Spend your points wisely.', detail: '3 answers, 10 points. All in, or spread them out?' },
+      zehn: { name: 'Ten Chips', claim: 'Spend your points wisely.', detail: '3 answers, 10 points. All in, or spread them out?' },
       tuete: { name: 'Lucky Bag', claim: 'Always a surprise.', detail: 'Hot Potato, Top 5, Fix It, Pin It. Nobody knows which one is next.' },
     },
     probes: {

@@ -5,16 +5,16 @@ ist die Reihenfolge der Meldung, nicht die der Dringlichkeit.
 
 ## Offen, zur Entscheidung
 
-### Zwei Namen heissen auf Englisch gleich
+### Die Kategorie heisst auf Englisch jetzt "Ten Chips" -- die App zieht nach
 
-Die Fraktion "Risiko" heisst in der App auf Englisch "All In", und seit dem
-28.08. heisst die Kategorie "10 von 10" auf Englisch ebenfalls "All In".
-Beides kommt so aus der App (shared/quarterQuizTypes.ts, QQ_MEGA_FACTIONS und
-QQ_CATEGORY_LABELS), ich habe deshalb hier nichts davon abweichen lassen.
+Die Fraktion "Risiko" und die Kategorie "10 von 10" hiessen auf Englisch
+beide "All In", beides aus der App. Wolf am 28.08.: "ja nehmen wir 10
+chips". Auf der Landing ist es geaendert, die Fraktion behaelt "All In".
 
-Auf der Seite stehen die beiden in verschiedenen Abschnitten, die Fraktion in
-01 bei CrowdQuiz und die Kategorie in 03, es faellt also kaum auf. Wenn es
-stoert, gehoert es in der App geaendert, nicht hier.
+Offen: in der App nachziehen, shared/quarterQuizTypes.ts,
+QQ_CATEGORY_LABELS, ZEHN_VON_ZEHN.en von "All In" auf "Ten Chips". Solange
+das nicht passiert, sagt die Website einen anderen Namen als der Abend --
+und die Landing hat die App bisher immer als Massgabe behandelt.
 
 ### GoatCounter bleibt, aber der Instagram-Link braucht einen Anhang
 
@@ -42,16 +42,6 @@ noetig.
 Wolf am 28.08. zu den zwei Angeboten (Zaehlskript selbst hosten,
 Sprachwahl auf sessionStorage): "ne das machen wir nicht selbst kannst du
 abhaken". Damit ist der Punkt zu.
-
-### Ein englischer Name fuer "10 von 10"
-
-Wolf am 28.08.: "mit dem namen all in muss ich mir was ueberlegen, was
-waere denn ein guter name auf englisch fuer die kategorie?"
-
-Zusammenhang: die Kategorie und die Fraktion "Risiko" heissen in der App
-beide "All In". Zu aendern ist es in der App
-(shared/quarterQuizTypes.ts, QQ_CATEGORY_LABELS), danach hier nachziehen.
-Vorschlaege stehen im Verlauf vom 28.08.; meine Empfehlung war "Ten Chips".
 
 ## Erledigt
 

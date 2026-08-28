@@ -333,7 +333,7 @@ const en: MobileDict = {
         q: 'What is in the picture?',
         opts: ['Colosseum', 'Acropolis', 'Alhambra', 'Pantheon'], correct: 0,
         fact: 'The Colosseum held around 50,000 spectators.' },
-      { key: 'zehn', name: 'All In', col: '#22C55E', icon: '/assets/cat-10v10.webp',
+      { key: 'zehn', name: 'Ten Chips', col: '#22C55E', icon: '/assets/cat-10v10.webp',
         claim: '3 answers, 10 points. All in or spread out?', kind: 'points',
         q: 'Who won the 2014 World Cup? Spread 10 points.',
         opts: ['Germany', 'Argentina', 'Brazil'], correct: 0, correctLabel: 'Germany' },
