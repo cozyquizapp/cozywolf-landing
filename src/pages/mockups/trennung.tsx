@@ -17,7 +17,7 @@
  * abgelehnt ("die halbkreise in den sections sind so semi"), und sie loesen
  * das Problem auch nicht: sie trennen die Flaechen, nicht die Inhalte.
  */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { sx } from '../onepage/sx';
 import { CREME, HAAR, SPARTAN } from './stil';
 
@@ -64,7 +64,28 @@ const HALTE = [
 
 export function Trennung({ mobil, entwurf }: { mobil: boolean; entwurf: TrennEntwurf }) {
   const H = mobil ? 320 : 460;
-  const [pos, setPos] = useState<number[]>(() => HALTE.map((_, i) => i));
+  /* Wolf am 28.08. zu T3: "das fehlt doch oder nicht? ich sehe t3 nicht?"
+     Er hatte recht, und es lagen drei Sachen daran.
+
+     Erstens war jeder Halt genau so hoch wie das Fenster und rastete mittig
+     ein. Damit ist immer genau EIN Halt zu sehen, und zwar immer der, der
+     schon angekommen ist. Das Hereinfahren gibt es nur waehrend der Fahrt,
+     und die dauert bei eingerastetem Scrollen kaum eine Viertelsekunde. Wer
+     danach hinsieht, sieht T1. Jetzt ist ein Halt 62 Prozent hoch und nichts
+     rastet ein: der naechste steht immer schon zur Haelfte im Bild, und man
+     kann mittendrin stehenbleiben und die Lage ansehen.
+
+     Zweitens gab es den Versatz gar nicht, obwohl er im Namen steht. Die
+     Beschreibung verspricht drei Spalten, je 60 ms nacheinander; im Modell
+     waren es zwei Blocke ohne jede Verzoegerung. Jetzt sind es drei Teile
+     (Zeile mit Nummer und Titel, Beschreibung, Gegenstand) mit 0, 60 und
+     120 ms.
+
+     Drittens stand pos anfangs auf dem INDEX der Halte statt auf ihrer Lage.
+     Das war ein Tippfehler mit Tarnung: fuer den ersten Halt kommt zufaellig
+     der richtige Wert heraus. Jetzt wird einmal beim Aufbau gemessen. */
+  const HH = Math.round(H * 0.62);
+  const [pos, setPos] = useState<number[]>(() => HALTE.map((_, i) => (i === 0 ? 0 : 1)));
   const kasten = useRef<HTMLDivElement | null>(null);
 
   const messen = () => {
@@ -77,37 +98,42 @@ export function Trennung({ mobil, entwurf }: { mobil: boolean; entwurf: TrennEnt
       return ((e.top + e.height / 2) - (r.top + r.height / 2)) / (e.height / 2);
     }));
   };
+  useEffect(messen, []);
 
   return (
     <section style={sx(`max-width:1240px;margin:0 auto;padding:${mobil ? '24px 20px 50px' : '36px 40px 80px'}`)}>
       <div ref={kasten} onScroll={messen}
         style={sx(`height:${H}px;overflow-y:auto;border:1px solid ${HAAR};border-radius:18px;background:#0a0814;`
-          + 'scroll-snap-type:y proximity;scroll-behavior:smooth;position:relative')}>
+          + 'position:relative')}>
         {HALTE.map((h, i) => {
           const p = Math.max(-1, Math.min(1, pos[i] ?? 1));   // -1 unten, 0 Mitte, 1 oben
           const weg = Math.abs(p);                            // 0 = mittig, 1 = ganz weg
           const dreh = entwurf === 2 ? (p * -14).toFixed(1) : '0';
           const kipp = entwurf === 2 ? (weg * 9).toFixed(1) : '0';
-          const hoch = entwurf === 3 ? (p * -40).toFixed(0) : '0';
+          const hoch = entwurf === 3 ? (p * -58).toFixed(0) : '0';
           const schief = entwurf === 4 ? weg * 2.2 : 0;
           return (
-            <div key={h.nr} style={sx(`position:relative;height:${H}px;box-sizing:border-box;scroll-snap-align:center;`
+            <div key={h.nr} style={sx(`position:relative;height:${HH}px;box-sizing:border-box;`
               + `display:flex;align-items:center;gap:${mobil ? '18px' : '34px'};padding:${mobil ? '20px' : '30px 36px'};`
               + (entwurf === 4 ? `background:${h.ton};clip-path:polygon(0 ${schief.toFixed(2)}%,100% 0,100% 100%,0 100%);` : `border-top:1px solid ${HAAR};`))}>
-              <div style={sx('flex:1;min-width:0;'
-                + (entwurf === 3 ? `transform:translateY(${hoch}px);opacity:${(1 - weg * .7).toFixed(2)};` : '')
-                + `transition:transform .4s ${EASE},opacity .4s ${EASE}`)}>
-                <div style={sx('font-size:11px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:rgba(246,239,230,.45);margin-bottom:8px')}>{h.nr}</div>
-                <div style={sx(`font-family:${SPARTAN};font-size:${mobil ? '24px' : '34px'};font-weight:900;line-height:1;letter-spacing:-.025em;color:${CREME};margin-bottom:10px`)}>{h.titel}</div>
-                <div style={sx('font-size:15px;line-height:1.5;font-weight:500;color:rgba(246,239,230,.68)')}>{h.text}</div>
+              <div style={sx('flex:1;min-width:0')}>
+                <div style={sx((entwurf === 3 ? `transform:translateY(${hoch}px);opacity:${(1 - weg * .8).toFixed(2)};transition-delay:0ms;` : '')
+                  + `transition:transform .45s ${EASE},opacity .45s ${EASE}`)}>
+                  <div style={sx('font-size:11px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:rgba(246,239,230,.45);margin-bottom:8px')}>{h.nr}</div>
+                  <div style={sx(`font-family:${SPARTAN};font-size:${mobil ? '24px' : '34px'};font-weight:900;line-height:1;letter-spacing:-.025em;color:${CREME};margin-bottom:10px`)}>{h.titel}</div>
+                </div>
+                <div style={sx('font-size:15px;line-height:1.5;font-weight:500;color:rgba(246,239,230,.68);'
+                  + (entwurf === 3 ? `transform:translateY(${(Number(hoch) * 1.35).toFixed(0)}px);opacity:${(1 - weg * .9).toFixed(2)};transition-delay:60ms;` : '')
+                  + `transition:transform .45s ${EASE},opacity .45s ${EASE}`)}>{h.text}</div>
               </div>
               {/* Der Gegenstand des Halts. Nur er dreht sich, nie der Text. */}
               <div style={sx(`flex:none;width:${mobil ? 110 : 170}px;height:${mobil ? 150 : 230}px;border-radius:${h.art === 'handy' ? '22px' : '14px'};`
                 + `background:linear-gradient(150deg,${h.ton},#07060d);border:2px solid rgba(246,239,230,.16);`
                 + 'box-shadow:0 22px 44px rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;'
                 + `font-size:12px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:rgba(246,239,230,.5);`
-                + `transform:rotate(${dreh}deg) rotateY(${kipp}deg) translateY(${entwurf === 3 ? Number(hoch) * 1.5 : 0}px);`
-                + `transition:transform .5s ${EASE}`)}>{h.art}</div>
+                + `transform:rotate(${dreh}deg) rotateY(${kipp}deg) translateY(${entwurf === 3 ? (Number(hoch) * 1.7).toFixed(0) : 0}px);`
+                + (entwurf === 3 ? `opacity:${(1 - weg).toFixed(2)};transition-delay:120ms;` : '')
+                + `transition:transform .5s ${EASE},opacity .5s ${EASE}`)}>{h.art}</div>
             </div>
           );
         })}
