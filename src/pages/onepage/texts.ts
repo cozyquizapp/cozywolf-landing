@@ -35,6 +35,7 @@ export type OnePageDict = {
     kicker: string; label: string; h2: string;
     quizChip: string; quizCalm: string; quizLead: string; quizBullets: string[];
     arenaChip: string; arenaCalm: string; arenaLead: string; arenaBullets: string[];
+    avZeile: string; avAria: string;
   };
   sim: {
     teams: Record<string, string>;
@@ -114,6 +115,8 @@ const de: OnePageDict = {
       'Setzen, klauen, stapeln oder Joker',
       'Fünf Kategorien, drei Runden, Finale',
     ],
+    avZeile: '48 Objekte × 8 Farben, frei kombinierbar',
+    avAria: 'Team-Zeichen durchwechseln',
     arenaChip: 'Ab 40 Personen',
     arenaCalm: 'Der große Abend: alle spielen als Fraktionen gegeneinander, live auf der Leinwand.',
     arenaLead: 'Ihr spielt wie im CozyQuiz in Teams an einem Handy, nur gehört jedes Team zu einer von acht Fraktionen. Eine Fraktion fasst bis zu fünf Teams. Frage für Frage verschiebt sich die Rangfolge auf der Leinwand.',
@@ -323,6 +326,8 @@ const en: OnePageDict = {
       'Claim, steal, stack or play a joker',
       'Five categories, three rounds, a finale',
     ],
+    avZeile: '48 objects × 8 colours, mix freely',
+    avAria: 'Cycle through team marks',
     arenaChip: 'From 40 people',
     arenaCalm: 'The big night: everyone plays as factions against each other, live on the big screen.',
     arenaLead: 'You play in teams around one phone, just like in CozyQuiz, only each team belongs to one of eight factions. A faction holds up to five teams. Question by question, the ranking shifts on the big screen.',

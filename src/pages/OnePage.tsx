@@ -297,6 +297,44 @@ const PROBE_ORDER = ['mucho', 'schaetzchen', 'cheese', 'zehn', 'tuete'];
  *   2. Jedes Wappen hat nach innen genug Platz fuer seine Fahne (Name und
  *      Spruch, rund 196 px), ohne aus seiner Spalte zu laufen.
  */
+/**
+ * Die wechselnde Avatarwand in der Zeile CozyQuiz.
+ *
+ * Wolf am 28.08.: "du machst v1 unter cozyquiz, da ist perfekt platz dafuer !
+ * und als pendant zu crowd quiz funktioniert das, wenn man drueber hovert
+ * wechselt das feld auf dem man ist farbe und avatar durch?"
+ *
+ * Sein Zusatz ist besser als meine Fassung im Mockup. Dort lief beim Zeigen
+ * die GANZE Wand los; jetzt wechselt nur die Kachel unter dem Zeiger. Das ist
+ * aus drei Gruenden richtiger:
+ *   - Es ist genau das, was ein Gast in der App tut: durchtippen, bis das
+ *     eigene Zeichen da ist.
+ *   - Es bewegt sich immer nur ein Ding, also kaempft nichts mit dem Brett in
+ *     derselben Zeile um den Blick. Genau das war sein Einwand ("zu unruhig").
+ *   - Es ist dieselbe Grammatik wie sonst auf der Seite: zeigen und es
+ *     antwortet, wie die Wappen in CrowdQuiz und die Felder auf dem Brett.
+ *
+ * In Ruhe steht die Wand still. Was man weggedreht hat, bleibt stehen -- die
+ * Wand traegt danach die Paarungen, die man selbst gemacht hat. Das ist der
+ * Satz "frei kombinierbar", nur eben gespielt statt behauptet.
+ *
+ * Warum acht Kacheln: weil an einem Abend hoechstens acht Teams spielen und es
+ * acht Farben gibt. Jede Farbe steht damit genau einmal im Bild. Das ist
+ * Wolfs eigene Entscheidung aus der App ("da es maximal 8 teams mit 8 farben
+ * sind ingame, wuerde ich nur 8 kacheln machen?").
+ */
+const AV_MOTIVE = [
+  'donut', 'strawberry', 'game-die', 'crystal-ball', 'mushroom', 'table-lamp',
+  'teapot', 'treasure-chest', 'paper-boat', 'croissant', 'cookie', 'compass',
+  'popcorn', 'rocket', 'cheese', 'candle', 'houseplant', 'seashell',
+  'snowflake', 'hot-air-balloon', 'playing-card', 'wizard-hat', 'disco-ball',
+  'acorn', 'camera',
+];
+/** Die acht Teamfarben, 1:1 aus QQ_TEAM_PALETTE der App. */
+const AV_FARBEN = ['#F97316', '#22C55E', '#14B8A6', '#A855F7', '#FACC15', '#3B82F6', '#EC4899', '#EF4444'];
+/** Wie schnell eine Kachel durchwechselt, solange der Zeiger auf ihr liegt. */
+const AV_TAKT = 620;
+
 const FRAK_LINKS = [
   { id: 'allwissen', x: 16, y: 14, gr: 86 },
   { id: 'einspruch', x: 34, y: 48, gr: 72 },
@@ -338,6 +376,8 @@ type OPState = {
   beam?: boolean; beamWelcome?: boolean;
   johFan?: boolean; hookI?: number; hookVor?: number | null;
   b01?: number; b01Hand?: Record<number, string>; frak?: string | null;
+  /** Avatarwand in 01: Motiv und Farbe je Kachel, und welche gerade dran ist. */
+  avObj?: number[]; avFarbe?: number[]; avAn?: number | null;
   /** Lage des Zeigers auf der Leinwand, 0 bis 1, fuer den Lichtkegel. */
   beamXY?: { x: number; y: number } | null;
   /** Worauf gerade gezeigt wird, in 05, 06 und 07. Schluessel ist der Text. */
@@ -374,6 +414,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   io: IntersectionObserver | undefined;
   private _beamT: ReturnType<typeof setTimeout> | undefined;
   private _weiterT: ReturnType<typeof setTimeout> | undefined;
+  private _avT: ReturnType<typeof setInterval> | undefined;
   private _hookT: ReturnType<typeof setInterval> | undefined;
   private _boardWinEl: HTMLElement | null = null;
   private _boardWinRO: ResizeObserver | undefined;
@@ -657,7 +698,43 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     this._weiterT = setTimeout(() => this.probeWechsel(this.naechsteKat()), WEITER_MS);
   }
 
+  /**
+   * Eine Kachel der Avatarwand einen Schritt weiter: naechstes Motiv, naechste
+   * Farbe. Das Motiv wird uebersprungen, wenn es schon im Bild steht -- sonst
+   * stuenden zwei gleiche Zeichen nebeneinander, und das waere ein Fehler und
+   * keine freie Wahl. Nicht "+ 8" rechnen: das haelt nur, solange der Vorrat
+   * durch acht teilbar ist.
+   */
+  avSchritt(i: number) {
+    this.setState(st => {
+      const obj = (st.avObj ?? AV_MOTIVE.map((_, k) => k).slice(0, 8)).slice();
+      const far = (st.avFarbe ?? AV_FARBEN.map((_, k) => k)).slice();
+      let kandidat = (obj[i] + 1) % AV_MOTIVE.length, versuche = 0;
+      while (obj.includes(kandidat) && versuche < AV_MOTIVE.length) {
+        kandidat = (kandidat + 1) % AV_MOTIVE.length; versuche++;
+      }
+      obj[i] = kandidat;
+      far[i] = (far[i] + 1) % AV_FARBEN.length;
+      return { avObj: obj, avFarbe: far };
+    });
+  }
+
+  /** Zeiger liegt auf einer Kachel: sie wechselt durch, bis er weitergeht. */
+  avStart(i: number) {
+    clearInterval(this._avT);
+    this.setState({ avAn: i });
+    if (this._reduziert) { this.avSchritt(i); return; }
+    this.avSchritt(i);
+    this._avT = setInterval(() => this.avSchritt(i), AV_TAKT);
+  }
+
+  avStop() {
+    clearInterval(this._avT);
+    this.setState({ avAn: null });
+  }
+
   componentWillUnmount() {
+    clearInterval(this._avT);
     clearTimeout(this._weiterT);
     clearInterval(this.gameTimer);
     clearInterval(this._b01T);
@@ -1015,6 +1092,12 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 ))}
               </ul>
 
+              {/* Wolf am 28.08.: "du machst v1 unter cozyquiz, da ist perfekt
+                  platz dafuer!". Stimmt, gemessen: die Zeile ist 738 px hoch,
+                  die Textspalte darin 255. Unter dem Text stehen also rund
+                  400 px frei, und die Wand braucht 150. */}
+              {r.key === 'quiz' && this.renderAvatarWand()}
+
               {/* Hier stand die Spruchkarte: ein Kasten mit Wappen, Namen und
                   Spruch der Fraktion, auf die man gerade zeigte.
                   Wolf am 28.08.: "ausserdem brauchen wir eine andere art den
@@ -1084,6 +1167,49 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
    * liefe die Fahne ueber das Wappen daneben, und freistellen sollte sie ja
    * gerade kein Kasten.
    */
+  /**
+   * Die Avatarwand: acht Kacheln, vier mal zwei, unter der Aufzaehlung der
+   * Zeile CozyQuiz. Siehe AV_MOTIVE fuer das Warum.
+   *
+   * Die Zeile darunter nennt 48 Objekte, weil die App 48 hat. Hier liegen 25 --
+   * mehr braucht eine Wand aus acht Kacheln nicht, und die Aussage gilt dem
+   * Produkt, nicht diesem Feld.
+   */
+  renderAvatarWand() {
+    const L = this.T;
+    const obj = this.state.avObj ?? AV_MOTIVE.map((_, k) => k).slice(0, 8);
+    const far = this.state.avFarbe ?? AV_FARBEN.map((_, k) => k);
+    const an = this.state.avAn ?? null;
+    const KW = 54;
+    return (
+      <div data-avwand="" style={sx('margin-top:30px')}>
+        <div style={sx(`display:grid;grid-template-columns:repeat(4,${KW}px);gap:7px;width:max-content`)}>
+          {obj.map((mi, i) => {
+            const auf = an === i;
+            const farbe = AV_FARBEN[far[i]];
+            return (
+              <button key={i} type="button"
+                onMouseEnter={() => { if (!this._coarse) this.avStart(i); }}
+                onMouseLeave={() => { if (!this._coarse) this.avStop(); }}
+                onFocus={() => this.avStart(i)} onBlur={() => this.avStop()}
+                onClick={() => { if (this._coarse) this.avSchritt(i); }}
+                aria-label={L.modes.avAria}
+                style={sx('display:block;padding:0;border:none;background:none;cursor:pointer;line-height:0;'
+                  + `transform:scale(${auf ? 1.08 : 1});transition:transform .28s ${EASE}`)}>
+                {/* Der Wechsel selbst braucht keine Blende: das Motiv springt,
+                    die Farbe blendet. Genau das ist der Punkt -- die beiden
+                    haengen nicht aneinander. */}
+                <span style={sx('display:block;' + teammarke(farbe, `/assets/av-qq-${AV_MOTIVE[mi]}.webp`, KW)
+                  + `transition:background-color .45s ${EASE}`)}></span>
+              </button>
+            );
+          })}
+        </div>
+        <div style={sx('margin-top:13px;font-size:13px;font-weight:800;color:rgba(246,239,230,.55)')}>{L.modes.avZeile}</div>
+      </div>
+    );
+  }
+
   renderFrakFeld(plaetze: { id: string; x: number; y: number; gr: number }[], hoehe: number, seite: 'links' | 'rechts') {
     const L = this.T;
     const an = this.state.frak ?? null;
