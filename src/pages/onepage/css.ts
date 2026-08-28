@@ -316,6 +316,7 @@ header a[href="#anfragen"]{display:none!important}
 [data-m=kin]{font-size:clamp(30px,13vw,56px)!important}
 [data-m=faqgrid]{grid-template-columns:1fr!important;gap:26px!important}
 [data-m=formraum]{grid-template-columns:1fr!important;gap:30px!important}
+[data-m=ablaufraum]{grid-template-columns:1fr!important;gap:26px!important}
 [data-m=ctarow],[data-m=pricerow]{flex-direction:column!important}
 [data-m=foot]{flex-wrap:wrap!important;justify-content:center!important;text-align:center!important;padding-bottom:92px!important}
 [data-m=foot] a{margin-left:0!important}

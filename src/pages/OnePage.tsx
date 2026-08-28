@@ -1780,9 +1780,27 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     return (
       <section id="ablauf" data-ton="34,197,94" data-halt="" style={sx('')}>
         <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:26px 32px;box-sizing:border-box')}>
-          {this.kicker(`[ 04 ]|${L.ablauf.label}`)}
-          <h2 data-reveal="" style={sx(`margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:${H2_GROSS};line-height:.9;letter-spacing:-.032em;font-weight:900;color:#F6EFE6`)}>{L.ablauf.h2}</h2>
-          <p data-reveal="" style={sx('margin:0 0 26px;' + UNTERZEILE)}>{L.ablauf.sub}</p>
+          {/* Wolf am 28.08.: "koennen wir die sektion 04 nebeneinander machen?
+              was mir dort aktuell nicht so gut gefaellt, wie der grosse text
+              umgebrochen wird und wie die beamerview unter dem subtext mittig
+              steht". Beides hatte dieselbe Ursache: Text und Leinwand standen
+              untereinander in einer Spalte von 1116 px. Eine Ueberschrift
+              bricht auf dieser Breite an einer Stelle um, die der Satz nicht
+              vorgibt, und die Leinwand darunter war schmaler als der Text und
+              hing deshalb mittig in einer zu breiten Spalte.
+              Jetzt steht die Schrift links in einer eigenen Spalte, die so
+              breit ist, dass der Umbruch dem Satz folgt, und die Leinwand
+              nimmt rechts ihre Spalte ganz ein. Nichts steht mehr mittig in
+              etwas, das breiter ist als es selbst. Unter 900 px fallen die
+              Spalten wieder untereinander, dort ist die Leinwand zurecht die
+              volle Breite. */}
+          <div data-m="ablaufraum" style={sx('display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:clamp(36px,4.6vw,72px);align-items:center')}>
+            <div>
+              {this.kicker(`[ 04 ]|${L.ablauf.label}`)}
+              <h2 data-reveal="" style={sx(`margin:0 0 10px;font-family:'League Spartan',sans-serif;font-size:clamp(34px,3.4vw,56px);line-height:.96;letter-spacing:-.03em;font-weight:900;color:#F6EFE6;text-wrap:balance`)}>{L.ablauf.h2}</h2>
+              <p data-reveal="" style={sx('margin:0;' + UNTERZEILE)}>{L.ablauf.sub}</p>
+            </div>
+            <div>
 
           {/* Wolf am 27.08.: "beamer kleiner und gekippt". Also keine Leinwand
               ueber die volle Breite mehr, sondern 880 px, mittig, und leicht
@@ -1803,7 +1821,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               this.setState({ beamXY: { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height } });
             }}
             onMouseLeave={() => { beamStop(); this.setState({ beamXY: null }); }}
-            style={sx('position:relative;margin:0 auto 0;max-width:700px;cursor:pointer;perspective:1100px')}>
+            style={sx('position:relative;margin:0;width:100%;cursor:pointer;perspective:1100px')}>
             {/* Perspektive gehoert auf den Eltern, die Drehung auf das Kind.
                 Standen beide auf demselben Element, greift die Perspektive
                 nicht und die Kippung sah flach aus statt raeumlich. */}
@@ -1963,6 +1981,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 </div>
               </div>
             </div>
+            </div>
+          </div>
             </div>
           </div>
 
