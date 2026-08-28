@@ -39,6 +39,7 @@ import { Einrasten, SNAP_ENTWUERFE, type SnapEntwurf } from './mockups/einrasten
 import { HoverMuster, HOVER_ENTWUERFE, type HoverEntwurf } from './mockups/hover';
 import { Trennung, TRENN_ENTWUERFE, type TrennEntwurf } from './mockups/trennung';
 import { Kapitel, KAPITEL_ENTWUERFE, type KapitelEntwurf } from './mockups/kapitel';
+import { Crowd, CROWD_ENTWUERFE, type CrowdEntwurf } from './mockups/crowd';
 import {
   Ablauf, UeberMich, Fragen, Anfragen,
   ABLAUF_ENTWUERFE, JOH_ENTWUERFE, FAQ_ENTWUERFE, FORM_ENTWUERFE,
@@ -187,7 +188,7 @@ const PROBE_TYPEN = [
 export default function Mockups() {
   const lang = useLang();
   const L = onePageT(lang);
-  type Stat = '00' | '01' | '02' | '03' | '04' | '05' | '06' | '07' | 'BF' | 'AR' | 'SN' | 'HV' | 'TR' | 'KP';
+  type Stat = '00' | '01' | '02' | '03' | '04' | '05' | '06' | '07' | 'BF' | 'AR' | 'SN' | 'HV' | 'TR' | 'KP' | 'CW';
   const [station, setStation] = useState<Stat>('01');
   // Fuer die Stationen 04 bis 07 genuegt ein Zaehler je Station: sie haben
   // alle drei Entwuerfe und keine eigene Logik.
@@ -202,6 +203,7 @@ export default function Mockups() {
   const [hv, setHv] = useState<HoverEntwurf>(1);
   const [tr, setTr] = useState<TrennEntwurf>(2);
   const [kp, setKp] = useState<KapitelEntwurf>(3);
+  const [cw, setCw] = useState<CrowdEntwurf>(2);
   const [mobil, setMobil] = useState(false);
 
   const modi: Modus[] = [
@@ -228,7 +230,8 @@ export default function Mockups() {
   };
   const w = WEITERE[station];
 
-  const inhalt = station === 'KP' ? <Kapitel mobil={mobil} entwurf={kp} />
+  const inhalt = station === 'CW' ? <Crowd mobil={mobil} entwurf={cw} />
+    : station === 'KP' ? <Kapitel mobil={mobil} entwurf={kp} />
     : station === 'TR' ? <Trennung mobil={mobil} entwurf={tr} />
     : station === 'HV' ? <HoverMuster mobil={mobil} entwurf={hv} />
     : station === 'SN' ? <Einrasten mobil={mobil} entwurf={sn} />
@@ -258,12 +261,16 @@ export default function Mockups() {
             { k: 'HV', label: 'Zeigen' },
             { k: 'TR', label: 'Trennung' },
             { k: 'KP', label: 'Kapitel' },
+            { k: 'CW', label: 'CrowdQuiz' },
           ]} aktiv={station} waehle={k => setStation(k as Stat)} erledigt={ERLEDIGT} />
           <span style={sx(`font-family:${SPARTAN};font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap`)}>
-            {station === 'KP' ? 'Kapitel und Module' : station === 'TR' ? 'Abschnittstrennung' : station === 'HV' ? 'Zeigeeffekte' : station === 'SN' ? 'Einrasten' : station === 'AR' ? 'Arena-Tabelle' : station === 'BF' ? 'Brettfarben' : station === '00' ? 'Farbwechsel' : station === '01' ? 'Spielarten' : station === '02' ? 'Anlaesse' : station === '03' ? 'Ausprobieren' : w.titel}
+            {station === 'CW' ? 'CrowdQuiz-Zeile' : station === 'KP' ? 'Kapitel und Module' : station === 'TR' ? 'Abschnittstrennung' : station === 'HV' ? 'Zeigeeffekte' : station === 'SN' ? 'Einrasten' : station === 'AR' ? 'Arena-Tabelle' : station === 'BF' ? 'Brettfarben' : station === '00' ? 'Farbwechsel' : station === '01' ? 'Spielarten' : station === '02' ? 'Anlaesse' : station === '03' ? 'Ausprobieren' : w.titel}
           </span>
           <span style={sx('flex:1')}></span>
-          {station === 'KP'
+          {station === 'CW'
+            ? <Schalter werte={([1, 2, 3] as CrowdEntwurf[]).map(k => ({ k: String(k), label: `W${k}  ${CROWD_ENTWUERFE[k].name}` }))}
+                aktiv={String(cw)} waehle={k => setCw(Number(k) as CrowdEntwurf)} />
+            : station === 'KP'
             ? <Schalter werte={([1, 2, 3, 4, 5] as KapitelEntwurf[]).map(k => ({ k: String(k), label: `K${k}  ${KAPITEL_ENTWUERFE[k].name}` }))}
               aktiv={String(kp)} waehle={k => setKp(Number(k) as KapitelEntwurf)} />
             : station === 'TR'
@@ -301,7 +308,9 @@ export default function Mockups() {
             aktiv={lang} waehle={k => setLang(k as 'de' | 'en')} />
         </div>
         <div style={sx(`max-width:1000px;margin:0 auto;padding:0 24px 14px;font-size:14.5px;line-height:1.55;color:rgba(246,239,230,.66)`)}>
-          {station === 'KP'
+          {station === 'CW'
+            ? <><b style={sx(`color:${CREME}`)}>W{cw}. {CROWD_ENTWUERFE[cw].name}.</b> {CROWD_ENTWUERFE[cw].idee[lang]} <i style={sx('opacity:.7')}>Zeig auf ein Wappen. In W2 und W3 laeuft die Wertung, damit sich beurteilen laesst, ob die Bewegung ohne Tabelle noch lesbar ist.</i></>
+            : station === 'KP'
             ? <><b style={sx(`color:${CREME}`)}>K{kp}. {KAPITEL_ENTWUERFE[kp].name}.</b> {KAPITEL_ENTWUERFE[kp].idee[lang]} <i style={sx('opacity:.7')}>Nur Geruest und Typografie, ohne Inhalt: es geht um Groessen, Luft und Linien.</i></>
             : station === 'TR'
             ? <><b style={sx(`color:${CREME}`)}>T{tr}. {TRENN_ENTWUERFE[tr].name}.</b> {TRENN_ENTWUERFE[tr].idee[lang]}</>
