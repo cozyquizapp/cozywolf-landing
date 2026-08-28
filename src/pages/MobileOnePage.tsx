@@ -38,26 +38,35 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 `;
 
 /**
- * Die fuenf Gegenstaende der Marke, in der Reihenfolge der Woerter im Kopf.
+ * Die fuenf Gegenstaende der Marke im Kopf.
  *
- * Auf dem Desktop stehen sie als Gruppe neben der Ueberschrift, und wer mit
- * der Maus auf einen faehrt, wechselt das Wort. Auf dem Handy gibt es kein
- * Darueberfahren, also wird daraus eine Reihe zum Antippen: fuenf Kacheln,
- * die zum Wort gehoerende leuchtet. Eine Reihe und keine verstreute Gruppe,
- * weil eine Gruppe quadratisch waere und damit die Knoepfe unter die Kante
- * schoebe -- gemessen 350 px Breite gegen 539 px Hoehe des ganzen Kopfes.
+ * Erster Versuch war eine Reihe, fuenf gleich grosse Kacheln nebeneinander.
+ * Wolf am 28.08.: "damit ist die mobile deutlich langweiliger ... die reihe
+ * ist das gegenteil der mobile wo die objekte in verschiedenen ebenen
+ * hintereinander stehen". Er hat recht. Eine Reihe ist eine Liste, und eine
+ * Liste hat keine Tiefe; die Gruppe auf dem Desktop lebt genau davon, dass
+ * die Dinger verschieden gross sind, sich ueberlappen, gekippt stehen und
+ * dadurch vor- und hintereinander liegen.
  *
- * Zuordnung wie in OnePage.tsx (GRUPPE + WORT_OBJEKT):
- *   Wissen -> Gehirn, Glueck -> Fliegenpilz, Timing -> Sanduhr,
- *   Teamgeist -> Puzzle, Bauchgefuehl -> Glaskugel.
+ * Meine Begruendung fuer die Reihe war der Platz, und die war zu bequem: die
+ * Gruppe muss nicht quadratisch sein, nur weil sie es auf dem Desktop ist.
+ * Hier ist sie ein flaches Band, 350 auf 168 px, also 48 Prozent der Breite.
+ * Die Groessenstaffelung des Desktops bleibt (30, 25, 23, 20, 18 Prozent der
+ * Breite), die Neigungen auch, und die Ueberlappungen sind gerechnet: jede
+ * Kachel greift ein Stueck in die naechste, keine verdeckt eine andere ganz.
+ *
+ * z gibt die Ebene. Was gerade gemeint ist, kommt nach vorn, damit es
+ * antippbar bleibt und nicht halb unter dem Nachbarn liegt.
  */
 const MOBJEKTE = [
-  { av: '/assets/obj-gehirn.webp', farbe: '#3B82F6' },
-  { av: '/assets/av-qq-mushroom.webp', farbe: '#22C55E' },
-  { av: '/assets/obj-sanduhr.webp', farbe: '#FACC15' },
-  { av: '/assets/obj-puzzle.webp', farbe: '#F97316' },
-  { av: '/assets/av-qq-crystal-ball.webp', farbe: '#A855F7' },
+  { av: '/assets/obj-puzzle.webp',           farbe: '#F97316', wort: 3, l: 0,  t: 8,  gr: 30, r: -8,  z: 3 },
+  { av: '/assets/av-qq-crystal-ball.webp',   farbe: '#A855F7', wort: 4, l: 24, t: 34, gr: 25, r: 10,  z: 4 },
+  { av: '/assets/av-qq-mushroom.webp',       farbe: '#22C55E', wort: 1, l: 46, t: 0,  gr: 23, r: 6,   z: 2 },
+  { av: '/assets/obj-sanduhr.webp',          farbe: '#FACC15', wort: 2, l: 66, t: 40, gr: 20, r: -14, z: 5 },
+  { av: '/assets/obj-gehirn.webp',           farbe: '#3B82F6', wort: 0, l: 82, t: 4,  gr: 18, r: 14,  z: 1 },
 ];
+/** Wort -> Gegenstand. Umkehrung von MOBJEKTE[].wort, wie OBJEKT_WORT im Desktop. */
+const MWORT_OBJ = [0, 1, 2, 3, 4].map(w => MOBJEKTE.findIndex(o => o.wort === w));
 
 // Team-Avatare: das CozyQuiz-Objektset der App (48 Motive). Die Objekte sind
 // farbneutral, die Teamfarbe kommt aus der Kachel darunter - deshalb sind hier
@@ -357,7 +366,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     // Das Wort traegt die Farbe seines Gegenstands, wie oben auf dem Desktop.
     // Der Wechsel blendet ueber, er springt nicht: 0,62 s, dieselbe Dauer wie
     // die Buchstabenwalze.
-    const objekt = MOBJEKTE[hookI % MOBJEKTE.length];
+    const objekt = MOBJEKTE[MWORT_OBJ[hookI % MWORT_OBJ.length]];
     return (
       <section id="top" style={sx('position:relative;overflow:hidden')}>
         <div style={sx('position:relative;padding:28px 20px 34px')}>
@@ -372,26 +381,28 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
           </h1>
           <p style={sx(`margin:16px 0 0;font-size:16.5px;line-height:1.55;font-weight:600;color:rgba(246,239,230,.78);text-wrap:pretty;animation:mRise .8s ${EASE} both .1s`)}>{L.hero.sub}</p>
           <p style={sx(`margin:10px 0 0;font-size:15px;line-height:1.55;font-weight:700;color:rgba(246,239,230,.62);text-wrap:pretty;animation:mRise .8s ${EASE} both .14s`)}>{L.hero.sub2}</p>
-          {/* Die Gegenstaende. Antippen wechselt das Wort, der zum Wort
-              gehoerende steht vorn: etwas groesser, volle Helligkeit und ein
-              Schein in seiner Farbe. Die anderen treten zurueck, aber sie
-              verschwinden nicht -- sie sind die Gruppe, aus der eine gerade
-              gemeint ist. Dieselbe Regel wie auf dem Desktop, wo Wolf zweimal
-              darauf bestanden hat, dass Helligkeit regelt und nicht
-              Durchsichtigkeit. */}
-          <div style={sx(`margin-top:22px;display:flex;gap:10px;animation:mRise .8s ${EASE} both .16s`)}>
+          {/* Die Gegenstaende. Antippen waehlt das Wort -- auf dem Desktop
+              macht das der Zeiger, hier gibt es keinen. Was gerade gemeint
+              ist, steht vorn: etwas groesser, volle Helligkeit, ein Schein in
+              seiner Farbe und die oberste Ebene. Die anderen treten ueber
+              Helligkeit zurueck, nicht ueber Durchsichtigkeit; durchsichtig
+              hiesse "weiter weg" und wuerde genau die Tiefenstaffelung
+              verwischen, die das Bild traegt. */}
+          <div style={sx(`position:relative;margin-top:20px;width:100%;aspect-ratio:350/168;animation:mRise .8s ${EASE} both .16s`)}>
             {MOBJEKTE.map((o, i) => {
-              const wach = i === hookI % MOBJEKTE.length;
+              const wach = i === MWORT_OBJ[hookI % MWORT_OBJ.length];
               return (
-                <button key={i} type="button" onClick={() => this.hookWaehlen(i)}
-                  aria-label={L.hero.hooks[i]}
-                  style={sx('flex:1;min-width:0;padding:0;border:none;background:none;line-height:0;cursor:pointer;'
-                    + `transform:scale(${wach ? 1.06 : 1});transition:transform .32s ${EASE}`)}>
+                <button key={i} type="button" onClick={() => this.hookWaehlen(o.wort)}
+                  aria-label={L.hero.hooks[o.wort]}
+                  style={sx(`position:absolute;left:${o.l}%;top:${o.t}%;width:${o.gr}%;aspect-ratio:1;`
+                    + `padding:0;border:none;background:none;line-height:0;cursor:pointer;`
+                    + `z-index:${wach ? 9 : o.z};`
+                    + `transform:rotate(${o.r}deg) scale(${wach ? 1.08 : 1});transition:transform .34s ${EASE}`)}>
                   <span style={sx('display:block;' + teammarke(o.farbe, o.av, 60)
-                    + 'width:100%;height:auto;aspect-ratio:1;background-size:90% auto,auto;border-radius:16%;'
-                    + `filter:brightness(${wach ? 1.08 : 0.68});`
-                    + `box-shadow:${wach ? `0 0 22px ${o.farbe}66` : 'none'};`
-                    + `transition:filter .32s ${EASE},box-shadow .32s ${EASE}`)}></span>
+                    + 'width:100%;height:100%;background-size:90% auto,auto;border-radius:16%;'
+                    + `filter:brightness(${wach ? 1.08 : 0.7});`
+                    + `box-shadow:0 10px 22px rgba(0,0,0,.55)${wach ? `,0 0 26px ${o.farbe}66` : ''};`
+                    + `transition:filter .34s ${EASE},box-shadow .34s ${EASE}`)}></span>
                 </button>
               );
             })}
