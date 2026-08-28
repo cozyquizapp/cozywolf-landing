@@ -14,7 +14,14 @@ export type QuoteWord = { w: string; hot?: boolean };
 export type ProbeDef =
   | { kind: 'pick'; q: string; opts: string[]; correct: number; fact: string }
   | { kind: 'guess'; q: string; target: number; unit: string }
-  | { kind: 'points'; q: string; opts: string[]; correct: number; correctLabel: string };
+  | { kind: 'points'; q: string; opts: string[]; correct: number; correctLabel: string }
+  /**
+   * Fix It, eines der vier Unterspiele der Bunten Tuete. `items` steht in der
+   * richtigen Reihenfolge, `start` ist die Reihenfolge, in der die Karten auf
+   * dem Handy liegen. Damit ist die Loesung im Text lesbar und die Anzeige
+   * trotzdem gemischt.
+   */
+  | { kind: 'order'; spiel: string; q: string; items: string[]; start: number[]; fact: string };
 
 export type OnePageDict = {
   nav: { spielarten: string; probieren: string; ablauf: string; ueber: string; cta: string };
@@ -57,6 +64,8 @@ export type OnePageDict = {
     pointsLeft: (n: number) => string; pointsSubmit: string; pointsAgain: string;
     pointsResult: (label: string, g: number) => string;
     pointsFooterIdle: string; pointsFooterDone: string;
+    ordHint: string; ordAgain: string; ordResult: (richtig: number, ges: number) => string;
+    weiterZu: (name: string) => string;
   };
   ablauf: { label: string; h2: string; sub: string; wandHint: string; duo0Title: string; duo0: string[]; duo1Title: string; duo1: string[] };
   johannes: {
@@ -188,7 +197,7 @@ const de: OnePageDict = {
       schaetzchen: { name: 'Schätzchen', claim: 'Wer schätzt am nächsten dran?', detail: 'Wer am nächsten dran liegt, gewinnt. Knapp dran zählt auch.' },
       cheese: { name: 'Schau mal!', claim: 'Was ist das?', detail: 'Erkennt das Bild und tippt die Antwort ins Handy.' },
       zehn: { name: '10 von 10', claim: 'Verteilt eure Punkte klug.', detail: '3 Antworten, 10 Punkte. Alles auf eine Karte oder streuen?' },
-      tuete: { name: 'Bunte Tüte', claim: 'Immer eine Überraschung.', detail: 'Top 5, Reihenfolge, CozyGuessr, Heiße Kartoffel, 4 gewinnt, Bluff.' },
+      tuete: { name: 'Bunte Tüte', claim: 'Immer eine Überraschung.', detail: 'Heiße Kartoffel, Top 5, Fix It, Pin It. Was kommt, sagt vorher keiner.' },
     },
     probes: {
       mucho: { kind: 'pick', q: 'Was verschickte Netflix, bevor es Streaming gab?',
@@ -197,12 +206,12 @@ const de: OnePageDict = {
       cheese: { kind: 'pick', q: 'Was ist auf dem Bild?',
         opts: ['Kolosseum', 'Akropolis', 'Alhambra', 'Pantheon'], correct: 0,
         fact: 'Ins Kolosseum passten rund 50.000 Zuschauer. Gebaut wurde es vor fast 2.000 Jahren.' },
-      tuete: { kind: 'pick', q: 'Welche Aussage stimmt nicht?',
-        opts: ['Honig verdirbt nicht', 'Bananen sind botanisch Beeren', 'Die Chinesische Mauer sieht man vom Mond', 'Ein Venus-Tag dauert länger als ein Venus-Jahr'], correct: 2,
-        fact: 'Vom Mond aus ist die Chinesische Mauer mit bloßem Auge nicht zu erkennen. Die anderen drei stimmen.' },
+      tuete: { kind: 'order', spiel: 'Fix It', q: 'Sortiert nach Erfindung, das Älteste zuerst.',
+        items: ['Buchdruck', 'Dampfmaschine', 'Telefon', 'Internet'], start: [2, 0, 3, 1],
+        fact: 'Buchdruck 1450, Dampfmaschine 1712, Telefon 1876, Internet 1983.' },
       schaetzchen: { kind: 'guess', q: 'Wie viele Knochen hat ein erwachsener Mensch?', target: 206, unit: 'Knochen' },
-      zehn: { kind: 'points', q: 'Wer gewann die Fußball-WM 2014? Verteilt 10 Punkte.',
-        opts: ['Deutschland', 'Argentinien', 'Brasilien'], correct: 0, correctLabel: 'Deutschland' },
+      zehn: { kind: 'points', q: 'Welches Land hat die meisten Zeitzonen? Verteilt 10 Punkte.',
+        opts: ['Russland', 'USA', 'Frankreich'], correct: 2, correctLabel: 'Frankreich' },
     },
     tapAnswer: 'Tippt eure Antwort an',
     guessFooter: 'Wer am nächsten dran liegt, gewinnt',
@@ -215,6 +224,10 @@ const de: OnePageDict = {
     pointsResult: (label, g) => `Richtig war ${label}. Ihr holt ${g} von 10 Punkten.`,
     pointsFooterIdle: 'Verteilt 10 Punkte auf drei Antworten',
     pointsFooterDone: 'Alles auf eine Antwort bringt am meisten, kostet aber alles.',
+    ordHint: 'Tippt sie in die richtige Reihenfolge',
+    ordAgain: 'Nochmal sortieren',
+    ordResult: (richtig, ges) => `${richtig} von ${ges} an der richtigen Stelle.`,
+    weiterZu: name => `Weiter zu ${name}`,
   },
   ablauf: {
     label: 'Ablauf', h2: G.de.ablaufH2,
@@ -385,7 +398,7 @@ const en: OnePageDict = {
       schaetzchen: { name: 'Schätzchen', claim: 'Who guesses closest?', detail: 'The closest guess wins. Nearly right counts too.' },
       cheese: { name: 'Schau mal!', claim: 'What is that?', detail: 'Recognise the picture and type your answer on the phone.' },
       zehn: { name: '10 von 10', claim: 'Spend your points wisely.', detail: '3 answers, 10 points. All in, or spread them out?' },
-      tuete: { name: 'Bunte Tüte', claim: 'Always a surprise.', detail: 'Top 5, ordering, CozyGuessr, hot potato, connect four, bluff.' },
+      tuete: { name: 'Bunte Tüte', claim: 'Always a surprise.', detail: 'Hot Potato, Top 5, Fix It, Pin It. Nobody knows which one is next.' },
     },
     probes: {
       mucho: { kind: 'pick', q: 'What did Netflix ship before streaming existed?',
@@ -394,12 +407,12 @@ const en: OnePageDict = {
       cheese: { kind: 'pick', q: 'What’s in the picture?',
         opts: ['Colosseum', 'Acropolis', 'Alhambra', 'Pantheon'], correct: 0,
         fact: 'The Colosseum held around 50,000 spectators. It was built almost 2,000 years ago.' },
-      tuete: { kind: 'pick', q: 'Which statement is false?',
-        opts: ['Honey never spoils', 'Bananas are botanically berries', 'You can see the Great Wall from the Moon', 'A day on Venus is longer than a year on Venus'], correct: 2,
-        fact: 'The Great Wall is not visible to the naked eye from the Moon. The other three are true.' },
+      tuete: { kind: 'order', spiel: 'Fix It', q: 'Sort them by invention, oldest first.',
+        items: ['Printing press', 'Steam engine', 'Telephone', 'Internet'], start: [2, 0, 3, 1],
+        fact: 'Printing press 1450, steam engine 1712, telephone 1876, internet 1983.' },
       schaetzchen: { kind: 'guess', q: 'How many bones does an adult human have?', target: 206, unit: 'bones' },
-      zehn: { kind: 'points', q: 'Who won the 2014 World Cup? Spend 10 points.',
-        opts: ['Germany', 'Argentina', 'Brazil'], correct: 0, correctLabel: 'Germany' },
+      zehn: { kind: 'points', q: 'Which country has the most time zones? Spend 10 points.',
+        opts: ['Russia', 'USA', 'France'], correct: 2, correctLabel: 'France' },
     },
     tapAnswer: 'Tap your answer',
     guessFooter: 'The closest guess wins',
@@ -412,6 +425,10 @@ const en: OnePageDict = {
     pointsResult: (label, g) => `${label} was correct. You take ${g} of 10 points.`,
     pointsFooterIdle: 'Spread 10 points across three answers',
     pointsFooterDone: 'All-in scores the most, but costs everything.',
+    ordHint: 'Tap them into the right order',
+    ordAgain: 'Sort again',
+    ordResult: (richtig, ges) => `${richtig} of ${ges} in the right spot.`,
+    weiterZu: name => `Next: ${name}`,
   },
   ablauf: {
     label: 'How it works', h2: G.en.ablaufH2,

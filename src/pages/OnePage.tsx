@@ -267,6 +267,14 @@ const CAT_META = [
   { key: 'tuete', col: '#EF4444', icon: '/assets/cat-buntetuete.webp' },
 ];
 const PROBE_ORDER = ['mucho', 'schaetzchen', 'cheese', 'zehn', 'tuete'];
+/**
+ * Wolf am 28.08.: "ich faende gut wenn der reveal von einer kategorie kam,
+ * dass man entweder nach ein paar sekunden oder durch klick auch zur naechsten
+ * kommt". Beides, und die Uhr laeuft sichtbar: unter dem Knopf fuellt sich eine
+ * Linie ueber genau diese Zeit. Sechs Sekunden, weil die Aufloesung ein bis
+ * zwei Zeilen Text ist und darunter noch die Antworten stehen.
+ */
+const WEITER_MS = 6000;
 
 // Beamerbild wird in Entwurfsgroesse gebaut und auf die Leinwand skaliert
 const WALL_W = 640, WALL_H = 354;
@@ -298,6 +306,10 @@ type OPState = {
   probeCat?: string; probePick?: number | null;
   guessRaw?: string; guessDone?: boolean;
   points?: number[]; pointsDone?: boolean;
+  /** Fix It in der Bunten Tuete: angetippte Karten in Tippreihenfolge. */
+  ordSel?: number[]; ordDone?: boolean;
+  /** Laeuft die Uhr zur naechsten Kategorie in 03? */
+  weiterAn?: boolean;
   ptilt?: { x: number; y: number } | null; pUp?: boolean;
   boardWinW?: number; boardWinH?: number;
 };
@@ -322,6 +334,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   wallRO: ResizeObserver | undefined;
   io: IntersectionObserver | undefined;
   private _beamT: ReturnType<typeof setTimeout> | undefined;
+  private _weiterT: ReturnType<typeof setTimeout> | undefined;
   private _arenaT: ReturnType<typeof setInterval> | undefined;
   private _hookT: ReturnType<typeof setInterval> | undefined;
   private _boardWinEl: HTMLElement | null = null;
@@ -629,7 +642,30 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     window.addEventListener('scroll', this.onScroll, { passive: true });
   }
 
+  /** Die naechste Kategorie in 03, im Kreis. */
+  naechsteKat() {
+    const i = PROBE_ORDER.indexOf(this.state.probeCat || 'mucho');
+    return PROBE_ORDER[(i + 1) % PROBE_ORDER.length];
+  }
+
+  /** Kategorie wechseln und alles zuruecksetzen, was zur alten gehoerte. */
+  probeWechsel(k: string) {
+    clearTimeout(this._weiterT);
+    this.setState({
+      probeCat: k, probePick: null, guessRaw: '', guessDone: false,
+      points: [4, 3, 3], pointsDone: false, ordSel: [], ordDone: false, weiterAn: false,
+    });
+  }
+
+  /** Nach einer Aufloesung: Uhr zur naechsten Kategorie starten. */
+  weiterAb() {
+    clearTimeout(this._weiterT);
+    this.setState({ weiterAn: true });
+    this._weiterT = setTimeout(() => this.probeWechsel(this.naechsteKat()), WEITER_MS);
+  }
+
   componentWillUnmount() {
+    clearTimeout(this._weiterT);
     clearInterval(this.gameTimer);
     clearInterval(this._b01T);
     clearTimeout(this._b01Neu);
@@ -1514,6 +1550,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const col = meta.col;
     const tilt = this.state.ptilt;
     const up = this.state.pUp !== false;
+    const weiterAn = !!this.state.weiterAn;
     const n = PROBE_ORDER.length;
 
     let footer = L.probe.tapAnswer;
@@ -1541,7 +1578,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 else { text = 'rgba(246,239,230,.4)'; badgeCol = 'rgba(246,239,230,.35)'; }
               }
               return (
-                <button key={i} type="button" onClick={() => this.setState({ probePick: i })}
+                <button key={i} type="button" onClick={() => { this.setState({ probePick: i }); this.weiterAb(); }}
                   style={sx('display:flex;align-items:center;gap:13px;width:100%;padding:12px 14px;border-radius:10px;cursor:pointer;'
                     + `font-family:inherit;font-size:14.5px;font-weight:900;box-sizing:border-box;text-align:left;`
                     + `border:1px solid ${line};background:${fill};color:${text};`
@@ -1580,7 +1617,12 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             placeholder={L.probe.guessPlaceholder} aria-label={L.probe.guessPlaceholder}
             style={sx("width:100%;box-sizing:border-box;padding:14px 16px;border-radius:14px;background:rgba(246,239,230,.05);border:1.5px solid rgba(243,195,103,.45);color:#F59E0B;font-family:'League Spartan',sans-serif;font-size:32px;font-weight:900;text-align:center;outline:none")} />
           <button type="button"
-            onClick={() => this.setState(done ? { guessDone: false, guessRaw: '' } : { guessDone: raw0 !== '' })}
+            onClick={() => {
+              if (done) { clearTimeout(this._weiterT); this.setState({ guessDone: false, guessRaw: '', weiterAn: false }); return; }
+              if (raw0 === '') return;
+              this.setState({ guessDone: true });
+              this.weiterAb();
+            }}
             style={sx(`width:100%;padding:13px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;border:none;background:${done ? 'rgba(246,239,230,.06)' : col};color:${done ? 'rgba(246,239,230,.78)' : '#0A0814'};box-shadow:0 4px 0 rgba(0,0,0,.4);transition:all .3s ${EASE}`)}>
             {done ? L.probe.guessAgain : L.probe.guessBtn}
           </button>
@@ -1611,12 +1653,83 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 style={sx(`width:28px;height:28px;flex:none;border-radius:9px;cursor:pointer;font-family:inherit;font-size:15px;font-weight:900;border:1px solid ${col}59;background:${col}1f;color:${col}`)}>+</button>
             </div>
           ))}
-          <button type="button" onClick={() => { if (ready) this.setState(st => ({ pointsDone: !st.pointsDone })); }}
+          <button type="button" onClick={() => {
+            if (!ready) return;
+            if (done) { clearTimeout(this._weiterT); this.setState({ pointsDone: false, weiterAn: false }); return; }
+            this.setState({ pointsDone: true });
+            this.weiterAb();
+          }}
             style={sx(`width:100%;padding:12px;border-radius:14px;text-align:center;font-family:inherit;font-size:12.5px;font-weight:900;box-sizing:border-box;cursor:${ready ? 'pointer' : 'default'};border:1px solid ${ready ? col + '99' : 'rgba(246,239,230,.09)'};background:${done ? 'rgba(246,239,230,.05)' : (ready ? col : 'transparent')};color:${done ? 'rgba(246,239,230,.78)' : (ready ? '#0A0814' : 'rgba(246,239,230,.62)')};transition:all .3s ${EASE}`)}>
             {done ? L.probe.pointsAgain : (ready ? L.probe.pointsSubmit : L.probe.pointsLeft(10 - sum))}
           </button>
           <div style={sx(`overflow:hidden;box-sizing:border-box;text-align:center;font-size:12.5px;line-height:1.5;font-weight:800;color:#F6EFE6;max-height:${done ? '130px' : '0px'};padding:${done ? '12px' : '0 12px'};margin-top:${done ? '2px' : '0'};border-radius:14px;border:1px solid ${done ? pc + '80' : 'transparent'};background:${pc}14;opacity:${done ? 1 : 0};transition:max-height .5s ${EASE},padding .5s ${EASE},opacity .35s ease`)}>
             {done ? L.probe.pointsResult(p.correctLabel, gained) : ' '}
+          </div>
+        </div>
+      );
+    }
+
+    /**
+     * Wolf am 28.08.: "die gezeigte 10 von 10 und die bunte tuete existieren so
+     * nicht in der app (oder nicht mehr)".
+     *
+     * Bei der Bunten Tuete stimmte es doppelt. Hier stand eine ganz normale
+     * Multiple-Choice-Frage, also genau das, was Mu-Cho eine Zeile weiter oben
+     * schon macht: von der Tuete war nichts zu sehen ausser dem Namen. Und die
+     * Aufzaehlung darunter nannte sechs Unterspiele, von denen drei so nicht
+     * mehr existieren. Laut shared/quarterQuizTypes.ts sind im normalen Abend
+     * genau vier aktiv (QQ_BUNTE_TUETE_ACTIVE): Heisse Kartoffel, Top 5, Fix It,
+     * Pin It. "Reihenfolge" heisst inzwischen Fix It, "CozyGuessr" heisst Pin
+     * It, und "4 gewinnt" und "Bluff" stehen in QQ_BUNTE_TUETE_DEACTIVATED.
+     *
+     * Jetzt spielt die Karte eines der vier wirklich: Fix It. Man tippt vier
+     * Karten in eine Reihenfolge, und erst danach zeigt sich, was stimmt. Das
+     * ist die einzige Karte der Seite, die keine Antwortknoepfe hat, und genau
+     * das ist der Punkt der Tuete.
+     */
+    if (p.kind === 'order') {
+      const sel = this.state.ordSel || [];
+      const done = !!this.state.ordDone;
+      const OK = '#22C55E', NO = '#EF4444';
+      const richtig = sel.filter((it, pos) => it === pos).length;
+      footer = done ? p.fact : L.probe.ordHint;
+      cardBody = (
+        <div style={sx('display:flex;flex-direction:column;gap:9px')}>
+          {p.start.map(idx => {
+            const pos = sel.indexOf(idx);
+            const gewaehlt = pos >= 0;
+            const sitzt = done && pos === idx;
+            const line = done ? (gewaehlt ? (sitzt ? OK : NO) : 'rgba(246,239,230,.09)')
+              : (gewaehlt ? col + '66' : 'rgba(246,239,230,.09)');
+            const fill = done ? (sitzt ? 'rgba(34,197,94,.16)' : (gewaehlt ? 'rgba(239,68,68,.14)' : 'rgba(246,239,230,.03)'))
+              : (gewaehlt ? col + '14' : 'rgba(246,239,230,.03)');
+            return (
+              <button key={idx} type="button" disabled={done}
+                onClick={() => {
+                  if (done) return;
+                  const nn = sel.includes(idx) ? sel.filter(x => x !== idx) : sel.concat(idx);
+                  const fertig = nn.length === p.items.length;
+                  this.setState({ ordSel: nn, ordDone: fertig });
+                  if (fertig) this.weiterAb();
+                }}
+                style={sx('display:flex;align-items:center;gap:13px;width:100%;padding:12px 14px;border-radius:10px;box-sizing:border-box;text-align:left;'
+                  + `font-family:inherit;font-size:14.5px;font-weight:900;cursor:${done ? 'default' : 'pointer'};`
+                  + `border:1px solid ${line};background:${fill};color:${done && !gewaehlt ? 'rgba(246,239,230,.4)' : '#F6EFE6'};`
+                  + `transform:translateX(${gewaehlt && !done ? '6px' : '0'});transition:all .3s ${EASE}`)}>
+                <span style={sx("font-family:'League Spartan',sans-serif;flex:none;width:22px;text-align:center;font-size:22px;font-weight:900;line-height:1;"
+                  + `color:${gewaehlt ? (done ? (sitzt ? OK : NO) : col) : 'rgba(246,239,230,.3)'}`)}>
+                  {gewaehlt ? (done ? (sitzt ? '\u2713' : '\u2715') : String(pos + 1)) : '\u00b7'}
+                </span>
+                <span style={sx('line-height:1.25')}>{p.items[idx]}</span>
+              </button>
+            );
+          })}
+          <div style={sx(`overflow:hidden;box-sizing:border-box;text-align:center;font-size:12.5px;line-height:1.5;font-weight:800;color:#F6EFE6;`
+            + `max-height:${done ? '90px' : '0px'};padding:${done ? '11px' : '0 11px'};margin-top:${done ? '2px' : '0'};border-radius:14px;`
+            + `border:1px solid ${done ? (richtig === p.items.length ? OK : col) + '80' : 'transparent'};`
+            + `background:${(richtig === p.items.length ? OK : col)}14;opacity:${done ? 1 : 0};`
+            + `transition:max-height .5s ${EASE},padding .5s ${EASE},opacity .35s ease`)}>
+            {done ? L.probe.ordResult(richtig, p.items.length) : ' '}
           </div>
         </div>
       );
@@ -1667,7 +1780,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 const onT = k === key;
                 // Bogen: mittlere Chips stehen weiter rechts als die aeusseren
                 const arc = Math.round(20 * Math.sin((i + 0.5) / n * Math.PI));
-                const pick = () => this.setState({ probeCat: k, probePick: null, guessRaw: '', guessDone: false, points: [4, 3, 3], pointsDone: false });
+                const pick = () => this.probeWechsel(k);
                 return (
                   // Drittens: das hier waren die einzigen Kapseln in einer
                   // Liste auf der ganzen Seite. Jetzt sind es Zeilen mit
@@ -1745,13 +1858,48 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   {/* Gefuellte Kapsel mit dunkler Schrift, genau wie auf der
                       Leinwand in 04. Beide zeigen dieselbe Kategorie, also
                       sollen sie auch gleich aussehen. */}
-                  <span style={sx(`display:inline-flex;align-items:center;padding:5px 12px;border-radius:999px;background:${col};font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#0A0814;flex:none;transition:background .35s ${EASE}`)}>{catT.name}</span>
+                  <span style={sx('display:flex;align-items:center;gap:9px')}>
+                    <span style={sx(`display:inline-flex;align-items:center;padding:5px 12px;border-radius:999px;background:${col};font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#0A0814;flex:none;transition:background .35s ${EASE}`)}>{catT.name}</span>
+                    {/* Die Tuete ist keine Kategorie mit einer Regel, sondern ein
+                        Beutel voller Regeln. Also steht neben ihrem Namen, welches
+                        Unterspiel gerade gezogen wurde. Sonst sieht man nur ein
+                        Sortierspiel und nicht die Tuete. */}
+                    {p.kind === 'order' && (
+                      <span style={sx(`display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;border:1px solid ${col}66;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:${col};flex:none`)}>{p.spiel}</span>
+                    )}
+                  </span>
                   {p.kind !== 'guess' && (
                     <div style={sx("margin:14px 0 16px;font-family:'League Spartan',sans-serif;font-size:21px;font-weight:900;line-height:1.12;letter-spacing:-.018em;color:#F6EFE6;text-wrap:balance")}>{p.q}</div>
                   )}
                   {cardBody}
                 </div>
-                <div style={sx('margin-top:auto;padding-top:12px;text-align:center;font-size:11px;font-weight:800;color:rgba(246,239,230,.62);flex:none')}>{footer}</div>
+                <div style={sx('margin-top:auto;padding-top:12px;flex:none;display:flex;flex-direction:column;gap:9px')}>
+                  <div style={sx('text-align:center;font-size:11px;font-weight:800;color:rgba(246,239,230,.62)')}>{footer}</div>
+                  {/* Wolf am 28.08.: "ich faende gut wenn der reveal von einer
+                      kategorie kam, dass man entweder nach ein paar sekunden
+                      oder durch klick auch zur naechsten kommt".
+                      Beides an derselben Stelle: der Knopf geht sofort weiter,
+                      und die Linie darunter laeuft ueber genau die Zeit, nach
+                      der es von allein passiert. Damit ist der Wechsel nie eine
+                      Ueberraschung, man sieht ihn kommen und kann ihm
+                      zuvorkommen. Die Linie haengt an der Animation und nicht
+                      an einem Zaehler im Zustand: das kostet kein Neuzeichnen
+                      pro Bild. */}
+                  <button type="button" aria-hidden={!weiterAn} tabIndex={weiterAn ? 0 : -1}
+                    onClick={() => this.probeWechsel(this.naechsteKat())}
+                    style={sx('position:relative;overflow:hidden;width:100%;box-sizing:border-box;border-radius:12px;font-family:inherit;'
+                      + 'font-size:11.5px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;text-align:center;'
+                      + `border:${weiterAn ? '1px' : '0'} solid rgba(246,239,230,.2);background:rgba(246,239,230,.04);color:rgba(246,239,230,.8);`
+                      + `cursor:pointer;line-height:1.2;padding:${weiterAn ? '11px 12px' : '0 12px'};max-height:${weiterAn ? '44px' : '0px'};`
+                      + `opacity:${weiterAn ? 1 : 0};pointer-events:${weiterAn ? 'auto' : 'none'};`
+                      + `transition:max-height .4s ${EASE},padding .4s ${EASE},opacity .3s ease`)}>
+                    <span style={sx('position:relative;z-index:2')}>{L.probe.weiterZu(L.probe.cats[this.naechsteKat()].name)} &rarr;</span>
+                    {weiterAn && (
+                      <span key={key} aria-hidden="true" style={sx('position:absolute;left:0;bottom:0;height:2px;width:0;'
+                        + `background:${col};animation:cwWeiter ${WEITER_MS}ms linear both`)}></span>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
