@@ -95,7 +95,7 @@ export type OnePageDict = {
 const de: OnePageDict = {
   nav: { spielarten: 'Spielarten', probieren: 'Ausprobieren', ablauf: 'Ablauf', ueber: 'Über mich', cta: 'Termin anfragen' },
   hero: {
-    kicker: 'Live-Quiz in Hamburg',
+    kicker: 'Moderiertes Live-Quiz für Teams in Hamburg',
     hooks: ['Wissen', 'Glück', 'Timing', 'Teamgeist', 'Bauchgefühl'],
     rest: 'ist nicht alles.',
     sub: G.de.heroSub,
@@ -304,7 +304,7 @@ const de: OnePageDict = {
 const en: OnePageDict = {
   nav: { spielarten: 'Formats', probieren: 'Try it', ablauf: 'How it works', ueber: 'About me', cta: 'Request a date' },
   hero: {
-    kicker: 'Live quiz in Hamburg',
+    kicker: 'Hosted live quiz for teams in Hamburg',
     hooks: ['Knowledge', 'Luck', 'Timing', 'Team spirit', 'Gut feeling'],
     rest: 'isn’t everything.',
     sub: G.en.heroSub,

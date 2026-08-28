@@ -81,7 +81,7 @@ const de: MobileDict = {
     menuLabel: 'Menü',
   },
   hero: {
-    kicker: 'Live-Quiz in Hamburg',
+    kicker: 'Moderiertes Live-Quiz für Teams in Hamburg',
     hooks: ['Wissen', 'Glück', 'Timing', 'Teamgeist', 'Bauchgefühl'],
     rest: 'ist nicht alles.',
     sub: G.de.heroSub,
@@ -250,7 +250,7 @@ const en: MobileDict = {
     menuLabel: 'Menu',
   },
   hero: {
-    kicker: 'Live quiz in Hamburg',
+    kicker: 'Hosted live quiz for teams in Hamburg',
     hooks: ['Knowledge', 'Luck', 'Timing', 'Team spirit', 'Gut feeling'],
     rest: 'isn’t everything.',
     sub: G.en.heroSub,
