@@ -40,6 +40,7 @@ import { HoverMuster, HOVER_ENTWUERFE, type HoverEntwurf } from './mockups/hover
 import { Trennung, TRENN_ENTWUERFE, type TrennEntwurf } from './mockups/trennung';
 import { Kapitel, KAPITEL_ENTWUERFE, type KapitelEntwurf } from './mockups/kapitel';
 import { Crowd, CROWD_ENTWUERFE, NAMENS_ARTEN, type CrowdEntwurf, type NamensArt } from './mockups/crowd';
+import { AvatarWand, AVATAR_ENTWUERFE, type AvatarEntwurf } from './mockups/avatarwand';
 import {
   Ablauf, UeberMich, Fragen, Anfragen,
   ABLAUF_ENTWUERFE, JOH_ENTWUERFE, FAQ_ENTWUERFE, FORM_ENTWUERFE,
@@ -188,7 +189,7 @@ const PROBE_TYPEN = [
 export default function Mockups() {
   const lang = useLang();
   const L = onePageT(lang);
-  type Stat = '00' | '01' | '02' | '03' | '04' | '05' | '06' | '07' | 'BF' | 'AR' | 'SN' | 'HV' | 'TR' | 'KP' | 'CW';
+  type Stat = '00' | '01' | '02' | '03' | '04' | '05' | '06' | '07' | 'BF' | 'AR' | 'SN' | 'HV' | 'TR' | 'KP' | 'CW' | 'AV';
   const [station, setStation] = useState<Stat>('01');
   // Fuer die Stationen 04 bis 07 genuegt ein Zaehler je Station: sie haben
   // alle drei Entwuerfe und keine eigene Logik.
@@ -205,6 +206,7 @@ export default function Mockups() {
   const [kp, setKp] = useState<KapitelEntwurf>(3);
   const [cw, setCw] = useState<CrowdEntwurf>(2);
   const [nm, setNm] = useState<NamensArt>(1);
+  const [av, setAv] = useState<AvatarEntwurf>(1);
   const [mobil, setMobil] = useState(false);
 
   const modi: Modus[] = [
@@ -231,7 +233,8 @@ export default function Mockups() {
   };
   const w = WEITERE[station];
 
-  const inhalt = station === 'CW' ? <Crowd mobil={mobil} entwurf={cw} namensart={nm} L={L} />
+  const inhalt = station === 'AV' ? <AvatarWand mobil={mobil} entwurf={av} L={L} />
+    : station === 'CW' ? <Crowd mobil={mobil} entwurf={cw} namensart={nm} L={L} />
     : station === 'KP' ? <Kapitel mobil={mobil} entwurf={kp} />
     : station === 'TR' ? <Trennung mobil={mobil} entwurf={tr} />
     : station === 'HV' ? <HoverMuster mobil={mobil} entwurf={hv} />
@@ -263,12 +266,16 @@ export default function Mockups() {
             { k: 'TR', label: 'Trennung' },
             { k: 'KP', label: 'Kapitel' },
             { k: 'CW', label: 'CrowdQuiz' },
+            { k: 'AV', label: 'Avatarwand' },
           ]} aktiv={station} waehle={k => setStation(k as Stat)} erledigt={ERLEDIGT} />
           <span style={sx(`font-family:${SPARTAN};font-size:14px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap`)}>
-            {station === 'CW' ? 'CrowdQuiz-Zeile' : station === 'KP' ? 'Kapitel und Module' : station === 'TR' ? 'Abschnittstrennung' : station === 'HV' ? 'Zeigeeffekte' : station === 'SN' ? 'Einrasten' : station === 'AR' ? 'Arena-Tabelle' : station === 'BF' ? 'Brettfarben' : station === '00' ? 'Farbwechsel' : station === '01' ? 'Spielarten' : station === '02' ? 'Anlaesse' : station === '03' ? 'Ausprobieren' : w.titel}
+            {station === 'AV' ? 'Wechselnde Avatarwand' : station === 'CW' ? 'CrowdQuiz-Zeile' : station === 'KP' ? 'Kapitel und Module' : station === 'TR' ? 'Abschnittstrennung' : station === 'HV' ? 'Zeigeeffekte' : station === 'SN' ? 'Einrasten' : station === 'AR' ? 'Arena-Tabelle' : station === 'BF' ? 'Brettfarben' : station === '00' ? 'Farbwechsel' : station === '01' ? 'Spielarten' : station === '02' ? 'Anlaesse' : station === '03' ? 'Ausprobieren' : w.titel}
           </span>
           <span style={sx('flex:1')}></span>
-          {station === 'CW'
+          {station === 'AV'
+            ? <Schalter werte={([1, 2, 3] as AvatarEntwurf[]).map(k => ({ k: String(k), label: `V${k}  ${AVATAR_ENTWUERFE[k].name}` }))}
+                aktiv={String(av)} waehle={k => setAv(Number(k) as AvatarEntwurf)} />
+            : station === 'CW'
             ? <><Schalter werte={([2, 1, 3] as CrowdEntwurf[]).map(k => ({ k: String(k), label: `W${k}  ${CROWD_ENTWUERFE[k].name}` }))}
                 aktiv={String(cw)} waehle={k => setCw(Number(k) as CrowdEntwurf)} />
               <Schalter werte={([1, 2, 3] as NamensArt[]).map(k => ({ k: String(k), label: `N${k}  ${NAMENS_ARTEN[k].name}` }))}
@@ -311,7 +318,9 @@ export default function Mockups() {
             aktiv={lang} waehle={k => setLang(k as 'de' | 'en')} />
         </div>
         <div style={sx(`max-width:1000px;margin:0 auto;padding:0 24px 14px;font-size:14.5px;line-height:1.55;color:rgba(246,239,230,.66)`)}>
-          {station === 'CW'
+          {station === 'AV'
+            ? <><b style={sx(`color:${CREME}`)}>V{av}. {AVATAR_ENTWUERFE[av].name}.</b> {AVATAR_ENTWUERFE[av].idee[lang]} <i style={sx('opacity:.7')}>Takt wie in der App: Objekt alle 420 ms eine Kachel, Farbe alle 2,2 s alle Kacheln als diagonale Welle. Das Brett rechts ist nur ein Platzhalter, es spielt hier nicht.</i></>
+            : station === 'CW'
             ? <><b style={sx(`color:${CREME}`)}>W{cw}. {CROWD_ENTWUERFE[cw].name}.</b> {CROWD_ENTWUERFE[cw].idee[lang]}<br /><b style={sx(`color:${CREME}`)}>N{nm}. {NAMENS_ARTEN[nm].name}.</b> {NAMENS_ARTEN[nm].idee[lang]} <i style={sx('opacity:.7')}>Objektfassung und Namensanzeige lassen sich frei kombinieren. Zeig auf ein Wappen; in W2 und W3 laeuft die Wertung.</i></>
             : station === 'KP'
             ? <><b style={sx(`color:${CREME}`)}>K{kp}. {KAPITEL_ENTWUERFE[kp].name}.</b> {KAPITEL_ENTWUERFE[kp].idee[lang]} <i style={sx('opacity:.7')}>Nur Geruest und Typografie, ohne Inhalt: es geht um Groessen, Luft und Linien.</i></>
