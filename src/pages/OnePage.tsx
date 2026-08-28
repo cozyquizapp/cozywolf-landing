@@ -2807,8 +2807,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             Bildschirmen und war damit der letzte, der nicht auf einen Halt
             passte. Nebeneinander statt untereinander loest das. */}
         <div data-shell="" data-m="formraum" style={sx('position:relative;width:100%;max-width:1180px;margin:0 auto;padding:56px 32px;box-sizing:border-box;'
-          + 'display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:56px;align-items:start')}>
-          <div>
+          + 'display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:56px;align-items:stretch')}>
+          <div style={sx('display:flex;flex-direction:column')}>
             {this.kicker(`[ 06 ]|${L.form.label}`)}
             <h2 data-reveal="" style={sx("margin:0 0 12px;font-family:'League Spartan',sans-serif;font-weight:900;line-height:1.02;letter-spacing:-.028em;color:#F6EFE6;text-wrap:balance;"
               + 'font-size:clamp(38px,4vw,64px)')}>{L.form.h2}</h2>
@@ -2817,20 +2817,50 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
             {/* Die beiden Wege. Der gewaehlte steht hell und traegt einen
                 Strich, der andere faellt zurueck. Das ist H2 aus dem
-                Zeigen-Mockup, hier auf die Wahl angewandt. */}
+                Zeigen-Mockup, hier auf die Wahl angewandt.
+
+                Wolf am 28.08.: "gleich hoch faende ich besser und ich finde es
+                geht etwas unter, dass man waehlen kann links?"
+
+                Beides stimmte, und es hing zusammen. Die Spalte stand auf
+                align-items:start, war also so hoch wie ihr Inhalt und endete
+                irgendwo neben dem Formularkasten. Und die zwei Wege sahen aus
+                wie zwei Preisangaben, von denen eine ausgegraut ist: der
+                nicht gewaehlte lag bei 45 Prozent Deckkraft, und ausgegraut
+                heisst normalerweise "geht nicht", nicht "waehl mich".
+
+                Beides loest dieselbe Massnahme: die Spalte wird gestreckt, und
+                die beiden Wege teilen sich den uebrigen Platz (flex:1). Sie
+                sind damit gleich gross, fuellen die Spalte bis zur Unterkante
+                des Formulars und sehen aus wie zwei Felder, zwischen denen man
+                sich entscheidet.
+                Dazu drei kleine Zeichen: ein Ring vor jedem, der beim
+                gewaehlten gefuellt ist -- das kennt jeder als Auswahl --, eine
+                Zeile darueber, die zum Waehlen auffordert, und der nicht
+                gewaehlte steht jetzt bei 62 statt 45 Prozent und hellt beim
+                Zeigen auf. */}
+            <div style={sx('margin-top:4px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.5)')}>{L.form.wahl}</div>
             {[
               { k: 'test' as const, an: test, gross: L.form.testBig, klein: L.form.testSub, titel: L.form.tabTest, n1: L.form.testNote1, n2: L.form.testNote2 },
               { k: 'event' as const, an: !test, gross: L.form.priceBig, klein: L.form.priceSub, titel: L.form.tabEvent, n1: L.form.priceNote1, n2: L.form.priceNote2 },
             ].map(w => (
               <button key={w.k} type="button" onClick={() => this.openForm(w.k)}
-                aria-pressed={w.an}
-                style={sx('display:block;width:100%;box-sizing:border-box;text-align:left;cursor:pointer;background:none;font-family:inherit;'
+                aria-pressed={w.an} data-wahl="" data-an={w.an ? '' : undefined}
+                style={sx('display:flex;flex-direction:column;justify-content:center;flex:1;width:100%;box-sizing:border-box;'
+                  + 'text-align:left;cursor:pointer;background:none;font-family:inherit;'
                   + 'border:none;border-top:1px solid rgba(246,239,230,.14);padding:20px 0;'
-                  + `opacity:${w.an ? 1 : .45};transition:opacity .3s ${EASE}`)}>
+                  + `opacity:${w.an ? 1 : .62};transition:opacity .3s ${EASE}`)}>
                 <span style={sx('display:flex;align-items:center;gap:12px;margin-bottom:6px;'
                   + `transform:translateX(${w.an ? 10 : 0}px);transition:transform .3s ${EASE}`)}>
-                  <span aria-hidden="true" style={sx(`flex:none;width:${w.an ? 26 : 0}px;height:2px;border-radius:2px;background:#F6EFE6;`
-                    + `opacity:${w.an ? .9 : 0};transition:width .3s ${EASE},opacity .3s ${EASE}`)}></span>
+                  {/* Der Ring: gefuellt heisst gewaehlt. Das ist das Zeichen,
+                      das jeder aus jedem Formular kennt, und es sagt in einem
+                      Blick, dass hier eine Entscheidung liegt. */}
+                  <span aria-hidden="true" style={sx('flex:none;display:flex;align-items:center;justify-content:center;'
+                    + `width:15px;height:15px;border-radius:50%;border:1.5px solid rgba(246,239,230,${w.an ? '.9' : '.42'});`
+                    + `transition:border-color .3s ${EASE}`)}>
+                    <span style={sx(`display:block;width:7px;height:7px;border-radius:50%;background:#F6EFE6;`
+                      + `transform:scale(${w.an ? 1 : 0});transition:transform .3s ${EASE}`)}></span>
+                  </span>
                   <span style={sx("font-family:'League Spartan',sans-serif;font-size:clamp(24px,2.4vw,32px);font-weight:900;line-height:1;letter-spacing:-.025em;color:#F6EFE6;white-space:nowrap")}>{w.gross}</span>
                   <span style={sx('font-size:14px;font-weight:800;color:rgba(246,239,230,.7);white-space:nowrap')}>{w.klein}</span>
                 </span>
@@ -2841,7 +2871,11 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             ))}
           </div>
 
-          <div data-form-panel="" style={sx('min-width:0')}>
+          {/* Die Spalte wird gestreckt, aber der Kasten darin muss sie auch
+              fuellen -- sonst sind zwar die Spalten gleich hoch und die Karte
+              endet trotzdem irgendwo dazwischen. Genau das war zu sehen:
+              gemessen beide Spalten 575 px, die Karte darin nur 470. */}
+          <div data-form-panel="" style={sx('min-width:0;display:flex;flex-direction:column')}>
 
             {st === 'ok' && (
               <div role="status" style={sx('width:100%;box-sizing:border-box;padding:clamp(22px,3vw,34px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);text-align:center' + schatten(';box-shadow:0 16px 40px rgba(0,0,0,.35)'))}>
@@ -2852,7 +2886,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
             {st !== 'ok' && (
               <form key={this.state.formMode} onSubmit={this.submitForm}
-                style={sx('width:100%;text-align:left;padding:clamp(22px,3vw,30px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);box-sizing:border-box' + schatten(';box-shadow:0 16px 40px rgba(0,0,0,.35)'))}>
+                style={sx('width:100%;flex:1;display:flex;flex-direction:column;justify-content:center;'
+                  + 'text-align:left;padding:clamp(22px,3vw,30px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);box-sizing:border-box' + schatten(';box-shadow:0 16px 40px rgba(0,0,0,.35)'))}>
                 {/* Die Aufschrift. Wolfs Auflage war, dass klar getrennt sein
                     muss, welches der beiden Formulare man ausfuellt. Links
                     steht die Wahl, hier steht die Antwort darauf, in derselben

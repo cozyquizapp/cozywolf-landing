@@ -76,7 +76,7 @@ export type OnePageDict = {
   faq: { label: string; h2: string; items: { q: string; a: string }[] };
   form: {
     label: string; h2: string; sub: string; avail: string;
-    tabEvent: string; tabTest: string;
+    tabEvent: string; tabTest: string; wahl: string;
     priceBig: string; priceSub: string; priceNote1: string; priceNote2: string;
     testBig: string; testSub: string; testNote1: string; testNote2: string;
     anlass: string; anlassPh: string; personen: string; personenPh: string;
@@ -276,6 +276,7 @@ const de: OnePageDict = {
     sub: 'Schreib mir kurz zum Anlass und zur ungefähren Personenzahl, dann melde ich mich mit einem Vorschlag.',
     avail: `Termine ab ${TERMIN_AB.de}.`,
     tabEvent: 'Event anfragen', tabTest: 'Test-Team, kostenlos',
+    wahl: 'Such dir einen aus',
     priceBig: 'ab 350 €', priceSub: 'für den ganzen Abend',
     priceNote1: 'Moderation, Beamer, Sound und Aufbau', priceNote2: 'sind enthalten. Keine versteckten Posten.',
     testBig: '0 €', testSub: 'der ganze Abend',
@@ -478,6 +479,7 @@ const en: OnePageDict = {
     sub: 'Drop me a line about the occasion and rough headcount, and I’ll get back to you with a proposal.',
     avail: `Dates from ${TERMIN_AB.en}.`,
     tabEvent: 'Request an event', tabTest: 'Test team, free',
+    wahl: 'Pick one',
     priceBig: 'from €350', priceSub: 'for the whole evening',
     priceNote1: 'Hosting, projector, sound and setup', priceNote2: 'are included. No hidden extras.',
     testBig: '€0', testSub: 'the whole evening',

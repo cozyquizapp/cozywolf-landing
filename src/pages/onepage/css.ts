@@ -13,6 +13,12 @@ body{margin:0;background:#0A0814;font-family:'Bricolage Grotesque','Nunito',syst
    die Navigation, die Knoepfe und der Sprungverweis unterstrichen. Deshalb
    traegt die Linie jetzt ein eigenes Merkmal statt des Elementnamens. */
 a{color:#F6EFE6;text-decoration:none}
+/* Die zwei Wege in 07: der nicht gewaehlte hellt beim Zeigen auf und rueckt
+   ein Stueck ein. Ohne das sah er aus wie ausgegraut, also wie "geht nicht"
+   statt "waehl mich" -- Wolf am 28.08.: "ich finde es geht etwas unter, dass
+   man waehlen kann links?". Die Deckkraft steht inline, deshalb !important. */
+[data-wahl]:not([data-an]):hover{opacity:.9!important}
+[data-wahl]:not([data-an]):hover>span:first-child{transform:translateX(6px)!important}
 a[data-verweis]{text-decoration:underline;text-decoration-color:rgba(246,239,230,.4);text-underline-offset:3px;text-decoration-thickness:1px}
 a[data-verweis]:hover{text-decoration-color:#F6EFE6}
 @keyframes cwClaim{0%{transform:scale(.2);opacity:0}6%{transform:scale(1.12);opacity:1}11%{transform:scale(1)}82%{opacity:1;transform:scale(1)}93%{opacity:.1;transform:scale(.8)}100%{opacity:0;transform:scale(.2)}}
