@@ -5,6 +5,37 @@ ist die Reihenfolge der Meldung, nicht die der Dringlichkeit.
 
 ## Offen, zur Entscheidung
 
+### Mitte September: "Termine ab Mitte September" wird falsch
+
+Faelliger Termin, nicht von Wolf gemeldet, sondern beim Bauen aufgefallen
+und von ihm am 28.08. als Aufgabe bestaetigt.
+
+Die Zeile steht an vier Stellen auf der Seite, zweisprachig, jeweils im
+Kopf und im Formular:
+
+    Ab 350 EUR - Termine ab Mitte September
+    Termine ab Mitte September.
+
+Sobald Mitte September vorbei ist, wirbt die Seite mit einem Datum in der
+Vergangenheit. Das ist genau die Sorte Angabe, an der schon das alte
+Vorschaubild gestorben ist.
+
+Zu tun ist wenig: alle acht Fundstellen ziehen aus einer einzigen
+Konstante, TERMIN_AB in src/pages/onepage/texts.ts, Zeile 10. Also eine
+Zeile aendern, in beiden Sprachen, und neu bauen.
+
+Was dort dann stehen soll, ist eine Entscheidung von Wolf, nicht von mir.
+Drei Moeglichkeiten, je nach Lage:
+ * Ein neues Datum, wenn die ersten Termine spaeter liegen.
+ * Die Zeile ganz raus, wenn ohnehin laufend Termine frei sind. Dann faellt
+   die Wartungsaufgabe weg.
+ * Etwas Zeitloses wie "Termine nach Absprache", falls die Verfuegbarkeit
+   schwankt.
+
+Meine Empfehlung: sobald der erste Abend gelaufen ist, ganz raus. Ein
+Startdatum ist ein Argument, solange es in der Zukunft liegt, und danach
+nur noch eine Stelle, an der die Seite altert.
+
 ### DNS: Vercel empfiehlt neue Adressen
 
 Gemeldet am 28.08. mit einem Bildschirmfoto der Vercel-Domainliste:
