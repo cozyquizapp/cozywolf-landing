@@ -1851,7 +1851,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               this.setState({ beamXY: { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height } });
             }}
             onMouseLeave={() => { beamStop(); this.setState({ beamXY: null }); }}
-            style={sx('position:relative;margin:0 auto 16px;max-width:520px;cursor:pointer;perspective:1100px')}>
+            style={sx('position:relative;margin:0 auto 0;max-width:700px;cursor:pointer;perspective:1100px')}>
             {/* Perspektive gehoert auf den Eltern, die Drehung auf das Kind.
                 Standen beide auf demselben Element, greift die Perspektive
                 nicht und die Kippung sah flach aus statt raeumlich. */}
@@ -2023,38 +2023,16 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               Handy gab es die gar nicht. Wolfs Einwand "nicht 2 mal die
               grosse schrift" ist der Grund, warum hier nichts gross gesetzt
               ist: die Ueberschrift sagt es schon. */}
-          {/* Wolf am 27.08.: "unter 04 fehlt das ungleichgewicht". Stimmt: zwei
-              gleich breite Spalten mit je vier Punkten sagen "hier sind zwei
-              Listen", und genau das sollte B2 nicht sagen. Jetzt traegt die
-              Form die Aussage: links schmal, klein und gedaempft, rechts
-              breit und in voller Groesse. Die Zahl darueber sagt es nochmal
-              in einem Blick.
-              Was das Ungleichgewicht weiter flach haelt, steht im Text und
-              nicht im Aufbau: "Ihr braucht" fuehrt vier Punkte, von denen zwei
-              gar keine Anforderung sind, sondern Selbstverstaendlichkeiten
-              (Platz fuer die Runde, ein Handy pro Team). Kuerzt man die beiden,
-              stehen zwei gegen vier. Das ist Wolfs Text, deshalb steht er hier
-              unveraendert. */}
-          <div data-reveal="" data-m="modereihe"
-            style={sx('display:grid;grid-template-columns:280px 1fr;align-items:start;gap:56px;'
-              + 'padding:26px 0 0;border-top:1px solid rgba(246,239,230,.14)')}>
-            <div>
-              <div style={sx('margin-bottom:14px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.45)')}>{L.ablauf.duo1Title}</div>
-              <ul style={sx('margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px')}>
-                {L.ablauf.duo1.map(item => (
-                  <li key={item} style={sx('font-size:14.5px;line-height:1.45;font-weight:500;color:rgba(246,239,230,.5);text-wrap:pretty')}>{item}</li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <div style={sx('margin-bottom:14px;font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{L.ablauf.duo0Title}</div>
-              <ul style={sx('margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:11px')}>
-                {L.ablauf.duo0.map(item => (
-                  <li key={item} style={sx("font-family:'League Spartan',sans-serif;font-size:clamp(18px,1.6vw,22px);font-weight:900;line-height:1.12;letter-spacing:-.02em;color:#F6EFE6;text-wrap:balance")}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          {/* Hier standen zwei Listen, "Ihr braucht" und "Ich bringe mit".
+              Wolf am 28.08.: "mach das unten raus, das brauchts nicht die 2
+              textfelder". Er hat recht, und zwar aus zwei Gruenden. Die
+              Ueberschrift sagt es schon ("Mehr als eine freie Wand braucht ihr
+              nicht"), und die Unterzeile sagt den Rest ("Beamer, Sound, Aufbau
+              und Moderation bringe ich mit"). Die Listen haben das nur noch
+              einmal aufgezaehlt. Was wirklich neu war, steht ohnehin in den
+              Fragen weiter unten.
+              Die Texte selbst bleiben in texts.ts stehen: sie sind gepflegt,
+              zweisprachig, und die Handyfassung greift noch darauf zu. */}
         </div>
       </section>
     );

@@ -182,6 +182,27 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
    vielen, sondern der Schlusspunkt, und seine Mitte haengt daran. */
 [data-spruch]{display:flex;flex-direction:column;justify-content:center}
 
+/* ── Der Takt: jeder Halt ungefaehr eine Browserseite ─────────────────────
+   Wolf am 28.08.: "pass die sektionen noch etwas an die groessen einer
+   browserseite 100% ohne vollbild".
+
+   Nicht wieder 100 svh mit Einrasten, das war zu viel und hat leer gewirkt.
+   Stattdessen ein Mindestmass je Art von Halt, unter dem Fenster und mit
+   zentriertem Inhalt. Gemessen bei 1440x780 waren die Halte vorher 445, 563,
+   335, 335, 349, 720, 590, 432, 712, 670 und 780 px, also von 43 bis 100
+   Prozent Fensterhoehe. Das ist kein Takt, sondern Zufall.
+
+   Die Werte kommen aus dem Inhalt und nicht aus einer runden Zahl: die
+   Anlaesse tragen am wenigsten und bekommen am wenigsten, die Spielarten und
+   der Ablauf tragen am meisten. In svh, damit es auf jedem Fenster gilt. */
+@media (min-width:901px){
+  [data-m=modereihe]{min-height:82svh;align-content:center}
+  #anlaesse [data-m=modereihe]{min-height:68svh}
+  #ablauf[data-halt],#johannes[data-halt]{display:flex;flex-direction:column;justify-content:center}
+  #ablauf[data-halt]{min-height:86svh}
+  #johannes[data-halt]{min-height:78svh}
+}
+
 /* ── Auftritt der Abschnitte, T2 und T3 ───────────────────────────────────
    Gebaut mit animation-timeline: view(), also ohne JavaScript: der
    Fortschritt kommt daraus, wie weit der Halt im Fenster steht.
