@@ -74,7 +74,8 @@ points.") gehoeren zu der Kategorie, die man gerade gewaehlt hat -- sie stehen
 aber in einer anderen Spalte, weit unter der Liste. Man aendert etwas rechts
 und liest die Folge links unten.
 
-Mein Vorschlag, statt beider Varianten aus der Meldung:
+Von Wolf am 28.08. so entschieden ("wir nehmen deinen vorschlag fuer punkt
+4"), statt beider Varianten aus der Meldung:
  * Anspruch und Satz wandern direkt unter die Kategorienliste, in dieselbe
    Spalte. Dort gehoeren sie hin, dort passiert die Wahl.
  * Die zwei Haken ruecken in der linken Spalte direkt unter den Absatz. Die

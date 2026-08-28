@@ -64,6 +64,8 @@ export type MobileDict = {
     okTitle: string; okBody: string;
     name: string; email: string; anlass: string; anlassOpts: string[];
     personen: string; nachricht: string; nachrichtPh: string;
+    stadt: string; stadtPh: string; groesse: string; groesseOpts: string[];
+    betreffEvent: string; betreffTest: string; artEvent: string; artTest: string;
     submit: string; sending: string;
     errorPre: string; errorPost: string;
     privacy1: string; privacyLink: string; privacy2: string;
@@ -236,6 +238,11 @@ const de: MobileDict = {
     name: 'Name', email: 'E-Mail',
     anlass: 'Anlass', anlassOpts: ['Firma oder Team', 'Private Feier', 'Café, Bar oder Pub', 'Etwas anderes'],
     personen: 'Personen', nachricht: 'Nachricht', nachrichtPh: 'Wann, wo, und was ist der Anlass?',
+    stadt: 'Stadt / Region', stadtPh: 'z. B. Hamburg',
+    groesse: 'Wie viele seid ihr?',
+    groesseOpts: ['6–10 Leute', 'Mehr als 10', 'Weniger als 6', 'Weiß ich noch nicht'],
+    betreffEvent: 'Quiz-Anfrage', betreffTest: 'Neues Test-Team',
+    artEvent: 'Event-Anfrage', artTest: 'Test-Team',
     submit: 'Anfrage senden', sending: 'Senden …',
     errorPre: G.de.formFehler, errorPost: '.',
     privacy1: 'Ich nutze deine Angaben nur, um dir zu antworten. Mehr dazu in der ',
@@ -410,6 +417,11 @@ const en: MobileDict = {
     name: 'Name', email: 'Email',
     anlass: 'Occasion', anlassOpts: ['Company or team', 'Private party', 'Café, bar or pub', 'Something else'],
     personen: 'People', nachricht: 'Message', nachrichtPh: 'When, where, and what’s the occasion?',
+    stadt: 'City / region', stadtPh: 'e.g. Hamburg',
+    groesse: 'How many are you?',
+    groesseOpts: ['6–10 people', 'More than 10', 'Fewer than 6', 'Don’t know yet'],
+    betreffEvent: 'Quiz request', betreffTest: 'New test team',
+    artEvent: 'Event request', artTest: 'Test team',
     submit: 'Send request', sending: 'Sending …',
     errorPre: G.en.formFehler, errorPost: '.',
     privacy1: 'I only use your details to reply to you. More in the ',

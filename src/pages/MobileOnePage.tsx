@@ -1140,21 +1140,28 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     );
   }
 
+  /**
+   * Haeufige Fragen.
+   *
+   * Vorher lag jede Antwort hinter einem Aufklapper. Der Desktop klappt
+   * nichts auf: Frage und Antwort stehen untereinander, getrennt durch
+   * Haarlinien. Das ist auch hier richtig -- die sechs Antworten sind zwei bis
+   * drei Zeilen lang, zusammen rund 900 px, und wer eine Frage hat, will sie
+   * nicht erst antippen. Sechs Aufklapper sind sechs Gruende, es nicht zu
+   * lesen.
+   */
   renderFaq() {
     const L = this.T;
     return (
       <section id="fragen" style={sx('padding:36px 20px 42px;border-top:1px solid rgba(246,239,230,.10)')}>
         {this.kicker('[ 05 ]', L.faq.label)}
-        <h2 data-rv="" style={sx("margin:0 0 20px;font-family:'League Spartan',sans-serif;font-size:29px;font-weight:900")}>{L.faq.h2}</h2>
-        <div data-rv="" style={sx('display:flex;flex-direction:column;gap:10px')}>
-          {L.faq.items.map((item, i) => (
-            <details key={i} style={sx('border-radius:16px;background:rgba(246,239,230,.03);border:1px solid rgba(246,239,230,.20);overflow:hidden')}>
-              <summary style={sx('display:flex;align-items:center;gap:12px;padding:18px;min-height:56px;box-sizing:border-box;font-size:16px;font-weight:800;list-style:none;cursor:pointer')}>
-                <span style={sx('flex:1')}>{item.q}</span>
-                <span style={sx('font-size:19px;font-weight:900;color:#F6EFE6')}>+</span>
-              </summary>
-              <div style={sx('padding:0 18px 18px;font-size:15px;line-height:1.65;font-weight:600;color:rgba(246,239,230,.78)')}>{item.a}</div>
-            </details>
+        <h2 data-rv="" style={sx("margin:0 0 22px;font-family:'League Spartan',sans-serif;font-size:29px;font-weight:900;letter-spacing:-.015em")}>{L.faq.h2}</h2>
+        <div data-rv="" style={sx('display:flex;flex-direction:column')}>
+          {L.faq.items.map(item => (
+            <div key={item.q} style={sx('padding:20px 0;border-top:1px solid rgba(246,239,230,.14)')}>
+              <div style={sx('font-size:16.5px;font-weight:900;line-height:1.3;color:#F6EFE6;text-wrap:balance')}>{item.q}</div>
+              <div style={sx('margin-top:8px;font-size:15px;line-height:1.62;font-weight:500;color:rgba(246,239,230,.76);text-wrap:pretty')}>{item.a}</div>
+            </div>
           ))}
         </div>
       </section>
@@ -1196,30 +1203,54 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
         )}
 
         {st !== 'ok' && (
-          <form onSubmit={this.submitForm} style={sx('padding:18px;border-radius:22px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);display:flex;flex-direction:column;gap:12px')}>
+          <form key={s.tab} onSubmit={this.submitForm} style={sx('padding:18px;border-radius:22px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);display:flex;flex-direction:column;gap:12px')}>
             <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden="true" style={sx('display:none')} />
+            {/* Ohne diese zwei Felder kommt jede Anfrage mit demselben Betreff
+                an und ohne Hinweis, ob es eine Event-Anfrage oder ein
+                Test-Team war. Der Desktop schickt beide seit dem Umbau mit,
+                das Handy nicht -- und Wolf hatte mit dem Formular schon einmal
+                Aerger. */}
+            <input type="hidden" name="_subject" value={isTest ? L.form.betreffTest : L.form.betreffEvent} />
+            <input type="hidden" name="art" value={isTest ? L.form.artTest : L.form.artEvent} />
             <label style={sx(labelStyle)}>{L.form.name}
-              <input type="text" name="name" required autoComplete="name" style={sx(inputStyle)} />
+              <input type="text" name="name" required autoComplete="name" maxLength={100} style={sx(inputStyle)} />
             </label>
             <label style={sx(labelStyle)}>{L.form.email}
-              <input type="email" name="email" required autoComplete="email" inputMode="email" style={sx(inputStyle)} />
+              <input type="email" name="email" required autoComplete="email" inputMode="email" maxLength={150} style={sx(inputStyle)} />
             </label>
-            <div style={sx('display:grid;grid-template-columns:1fr 108px;gap:12px')}>
-              <label style={sx(labelStyle + ';min-width:0')}>{L.form.anlass}
-                <select name="anlass" value={s.anlass || L.form.anlassOpts[0]} onChange={e => this.setState({ anlass: e.target.value })} style={sx(inputStyle)}>
-                  {L.form.anlassOpts.map(o => <option key={o} value={o} style={sx('background:#171126;color:#F6EFE6')}>{o}</option>)}
-                </select>
-              </label>
-              <label style={sx(labelStyle + ';min-width:0')}>{L.form.personen}
-                <input type="number" name="personen" min={4} max={120} inputMode="numeric" placeholder="20" style={sx(inputStyle)} />
-              </label>
-            </div>
+            {/* Zwei Formulare, zwei Fragen. Bei einem Testabend ist der Anlass
+                noch keiner und die Personenzahl steht nicht fest; was ich
+                wissen muss, ist wo ihr seid und wie viele ungefaehr. Genau so
+                trennt es der Desktop auch. */}
+            {isTest ? (
+              <>
+                <label style={sx(labelStyle)}>{L.form.stadt}
+                  <input type="text" name="stadt" required maxLength={80} placeholder={L.form.stadtPh} style={sx(inputStyle)} />
+                </label>
+                <label style={sx(labelStyle)}>{L.form.groesse}
+                  <select name="groesse" defaultValue={L.form.groesseOpts[0]} style={sx(inputStyle)}>
+                    {L.form.groesseOpts.map(o => <option key={o} value={o} style={sx('background:#171126;color:#F6EFE6')}>{o}</option>)}
+                  </select>
+                </label>
+              </>
+            ) : (
+              <div style={sx('display:grid;grid-template-columns:1fr 108px;gap:12px')}>
+                <label style={sx(labelStyle + ';min-width:0')}>{L.form.anlass}
+                  <select name="anlass" value={s.anlass || L.form.anlassOpts[0]} onChange={e => this.setState({ anlass: e.target.value })} style={sx(inputStyle)}>
+                    {L.form.anlassOpts.map(o => <option key={o} value={o} style={sx('background:#171126;color:#F6EFE6')}>{o}</option>)}
+                  </select>
+                </label>
+                <label style={sx(labelStyle + ';min-width:0')}>{L.form.personen}
+                  <input type="number" name="personen" min={4} max={160} inputMode="numeric" placeholder="20" style={sx(inputStyle)} />
+                </label>
+              </div>
+            )}
             <label style={sx(labelStyle)}>{L.form.nachricht}
-              <textarea name="nachricht" rows={3} placeholder={L.form.nachrichtPh} style={sx(inputStyle.replace('min-height:52px;padding:0 14px', 'min-height:104px;padding:14px') + ';line-height:1.5;resize:vertical')}></textarea>
+              <textarea name="nachricht" rows={3} maxLength={2000} placeholder={L.form.nachrichtPh} style={sx(inputStyle.replace('min-height:52px;padding:0 14px', 'min-height:104px;padding:14px') + ';line-height:1.5;resize:vertical')}></textarea>
             </label>
             {st === 'error' && (
               <p role="alert" style={sx('margin:0;font-size:13.5px;line-height:1.5;color:#FCA5A5;font-weight:700;text-align:center')}>
-                {L.form.errorPre}<a href={`mailto:${EMAIL}`} style={sx('color:#FFC7E4')}>{EMAIL}</a>{L.form.errorPost}
+                {L.form.errorPre}<a href={`mailto:${EMAIL}`} style={sx('color:#F6EFE6;text-decoration:underline')}>{EMAIL}</a>{L.form.errorPost}
               </p>
             )}
             <button type="submit" style={sx('min-height:56px;border:0;border-radius:18px;background:#F6EFE6;color:#0A0814;font-size:17px;font-weight:900;box-shadow:0 10px 26px rgba(0,0,0,.5);cursor:pointer')}>
