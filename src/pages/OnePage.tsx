@@ -56,116 +56,68 @@ const AKZENT = '#F6EFE6';
  * Ohne den Zusatz bleibt alles, wie es ist. Wer sich entschieden hat, macht
  * aus der Zahl einen Vorgabewert und die Zeile hier faellt weg.
  */
-const STIL = (() => {
-  // Wolf am 27.08.: "K3, mach den Aufraeumdurchgang ... machs so, dass es
-  // reversibel ist, falls es mir gar nicht gefaellt".
-  //
-  // Deshalb kein Umbau, sondern eine Umstellung des Vorgabewerts. K3 ist jetzt
-  // der Normalfall, und /d/?stil=1 zeigt weiterhin genau den Stand von vorher:
-  // kleine Ueberschriften, Haarlinien zwischen den Kapiteln, gleiche Polster,
-  // Schatten an der Oberflaeche. Zurueck geht es also mit einer Adresse und
-  // nicht mit einem Rueckbau, und wenn es bleibt, faellt hier eine Zeile weg.
-  if (typeof window === 'undefined') return 3;
-  const n = Number(new URLSearchParams(window.location.search).get('stil'));
-  return n >= 1 && n <= 5 ? n : 3;
-})();
+/**
+ * Die Handschrift der Seite, entschieden am 28.08.
+ *
+ * Bis dahin liessen sich fuenf Kapitelfassungen und vier Auftritte ueber die
+ * Adresse durchprobieren (?stil= und ?bew=). Wolf hat K3 und T3 gewaehlt, also
+ * stehen die Werte jetzt fest und die Schalter sind weg. Was dabei gilt:
+ *
+ *   Ueberschriften gross, eine Stufe fuer Kapitel und eine fuer alles darin.
+ *   Keine Haarlinien zwischen den Kapiteln, dafuer Luft nach der Dichtewelle.
+ *   Keine Schatten an der Oberflaeche; Spielsteine behalten ihre Kanten.
+ *   Der Auftritt ist versetztes Hereinfahren aus Lage und Deckkraft.
+ *
+ * Die verworfenen Fassungen sind nicht verloren: K1, K2, K4 und K5 stehen
+ * weiter in der Mockup-Station "Kapitel", T1, T2 und T4 in "Trennung". Dort
+ * gehoeren sie hin, sie sind Entwuerfe und keine Einstellungen.
+ */
+
 /** Ab K3 traegt die Oberflaeche keine Schatten mehr. Spielsteine schon:
  *  ihre Kanten stehen in der Kacheldefinition der App und gehoeren zum
  *  Stein, nicht zum Layout. */
-const OHNE_SCHATTEN = STIL >= 3;
+const schatten = (_wert: string) => '';
 
 /**
  * Die Unterzeile eines Kapitels.
  *
- * Wolf am 28.08.: "die subtitel wirken jetzt lame". Nachgerechnet, und er hat
- * recht: seit die Ueberschriften auf 75 px stehen, springt die Seite von 75
- * direkt auf 17, und 17 ist genau die Groesse des Fliesstexts darunter. Damit
- * hat das Kapitel eine Ueberschrift und danach nichts mehr, was es traegt.
- *
- * Die Referenzen halten dieses Verhaeltnis viel enger: Apple 56 zu 21, Custo
- * 38 zu 19, Air 32 zu 16, also Faktor 2 bis 2,7. Unsere 75 zu 17 sind Faktor
- * 4,4.
- *
- * Also eine eigene Stufe dazwischen: 22 px, halbwegs hell, auf 46 Zeichen
- * begrenzt. Der Fliesstext darunter bleibt bei 16 bis 17 und ist damit zum
- * ersten Mal wirklich eine Stufe tiefer.
+ * Wolf am 28.08.: "die subtitel wirken jetzt lame". Nachgerechnet: seit die
+ * Ueberschriften auf 75 px stehen, sprang die Seite von 75 direkt auf 17, und
+ * 17 war genau die Groesse des Fliesstexts darunter. Die Referenzen halten das
+ * viel enger, Apple 56 zu 21, Custo 38 zu 19, Air 32 zu 16, also Faktor 2 bis
+ * 2,7; unsere 75 zu 17 waren Faktor 4,4. Jetzt eine eigene Stufe dazwischen.
  */
-const UNTERZEILE = STIL >= 2
-  ? 'font-size:22px;line-height:1.5;font-weight:500;color:rgba(246,239,230,.72);max-width:46ch;text-wrap:pretty'
-  : 'font-size:17px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.62);max-width:620px';
-
-/**
- * Der Auftritt der Abschnitte, zum Vergleichen.
- *
- *   /d/?bew=3   T3, versetzt hereinfahren: die Spalten eines Halts kommen
- *               nacheinander von unten, links zuerst, der Gegenstand zuletzt.
- *               Nur Lage und Deckkraft.
- *   /d/?bew=2   T2, eindrehen: dazu dreht sich der Gegenstand in seine Lage,
- *               der Griff von der Mana-Mate-Dose. Nur der Gegenstand, nie
- *               der Text.
- *
- * Ohne Zusatz steht alles sofort, wie bisher.
- *
- * Gebaut mit animation-timeline: view(), also ohne eine Zeile JavaScript. Der
- * Fortschritt kommt daraus, wie weit der Halt im Fenster steht. In Browsern
- * ohne diese Zeitleiste, heute noch Firefox, greift @supports nicht und der
- * Inhalt steht einfach da. Das ist der richtige Rueckfall: nichts blinkt,
- * nichts fehlt.
- */
-const BEWEGUNG = (() => {
-  // Wolf am 28.08.: "wir haben zu wenig Gegenstaende fuer T2 ... ich finde T3
-  // gut". Also ist T3 der Normalfall. /d/?bew=0 stellt alles still,
-  // /d/?bew=2 zeigt das Eindrehen zum Vergleich.
-  if (typeof window === 'undefined') return 3;
-  const n = Number(new URLSearchParams(window.location.search).get('bew'));
-  return n === 0 || n === 2 || n === 3 || n === 4 ? n : 3;
-})();
-const schatten = (wert: string) => (OHNE_SCHATTEN ? '' : wert);
-/** Ueberschrift eines Kapitels: gross ab Fassung 2, mit Ziffer ab 4. */
-const H2_GROSS = STIL >= 2 ? 'clamp(40px,5.2vw,84px)' : null;
+const UNTERZEILE = 'font-size:22px;line-height:1.5;font-weight:500;color:rgba(246,239,230,.72);max-width:46ch;text-wrap:pretty';
 
 /**
  * Der grosse Modus heisst CrowdQuiz.
  *
- * Entschieden am 27.08. Der Weg dahin steht hier, weil er die Regel enthaelt,
- * an die sich jeder weitere Name halten muss.
- *
- * CozyQuiz ist [wie es ist][was es ist], ein Wort, englisch. Wolfs Einwand
- * gegen CozyArena war, dass bei 160 Leuten nichts mehr cozy ist. Sein Einwand
- * gegen "Acht Fraktionen" war schaerfer: es nennt eine Menge statt eines
- * Gefuehls, ein Bauteil statt der Gattung, und es ist deutsch. Dazu die
- * vierte Bedingung, die er selbst nachgelegt hat: beide Woerter muessen auch
- * im deutschen Mund liegen, "Factions" tut das nicht.
- *
- * Und gegen "wild" hatte er wieder recht: der Modus ist nicht lauter, er ist
- * groesser. Gewertet wird der ANTEIL richtiger Antworten, damit eine Fraktion
- * mit acht Leuten keinen Vorteil gegenueber einer mit vier hat; das steht als
- * Aufzaehlungszeile zwei Zeilen unter dem Namen.
- *
- * Bleibt Crowd: Menge statt Krach, in beiden Sprachen gelaeufig, einzeilig in
- * der Spalte, Gattung Quiz erhalten, und Cozy gegen Crowd ist ein Paar. Das
- * Wort steht ausserdem schon im Code der App, die beiden Fragetypen, die es
- * nur in diesem Modus gibt, heissen crowdTop und crowdEstimate.
+ * Entschieden am 27.08. Die Regel dahinter, weil sie fuer jeden weiteren Namen
+ * gilt: [wie es ist][was es ist], ein Wort, englisch, und beide Woerter
+ * muessen auch im deutschen Mund liegen. Cozy und Quiz tun das, Factions
+ * nicht. Wolfs zwei Korrekturen unterwegs: bei 160 Leuten ist nichts mehr
+ * cozy, und der Modus ist nicht wild, sondern groesser. Crowd erfuellt alles,
+ * und das Wort steht schon im Code der App, die beiden Fragetypen, die es nur
+ * hier gibt, heissen crowdTop und crowdEstimate.
  *
  * ⚠️ In der App heisst der Modus weiter CozyArena, an 148 Stellen. Bis die
  * nachgezogen sind, heisst dasselbe Ding an zwei Orten anders. Der interne
- * Schluessel hier bleibt 'arena', damit Bilder und Bezeichner nicht mitwandern
- * muessen.
+ * Schluessel bleibt 'arena', damit Bilder und Bezeichner nicht mitwandern.
  */
 const MODUS_GROSS = 'CrowdQuiz';
-/** Trennung zwischen Kapiteln: ab Fassung 3 Luft statt Linie. */
-const OHNE_LINIE = STIL >= 3;
-/** Dichtewelle: dicht, mittel, luftig als Polster oben und unten. */
-const DICHTE: Record<string, string> = STIL >= 3
-  ? { dicht: '96px 32px 72px', mittel: '120px 32px 88px', luftig: '148px 32px 108px' }
-  : { dicht: '60px 32px', mittel: '60px 32px', luftig: '60px 32px' };
-/** Eigener Grundton je Kapitel, nur in Fassung 5. */
-const KAPITELTON: Record<string, string> = {
-  spielarten: '#0d0a1a', anlaesse: '#0a0c18', probieren: '#090e19',
-  ablauf: '#080f14', johannes: '#100c12', fragen: '#0b0a16', anfragen: '#110b16',
+
+/** Die Kapitelueberschrift. Eine Stufe, ueberall dieselbe. */
+const H2_GROSS = 'clamp(40px,5.2vw,84px)';
+
+/**
+ * Die Dichtewelle: dicht, mittel, luftig als Polster oben und unten.
+ * Seit das Einrasten raus ist, machen diese Werte die ganze Ordnung. Sie
+ * liegen in derselben Groessenordnung wie bei den Referenzen, Custo 110 px,
+ * Apple 100 bis 120.
+ */
+const DICHTE: Record<string, string> = {
+  dicht: '96px 32px 72px', mittel: '120px 32px 88px', luftig: '148px 32px 108px',
 };
-const tonVon = (id: string) => (STIL === 5 || BEWEGUNG === 4 ? `background:${KAPITELTON[id]};` : '');
-const linieOben = () => (OHNE_LINIE ? '' : 'border-top:1px solid rgba(246,239,230,.10);');
 
 // Spielstand-Daten der Brett-Simulation (aus dem Entwurf, Wolfs Choreografie)
 // Team-Avatare: das CozyQuiz-Objektset der App (48 Motive). Die Objekte sind
@@ -993,7 +945,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     ];
 
     return (
-      <section id="spielarten" data-ton="168,85,247" data-shell="" style={sx(`max-width:1180px;margin:0 auto;padding:${DICHTE.dicht};${tonVon('spielarten')}`)}>
+      <section id="spielarten" data-ton="168,85,247" data-shell="" style={sx(`max-width:1180px;margin:0 auto;padding:${DICHTE.dicht};`)}>
         {this.kicker(`${L.modes.kicker}|${L.modes.label}`)}
         <h2 data-reveal="" style={sx("margin:0 0 40px;font-family:'League Spartan',sans-serif;"
           + 'font-size:clamp(40px,5.2vw,84px);font-weight:900;line-height:.9;letter-spacing:-.032em;color:#F6EFE6')}>
@@ -1487,7 +1439,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const ACC = ['rgba(246,239,230,.62)', 'rgba(246,239,230,.62)', 'rgba(246,239,230,.62)'];
     const HAAR = 'rgba(246,239,230,.14)';
     return (
-      <section id="anlaesse" data-shell="" style={sx(`max-width:1180px;margin:0 auto;padding:${DICHTE.luftig};${tonVon('anlaesse')}`)}>
+      <section id="anlaesse" data-shell="" style={sx(`max-width:1180px;margin:0 auto;padding:${DICHTE.luftig};`)}>
         {this.kicker(`[ 02 ]|${L.anlaesse.label}`)}
         <h2 data-reveal="" style={sx("margin:0 0 14px;font-family:'League Spartan',sans-serif;"
           + 'font-size:clamp(40px,5.2vw,84px);font-weight:900;line-height:.9;letter-spacing:-.032em;color:#F6EFE6')}>
@@ -1671,7 +1623,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     }
 
     return (
-      <section id="probieren" data-ton="59,130,246" data-halt="" style={sx(`${linieOben()}${OHNE_LINIE ? '' : 'border-bottom:1px solid rgba(246,239,230,.10);'}${tonVon('probieren')}background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.04),transparent 65%)`)}>
+      <section id="probieren" data-ton="59,130,246" data-halt="" style={sx(`background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.04),transparent 65%)`)}>
         <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:60px 32px;box-sizing:border-box;display:grid;grid-template-columns:1fr 600px;gap:48px;align-items:center')} data-m="two2">
           <div>
             {/* Wolf am 27.08.: "passt sektion 03 jetzt noch zum rest der
@@ -1682,7 +1634,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 Text, und die zweite Zeile steht klein und ohne Versalien
                 darunter. */}
             {this.kicker(`[ 03 ]|${L.probe.label}`)}
-            <h2 data-reveal="" style={sx(`margin:12px 0 10px;font-family:'League Spartan',sans-serif;font-size:${H2_GROSS ?? '34px'};line-height:${H2_GROSS ? '.9' : '1.1'};letter-spacing:${H2_GROSS ? '-.032em' : '0'};font-weight:900;color:#F6EFE6`)}>{L.probe.h2}</h2>
+            <h2 data-reveal="" style={sx(`margin:12px 0 10px;font-family:'League Spartan',sans-serif;font-size:${H2_GROSS};line-height:.9;letter-spacing:-.032em;font-weight:900;color:#F6EFE6`)}>{L.probe.h2}</h2>
             <div data-reveal="" style={sx('margin-bottom:16px;' + UNTERZEILE)}>{L.probe.kicker}</div>
             <p data-reveal="" style={sx('margin:0 0 26px;max-width:520px;font-size:17px;line-height:1.6;color:rgba(246,239,230,.78);font-weight:500')}>{L.probe.sub}</p>
             {/* Zweitens war das hier der letzte Kasten der Seite: Rahmen,
@@ -1826,10 +1778,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       this.setState({ beam: false, beamWelcome: false });
     };
     return (
-      <section id="ablauf" data-ton="34,197,94" data-halt="" style={sx(`${linieOben()}${tonVon('ablauf')}`)}>
+      <section id="ablauf" data-ton="34,197,94" data-halt="" style={sx('')}>
         <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:26px 32px;box-sizing:border-box')}>
           {this.kicker(`[ 04 ]|${L.ablauf.label}`)}
-          <h2 data-reveal="" style={sx(`margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:${H2_GROSS ?? '34px'};line-height:${H2_GROSS ? '.9' : '1.1'};letter-spacing:${H2_GROSS ? '-.032em' : '0'};font-weight:900;color:#F6EFE6`)}>{L.ablauf.h2}</h2>
+          <h2 data-reveal="" style={sx(`margin:0 0 8px;font-family:'League Spartan',sans-serif;font-size:${H2_GROSS};line-height:.9;letter-spacing:-.032em;font-weight:900;color:#F6EFE6`)}>{L.ablauf.h2}</h2>
           <p data-reveal="" style={sx('margin:0 0 26px;' + UNTERZEILE)}>{L.ablauf.sub}</p>
 
           {/* Wolf am 27.08.: "beamer kleiner und gekippt". Also keine Leinwand
@@ -2041,7 +1993,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   renderJohannes() {
     const L = this.T;
     return (
-      <section id="johannes" data-ton="249,115,22" data-halt="" style={sx(`${linieOben()}${tonVon('johannes')}`)}>
+      <section id="johannes" data-ton="249,115,22" data-halt="" style={sx('')}>
         <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:60px 32px;box-sizing:border-box;display:grid;grid-template-columns:300px 1fr;gap:52px;align-items:center')} data-m="joh">
           {/* Wolf am 27.08.: das echte Foto bleibt, die auffaechernden Arme und
               der pinke Ring gehen. Die beiden Nebenbilder waren Schmuck, der
@@ -2116,10 +2068,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   renderFaq() {
     const L = this.T;
     return (
-      <section id="fragen" data-halt="" style={sx(`${linieOben()}${tonVon('fragen')}`)}>
+      <section id="fragen" data-halt="" style={sx('')}>
         <div data-shell="" style={sx('width:100%;max-width:1180px;margin:0 auto;padding:60px 32px;box-sizing:border-box')}>
           {this.kicker(`[ 05 ]|${L.faq.label}`)}
-          <h2 data-reveal="" style={sx(`margin:0 0 36px;font-family:'League Spartan',sans-serif;font-size:${H2_GROSS ?? '34px'};line-height:${H2_GROSS ? '.9' : '1.1'};letter-spacing:${H2_GROSS ? '-.032em' : '0'};font-weight:900;color:#F6EFE6`)}>{L.faq.h2}</h2>
+          <h2 data-reveal="" style={sx(`margin:0 0 36px;font-family:'League Spartan',sans-serif;font-size:${H2_GROSS};line-height:.9;letter-spacing:-.032em;font-weight:900;color:#F6EFE6`)}>{L.faq.h2}</h2>
           <div data-reveal="" data-m="faqgrid" style={sx('display:grid;gap:34px 56px;grid-template-columns:1fr 1fr')}>
             {/* Wolf am 27.08.: "h1 bei Kacheln, h2 bei text". Also hier das
                 Anruecken: die Frage rueckt 10 px nach rechts und bekommt einen
@@ -2174,7 +2126,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           <div>
             {this.kicker(`[ 06 ]|${L.form.label}`)}
             <h2 data-reveal="" style={sx("margin:0 0 12px;font-family:'League Spartan',sans-serif;font-weight:900;line-height:1.02;letter-spacing:-.028em;color:#F6EFE6;text-wrap:balance;"
-              + `font-size:${H2_GROSS ? 'clamp(38px,4vw,64px)' : 'clamp(30px,3.2vw,44px)'}`)}>{L.form.h2}</h2>
+              + 'font-size:clamp(38px,4vw,64px)')}>{L.form.h2}</h2>
             <p style={sx('margin:0 0 10px;' + UNTERZEILE)}>{L.form.sub}</p>
             <p style={sx('margin:0 0 26px;font-size:14px;font-weight:800;letter-spacing:.02em;color:rgba(246,239,230,.62)')}>{L.form.avail}</p>
 
@@ -2338,7 +2290,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   render() {
     const L = this.T;
     return (
-      <div data-m="root" data-bew={BEWEGUNG || undefined} data-stil={STIL} style={sx('min-height:100vh;background:#0A0814;width:100%')}>
+      <div data-m="root" data-bew="" style={sx('min-height:100vh;background:#0A0814;width:100%')}>
         <div aria-hidden="true" data-cw-grund=""></div>
         <style>{ONEPAGE_CSS}</style>
         {this.renderHeader()}

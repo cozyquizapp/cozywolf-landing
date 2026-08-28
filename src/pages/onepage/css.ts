@@ -219,9 +219,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
    @supports, weil Firefox die Zeitleiste bis heute nicht kennt. Dort greift
    nichts und der Inhalt steht einfach da. Das ist der richtige Rueckfall. */
 @keyframes cwEinfahren{from{transform:translateY(34px);opacity:0}to{transform:none;opacity:1}}
-@keyframes cwEindrehen{from{transform:translateY(34px) rotate(-7deg) scale(.94);opacity:0}to{transform:none;opacity:1}}
 /* Der Spruch am Ende waechst, waehrend sein Halt durchs Fenster faehrt. */
-@keyframes cwGrundKippt{from{clip-path:polygon(0 2.4%,100% 0,100% 100%,0 100%)}to{clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}}
 @keyframes cwHinaus{from{transform:none;opacity:1}to{transform:translateY(-16px);opacity:.45}}
 @keyframes cwSpruchWaechst{from{transform:scale(.32);opacity:.35}to{transform:scale(1);opacity:1}}
 @supports (animation-timeline: view()){
@@ -239,9 +237,6 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
     [data-bew] [data-m=modereihe]>*:nth-child(2){animation-range:entry 8% entry 82%}
     [data-bew] [data-m=modereihe]>*:nth-child(3){animation-range:entry 16% entry 94%}
     [data-bew] [data-halt]>[data-shell]>*{animation-range:entry 0% entry 80%}
-    /* T2: nur der Gegenstand dreht sich ein, nie der Text. */
-    [data-bew="2"] [data-m=modereihe]>*:nth-child(3),
-    [data-bew="2"] [data-m=modeobjekt]{animation-name:cwEindrehen}
     /* Wolf am 28.08.: "manchmal koennte es noch ein bisschen mehr sein zb
        beim rausscrollen". Also ein zweiter, sehr viel leiserer Lauf beim
        Verlassen nach oben: der Halt sinkt ein wenig und nimmt Deckkraft ab,
@@ -251,17 +246,6 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
       animation:cwHinaus linear both;animation-timeline:view();
       animation-range:exit 20% exit 100%;
     }
-    /* T4, Wolf am 28.08.: "t4 ist supe". Der Grund traegt die Kapitel: jeder
-       Halt bekommt seinen eigenen sehr dunklen Ton und schiebt sich als
-       schraege Kante ueber den vorigen. Die Schraege laeuft mit, waehrend der
-       Halt eintritt, und steht gerade, sobald er im Bild ist.
-       T4 kommt ZUSAETZLICH zum versetzten Auftritt aus T3, weil Wolf beide
-       gut fand: T3 bewegt den Inhalt, T4 den Grund darunter. */
-    [data-bew="4"] [data-halt]:not([data-spruch]){
-      animation:cwHinaus linear both,cwGrundKippt linear both;
-      animation-timeline:view(),view();
-      animation-range:exit 20% exit 100%,entry 0% entry 100%;
-    }
   }
   @media (prefers-reduced-motion:no-preference){
     [data-kinetic]{
@@ -269,32 +253,6 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
       animation-range:entry 0% cover 40%;transform-origin:center center;
     }
   }
-}
-
-/* ── K4: die Kapitelziffer als Bauteil ────────────────────────────────────
-   Die Ziffer steht gross und in Kontur links, die Ueberschrift fliesst
-   daneben. Umgesetzt mit float statt mit einem Raster, weil Kennzeile und
-   Ueberschrift in allen sechs Abschnitten Geschwister sind: so bleibt der
-   Aufbau der Abschnitte unangetastet und die Fassung ist eine CSS-Regel
-   und kein Umbau.
-   Die kleine Zeile wird dabei nicht geloescht, sondern ausgeblendet: sie
-   traegt den Abschnittsnamen fuer Vorlesewerkzeuge. */
-@media (min-width:901px){
-  /* font-size:0 mit !important, weil die Kennzeile ihre 11,5 px inline
-     traegt und ein Inline-Wert jede Regel ohne !important schlaegt. Ohne das
-     stand die kleine Zeile "[ 04 ]" neben der grossen Ziffer. */
-  [data-stil="4"] [data-nr]{
-    float:left;display:block;margin:0 30px 6px 0;padding:0;font-size:0!important;
-    font-family:'League Spartan',sans-serif;font-weight:900;
-    line-height:.76;letter-spacing:-.04em;color:transparent;
-    -webkit-text-stroke:1.5px rgba(246,239,230,.26);
-  }
-  [data-stil="4"] [data-nr]::before{content:attr(data-nr);font-size:104px}
-  [data-stil="4"] [data-nr]>span{display:none}
-  /* Die Ueberschrift daneben darf kleiner sein, sonst kaempfen Ziffer und
-     Schrift um dieselbe Aufmerksamkeit. */
-  [data-stil="4"] [data-nr]+h2{font-size:clamp(34px,3.6vw,58px)!important;line-height:.98!important}
-  [data-stil="4"] [data-nr]~p{clear:both}
 }
 
 @media (max-width:900px){
