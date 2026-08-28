@@ -592,8 +592,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   io: IntersectionObserver | undefined;
   private _beamT: ReturnType<typeof setTimeout> | undefined;
   private _ablaufIO: IntersectionObserver | undefined;
-  /** Der Beamer springt je Besuch nur einmal von allein an. */
-  private _beamAuto = false;
   private _weiterT: ReturnType<typeof setTimeout> | undefined;
   private _avT: ReturnType<typeof setInterval> | undefined;
   private _frakT: ReturnType<typeof setInterval> | undefined;
@@ -735,20 +733,32 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
    * die Maus auf die Wand zu legen, sah nie etwas -- und auf einem Touchgeraet
    * gibt es Hover ueberhaupt nicht.
    *
-   * Ausgeloest wird bei 45 Prozent Sichtbarkeit, nicht beim ersten Pixel: die
-   * Lampe soll angehen, wenn der Abschnitt steht, nicht waehrend er noch
-   * hereinfaehrt. Und nur EINMAL je Besuch -- ein Beamer, der bei jedem
-   * Vorbeiscrollen neu hochfaehrt, ist ein Blinker.
+   * Wolf am 28.08.: "beamer geht schon an bevor scroll da ist, kurzer flacker
+   * moment soll da sein bei scroll, reset bei wieder hochscrollen?"
+   *
+   * Beides stimmte, und beides hatte dieselbe Ursache: beobachtet wurde der
+   * ganze Abschnitt #ablauf. Der ist hoch, seine 45 Prozent sind lange
+   * erreicht, bevor die Projektion ueberhaupt im Bild ist -- die Lampe ging
+   * also samt Flackern an, waehrend man noch die Ueberschrift las. Jetzt
+   * haengt der Ausloeser an der Projektion selbst, und zwar bei 55 Prozent
+   * von ihr: sie steht dann sichtbar da, das Flackern faellt in den Moment,
+   * in dem man sie ansieht.
+   *
+   * Dazu der Rueckweg. Bisher lief das genau einmal je Besuch, aus Sorge vor
+   * einem Beamer, der bei jedem Vorbeiscrollen neu hochfaehrt. Die Sorge
+   * loest sich mit einem weiten Totbereich: an geht sie bei 55 Prozent, aus
+   * erst, wenn die Projektion GANZ aus dem Bild ist. Dazwischen liegt eine
+   * volle Fensterhoehe, in der nichts passiert; ein Blinker braucht zwei
+   * Schwellen, die dicht beieinander liegen.
    */
   ablaufBeobachten() {
-    const el = document.getElementById('ablauf');
+    const el = document.querySelector('[data-m="wall"]');
     if (!el || typeof IntersectionObserver === 'undefined') return;
-    this._ablaufIO = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting || this._beamAuto) return;
-      this._beamAuto = true;
-      this._ablaufIO?.disconnect();
-      this.beamAn();
-    }, { threshold: 0.45 });
+    this._ablaufIO = new IntersectionObserver(entries => {
+      const e = entries[entries.length - 1];
+      if (e.intersectionRatio >= 0.55) this.beamAn();
+      else if (e.intersectionRatio === 0) this.beamAus();
+    }, { threshold: [0, 0.55] });
     this._ablaufIO.observe(el);
   }
 
@@ -756,11 +766,20 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
    *  jetzt zwei Stellen sie brauchen: der Zeiger und der Beobachter. */
   beamAn() {
     if (this.state.beam) return;
-    this._ablaufIO?.disconnect();
     clearTimeout(this._beamT);
     clearInterval(this.gameTimer);
     this.setState({ beam: true, beamWelcome: true });
     this._beamT = setTimeout(() => { this.setState({ beamWelcome: false }); this.startGame(); }, 3800);
+  }
+
+  /** Die Lampe aus, sobald die Projektion ganz aus dem Bild ist. Damit faengt
+   *  der naechste Besuch wieder mit dem Flackern an, statt mit einem Bild,
+   *  das schon laeuft. */
+  beamAus() {
+    if (!this.state.beam) return;
+    clearTimeout(this._beamT);
+    clearInterval(this.gameTimer);
+    this.setState({ beam: false, beamWelcome: false, tick: 0 });
   }
 
   spielartenBeobachten() {
@@ -2661,7 +2680,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   ab, wie es eine Projektion tut. */}
               <div style={sx('position:absolute;inset:0;'
                 + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
-                + `opacity:${on ? .46 : .30};transition:opacity 1.2s ${EASE}`)}></div>
+                + `opacity:${on ? .38 : .24};transition:opacity 1.2s ${EASE}`)}></div>
               {/* Das Licht auf den Fugen.
                   Wolf am 28.08.: "schimmer ist zu fleckig, soll sich eher wie
                   linien durchziehen also wie durch ein netz oder so weniger
@@ -2685,7 +2704,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   Springen am Rundenende. */}
               <div aria-hidden="true" data-welle="" style={sx('position:absolute;inset:0;mix-blend-mode:screen;'
                 + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
-                + `opacity:${on ? .80 : .55};`
+                + `opacity:${on ? .98 : .72};`
                 + 'mask-image:repeating-linear-gradient(104deg,transparent 0px,transparent 168px,rgba(0,0,0,.26) 206px,#000 226px,rgba(0,0,0,.26) 246px,transparent 300px);'
                 + '-webkit-mask-image:repeating-linear-gradient(104deg,transparent 0px,transparent 168px,rgba(0,0,0,.26) 206px,#000 226px,rgba(0,0,0,.26) 246px,transparent 300px);'
                 + 'mask-size:4000px 4000px;-webkit-mask-size:4000px 4000px;'
@@ -2693,7 +2712,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 + `animation:cwFugenWelle ${on ? 9 : 14}s linear infinite;transition:opacity 1.2s ${EASE}`)}></div>
               <div aria-hidden="true" data-netz="" style={sx('position:absolute;inset:0;mix-blend-mode:screen;'
                 + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
-                + `opacity:${on ? .58 : .40};`
+                + `opacity:${on ? .72 : .52};`
                 + 'mask-image:repeating-linear-gradient(166deg,transparent 0px,transparent 196px,rgba(0,0,0,.24) 236px,#000 254px,rgba(0,0,0,.24) 272px,transparent 340px);'
                 + '-webkit-mask-image:repeating-linear-gradient(166deg,transparent 0px,transparent 196px,rgba(0,0,0,.24) 236px,#000 254px,rgba(0,0,0,.24) 272px,transparent 340px);'
                 + 'mask-size:4000px 4000px;-webkit-mask-size:4000px 4000px;'
@@ -3314,6 +3333,24 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               + 'font-size:clamp(30px,6.8vw,118px);font-weight:900;line-height:1;color:transparent;'
               + '-webkit-text-stroke:1.4px rgba(246,239,230,.42);letter-spacing:-.01em;white-space:nowrap')}>
             {L.kinetic}
+            {/* Wolf am 28.08.: "sollte stay cozy stay curious ganz leicht den
+                effekt auch machen wenn niemand drueber hovert (nur minimal)
+                das man es merkt und draufgeht mit der maus?"
+
+                Berechtigt: eine Kontur, die sich nur beim Hovern fuellt, ist
+                ein Angebot, das niemand sieht. Also wandert ohne Zeiger ein
+                schmaler Lichtstreifen langsam hin und her -- 11 Sekunden fuer
+                eine Strecke, Deckkraft 0,34, also gerade genug, dass es
+                auffaellt. Sobald die Maus da ist, geht dieser Streifen weg
+                und ueberlaesst der Hand das Licht. */}
+            <span aria-hidden="true" data-spruchidle="" style={sx('position:absolute;left:0;top:0;width:100%;'
+              + 'color:#F6EFE6;-webkit-text-stroke:0;pointer-events:none;'
+              + 'background:linear-gradient(92deg,#FFF6E8,#F6EFE6 46%,#FFE9C9);'
+              + '-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;'
+              + 'mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.5) 46%,transparent 100%);'
+              + '-webkit-mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.5) 46%,transparent 100%);'
+              + 'mask-size:280px 300%;-webkit-mask-size:280px 300%;'
+              + 'mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat')}>{L.kinetic}</span>
             <span aria-hidden="true" data-spruchlicht="" style={sx('position:absolute;left:0;top:0;width:100%;'
               + 'color:#F6EFE6;-webkit-text-stroke:0;pointer-events:none;'
               + 'background:linear-gradient(92deg,#FFF6E8,#F6EFE6 46%,#FFE9C9);'

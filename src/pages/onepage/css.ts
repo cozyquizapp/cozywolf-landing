@@ -287,6 +287,18 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 @keyframes cwEinfahren{from{transform:translateY(34px);opacity:0}to{transform:none;opacity:1}}
 /* Der Spruch am Ende waechst, waehrend sein Halt durchs Fenster faehrt. */
 @keyframes cwHinaus{from{transform:none;opacity:1}to{transform:translateY(-16px);opacity:.45}}
+/* Der leise Hinweis am Spruch: ohne Zeiger wandert ein schmaler Streifen
+   Licht ueber die Zeile, damit man sieht, dass da etwas zu holen ist. Kommt
+   die Maus, verschwindet er. */
+@keyframes cwSpruchWandern{from{mask-position:0% 50%;-webkit-mask-position:0% 50%}to{mask-position:100% 50%;-webkit-mask-position:100% 50%}}
+[data-spruchidle]{opacity:.34;transition:opacity .4s linear}
+@media (prefers-reduced-motion:no-preference){
+  [data-spruchidle]{animation:cwSpruchWandern 11s ease-in-out infinite alternate}
+}
+@media (prefers-reduced-motion:reduce){[data-spruchidle]{opacity:0}}
+@media (hover:hover) and (pointer:fine){
+  [data-kinetic]:hover [data-spruchidle]{opacity:0}
+}
 @keyframes cwSpruchWaechst{from{transform:scale(.32);opacity:.35}to{transform:scale(1);opacity:1}}
 @supports (animation-timeline: view()){
   @media (min-width:901px) and (prefers-reduced-motion:no-preference){
