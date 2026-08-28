@@ -49,9 +49,8 @@ export type MobileDict = {
     cards: { badge: string; title: string; p: string }[];
   };
   ablauf: {
-    label: string; h2: string; sub: string; priceBig: string; priceSub: string;
+    label: string; h2: string; sub: string;
     wallAltOff: string; welcomeKicker: string; welcomeTitle: string; welcomeSub: string;
-    bringT: string; bring: string; needT: string; need: string;
   };
   /** Der Spruch am Seitenende, zwei Zeilen. */
   kinetic: string[];
@@ -87,7 +86,7 @@ const de: MobileDict = {
     menuLabel: 'Menü',
   },
   hero: {
-    kicker: 'Moderiertes Live-Quiz für Teams in Hamburg',
+    kicker: 'Moderiertes Live-Quiz in Hamburg',
     hooks: ['Wissen', 'Glück', 'Timing', 'Teamgeist', 'Bauchgefühl'],
     rest: 'ist nicht alles.',
     sub: G.de.heroSub,
@@ -194,12 +193,9 @@ const de: MobileDict = {
   ablauf: {
     label: 'Ablauf', h2: G.de.ablaufH2,
     sub: G.de.ablaufSub,
-    priceBig: 'ab 350 €', priceSub: 'für den ganzen Abend',
     wallAltOff: 'Wohnzimmer mit Beamer, Wand noch dunkel',
     welcomeKicker: 'Herzlich willkommen zum', welcomeTitle: 'COZYQUIZ',
     welcomeSub: 'Macht’s euch bequem, gleich geht’s los!',
-    bringT: 'Ich bringe mit:', bring: 'Beamer, Sound, Moderation und die Fragen, auf eure Runde abgestimmt.',
-    needT: 'Ihr braucht:', need: 'Eine freie Wand, Strom und WLAN. Ein Handy pro Team habt ihr dabei.',
   },
   kinetic: ['STAY COZY.', 'STAY CURIOUS.'],
   johannes: {
@@ -263,7 +259,7 @@ const en: MobileDict = {
     menuLabel: 'Menu',
   },
   hero: {
-    kicker: 'Hosted live quiz for teams in Hamburg',
+    kicker: 'Hosted live quiz in Hamburg',
     hooks: ['Knowledge', 'Luck', 'Timing', 'Team spirit', 'Gut feeling'],
     rest: 'isn’t everything.',
     sub: G.en.heroSub,
@@ -371,12 +367,9 @@ const en: MobileDict = {
   ablauf: {
     label: 'How it works', h2: G.en.ablaufH2,
     sub: G.en.ablaufSub,
-    priceBig: 'from €350', priceSub: 'for the whole evening',
     wallAltOff: 'Living room with projector, wall still dark',
     welcomeKicker: 'A warm welcome to', welcomeTitle: 'COZYQUIZ',
     welcomeSub: 'Make yourselves comfortable, we’re about to start!',
-    bringT: 'I bring:', bring: 'Projector, sound, hosting and the questions, tuned to your crowd.',
-    needT: 'You need:', need: 'A free wall, power and WiFi. One phone per team, you have that on you.',
   },
   kinetic: ['STAY COZY.', 'STAY CURIOUS.'],
   johannes: {

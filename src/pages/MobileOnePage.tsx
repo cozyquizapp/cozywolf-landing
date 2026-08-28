@@ -251,7 +251,6 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
   private _hookT: ReturnType<typeof setInterval> | undefined;
   private _sio: IntersectionObserver | undefined;
   /** Der Wolf auf der Begruessungsfolie in 04. */
-  private _wolfV: HTMLVideoElement | null = null;
   private _catT: ReturnType<typeof setTimeout> | undefined;
   private _cdT: ReturnType<typeof setInterval> | undefined;
 
@@ -300,14 +299,6 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
         es.forEach(e => {
           const an = e.isIntersecting && e.intersectionRatio > .45;
           if (an !== this.state.wallOn) {
-            // Der Wolf laeuft einmal, wenn die Lampe angeht, und haelt an,
-            // wenn die Wand aus dem Bild ist. preload="none": die 966 KB
-            // sollen nicht beim Seitenaufbau ueber Mobilfunk gehen.
-            const v = this._wolfV;
-            if (v) {
-              if (an) { try { v.currentTime = 0; void v.play().catch(() => { /* stumm, blockt nicht */ }); } catch { /* egal */ } }
-              else v.pause();
-            }
           }
           this.setState({ wallOn: an });
         });
@@ -1091,15 +1082,38 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
         <p data-rv="" style={sx('margin:0 0 8px;font-size:15.5px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:600;text-wrap:pretty')}>{L.anlaesse.sub}</p>
         {L.anlaesse.cards.map((c, i) => (
           <div key={c.title} data-rv="" style={sx(`padding:24px 0;border-top:1px solid rgba(246,239,230,.14)${i === L.anlaesse.cards.length - 1 ? ';border-bottom:1px solid rgba(246,239,230,.14)' : ''}`)}>
-            <div aria-hidden="true" style={sx('position:relative;width:100%;max-width:190px;margin:0 0 16px;aspect-ratio:1/1')}>
-              {ANLASS_GRUPPEN[i].map(o => (
-                <span key={o.av} style={sx(`position:absolute;left:${o.x}%;top:${o.y}%;width:${o.gr}%;aspect-ratio:1/1;`
-                  + `transform:rotate(${o.r}deg);background:url(${o.av}) center/contain no-repeat;`
-                  + 'filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))')}></span>
-              ))}
+            {/* Wolf am 28.08.: "symbole gerne weiter nach rechts neben den
+                text leicht nach unten versetzt wie aktuelle hoehenposition?
+                das saehe glaube ich besser aus als oben drueber".
+
+                Vorher stand die Gruppe als eigener Block ueber dem Namen und
+                kostete ihre volle Hoehe. Jetzt steht sie rechts daneben, auf
+                Hoehe von Name und Reichweite, und der Absatz laeuft darunter
+                wieder ueber die volle Breite. Das kostet nur noch die Hoehe
+                des groesseren der beiden.
+
+                Der Absatz laeuft bewusst NICHT um die Gegenstaende herum:
+                bei 350 px Breite blieben neben der Gruppe rund 150 px, und
+                ein Fliesstext in 150 px bricht nach zwei bis drei Woertern.
+                Deshalb eine Reihe fuer Kopf und Gegenstaende, darunter der
+                Absatz ueber die ganze Breite.
+
+                "leicht nach unten versetzt": die Gruppe sitzt mit 10 px
+                Versatz unter der Oberkante des Namens, sie steht also nicht
+                buendig, sondern haengt leicht tiefer. */}
+            <div style={sx('display:flex;align-items:flex-start;gap:12px')}>
+              <div style={sx('flex:1;min-width:0')}>
+                <div style={sx("font-family:'League Spartan',sans-serif;font-size:26px;font-weight:900;line-height:.95;letter-spacing:-.028em;color:#F6EFE6;text-wrap:balance")}>{c.title}</div>
+                <div style={sx('margin-top:10px;font-size:11.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{c.badge}</div>
+              </div>
+              <div aria-hidden="true" style={sx('flex:none;position:relative;width:140px;margin-top:10px;aspect-ratio:1/1')}>
+                {ANLASS_GRUPPEN[i].map(o => (
+                  <span key={o.av} style={sx(`position:absolute;left:${o.x}%;top:${o.y}%;width:${o.gr}%;aspect-ratio:1/1;`
+                    + `transform:rotate(${o.r}deg);background:url(${o.av}) center/contain no-repeat;`
+                    + 'filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))')}></span>
+                ))}
+              </div>
             </div>
-            <div style={sx("font-family:'League Spartan',sans-serif;font-size:26px;font-weight:900;line-height:.95;letter-spacing:-.028em;color:#F6EFE6;text-wrap:balance")}>{c.title}</div>
-            <div style={sx('margin-top:10px;font-size:11.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{c.badge}</div>
             <p style={sx('margin:14px 0 16px;font-size:15px;line-height:1.6;color:rgba(246,239,230,.82);font-weight:500;text-wrap:pretty')}>{c.p}</p>
             <a href="#anfragen" onClick={() => this.setState({ tab: 'event', formStatus: 'idle', anlass: this.T.form.anlassOpts[Math.min(i, 2)] })}
               style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);color:#F6EFE6;font-weight:900;font-size:14.5px')}>{L.anlaesse.cta}</a>
@@ -1117,10 +1131,12 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
         {this.kicker('[ 04 ]', L.ablauf.label)}
         <h2 data-rv="" style={sx("margin:0 0 6px;font-family:'League Spartan',sans-serif;font-size:29px;font-weight:900;text-wrap:balance")}>{L.ablauf.h2}</h2>
         <p data-rv="" style={sx('margin:0 0 14px;font-size:15.5px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:600')}>{L.ablauf.sub}</p>
-        <div data-rv="" style={sx('display:inline-flex;align-items:baseline;gap:9px;padding:11px 18px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);margin:0 0 20px')}>
-          <span style={sx("font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;color:#F6EFE6;white-space:nowrap")}>{L.ablauf.priceBig}</span>
-          <span style={sx('font-size:13.5px;font-weight:700;color:#F6EFE6;white-space:nowrap')}>{L.ablauf.priceSub}</span>
-        </div>
+        {/* Hier stand eine Kapsel "ab 350 EUR, fuer den ganzen Abend".
+            Wolf am 28.08.: "hier ist viel alter text der in desktop nicht
+            mehr [ist], das from 350 ... rausnehmen". Der Preis steht in 06
+            bei der Wahl zwischen Test-Team und Event, und dort steht er in
+            seinem Zusammenhang: neben den 0 EUR der Testrunde, mit dem, was
+            enthalten ist. Hier stand er allein und ohne Anlass. */}
         {/* Hier lagen zwei KI-Fotos: ein Raum mit Leinwand, einmal dunkel
             und einmal beleuchtet, und die Projektion als Ausschnitt darauf.
             Genau die Sorte Bild, die auf dem Desktop rausgeflogen ist, und
@@ -1180,9 +1196,24 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                 <span key={i} data-funke="" style={sx(`position:absolute;left:${f.x}%;top:${f.y}%;width:${f.g}px;height:${f.g}px;border-radius:50%;`
                   + `background:rgba(247,228,168,${f.o});box-shadow:0 0 6px rgba(247,228,168,.55);animation:mFunke 5.4s ease-in-out ${f.d}s infinite`)}></span>
               ))}
-              <video ref={el => { this._wolfV = el; }}
-                src="/assets/wolf-willkommen.webm" poster="/assets/wolf-3d.webp"
-                muted playsInline preload="none"
+              {/* Der Wolf steht hier als Standbild, auf dem Desktop laeuft das
+                  Video.
+
+                  Wolf am 28.08. mit einem Bildschirmfoto vom iPhone: "der
+                  wolf ist nicht freigestellt auf mobile". Kein Fehler im
+                  Aufbau, sondern in der Datei: wolf-willkommen.webm ist VP9
+                  und traegt die Transparenz in der Alpha-Nebenspur von WebM
+                  (geprueft, Kopfdaten sagen alpha_mode 1). Chrome und Firefox
+                  lesen die, Safari nicht, und dann steht der Wolf in einem
+                  weissen Kasten.
+
+                  Sauber loesen liesse sich das nur mit einer zweiten Fassung
+                  in HEVC mit Alphakanal, und die entsteht praktisch nur auf
+                  einem Mac. Wolf am 28.08. dazu: "mach als standbild den wolf,
+                  ist am einfachsten". Also das Bild, das ohnehin schon als
+                  Vorschaubild des Videos diente. Es ist freigestellt und liegt
+                  bei 21 KB statt 966, laedt ueber Mobilfunk also nebenbei. */}
+              <img src="/assets/wolf-3d.webp" alt="" loading="lazy" decoding="async"
                 style={sx('position:absolute;left:1%;bottom:-2%;height:74%;width:auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.55))')} />
               <div style={sx('position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4cqw;padding:0 4cqw 0 41cqw;box-sizing:border-box')}>
                 <span style={sx('font-size:2.6cqw;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.78);white-space:nowrap')}>{L.ablauf.welcomeKicker}</span>
@@ -1196,16 +1227,14 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
               + `animation:${s.wallOn ? 'mBeam 1.9s cubic-bezier(.4,0,.3,1) both' : 'none'}`)}></div>
           </div>
         </div>
-        <div data-rv="" style={sx('padding:20px;border-radius:20px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);display:flex;flex-direction:column;gap:16px')}>
-          <div style={sx('display:flex;gap:12px')}>
-            <span style={sx('flex:none;width:16px;height:1px;background:rgba(246,239,230,.62);margin-top:12px')}></span>
-            <span style={sx('flex:1;font-size:15.5px;line-height:1.55;font-weight:700;color:#F6EFE6')}><strong style={sx('color:#F6EFE6')}>{L.ablauf.bringT}</strong> {L.ablauf.bring}</span>
-          </div>
-          <div style={sx('display:flex;gap:12px')}>
-            <span style={sx('flex:none;width:16px;height:1px;background:rgba(246,239,230,.32);margin-top:12px')}></span>
-            <span style={sx('flex:1;font-size:15.5px;line-height:1.55;font-weight:700;color:rgba(246,239,230,.78)')}><strong style={sx('color:#F6EFE6')}>{L.ablauf.needT}</strong> {L.ablauf.need}</span>
-          </div>
-        </div>
+        {/* Hier stand ein Kasten mit "Ich bringe mit" und "Ihr braucht".
+            Wolf am 28.08.: "unten das fenster mit i bring you need
+            rausnehmen". Auf dem Desktop ist er schon am 28.08. gefallen, mit
+            derselben Begruendung, die hier genauso gilt: die Ueberschrift
+            sagt es bereits ("Mehr als eine freie Wand braucht ihr nicht"),
+            und die Unterzeile sagt den Rest ("Beamer, Sound, Aufbau und
+            Moderation bringe ich mit"). Der Kasten hat das ein drittes Mal
+            aufgezaehlt. */}
       </section>
     );
   }

@@ -44,33 +44,6 @@ Zaehlskript selbst hosten, und die Sprachwahl auf sessionStorage umstellen.
 
 Reihenfolge laut Wolf: erst die drei Desktop-Punkte oben, dann diese hier.
 
-### H5. 02 Anlaesse: die Gegenstaende neben den Text
-
-"symbole gerne weiter nach rechts neben den text leicht nach unten versetzt
-wie aktuelle hoehenposition? das saehe glaube ich besser aus als oben drueber"
-
-Zu tun: die drei Gegenstaende je Anlass rechts neben den Text setzen, etwas
-tiefer, statt darueber. Auf 350 px heisst das eine schmale zweite Spalte
-oder ein Ueberlappen; beides messen, bevor ich mich festlege.
-
-### H6. 04 Beamer: alter Text raus, und der Wolf ist nicht freigestellt
-
-"beamersection, hier ist viel alter text der in desktop nicht mehr [ist],
-das from 350 und unten das fenster mit i bring you need rausnehmen, dann das
-obvious der wolf ist nicht freigestellt auf mobile"
-
-Zu tun:
- * Die Kapsel "ab 350 EUR" in diesem Abschnitt faellt weg. Der Preis steht in
-   06 bei der Wahl zwischen Test-Team und Event, und dort gehoert er hin.
- * Der Kasten "Ich bringe mit / Ihr braucht" faellt weg. Der Desktop hat ihn
-   nicht mehr; im Handy ist er stehengeblieben.
- * Der Wolf auf der Begruessungsfolie steht im Handy in einem weissen Kasten.
-   Der Grund ist die Datei: wolf-willkommen.webm ist VP9 mit Alphakanal, und
-   iOS-Safari zeigt VP9-Alpha nicht. Auf dem Desktop faellt es nicht auf, weil
-   Chrome und Firefox es koennen. Braucht eine zweite Fassung, entweder HEVC
-   mit Alpha fuer Safari oder als Rueckfall das Standbild wolf-3d.webp.
-   Vorher messen, welchen Weg das Geraet tatsaechlich nimmt.
-
 ### H7. 06 Formular: zu hoch, und die Hoehe springt
 
 "request form ist zu hoch fuer mobile und veraendert hoehe je nach auswahl,
@@ -99,6 +72,25 @@ Zu tun:
 
 ## Erledigt
 
+* **H5 die Gegenstaende, H6 der Beamer-Abschnitt, und der Kicker.**
+  Die drei Gegenstaende je Anlass standen als eigener Block ueber dem Namen
+  und kosteten ihre volle Hoehe. Sie stehen jetzt rechts daneben, auf Hoehe
+  von Name und Reichweite und mit 10 px Versatz nach unten, der Absatz laeuft
+  darunter ueber die volle Breite. Nicht umflossen: bei 350 px blieben neben
+  der Gruppe rund 150 px, und Fliesstext bricht dort nach zwei Woertern.
+  Gemessen bei 390 px, alter Aufbau im Browser nachgestellt: 1498 gegen
+  1184 px, also 314 px weniger, von 1,77 auf 1,40 Bildschirme. Kein
+  Ueberlauf bei 390, 360 und 320 px.
+  In 04 sind die Preiskapsel und der Kasten "Ich bringe mit / Ihr braucht"
+  raus, beides stand auf dem Desktop schon nicht mehr. Der Wolf auf der
+  Begruessungsfolie ist ein Standbild statt des Videos: die WebM-Datei traegt
+  ihre Transparenz in der VP9-Nebenspur, die Safari nicht liest, und Wolf am
+  28.08.: "mach als standbild den wolf, ist am einfachsten". Das Bild ist
+  freigestellt und liegt bei 21 KB statt 966.
+  Dazu der Kicker im Kopf: "Moderiertes Live-Quiz fuer Teams in Hamburg"
+  brach auf Deutsch bei 390 px auf zwei Zeilen (gemessen 26 px hoch). "Fuer
+  Teams" faellt weg, in beiden Sprachen und beiden Fassungen, damit sie
+  dasselbe sagen. Gemessen: eine Zeile, 13 px.
 * **H4 Abschnitt 03 passt jetzt auf einen Bildschirm.** Der Absatz ueber der
   Fragetyp-Zeile ist raus, er kostete 99 px und stand dreimal woanders (die
   zwei Haken unter der Karte und die Zeile "Fuenf Fragetypen, eine Runde").
