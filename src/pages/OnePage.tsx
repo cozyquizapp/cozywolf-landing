@@ -2536,7 +2536,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             genau F nach unten und loest das exakt.
             F wird gemessen und nicht geschaetzt, der Fussbereich ist in
             beiden Sprachen verschieden hoch. */}
-        <section data-halt="" data-spruch="" style={sx('background:#0A0814;height:clamp(380px,72svh,760px);min-height:0;padding:0 32px;box-sizing:border-box')}>
+        <section data-halt="" data-spruch="" style={sx('background:#0A0814;height:clamp(420px,92svh,980px);min-height:0;padding:0 32px;box-sizing:border-box')}>
           <div data-kinetic="" data-m="kin" style={sx("width:100%;text-align:center;font-family:'League Spartan',sans-serif;"
             + 'font-size:clamp(30px,6.8vw,118px);font-weight:900;line-height:1;color:transparent;'
             + '-webkit-text-stroke:1.4px rgba(246,239,230,.42);letter-spacing:-.01em;white-space:nowrap')}>{L.kinetic}</div>

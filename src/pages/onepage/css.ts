@@ -248,10 +248,34 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
       animation-range:exit 20% exit 100%;
     }
   }
+  /* Wolf am 28.08.: "der effekt von stay cozy.stay curious also die motion ist
+     fast nicht mehr erkennbar beim scrollen?"
+
+     Stimmt, und es war mein Fehler von heute Morgen. view() nimmt als Subjekt
+     das Element SELBST, und der Spruch ist nur rund 118 px hoch. Der ganze
+     Bereich "entry" sind damit 118 px Scrollweg. Gemessen sprang die Groesse
+     zwischen scrollY 8184 und 8334 von 0,32 auf 1, also praktisch in einem
+     Bild. Auch mit "cover 52%" blieb das Fenster kurz, weil der Spruch
+     ohnehin erst 300 px vor dem Seitenende ueberhaupt auftaucht.
+
+     Also nicht der Spruch ist das Subjekt, sondern sein Abschnitt: der ist
+     828 px hoch und faengt entsprechend frueher an einzulaufen. Dafuer traegt
+     der Abschnitt einen benannten Zeitgeber, den der Spruch benutzt.
+
+     Der Bereich ist danach noch einmal verschoben worden. Mit "entry 0% bis
+     cover 50%" lief das Wachstum ueber 851 px Scrollweg -- aber die ersten
+     500 davon liegt der Spruch noch unter der Kante, man sah also nur die
+     letzten zwanzig Prozent. Gemessen: bei scrollY 8290 war er zum ersten Mal
+     im Bild und stand schon bei 0,8.
+     Jetzt beginnt der Bereich dort, wo der Spruch nach dem Layout die Kante
+     kreuzt (cover 23%), und endet am Seitenende (cover 53%). Das ganze
+     Wachstum von 0,32 auf 1 liegt damit im sichtbaren Bereich, und ganz unten
+     steht er in voller Groesse. */
+  [data-spruch]{view-timeline-name:--cwSpruch;view-timeline-axis:block}
   @media (prefers-reduced-motion:no-preference){
     [data-kinetic]{
-      animation:cwSpruchWaechst linear both;animation-timeline:view();
-      animation-range:entry 0% entry 100%;transform-origin:center center;
+      animation:cwSpruchWaechst linear both;animation-timeline:--cwSpruch;
+      animation-range:cover 23% cover 53%;transform-origin:center center;
     }
   }
 }
