@@ -40,28 +40,21 @@ erforderlich), GoatCounter speichert nichts auf dem Geraet. Kein Banner
 noetig. Zwei Angebote stehen offen, falls es wasserdicht sein soll: das
 Zaehlskript selbst hosten, und die Sprachwahl auf sessionStorage umstellen.
 
-## Handy, gemeldet am 28.08. nach dem Umbau
-
-Reihenfolge laut Wolf: erst die drei Desktop-Punkte oben, dann diese hier.
-
-### H8. Der Spruch darf groesser, und der Fuss muss anders
-
-"stay cozy stay curious darf groesser sein, 2 zeilig ist auf mobile gut /
-footer muss anderst sein, das sieht nicht gut aus vlt logo cozywolf und insta
-logo in eine zeile mittig und darunter imprint und pirvacy in eine mittig?
-was denkst du?"
-
-Zu tun:
- * Der Spruch groesser, auf zwei Zeilen gebrochen.
- * Der Fuss nach Wolfs Vorschlag: Logo, Wortmarke und Instagram-Zeichen
-   mittig in einer Zeile, darunter Impressum und Datenschutz mittig in einer
-   zweiten. Meine Antwort dazu: ja. Der Fuss steht heute als Reihe, die im
-   Handy umbricht und dadurch linksbuendig ausfranst; zwei bewusst gesetzte
-   mittige Zeilen sind das Gegenteil davon und passen zum Spruch darueber,
-   der ebenfalls mittig steht.
-
 ## Erledigt
 
+* **H8 der Spruch und der Fuss.** Der Spruch steht jetzt bei 12,2vw statt
+  9,4, also 48 statt 37 px bei 390, weiter zweizeilig. Die Grenze setzt die
+  laengere Zeile, die ohne Umbruch steht: gemessen fuellt ihr Text jetzt 326
+  von 350 px, bei 360 und 320 entsprechend, kein Ueberlauf.
+  Der Fuss folgt Wolfs Vorschlag: Logo, Wortmarke und Instagram-Zeichen
+  mittig in einer Zeile, Impressum und Datenschutz mittig darunter. Vorher
+  standen die drei Verweise als gleich aussehende Kaesten nebeneinander, als
+  waeren sie dasselbe -- das eine ist, wo man CozyWolf findet, die zwei
+  anderen sind Pflichtangaben.
+  Schlussmessung ueber die ganze Seite, bei 430, 390, 360 und 320 px in
+  beiden Sprachen: kein waagerechter Ueberlauf, kein Bedienziel unter 44 px.
+
+Damit ist die Handy-Liste abgearbeitet.
 * **H7 das Formular springt nicht mehr und ist kuerzer.** Der Hoehensprung
   hatte zwei Ursachen. Erstens standen die zwei Fragen des Testformulars
   untereinander, die des Eventformulars nebeneinander, also hatte eines eine

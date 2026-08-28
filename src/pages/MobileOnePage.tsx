@@ -1457,13 +1457,22 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
           {/* Der Spruch am Ende. Auf dem Desktop steht er einzeilig ueber
               die volle Breite; auf 390 px waere er dann 15 px hoch und damit
               kein Schlusspunkt, sondern eine Fussnote. Also zwei Zeilen.
+              Wolf am 28.08.: "stay cozy stay curious darf groesser sein,
+              2 zeilig ist auf mobile gut". Die Groesse liegt jetzt bei
+              12,2vw statt 9,4, also 48 statt 37 px bei 390.
+              Die Grenze setzt die laengere Zeile: sie steht ohne Umbruch,
+              gemessen war ihr Text bei 9,4vw 310 px breit bei 350 px Platz.
+              12,2vw fuellt davon rund 93 Prozent und laesst an jeder Seite
+              gut ein Dutzend Pixel Luft -- genug, damit die Zeile auch dann
+              nicht anstoesst, wenn ein Geraet die Schrift minimal breiter
+              setzt als der Messbrowser.
               Was mitkommt: das Wachsen, waehrend der Abschnitt durchs Fenster
               faehrt, und der Lichtstreifen, der alle zehn Sekunden einmal
               durchhuscht. Was nicht mitkommt: das Fuellen unter dem Zeiger,
               den es hier nicht gibt. */}
           <section data-spruch="" style={sx('height:52svh;min-height:300px;padding:0 20px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;background:#0A0814;border-top:1px solid rgba(246,239,230,.10)')}>
             <div data-kinetic="" style={sx("position:relative;width:100%;text-align:center;font-family:'League Spartan',sans-serif;"
-              + 'font-size:clamp(30px,9.4vw,52px);font-weight:900;line-height:1.02;color:transparent;'
+              + 'font-size:clamp(34px,12.2vw,68px);font-weight:900;line-height:1.02;color:transparent;'
               + '-webkit-text-stroke:1.2px rgba(246,239,230,.42);letter-spacing:-.01em;white-space:nowrap')}>
               {L.kinetic.map(z => <div key={z}>{z}</div>)}
               <span aria-hidden="true" data-spruchidle="" style={sx('position:absolute;left:0;top:0;width:100%;'
@@ -1479,17 +1488,37 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             </div>
           </section>
 
-          <footer style={sx('padding:28px 20px 34px;border-top:1px solid rgba(246,239,230,.10);display:flex;flex-direction:column;gap:16px')}>
-            <div style={sx('display:flex;align-items:center;gap:10px')}>
+          {/* Der Fuss, nach Wolfs Vorschlag vom 28.08.: "vlt logo cozywolf und
+              insta logo in eine zeile mittig und darunter imprint und pirvacy
+              in eine mittig?".
+
+              Vorher stand die Wortmarke linksbuendig und darunter drei
+              gleich aussehende Kaesten in einer Reihe, die umbrach. Damit
+              standen Instagram, Impressum und Datenschutz nebeneinander, als
+              waeren sie dasselbe: das eine ist, wo man CozyWolf findet, die
+              zwei anderen sind Pflichtangaben. Jetzt tragen sie
+              unterschiedliche Formen und stehen in zwei mittigen Zeilen, was
+              zum Spruch darueber passt, der ebenfalls mittig steht.
+
+              Instagram steht als Zeichen neben der Wortmarke, mit
+              aria-label statt sichtbarer Beschriftung -- das Zeichen ist
+              eindeutig, und der Name daneben waere ein drittes Wort in einer
+              Zeile, die aus zweien besteht. */}
+          <footer style={sx('padding:28px 20px 34px;border-top:1px solid rgba(246,239,230,.10);display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px')}>
+            <div style={sx('display:flex;align-items:center;justify-content:center;gap:10px')}>
               <img src={LOGO} alt="" loading="lazy" width={32} height={32} style={sx('width:32px;height:32px;object-fit:contain')} />
               <span style={sx("font-family:'League Spartan',sans-serif;font-weight:900;font-size:17px")}>CozyWolf</span>
+              <a href={INSTA_URL} aria-label={L.footer.instagram}
+                style={sx('display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin-left:2px')}>
+                <img src="/assets/icon-instagram.webp" alt="" loading="lazy" width={26} height={26} style={sx('width:26px;height:26px;object-fit:contain;display:block')} />
+              </a>
             </div>
-            <div style={sx('display:flex;flex-wrap:wrap;gap:8px')}>
-              <a href="/impressum" style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:12px;background:rgba(246,239,230,.04);border:1px solid rgba(246,239,230,.38);font-size:14.5px;font-weight:800')}>{L.footer.imprint}</a>
-              <a href="/datenschutz" style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:12px;background:rgba(246,239,230,.04);border:1px solid rgba(246,239,230,.38);font-size:14.5px;font-weight:800')}>{L.footer.privacy}</a>
-              <a href={INSTA_URL} style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:12px;background:rgba(246,239,230,.04);border:1px solid rgba(246,239,230,.38);font-size:14.5px;font-weight:800')}>{L.footer.instagram}</a>
+            <div style={sx('display:flex;align-items:center;justify-content:center;gap:6px;font-size:14.5px;font-weight:800')}>
+              <a href="/impressum" style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 10px;color:rgba(246,239,230,.78)')}>{L.footer.imprint}</a>
+              <span aria-hidden="true" style={sx('color:rgba(246,239,230,.32)')}>&middot;</span>
+              <a href="/datenschutz" style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 10px;color:rgba(246,239,230,.78)')}>{L.footer.privacy}</a>
             </div>
-            <div style={sx('font-size:12.5px;line-height:1.6;color:rgba(246,239,230,.5);font-weight:600')}>{L.footer.aiNote}</div>
+            <div style={sx('font-size:12.5px;line-height:1.6;color:rgba(246,239,230,.5);font-weight:600;text-wrap:pretty')}>{L.footer.aiNote}</div>
           </footer>
 
           {/* Hier klebte eine Leiste am unteren Rand mit "Gratis fuer
