@@ -16,6 +16,33 @@ QQ_CATEGORY_LABELS, ZEHN_VON_ZEHN.en von "All In" auf "Ten Chips". Solange
 das nicht passiert, sagt die Website einen anderen Namen als der Abend --
 und die Landing hat die App bisher immer als Massgabe behandelt.
 
+### Bilder tragen keinen Fingerabdruck im Namen
+
+Aufgefallen am 28.08. an den Wappen: Wolf sah auf dem Handy einen anderen
+Wappensatz als auf dem Desktop, obwohl beide Fassungen dieselben Dateien
+laden. Ursache war nicht der Code, sondern der Zwischenspeicher. Die
+Wappen sind dreimal unter demselben Dateinamen ersetzt worden (Commits
+224d4bb, c09c1f3, a887504), und vercel.json gab Bildern unter /assets eine
+Woche Haltbarkeit ohne Rueckfrage. Wer die alten Bytes einmal geholt
+hatte, behielt sie.
+
+Betrifft nicht nur die Wappen: og-cover.png wurde sechsmal ersetzt,
+obj-puzzle dreimal, dazu ein Dutzend weiterer. Das ist auch die zweite
+Haelfte der Geschichte "vorschaubild ist veraltet".
+
+Sofortmassnahme ist drin: Bilder unter /assets stehen jetzt auf
+max-age=0, must-revalidate. Damit fragt der Browser jedes Mal nach und
+bekommt bei unveraenderten Dateien ein 304. Gemessen: die Handy-Seite
+laedt 38 Bilder mit zusammen 119 KB, die Rueckfragen dafuer liegen im
+Bereich weniger Kilobyte.
+
+Der saubere Weg waere, die Bilder wie JS und CSS mit einem Fingerabdruck
+im Dateinamen auszuliefern, dann koennte wieder ein Jahr Haltbarkeit
+gelten. Dafuer muessten sie aus public/ heraus und ueber Vite importiert
+werden; die Pfade stehen heute als Zeichenketten in den Textdateien, das
+sind rund 50 Fundstellen. Lohnt sich, wenn die Seite steht und die Bilder
+sich nicht mehr taeglich aendern.
+
 ### GoatCounter bleibt, aber der Instagram-Link braucht einen Anhang
 
 Wolf am 28.08.: "ok behalten wir es". Damit ist die Frage entschieden.

@@ -1092,31 +1092,38 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                 wieder ueber die volle Breite. Das kostet nur noch die Hoehe
                 des groesseren der beiden.
 
-                Der Absatz laeuft bewusst NICHT um die Gegenstaende herum:
-                bei 350 px Breite blieben neben der Gruppe rund 150 px, und
-                ein Fliesstext in 150 px bricht nach zwei bis drei Woertern.
-                Deshalb eine Reihe fuer Kopf und Gegenstaende, darunter der
-                Absatz ueber die ganze Breite.
+                Der erste Anlauf setzte Kopf und Gegenstaende als zwei
+                Spalten nebeneinander und liess den Absatz darunter ueber die
+                ganze Breite laufen. Damit stand zwischen der Reichweite und
+                dem Absatz ein leeres Feld, so hoch wie die Gegenstaende.
+                Wolf dazu: "kannst du den text so einruecken, dass text und
+                emojis nebeneinander stehen koennen?"
 
-                "leicht nach unten versetzt": die Gruppe sitzt mit 10 px
-                Versatz unter der Oberkante des Namens, sie steht also nicht
-                buendig, sondern haengt leicht tiefer. */}
-            <div style={sx('display:flex;align-items:flex-start;gap:12px')}>
-              <div style={sx('flex:1;min-width:0')}>
-                <div style={sx("font-family:'League Spartan',sans-serif;font-size:26px;font-weight:900;line-height:.95;letter-spacing:-.028em;color:#F6EFE6;text-wrap:balance")}>{c.title}</div>
-                <div style={sx('margin-top:10px;font-size:11.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{c.badge}</div>
-              </div>
-              <div aria-hidden="true" style={sx('flex:none;position:relative;width:140px;margin-top:10px;aspect-ratio:1/1')}>
-                {ANLASS_GRUPPEN[i].map(o => (
-                  <span key={o.av} style={sx(`position:absolute;left:${o.x}%;top:${o.y}%;width:${o.gr}%;aspect-ratio:1/1;`
-                    + `transform:rotate(${o.r}deg);background:url(${o.av}) center/contain no-repeat;`
-                    + 'filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))')}></span>
-                ))}
-              </div>
+                Also kein Nebeneinander aus zwei Spalten, sondern ein
+                umflossener Gegenstand: die Gruppe steht rechts als float,
+                Name, Reichweite und Absatz laufen daran vorbei und unterhalb
+                wieder ueber die ganze Breite. Das war mein erster Einwand
+                gegen das Umfliessen, und er stimmte nicht: neben der Gruppe
+                bleiben nicht 150, sondern 204 px, und darin steht der Absatz
+                ohne Not.
+
+                "leicht nach unten versetzt": die Gruppe haengt mit 8 px
+                Versatz unter der Oberkante des Namens. Der Knopf bekommt
+                clear, sonst rutscht er neben die Gegenstaende. */}
+            <div aria-hidden="true" style={sx('float:right;position:relative;width:132px;margin:8px -4px 8px 14px;aspect-ratio:1/1')}>
+              {ANLASS_GRUPPEN[i].map(o => (
+                <span key={o.av} style={sx(`position:absolute;left:${o.x}%;top:${o.y}%;width:${o.gr}%;aspect-ratio:1/1;`
+                  + `transform:rotate(${o.r}deg);background:url(${o.av}) center/contain no-repeat;`
+                  + 'filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))')}></span>
+              ))}
             </div>
+            <div style={sx("font-family:'League Spartan',sans-serif;font-size:26px;font-weight:900;line-height:.95;letter-spacing:-.028em;color:#F6EFE6;text-wrap:balance")}>{c.title}</div>
+            <div style={sx('margin-top:10px;font-size:11.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{c.badge}</div>
             <p style={sx('margin:14px 0 16px;font-size:15px;line-height:1.6;color:rgba(246,239,230,.82);font-weight:500;text-wrap:pretty')}>{c.p}</p>
-            <a href="#anfragen" onClick={() => this.setState({ tab: 'event', formStatus: 'idle', anlass: this.T.form.anlassOpts[Math.min(i, 2)] })}
-              style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);color:#F6EFE6;font-weight:900;font-size:14.5px')}>{L.anlaesse.cta}</a>
+            <div style={sx('clear:both')}>
+              <a href="#anfragen" onClick={() => this.setState({ tab: 'event', formStatus: 'idle', anlass: this.T.form.anlassOpts[Math.min(i, 2)] })}
+                style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);color:#F6EFE6;font-weight:900;font-size:14.5px')}>{L.anlaesse.cta}</a>
+            </div>
           </div>
         ))}
       </section>
