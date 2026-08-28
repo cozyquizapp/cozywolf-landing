@@ -171,7 +171,17 @@ const MOVES: Move[] = [
   { t: 'd', c: 10 }, { t: 's', c: 14 },
 ];
 
-const CYCLE = 55, Q_END = 25, R_END = 35;
+/* Wolf am 28.08.: "ich wuerde den loop des beamers nicht so lange machen,
+   keiner schaut das so lange tbh". Stimmt, und nachgerechnet war es
+   schlimmer als gedacht: 55 Schritte zu 300 ms sind 16,5 s je Runde, mal
+   neun Runden plus Begruessung ergibt zweieinhalb Minuten. Das ist keine
+   Vorschau, das ist ein Film.
+   Jetzt 44 Schritte zu 190 ms: 4,2 s Frage, 1,5 s Aufloesung, 2,7 s Brett,
+   macht 8,4 s je Runde und 76 s fuer die ganze Folge. Die Frage bleibt
+   lesbar (drei Teams haben nach 2,3 s geantwortet), und das Brett kommt
+   viermal so oft dran wie vorher, gemessen an der Zeit, die jemand
+   tatsaechlich hinsieht. */
+const CYCLE = 44, Q_END = 22, R_END = 30;
 
 const FACTIONS = [
   { id: 'bauchgefuehl', color: '#F97316' },
@@ -516,13 +526,26 @@ const WEITER_MS = 6000;
 
 // Beamerbild wird in Entwurfsgroesse gebaut und auf die Leinwand skaliert
 const WALL_W = 640, WALL_H = 354;
-// Die Sterne der Begruessungsfolie. Feste Liste statt Zufall: sie wird bei
-// jedem Zeichnen gelesen, ein Zufall darin liesse sie flackern.
-const STERNE = Array.from({ length: 26 }, (_, i) => ({
+/**
+ * Die Funken der Begruessungsfolie.
+ *
+ * Wolf am 28.08.: "nimm am besten den bg ... also nimm die farbe mit sparks",
+ * dazu ein Bild der echten Folie aus der App. Vorher lag hier ein rosa
+ * Lichtfeld mit cremeweissen Punkten -- meine Erfindung. Die App macht es
+ * anders und besser: Grund #120F18 mit zwei sehr leisen Verlaeufen, und die
+ * Punkte sind warm, nicht weiss. Warm heisst hier Kerzenlicht, und genau das
+ * ist der Ton, den der ganze Abend haben soll.
+ *
+ * Feste Liste statt Zufall: sie wird bei jedem Zeichnen gelesen, ein Zufall
+ * darin liesse sie flackern. Die Verzoegerung je Funken ist aus dem Index
+ * gerechnet, damit sie nicht im Gleichtakt atmen.
+ */
+const STERNE = Array.from({ length: 30 }, (_, i) => ({
   x: (i * 37) % 97,
   y: (i * 53) % 91,
-  g: 1.4 + (i % 3) * 0.8,
-  o: (0.28 + (i % 4) * 0.16).toFixed(2),
+  g: 1.6 + (i % 4) * 0.7,
+  o: (0.30 + (i % 5) * 0.14).toFixed(2),
+  d: ((i * 13) % 47) / 10,
 }));
 
 type OPState = {
@@ -604,6 +627,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   private _coarse = false;
   /** Die Flaeche mit den Fugen in 04. Traegt den Lichtfleck des Zeigers. */
   private _wand: HTMLDivElement | null = null;
+  /** Der Wolf auf der Begruessungsfolie. Laeuft einmal, wenn die Lampe angeht. */
+  private _wolfV: HTMLVideoElement | null = null;
   private onScroll: (() => void) | undefined;
 
   get T(): OnePageDict { return onePageT(this.props.lang); }
@@ -644,7 +669,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     this.setState({ tick: 0 });
     this.gameTimer = setInterval(() => {
       this.setState(st => ({ tick: ((st.tick ?? 0) + 1) % (CYCLE * (MOVES.length + 1)) }));
-    }, 300);
+    }, 190);
   }
 
   /* Hier standen frakFuehrt() und arenaTick(): die simulierte Wertung der
@@ -769,7 +794,11 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     clearTimeout(this._beamT);
     clearInterval(this.gameTimer);
     this.setState({ beam: true, beamWelcome: true });
-    this._beamT = setTimeout(() => { this.setState({ beamWelcome: false }); this.startGame(); }, 3800);
+    const v = this._wolfV;
+    if (v) { try { v.currentTime = 0; void v.play().catch(() => { /* stumm, blockt nicht */ }); } catch { /* egal */ } }
+    // 5,2 s statt 3,8: so lang ist die Geste des Wolfs. Kuerzer hiesse, sie
+    // mitten im Satz abzuschneiden.
+    this._beamT = setTimeout(() => { this.setState({ beamWelcome: false }); this.startGame(); }, 5200);
   }
 
   /** Die Lampe aus, sobald die Projektion ganz aus dem Bild ist. Damit faengt
@@ -779,6 +808,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     if (!this.state.beam) return;
     clearTimeout(this._beamT);
     clearInterval(this.gameTimer);
+    this._wolfV?.pause();
     this.setState({ beam: false, beamWelcome: false, tick: 0 });
   }
 
@@ -2819,14 +2849,41 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                         keine runden Ecken; die Rundung schneidet ohnehin der
                         Kasten, keine dieser Schichten braucht eine eigene. */}
                     <div aria-hidden="true" style={sx('position:absolute;inset:0;z-index:9;overflow:hidden;pointer-events:none;'
-                      + 'background:radial-gradient(ellipse 62% 46% at 50% 40%,rgba(190,24,93,.30),transparent 68%),'
-                      + 'radial-gradient(ellipse at 50% 45%,#1a1226,#0b0714 74%);'
+                      // Uebernommen aus QQBeamerPage.tsx der App, Zeile 6060:
+                      // derselbe Grund, dieselben zwei Verlaeufe. Der rosa
+                      // Schein von vorher war meine Erfindung und hat die Folie
+                      // waermer gemacht, als sie am Abend ist.
+                      + 'background:radial-gradient(ellipse at 50% -10%,rgba(246,239,230,.10),transparent 55%),'
+                      + 'radial-gradient(ellipse at 85% 110%,rgba(99,102,241,.08),transparent 55%),#120F18;'
                       + `opacity:${this.state.beamWelcome ? 1 : 0};transition:opacity .8s ${EASE} ${this.state.beamWelcome ? '.75s' : '0s'}`)}>
                       {STERNE.map((st, i) => (
-                        <span key={i} style={sx(`position:absolute;left:${st.x}%;top:${st.y}%;width:${st.g}px;height:${st.g}px;border-radius:50%;background:rgba(246,239,230,${st.o});box-shadow:0 0 6px rgba(246,239,230,.5)`)}></span>
+                        <span key={i} style={sx(`position:absolute;left:${st.x}%;top:${st.y}%;width:${st.g}px;height:${st.g}px;border-radius:50%;`
+                          + `background:rgba(247,228,168,${st.o});box-shadow:0 0 7px rgba(247,228,168,.55);`
+                          + `animation:cwFunke 5.4s ease-in-out ${st.d}s infinite`)}></span>
                       ))}
-                      <img src="/assets/wolf-3d.webp" alt="" width={384} height={440}
-                        style={sx('position:absolute;left:-34px;bottom:-26px;width:auto;height:74%;filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))')} />
+                      {/* Wolf am 28.08.: "das waere das video des wolfs, wuerdest
+                          du das reinnehmen wie in einem echten beamer?" und
+                          "im github repo sollte schon ein freigestellter wolf
+                          liegen". Beides stimmt: die Fassung, die er zuerst
+                          geschickt hat, hat keinen Alphakanal (gemessen: null
+                          Prozent durchsichtige Bildpunkte, Ecken voll deckend),
+                          die aus der App hat einen (62,5 Prozent durchsichtig).
+                          Also die aus der App, unveraendert uebernommen.
+
+                          preload="none" und ein Standbild als poster: die Datei
+                          ist 966 KB, und sie soll nicht beim Seitenaufbau
+                          geladen werden, sondern erst wenn die Lampe angeht.
+                          Bis dahin steht der gezeichnete Wolf da, wie bisher.
+                          Faellt das Video aus, bleibt er stehen -- auf einer
+                          Folie, die nur aus Marke besteht, darf kein Loch sein.
+
+                          Kein loop, wie in der App: die Endpose ist ruhig, und
+                          eine Geste, die sich wiederholt, wird aufdringlich. */}
+                      <video ref={el => { this._wolfV = el; }}
+                        src="/assets/wolf-willkommen.webm" poster="/assets/wolf-3d.webp"
+                        muted playsInline preload="none" width={384} height={440}
+                        style={sx('position:absolute;left:-34px;bottom:-26px;width:auto;height:74%;'
+                          + 'filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))')} />
                       <div style={sx('position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0 40px;box-sizing:border-box')}>
                         <span style={sx('font-size:13px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.78)')}>{L.sim.welcomeKicker}</span>
                         <span style={sx("font-family:'League Spartan',sans-serif;font-size:76px;font-weight:900;letter-spacing:.06em;line-height:.92;color:#F6EFE6;text-transform:uppercase")}>{L.sim.welcomeTitle}</span>

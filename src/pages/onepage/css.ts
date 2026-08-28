@@ -109,6 +109,11 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
    also volle Leinwandflaeche in Weiss, mehrfach. Jetzt bleibt der hoechste
    Wert bei .34 und der Ton ist warm statt weiss: man sieht die Lampe
    ankommen, ohne geblendet zu werden. */
+/* Die Funken auf der Begruessungsfolie atmen, statt still zu stehen. Sehr
+   langsam und ohne Groessenwechsel: ein Punkt, der pulsiert, ist ein
+   Ladezeichen, ein Punkt, der heller und dunkler wird, ist Licht. */
+@keyframes cwFunke{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){[data-m=wall] span[style*=cwFunke]{animation:none!important}}
 @keyframes cwBeamOn{0%{opacity:0}6%{opacity:.3}13%{opacity:.1}20%{opacity:.34}30%{opacity:.16}40%{opacity:.3}62%{opacity:.2}82%{opacity:.08}100%{opacity:0}}
 @keyframes cwPuddle{0%,100%{-webkit-mask-size:49% 33%;mask-size:49% 33%}50%{-webkit-mask-size:53% 36%;mask-size:53% 36%}}
 /* Hero-Ueberschrift loest sich beim Verlassen im Grund auf (superplay.co).
