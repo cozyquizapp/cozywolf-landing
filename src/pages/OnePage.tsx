@@ -118,7 +118,7 @@ const BEWEGUNG = (() => {
   // /d/?bew=2 zeigt das Eindrehen zum Vergleich.
   if (typeof window === 'undefined') return 3;
   const n = Number(new URLSearchParams(window.location.search).get('bew'));
-  return n === 0 || n === 2 || n === 3 ? n : 3;
+  return n === 0 || n === 2 || n === 3 || n === 4 ? n : 3;
 })();
 const schatten = (wert: string) => (OHNE_SCHATTEN ? '' : wert);
 /** Ueberschrift eines Kapitels: gross ab Fassung 2, mit Ziffer ab 4. */
@@ -164,7 +164,7 @@ const KAPITELTON: Record<string, string> = {
   spielarten: '#0d0a1a', anlaesse: '#0a0c18', probieren: '#090e19',
   ablauf: '#080f14', johannes: '#100c12', fragen: '#0b0a16', anfragen: '#110b16',
 };
-const tonVon = (id: string) => (STIL === 5 ? `background:${KAPITELTON[id]};` : '');
+const tonVon = (id: string) => (STIL === 5 || BEWEGUNG === 4 ? `background:${KAPITELTON[id]};` : '');
 const linieOben = () => (OHNE_LINIE ? '' : 'border-top:1px solid rgba(246,239,230,.10);');
 
 // Spielstand-Daten der Brett-Simulation (aus dem Entwurf, Wolfs Choreografie)
@@ -248,7 +248,7 @@ const GRUPPE = [
   { av: '/assets/av-qq-crystal-ball.webp',   farbe: '#A855F7', gr: 33, x: 46, y: 0,  r: 10,  d: 0.38, beat: false, tx: '18px',  ty: '-22px', tr: '16deg' },
   { av: '/assets/av-qq-mushroom.webp',       farbe: '#22C55E', gr: 30, x: 33, y: 44, r: 6,   d: 0.46, beat: false, tx: '-10px', ty: '20px',  tr: '11deg' },
   { av: '/assets/obj-sanduhr.webp',          farbe: '#FACC15', gr: 24, x: 68, y: 40, r: -14, d: 0.54, beat: false, tx: '26px',  ty: '10px',  tr: '-20deg' },
-  { av: '/assets/av-qq-table-lamp.webp',     farbe: '#3B82F6', gr: 21, x: 12, y: 66, r: 14,  d: 0.62, beat: false, tx: '-26px', ty: '24px',  tr: '20deg' },
+  { av: '/assets/obj-gehirn.webp',           farbe: '#3B82F6', gr: 21, x: 12, y: 66, r: 14,  d: 0.62, beat: false, tx: '-26px', ty: '24px',  tr: '20deg' },
 ];
 
 /**

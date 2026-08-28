@@ -53,6 +53,10 @@ const FILL: Record<string, number> = {
   // beschnitten als die alten, das Quadrat traegt also mehr Luft und der
   // Anteil darf hoeher liegen. Gemessene Inhaltsflaechen: Sanduhr 510 zu 798,
   // Puzzle 823 zu 550, beide auf ihre Bounding-Box zugeschnitten.
+  // Das Gehirn ist fast quadratisch, 730 zu 721, und fuellt seine Flaeche
+  // dicht aus. Es traegt also weniger Luft als die anderen freigestellten
+  // Motive und darf hoeher liegen.
+  '/assets/obj-gehirn.webp': 0.88,
   '/assets/obj-sanduhr.webp': 0.80,
   '/assets/obj-puzzle.webp': 0.86,
   // Die acht Fraktionswappen sind auf ihre Bounding-Box beschnitten und

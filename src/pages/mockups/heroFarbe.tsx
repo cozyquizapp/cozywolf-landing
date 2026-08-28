@@ -52,7 +52,7 @@ const OBJEKTE = [
   { av: '/assets/av-qq-crystal-ball.webp', farbe: '#A855F7', gr: 33, x: 46, y: 0, r: 10 },
   { av: '/assets/av-qq-mushroom.webp', farbe: '#22C55E', gr: 30, x: 33, y: 44, r: 6 },
   { av: '/assets/obj-sanduhr.webp', farbe: '#FACC15', gr: 24, x: 68, y: 40, r: -14 },
-  { av: '/assets/av-qq-table-lamp.webp', farbe: '#3B82F6', gr: 21, x: 12, y: 66, r: 14 },
+  { av: '/assets/obj-gehirn.webp', farbe: '#3B82F6', gr: 21, x: 12, y: 66, r: 14 },
 ];
 const WORT_OBJEKT = [4, 2, 3, 0, 1];
 const ROLLE = 620;   // Dauer der Walze in ms, wie auf der Seite

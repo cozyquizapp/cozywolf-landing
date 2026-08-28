@@ -160,34 +160,27 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
     filter:drop-shadow(0 16px 22px rgba(0,0,0,.6))
   }
 }
-/* ── Ein Halt, ein Bildschirm ──────────────────────────────────────────────
-   Wolf am 27.08.: "ich moechte versuchen eine sektion in einen abschnitt zu
-   packen. das waere mein ziel immernoch".
+/* ── Kein Einrasten mehr ──────────────────────────────────────────────────
+   Wolf am 28.08.: "das einrasten nervt, aber wir hatten ja eh davon
+   gesprochen, dass das die referenzseiten nicht machen ... manche sektionen
+   wirken durch das einrasten eh super leer".
 
-   GEMESSEN bei 1440x780, bevor gebaut. Die Abschnitte sind nicht das Problem,
-   die Zeilen sind es: 01 traegt zwei Zeilen (0,57 und 0,72 Bildschirme), 02
-   traegt drei (je 0,43). Der Halt ist also die Zeile, nicht der Abschnitt.
-   Damit hat jeder Halt genau einen vollstaendigen Inhalt.
+   Beides stimmt und haengt zusammen. Keine der vier Referenzen benutzt
+   scroll-snap; ihre Ordnung kommt aus wiederkehrenden Abstaenden. Und die
+   Leere kam nicht vom Einrasten selbst, sondern von der Bedingung dafuer:
+   jeder Halt musste mindestens einen Bildschirm hoch sein, damit er
+   einrasten kann. Ein Anlass braucht davon 0,30, der Rest war Luft ohne
+   Grund.
 
-   Jeder Halt ist mindestens einen Bildschirm hoch und zentriert seinen Inhalt
-   darin. Kurze Halte bekommen damit Luft statt Leere, lange muessen kuerzer
-   werden: 04 lag bei 1,37 und ist auf unter 1,0 gebracht, 07 bleibt offen,
-   bis das Formular zweispaltig ist.
+   Also faellt beides: scroll-snap-type und die erzwungene Bildschirmhoehe.
+   Die Abstaende macht jetzt allein die Dichtewelle aus K3, 96 bis 148 px
+   oben und 72 bis 108 unten, je nachdem wie dicht ein Kapitel ist. Genau
+   das Verfahren, das Custo mit 110 px und Apple mit 100 bis 120 px
+   benutzen.
 
-   svh statt vh: auf dem Handy waechst und schrumpft die Adresszeile, vh
-   rechnet mit dem groessten Zustand und schneidet dann unten ab.
-
-   proximity, nicht mandatory: wer in der Naehe eines Halts aufhoert, wird
-   dorthin gezogen, wer durchzieht, wird nicht gebremst. mandatory waere auf
-   Inhalten, die hoeher sind als das Fenster, eine Falle: der Rest ist dann
-   nicht mehr erreichbar. */
-@media (min-width:901px) and (min-height:620px){
-  html{scroll-snap-type:y proximity}
-  [data-halt]{min-height:100svh;display:flex;flex-direction:column;justify-content:center;scroll-snap-align:center;box-sizing:border-box}
-  /* Der Hero traegt seine eigene Hoehe und seinen eigenen Aufbau. */
-  #top{scroll-snap-align:start}
-}
-@media (prefers-reduced-motion:reduce){html{scroll-snap-type:none}}
+   Der Spruch am Ende behaelt seine Bildschirmhoehe: er ist kein Halt unter
+   vielen, sondern der Schlusspunkt, und seine Mitte haengt daran. */
+[data-spruch]{display:flex;flex-direction:column;justify-content:center}
 
 /* ── Auftritt der Abschnitte, T2 und T3 ───────────────────────────────────
    Gebaut mit animation-timeline: view(), also ohne JavaScript: der
@@ -207,6 +200,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 @keyframes cwEinfahren{from{transform:translateY(34px);opacity:0}to{transform:none;opacity:1}}
 @keyframes cwEindrehen{from{transform:translateY(34px) rotate(-7deg) scale(.94);opacity:0}to{transform:none;opacity:1}}
 /* Der Spruch am Ende waechst, waehrend sein Halt durchs Fenster faehrt. */
+@keyframes cwGrundKippt{from{clip-path:polygon(0 2.4%,100% 0,100% 100%,0 100%)}to{clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}}
 @keyframes cwHinaus{from{transform:none;opacity:1}to{transform:translateY(-16px);opacity:.45}}
 @keyframes cwSpruchWaechst{from{transform:scale(.32);opacity:.35}to{transform:scale(1);opacity:1}}
 @supports (animation-timeline: view()){
@@ -235,6 +229,17 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
     [data-bew] [data-halt]:not([data-spruch]){
       animation:cwHinaus linear both;animation-timeline:view();
       animation-range:exit 20% exit 100%;
+    }
+    /* T4, Wolf am 28.08.: "t4 ist supe". Der Grund traegt die Kapitel: jeder
+       Halt bekommt seinen eigenen sehr dunklen Ton und schiebt sich als
+       schraege Kante ueber den vorigen. Die Schraege laeuft mit, waehrend der
+       Halt eintritt, und steht gerade, sobald er im Bild ist.
+       T4 kommt ZUSAETZLICH zum versetzten Auftritt aus T3, weil Wolf beide
+       gut fand: T3 bewegt den Inhalt, T4 den Grund darunter. */
+    [data-bew="4"] [data-halt]:not([data-spruch]){
+      animation:cwHinaus linear both,cwGrundKippt linear both;
+      animation-timeline:view(),view();
+      animation-range:exit 20% exit 100%,entry 0% entry 100%;
     }
   }
   @media (prefers-reduced-motion:no-preference){
