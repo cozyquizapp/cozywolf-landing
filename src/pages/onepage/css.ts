@@ -82,11 +82,9 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
    das hat Wolf am 28.08. gesehen. So bleibt die Zeichnung stehen und nur das
    Fenster darauf laeuft, es leuchten also immer die Fugen auf, die schon da
    sind. */
-@keyframes cwFugenWelle{
-  from{mask-position:-90% 0%;-webkit-mask-position:-90% 0%}
-  to{mask-position:190% 0%;-webkit-mask-position:190% 0%}
-}
-@media (prefers-reduced-motion:reduce){[data-welle]{animation:none!important;opacity:0!important}}
+@keyframes cwFugenWelle{from{mask-position:-2000px -2000px;-webkit-mask-position:-2000px -2000px}to{mask-position:-1690.8px -2000px;-webkit-mask-position:-1690.8px -2000px}}
+@keyframes cwFugenNetz{from{mask-position:-2000px -2000px;-webkit-mask-position:-2000px -2000px}to{mask-position:-2000px -1649.6px;-webkit-mask-position:-2000px -1649.6px}}
+@media (prefers-reduced-motion:reduce){[data-welle],[data-netz]{animation:none!important;opacity:0!important}}
 /* Die Punktzahl in 01: steigt auf, haelt kurz, loest sich auf. Kein Sprung am
    Anfang -- sie faengt schon leicht angehoben an, sonst zuckt sie erst nach
    unten, bevor sie steigt. */
@@ -142,6 +140,13 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 @media (hover:hover) and (pointer:fine){
   .cwKachel:hover{transform:rotate(calc(var(--r,0deg) * .4)) translateY(-10px) scale(1.14);z-index:9}
 }
+/* Die Wand in 04 ist absichtlich breiter als die Projektion und ragt bei
+   1024 bis 1440 rechts ueber den Rand. Sichtbar ist das nicht -- die Wolke,
+   die ihre Grenze zeichnet, ist an dieser Stelle laengst auf null -- eine
+   waagerechte Bildlaufleiste waere es aber. clip statt hidden, damit oben und
+   unten weiter frei gescrollt wird und nichts klebt. Gemessen ohne die Regel:
+   96 px Ueberhang bei 1024, 89 bei 1280, 7 bei 1440. */
+[data-m=root]{overflow-x:clip}
 :root{--cw-grundton:10,8,20}
 [data-cw-grund]{position:fixed;inset:0;z-index:0;pointer-events:none;
   background:radial-gradient(ellipse 120% 80% at 50% 0%,rgba(var(--cw-grundton),.14),rgba(var(--cw-grundton),.05) 45%,rgba(10,8,20,0) 78%);

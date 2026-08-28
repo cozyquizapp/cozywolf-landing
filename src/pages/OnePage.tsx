@@ -380,6 +380,76 @@ const WAND_FUGEN = 'data:image/svg+xml,'
     + '<path d="M90.7 60V120M270.7 60V120"/>'
     + '</g></svg>');
 
+/**
+ * Der Rand der Wand.
+ *
+ * Wolf am 28.08.: "die raender sind immernoch zu gerade, die sollen ausfaden,
+ * aber auch nicht ueberall gleich sondern so etwas hmm ungleich, dass es
+ * dynamischer wirkt" und "ziegelsteine an den raendern wirken wie harter cut".
+ *
+ * Vorher lag die Grenze in zwei linearen Verlaeufen plus einer Ellipse. Das
+ * ergibt eine gleichmaessige Form, und gleichmaessig heisst hier: gebaut. Eine
+ * Wand, die im Dunkeln verschwindet, verschwindet nicht in einer Ellipse.
+ *
+ * Jetzt ist die Grenze eine Wolke aus acht weichen Ellipsen. Ihre Vereinigung
+ * hat keine Achse und keine Mitte, an der man sie festmachen koennte, und sie
+ * laeuft an jeder Stelle unterschiedlich weit -- oben kuerzer, links weiter.
+ * Als SVG und nicht als CSS-Verlauf, weil sich acht Formen in einer einzigen
+ * Maskenebene nur so vereinigen lassen; mit acht CSS-Ebenen muesste man sie
+ * ueber mask-composite verrechnen, und das ist zwischen den Browsern das
+ * Wackeligste, was es in diesem Bereich gibt.
+ */
+const WAND_RAND = 'data:image/svg+xml,'
+  + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">'
+    + '<defs><radialGradient id="w">'
+    + '<stop offset="0" stop-color="#fff"/>'
+    + '<stop offset=".52" stop-color="#fff" stop-opacity=".82"/>'
+    + '<stop offset="1" stop-color="#fff" stop-opacity="0"/>'
+    + '</radialGradient></defs>'
+    + '<g fill="url(#w)">'
+    + '<ellipse cx="49" cy="51" rx="44" ry="41"/>'
+    + '<ellipse cx="17" cy="45" rx="23" ry="27"/>'
+    + '<ellipse cx="85" cy="55" rx="20" ry="23"/>'
+    + '<ellipse cx="35" cy="17" rx="27" ry="16"/>'
+    + '<ellipse cx="69" cy="83" rx="25" ry="15"/>'
+    + '<ellipse cx="77" cy="23" rx="18" ry="13"/>'
+    + '<ellipse cx="25" cy="81" rx="21" ry="16"/>'
+    + '<ellipse cx="58" cy="38" rx="30" ry="24"/>'
+    + '</g></svg>');
+
+/**
+ * Helligkeit je Ziegel.
+ *
+ * Zweiter Teil derselben Beobachtung: am Rand sahen die Steine aus wie
+ * abgeschnitten. Der Grund ist, dass eine weiche Kante eine LINIE der Laenge
+ * nach ausblendet -- die Fuge wird auf halbem Weg blass, und eine Fuge, die in
+ * der Mitte aufhoert, ist ein Schnitt.
+ *
+ * Also blendet jetzt nicht die Kante, sondern der Stein. Diese Kachel legt
+ * ueber jedes Ziegelfeld (108 auf 36 Pixel, das Raster der Fugen) einen
+ * eigenen, konstanten Wert. Innerhalb eines Steins ist die Helligkeit damit
+ * ueberall gleich, seine Fugen enden also mit ihm und nicht irgendwo in der
+ * Luft. Nach aussen loescht die Wolke ganze Steine, keine Linienstuecke:
+ * "abgeschlossene Ziegel".
+ *
+ * Der zweite Zweck ist der, den Wolf mit "dynamischer" meint: auch mitten in
+ * der Flaeche ist nicht jeder Stein gleich hell, so wie an einer echten Wand.
+ * Fuenf mal sechs Felder, damit sich die Folge nicht sichtbar wiederholt.
+ */
+const WAND_HELL = [
+  [.78, 1, .62, .88, .70],
+  [.95, .66, .84, .58, 1],
+  [.60, .86, 1, .72, .80],
+  [.90, .74, .56, .98, .64],
+  [.68, 1, .82, .60, .92],
+  [.86, .58, .96, .76, .70],
+];
+const WAND_STEINE = 'data:image/svg+xml,'
+  + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="540" height="216">'
+    + WAND_HELL.map((zeile, y) => zeile.map((a, x) =>
+      `<rect x="${x * 108}" y="${y * 36}" width="108" height="36" fill="#fff" opacity="${a}"/>`).join('')).join('')
+    + '</svg>');
+
 /* Hier stand WAND_KORN, eine feine Koernung als SVG. Sie sollte die Streifen
    brechen, die der graue Verlauf auf der Wand zeigte. Der Verlauf ist am
    28.08. rausgeflogen ("grau licht auf wand darf ganz weg"), damit hat die
@@ -534,6 +604,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   private _pStage: HTMLElement | null = null;
   private _pStageIO: IntersectionObserver | undefined;
   private _coarse = false;
+  /** Die Flaeche mit den Fugen in 04. Traegt den Lichtfleck des Zeigers. */
+  private _wand: HTMLDivElement | null = null;
   private onScroll: (() => void) | undefined;
 
   get T(): OnePageDict { return onePageT(this.props.lang); }
@@ -2438,9 +2510,22 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             onMouseMove={e => {
               if (this._coarse) return;
               const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+              // Der Lichtfleck auf den Fugen geht direkt an das Element, nicht
+              // ueber den Zustand: er soll jeder Mausbewegung folgen, und die
+              // ganze Station dafuer neu zu rechnen waere zu teuer.
+              const w = this._wand;
+              if (w) {
+                const q = w.getBoundingClientRect();
+                w.style.setProperty('--wx', `${(e.clientX - q.left).toFixed(0)}px`);
+                w.style.setProperty('--wy', `${(e.clientY - q.top).toFixed(0)}px`);
+                w.style.setProperty('--wo', '1');
+              }
               this.setState({ beamXY: { x: (e.clientX - r.left) / r.width, y: (e.clientY - r.top) / r.height } });
             }}
-            onMouseLeave={() => this.setState({ beamXY: null })}
+            onMouseLeave={() => {
+              this._wand?.style.setProperty('--wo', '0');
+              this.setState({ beamXY: null });
+            }}
             style={sx('position:relative;margin:0;width:100%;cursor:pointer;perspective:1100px')}>
             {/* Perspektive gehoert auf den Eltern, die Drehung auf das Kind.
                 Standen beide auf demselben Element, greift die Perspektive
@@ -2510,10 +2595,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 wenn das Bild kommt.
                 Die Maske muss INNERHALB ihres Kastens auf null sein, sonst
                 schneidet dessen Kante den Verlauf ab und man sieht wieder ein
-                Rechteck. Bei Mitte 50/47 und Radien 48/44 Prozent liegen alle
-                vier Kanten ausserhalb der Ellipse. Gemessen: in der ersten
-                Fassung lag die Maske an der Oberkante noch bei 0,68, und das
-                war die sichtbare Linie. */}
+                Rechteck. Gemessen: in der ersten Fassung lag die Maske an der
+                Oberkante noch bei 0,68, und das war die sichtbare Linie. Die
+                Ellipse von damals ist inzwischen der Wolke gewichen, siehe
+                WAND_RAND. */}
             {/* Hier lag ein graues Lichtfeld: ein Verlauf, der die Wand als
                 beleuchtete Flaeche zeigte.
                 Wolf am 28.08.: "grau licht auf wand darf ganz weg". Er hat
@@ -2531,38 +2616,89 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 und Fugen an derselben Stelle ins Dunkle ausblenden. Sonst
                 haette man Fugen im Nichts, und das waere wieder eine
                 behauptete Flaeche mit Kante. */}
-            <div aria-hidden="true" data-fugen="" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;'
-              + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
-              + `opacity:${on ? .34 : .22};`
-              + 'mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 80%,transparent),radial-gradient(74% 74% at 50% 48%,#000 34%,transparent 100%);'
-              + '-webkit-mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent),linear-gradient(180deg,transparent,#000 16%,#000 80%,transparent),radial-gradient(74% 74% at 50% 48%,#000 34%,transparent 100%);'
-              + `mask-composite:intersect,intersect;transition:opacity 1.2s ${EASE}`)}></div>
-            {/* Die Welle ueber den Fugen.
-                Wolf am 28.08.: "was der screenshot zeigt ist, dass die fugen
-                sich parallel nebendran bilden? das soll kein schimmer sein,
-                die beleuchtung der fugen soll sich wie eine welle bewegen".
+            {/* Alle Schichten der Wand liegen jetzt in EINEM Kasten, und
+                dieser Kasten traegt die Grenze. Vorher hatte jede Schicht ihre
+                eigene Maske, und die Welle hatte gar keine -- sie endete an
+                der Kante ihres Rechtecks. Das war die geradeste Linie im Bild
+                und der Grund fuer Wolfs "die raender sind immernoch zu gerade".
 
-                Genau das war der Fehler, und er steckte in der Bauart: ich
-                hatte eine ZWEITE KOPIE des Musters verschoben. Damit wandern
-                auch ihre Fugen, laufen aus dem Takt mit den stehenden und man
-                sieht doppelte Linien nebeneinander.
+                Wolf am 28.08. ausserdem: "man sieht oben und unten sehr viel
+                wand, rechts und links wenig, etwas breiter die wand". Stimmt,
+                gemessen: bei inset -38% / -8% war die Flaeche 1,16 mal so
+                breit wie die Projektion und fast genauso hoch -- also
+                quadratisch. Eine Wand ist breiter als hoch. Jetzt 1,5 mal so
+                breit und 0,85 mal so hoch wie die Projektion breit ist.
 
-                Richtig ist das Gegenteil: das Muster steht still, nur das
-                LICHT wandert. Also liegt hier dieselbe Zeichnung an derselben
-                Stelle wie die Grundlage darunter -- gleicher Kasten, gleiche
-                Kachelgroesse, keine Verschiebung -- und bewegt wird allein ihre
-                Maske. mask-position laesst sich animieren wie
-                background-position; die Flaeche bleibt, das Fenster darauf
-                laeuft. Deshalb leuchten immer genau die Fugen auf, die schon da
-                sind, und keine neuen daneben. */}
-            <div aria-hidden="true" data-welle="" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;mix-blend-mode:screen;'
-              + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
-              + `opacity:${on ? .95 : .66};`
-              + 'mask-image:linear-gradient(104deg,transparent 0%,rgba(0,0,0,.55) 9%,#000 15%,rgba(0,0,0,.55) 21%,transparent 30%);'
-              + '-webkit-mask-image:linear-gradient(104deg,transparent 0%,rgba(0,0,0,.55) 9%,#000 15%,rgba(0,0,0,.55) 21%,transparent 30%);'
-              + 'mask-size:280% 160%;-webkit-mask-size:280% 160%;'
-              + 'mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;'
-              + `animation:cwFugenWelle ${on ? 8 : 13}s linear infinite;transition:opacity 1.2s ${EASE}`)}></div>
+                Die Maske hat zwei Ebenen: die Wolke gibt die unregelmaessige
+                Grenze, das Ziegelraster sorgt dafuer, dass am Rand ganze
+                Steine verschwinden statt halber Fugen. intersect multipliziert
+                beide. */}
+            <div aria-hidden="true" data-wandfeld="" ref={el => { this._wand = el; }}
+              style={sx('position:absolute;inset:-25.5% -25%;z-index:0;pointer-events:none;'
+              + `mask-image:url("${WAND_RAND}"),url("${WAND_STEINE}");`
+              + `-webkit-mask-image:url("${WAND_RAND}"),url("${WAND_STEINE}");`
+              + 'mask-size:100% 100%,540px 216px;-webkit-mask-size:100% 100%,540px 216px;'
+              + 'mask-repeat:no-repeat,repeat;-webkit-mask-repeat:no-repeat,repeat;'
+              + 'mask-composite:intersect')}>
+              {/* Die Fugen. Sie liegen im selben gekippten Eltern-Element wie
+                  die Projektion, teilen also deren Neigung -- Wolfs Auflage:
+                  "sie hat die gleiche neigung wie die beamer view". Und sie
+                  liegen unter ihr, die Projektion deckt ihren Teil der Wand
+                  ab, wie es eine Projektion tut. */}
+              <div style={sx('position:absolute;inset:0;'
+                + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
+                + `opacity:${on ? .46 : .30};transition:opacity 1.2s ${EASE}`)}></div>
+              {/* Das Licht auf den Fugen.
+                  Wolf am 28.08.: "schimmer ist zu fleckig, soll sich eher wie
+                  linien durchziehen also wie durch ein netz oder so weniger
+                  linear".
+
+                  Vorher lief EIN breites Band ueber die Flaeche. Ein einzelnes
+                  Band ist genau das: ein Fleck, der wandert. Jetzt sind es
+                  zwei Scharen schmaler Linien, 104 und 166 Grad, also 62 Grad
+                  gegeneinander, und sie laufen verschieden schnell und in
+                  verschiedene Richtungen. Wo sie sich kreuzen, wird es kurz
+                  heller. Das ist das Netz.
+
+                  Das Muster selbst steht weiter still, bewegt wird nur die
+                  Maske -- der Fehler von gestern (eine verschobene zweite
+                  Kopie, die doppelte Fugen daneben zeichnet) bleibt damit
+                  behoben. Die Maskenkachel ist mit 4000 Pixel absichtlich viel
+                  groesser als die Flaeche, und der Weg einer Runde ist genau
+                  eine Periode der Linienschar, geteilt durch den Sinus ihres
+                  Winkels: 300 / sin(104) = 309,2 und 340 / sin(166+90) = 350,4.
+                  Dadurch schliesst die Bewegung auf sich selbst, es gibt kein
+                  Springen am Rundenende. */}
+              <div aria-hidden="true" data-welle="" style={sx('position:absolute;inset:0;mix-blend-mode:screen;'
+                + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
+                + `opacity:${on ? .80 : .55};`
+                + 'mask-image:repeating-linear-gradient(104deg,transparent 0px,transparent 168px,rgba(0,0,0,.26) 206px,#000 226px,rgba(0,0,0,.26) 246px,transparent 300px);'
+                + '-webkit-mask-image:repeating-linear-gradient(104deg,transparent 0px,transparent 168px,rgba(0,0,0,.26) 206px,#000 226px,rgba(0,0,0,.26) 246px,transparent 300px);'
+                + 'mask-size:4000px 4000px;-webkit-mask-size:4000px 4000px;'
+                + 'mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;'
+                + `animation:cwFugenWelle ${on ? 9 : 14}s linear infinite;transition:opacity 1.2s ${EASE}`)}></div>
+              <div aria-hidden="true" data-netz="" style={sx('position:absolute;inset:0;mix-blend-mode:screen;'
+                + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
+                + `opacity:${on ? .58 : .40};`
+                + 'mask-image:repeating-linear-gradient(166deg,transparent 0px,transparent 196px,rgba(0,0,0,.24) 236px,#000 254px,rgba(0,0,0,.24) 272px,transparent 340px);'
+                + '-webkit-mask-image:repeating-linear-gradient(166deg,transparent 0px,transparent 196px,rgba(0,0,0,.24) 236px,#000 254px,rgba(0,0,0,.24) 272px,transparent 340px);'
+                + 'mask-size:4000px 4000px;-webkit-mask-size:4000px 4000px;'
+                + 'mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;'
+                + `animation:cwFugenNetz ${on ? 13 : 19}s linear infinite;transition:opacity 1.2s ${EASE}`)}></div>
+              {/* "und soll auf hover reagieren": ein zweiter, ruhiger Weg,
+                  Licht auf die Fugen zu bringen -- dort, wo der Zeiger liegt,
+                  werden sie hell. Kein Fleck auf der Wand (das graue Licht ist
+                  am 28.08. genau deshalb rausgeflogen), sondern nur die Linien
+                  selbst, denn dieselbe Zeichnung liegt darunter. Die Stelle
+                  kommt als CSS-Variable direkt an das Element, ohne
+                  Zustandswechsel, sonst rechnet die Seite bei jeder
+                  Mausbewegung die ganze Station neu. */}
+              <div aria-hidden="true" data-fugenlicht="" style={sx('position:absolute;inset:0;mix-blend-mode:screen;'
+                + `background-image:url("${WAND_FUGEN}");background-size:216px 72px;`
+                + 'mask-image:radial-gradient(circle at var(--wx,50%) var(--wy,50%),#000 0%,rgba(0,0,0,.5) 24%,transparent 56%);'
+                + '-webkit-mask-image:radial-gradient(circle at var(--wx,50%) var(--wy,50%),#000 0%,rgba(0,0,0,.5) 24%,transparent 56%);'
+                + `opacity:var(--wo,0);transition:opacity .45s ${EASE}`)}></div>
+            </div>
             {/* Hier lagen noch zwei Lichtschichten: eine Koernung, die die
                 Streifen des grauen Verlaufs brechen sollte, und ein
                 Lichtfleck, der beim Anspringen aufging. Beide sind mit dem
