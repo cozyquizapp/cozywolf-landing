@@ -1,0 +1,130 @@
+<!doctype html>
+<!--
+  Die Instagram-Blaetter. Ein Blatt je Beitrag, 1080 auf 1350 (Hochformat des
+  Feeds, das groesste, das Instagram ungeschnitten zeigt).
+
+  Warum als Seite und nicht in einem Grafikprogramm: hier stehen dieselben
+  Schriften, Farben, Kacheln und Objekte wie auf der Website, aus denselben
+  Dateien. Ein Beitrag kann damit gar nicht vom Rest abweichen, und eine
+  Frage zu aendern heisst, eine Zeile zu aendern und neu zu bauen, statt eine
+  Datei nachzubauen.
+
+  Neu bauen:
+    npm run build
+    npx vite preview --port 4192 --strictPort &
+    node tools/insta/bauen.mjs
+-->
+<html lang="de"><head><meta charset="utf-8">
+<base href="http://localhost:4192/">
+<style>
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;src:url('/fonts/bricolage-grotesque-latin-opsz-variable.woff2') format('woff2-variations');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'League Spartan';font-weight:900;src:url('/fonts/league-spartan-latin-900-normal.woff2') format('woff2')}
+@font-face{font-family:'League Spartan';font-weight:800;src:url('/fonts/league-spartan-latin-800-normal.woff2') format('woff2')}
+
+:root{
+  --grund:#0A0814; --creme:#F6EFE6;
+  --blau:#3B82F6; --orange:#F59E0B; --violett:#8B5CF6; --gruen:#22C55E; --rot:#EF4444;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#15121f;font-family:'Bricolage Grotesque',system-ui,sans-serif;color:var(--creme)}
+
+/* Ein Blatt. Die Randzone von 72 px ist bewusst grosszuegig: Instagram zeigt
+   im Raster einen quadratischen Ausschnitt, und was zu dicht am Rand steht,
+   faellt dort weg. */
+.blatt{position:relative;width:1080px;height:1350px;overflow:hidden;padding:82px 72px;
+  background:var(--grund);display:flex;flex-direction:column}
+.schein{position:absolute;left:50%;top:-38%;transform:translateX(-50%);width:1300px;height:1100px;
+  background:radial-gradient(ellipse at center,rgba(246,239,230,.075),rgba(10,8,20,0) 62%);pointer-events:none}
+/* Nur der Inhalt, nicht der Schein: sonst nimmt die Regel dem absolut
+   gesetzten Schein seine Position zurueck (gleiche Spezifitaet, spaeter
+   notiert), er landet im Textfluss und schiebt mit seinen 1100 px alles
+   nach unten. Genau das war beim ersten Anlauf zu sehen. */
+.blatt>*:not(.schein){position:relative;z-index:2}
+
+/* Die Wortmarke steht auf jedem Blatt unten. Oben waere sie im Weg, und
+   unten ist sie das, was nach dem Lesen haengenbleibt. */
+.marke{margin-top:auto;display:flex;align-items:center;gap:14px;padding-top:34px}
+.marke img{width:44px;height:44px}
+.marke span{font-family:'League Spartan',sans-serif;font-weight:900;font-size:27px;letter-spacing:-.01em}
+.marke i{flex:1;height:1px;background:linear-gradient(90deg,rgba(246,239,230,.20),transparent)}
+.marke em{font-style:normal;font-size:19px;font-weight:800;color:rgba(246,239,230,.55);white-space:nowrap}
+
+.kicker{display:flex;align-items:center;gap:16px;font-size:19px;font-weight:900;letter-spacing:.2em;
+  text-transform:uppercase;color:rgba(246,239,230,.62);margin-bottom:26px}
+.kicker i{display:block;width:90px;height:1px;flex:none;background:linear-gradient(90deg,rgba(246,239,230,.20),transparent)}
+h1{font-family:'League Spartan',sans-serif;font-weight:900;line-height:.9;letter-spacing:-.03em;font-size:104px;text-wrap:balance}
+h2{font-family:'League Spartan',sans-serif;font-weight:900;line-height:.94;letter-spacing:-.028em;font-size:78px}
+p.gross{margin-top:30px;font-size:34px;line-height:1.42;font-weight:500;color:rgba(246,239,230,.80);text-wrap:pretty}
+
+/* Die Kachel der App. Dieselbe Definition wie in src/qqKachel.ts: die Tiefe
+   kommt aus vier harten Kanten, nicht aus Weichzeichnung. */
+.kachel{border-radius:16%;background-image:var(--motiv),
+  linear-gradient(180deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.06) 18%,rgba(255,255,255,0) 50%,rgba(0,0,0,.16) 78%,rgba(0,0,0,.34) 100%);
+  background-color:var(--farbe);background-size:80% auto,auto;background-position:center,center;
+  background-repeat:no-repeat,no-repeat;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.38),inset 2px 0 0 rgba(255,255,255,.07),
+    inset -2px 0 0 rgba(0,0,0,.18),0 3px 4px rgba(0,0,0,.42)}
+
+/* ── Blatt: Fragetyp ────────────────────────────────────────────────────── */
+/* Der Block steht mittig auf dem Blatt. Die Wortmarke verliert dafuer ihr
+   eigenes margin-top:auto: mit drei automatischen Raendern (oben und unten am
+   Block, oben an der Marke) teilt sich der freie Platz in Drittel, und der
+   Block haengt oben. Mit zweien teilt er sich in Haelften, und die Marke
+   landet trotzdem ganz unten, weil der untere Rand des Blocks sie dorthin
+   schiebt. */
+.typ .inhalt{margin:auto 0}
+.typ:has(.inhalt) .marke{margin-top:0}
+.typ .sym{display:block;width:280px;height:280px;margin-bottom:56px;
+  filter:drop-shadow(0 26px 46px rgba(0,0,0,.6))}
+.typ .zahl{position:absolute;right:72px;top:76px;font-family:'League Spartan',sans-serif;
+  font-size:150px;font-weight:900;line-height:1;color:rgba(246,239,230,.07);letter-spacing:-.04em}
+.typ h2{font-size:96px}
+.typ .anspruch{margin-top:26px;font-size:40px;font-weight:900;line-height:1.24}
+.typ .regel{margin-top:20px;font-size:32px;line-height:1.42;font-weight:500;color:rgba(246,239,230,.74);max-width:34ch}
+
+/* ── Blatt: Fragekarte ──────────────────────────────────────────────────── */
+.frage .kapsel{display:inline-flex;align-items:center;gap:14px;align-self:flex-start;
+  padding:14px 26px 14px 16px;border-radius:999px;background:rgba(246,239,230,.06);
+  border:1px solid rgba(246,239,230,.22);font-size:24px;font-weight:900;letter-spacing:.02em}
+.frage .kapsel span.k{width:44px;height:44px;flex:none}
+.frage h2{margin-top:44px;font-size:72px;text-wrap:balance}
+.frage ol{list-style:none;margin-top:52px;display:flex;flex-direction:column;gap:20px}
+.frage li{display:flex;align-items:center;gap:22px;padding:26px 30px;border-radius:24px;
+  background:rgba(246,239,230,.04);border:2px solid rgba(246,239,230,.12);font-size:33px;font-weight:800}
+.frage li b{flex:none;display:flex;align-items:center;justify-content:center;width:52px;height:52px;
+  border-radius:14px;font-size:26px;font-weight:900}
+.frage li.richtig{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.55)}
+.frage li.richtig b{background:rgba(52,211,153,.22);color:#34D399}
+.frage .haken{margin-left:auto;font-size:38px;color:#34D399}
+.frage .aufloesung{margin-top:46px;font-size:31px;line-height:1.45;font-weight:600;color:rgba(246,239,230,.80)}
+.frage .frageHinweis{margin-top:46px;font-size:27px;font-weight:800;color:rgba(246,239,230,.55)}
+
+/* ── Blatt: Brett ───────────────────────────────────────────────────────── */
+/* Das Brett ist quadratisch, es bestimmt also mit seiner Breite auch seine
+   Hoehe. Bei voller Spaltenbreite (936 px) waere das Blatt 1547 statt 1350 px
+   hoch geworden; 660 px ist, was nach Ueberschrift, Bildunterschrift und
+   Wortmarke uebrig bleibt. Es steht mittig, weil ein Spielfeld eine Flaeche
+   ist und keine Spalte. */
+.brett{display:grid;gap:12px;width:100%;max-width:660px;margin:48px auto 0}
+.brett>span{position:relative;aspect-ratio:1}
+.brett .leer{border-radius:16%;background:rgba(246,239,230,.05);border:2px solid rgba(246,239,230,.16)}
+.brett .feld{background-image:var(--motiv),
+  linear-gradient(180deg,rgba(255,255,255,.22) 0%,rgba(255,255,255,.06) 18%,rgba(255,255,255,0) 50%,rgba(0,0,0,.16) 78%,rgba(0,0,0,.34) 100%);
+  background-color:var(--farbe);background-size:64% auto,auto;background-position:center,center;
+  background-repeat:no-repeat,no-repeat;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.34),inset 2px 0 0 rgba(255,255,255,.07),
+    inset -2px 0 0 rgba(0,0,0,.18),0 4px 7px rgba(0,0,0,.45)}
+.brett i{position:absolute;z-index:2;font-style:normal}
+.brett-blatt .unter{margin-top:44px;display:flex;align-items:baseline;gap:20px;
+  font-size:31px;line-height:1.45;font-weight:600;color:rgba(246,239,230,.80);text-wrap:pretty}
+.brett-blatt .unter b{line-height:1;flex:none}
+
+/* ── Blatt: Fraktionen ──────────────────────────────────────────────────── */
+.frak .feld{margin-top:56px;display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
+.frak .eins{display:flex;flex-direction:column;align-items:center;gap:14px}
+.frak .eins .kachel{width:100%;aspect-ratio:1}
+.frak .eins b{font-size:23px;font-weight:900;line-height:1.15;text-align:center}
+.frak .eins i{font-style:normal;font-size:19px;font-weight:600;line-height:1.2;text-align:center;color:rgba(246,239,230,.58)}
+</style></head>
+<body>
+</body></html>

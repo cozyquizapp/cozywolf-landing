@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 
 dist-server
+
+# Die gebauten Instagram-Blaetter. Ergebnis von tools/insta/bauen.mjs,
+# jederzeit neu herstellbar, deshalb nicht im Verlauf.
+tools/insta/fertig
