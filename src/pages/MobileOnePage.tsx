@@ -380,7 +380,16 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             <span style={sx(`display:block;animation:mRise .8s ${EASE} both .12s`)}>{L.hero.rest}</span>
           </h1>
           <p style={sx(`margin:16px 0 0;font-size:16.5px;line-height:1.55;font-weight:600;color:rgba(246,239,230,.78);text-wrap:pretty;animation:mRise .8s ${EASE} both .1s`)}>{L.hero.sub}</p>
-          <p style={sx(`margin:10px 0 0;font-size:15px;line-height:1.55;font-weight:700;color:rgba(246,239,230,.62);text-wrap:pretty;animation:mRise .8s ${EASE} both .14s`)}>{L.hero.sub2}</p>
+          {/* Hier stand eine zweite Unterzeile: "Ich bringe Beamer, Sound und
+              Moderation. Ihr spielt direkt am Handy, ihr braucht nur eine
+              freie Wand."
+              Wolf am 28.08.: "was macht der ganze text da? gleich mal mit
+              desktop ab, der meiste text ist weg". Er hat recht, und zwar
+              doppelt: der Desktop hat im Kopf nur Kicker, Ueberschrift und
+              eine Unterzeile, und der Satz selbst steht weiter unten schon
+              einmal, als Ueberschrift von 04 samt Aufzaehlung. Zweimal
+              dasselbe auf einem Bildschirm, den man erst durchscrollen muss,
+              ist kein Nachdruck, sondern Fuellung. */}
           {/* Die Gegenstaende. Antippen waehlt das Wort -- auf dem Desktop
               macht das der Zeiger, hier gibt es keinen. Was gerade gemeint
               ist, steht vorn: etwas groesser, volle Helligkeit, ein Schein in

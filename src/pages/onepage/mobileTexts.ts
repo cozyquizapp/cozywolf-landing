@@ -16,7 +16,7 @@ export type MobileCat = {
 export type MobileDict = {
   nav: { items: { href: string; label: string }[]; menuLabel: string };
   hero: {
-    kicker: string; hooks: string[]; rest: string; sub: string; sub2: string;
+    kicker: string; hooks: string[]; rest: string; sub: string;
     cta: string; ctaSub: string; bookQ: string; bookCta: string; avail: string;
   };
   modes: {
@@ -85,7 +85,6 @@ const de: MobileDict = {
     hooks: ['Wissen', 'Glück', 'Timing', 'Teamgeist', 'Bauchgefühl'],
     rest: 'ist nicht alles.',
     sub: G.de.heroSub,
-    sub2: 'Ich bringe Beamer, Sound und Moderation. Ihr spielt direkt am Handy, ihr braucht nur eine freie Wand.',
     cta: 'Gratis für Test-Teams', ctaSub: G.de.ctaSub,
     bookQ: 'Lieber direkt buchen?', bookCta: 'Termin anfragen →',
     avail: `Hamburg & Umland · Nächste Termine ab ${TERMIN_AB.de}`,
@@ -254,7 +253,6 @@ const en: MobileDict = {
     hooks: ['Knowledge', 'Luck', 'Timing', 'Team spirit', 'Gut feeling'],
     rest: 'isn’t everything.',
     sub: G.en.heroSub,
-    sub2: 'I bring the projector, sound and hosting. You play right on your phones, all you need is a free wall.',
     cta: 'Free for test teams', ctaSub: G.en.ctaSub,
     bookQ: 'Rather book directly?', bookCta: 'Request a date →',
     avail: `Hamburg & around · next dates from ${TERMIN_AB.en}`,
