@@ -44,16 +44,6 @@ Zaehlskript selbst hosten, und die Sprachwahl auf sessionStorage umstellen.
 
 Reihenfolge laut Wolf: erst die drei Desktop-Punkte oben, dann diese hier.
 
-### H4. 03 Ausprobieren ist zu hoch
-
-"text oben raus, zu viel zu lesen, 'spielen' des quizzes schwierig weil
-darstellung zu hoch, man bekommts nicht so richtig auf einen mobile screen"
-
-Zu tun: den Absatz ueber der Fragetyp-Zeile kuerzen oder streichen, und die
-Fragekarte so hoch bauen, dass Frage und Antworten zusammen auf einen
-Bildschirm passen. Heute ist die Karte allein 470 px hoch plus Ueberschrift,
-Zeile und Absatz darueber.
-
 ### H5. 02 Anlaesse: die Gegenstaende neben den Text
 
 "symbole gerne weiter nach rechts neben den text leicht nach unten versetzt
@@ -109,6 +99,18 @@ Zu tun:
 
 ## Erledigt
 
+* **H4 Abschnitt 03 passt jetzt auf einen Bildschirm.** Der Absatz ueber der
+  Fragetyp-Zeile ist raus, er kostete 99 px und stand dreimal woanders (die
+  zwei Haken unter der Karte und die Zeile "Fuenf Fragetypen, eine Runde").
+  Der Abschnitt faellt damit von 912 auf 797 px, also von 1,08 auf 0,94
+  Bildschirme.
+  Dazu die Bilderfrage: sie war ohne Mindesthoehe 611 px hoch, die anderen
+  Karten 456 bis 507, und mit ihr reichte der Abschnitt 12 px ueber den Rand
+  (Unterkante 856 bei 844 Fenster). Das Foto lag als Streifen ueber der Frage;
+  es steht jetzt daneben, wie das Skelett auf der Schaetzchen-Karte. Gemessen
+  bei 390 auf 844 mit der Kopfzeile von 77 px: alle fuenf Fragetypen enden
+  jetzt innerhalb des Fensters, der schlechteste Fall ist die Bilderfrage mit
+  837 von 844.
 * **H3 die Wappen, und der Absatz in 01.** Die Wappen trugen einen Kreis mit
   farbigem Rand auf dunklem Grund, eine Form, die es sonst nirgends auf der
   Seite gibt. Sie tragen jetzt dieselbe Kachel wie die Avatare, das Brett und

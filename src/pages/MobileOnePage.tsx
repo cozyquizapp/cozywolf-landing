@@ -861,8 +861,27 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
       } else hint = L.probe.tapHint;
       body = (
         <>
-          {C.photo && <img src="/assets/kolosseum.webp" loading="lazy" decoding="async" alt="" style={sx('display:block;width:100%;height:130px;margin-bottom:12px;object-fit:cover;border-radius:14px')} />}
-          <div style={sx('font-size:17px;font-weight:900;line-height:1.35;text-wrap:pretty')}>{C.q}</div>
+          {/* Das Foto steht neben der Frage und nicht darueber.
+
+              Gemessen: die Bilderfrage war ohne Mindesthoehe 611 px hoch, die
+              anderen Karten 456 bis 507, und mit ihr reichte der Abschnitt 12 px
+              ueber den Bildschirmrand hinaus (Unterkante 856 bei 844 Fenster).
+              Das Foto lag als eigener Streifen ueber der Frage, kostete also
+              seine volle Hoehe plus Abstand plus die Frage darunter.
+
+              Flacher schneiden waere die schlechtere Loesung gewesen: ein
+              Kolosseum auf 350 auf 76 px ist ein Briefschlitz. Nebeneinander
+              kostet die Reihe nur die Hoehe des groesseren der beiden, und die
+              Schaetzchen-Karte macht es mit dem Skelett schon genauso. */}
+          {C.photo ? (
+            <div style={sx('display:flex;align-items:center;gap:14px')}>
+              <img src="/assets/kolosseum.webp" loading="lazy" decoding="async" alt=""
+                style={sx('flex:none;display:block;width:112px;height:112px;object-fit:cover;border-radius:14px')} />
+              <div style={sx('flex:1;min-width:0;font-size:17px;font-weight:900;line-height:1.35;text-wrap:pretty')}>{C.q}</div>
+            </div>
+          ) : (
+            <div style={sx('font-size:17px;font-weight:900;line-height:1.35;text-wrap:pretty')}>{C.q}</div>
+          )}
           <div style={sx('margin-top:16px;display:flex;flex-direction:column;gap:9px')}>
             {C.opts.map((o, i) => {
               const done = s.picked !== null, right = i === C.correct, chosen = i === s.picked;
@@ -964,7 +983,18 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             Liste auffordert, die es nicht gibt, waere schlimmer als eine
             Abweichung. */}
         <div data-rv="" style={sx('margin:0 0 8px;font-size:15.5px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:600')}>{L.probe.kicker}</div>
-        <p data-rv="" style={sx('margin:0 0 16px;font-size:15.5px;line-height:1.6;color:rgba(246,239,230,.78);font-weight:600;text-wrap:pretty')}>{L.probe.sub}</p>
+        {/* Hier stand ein Absatz: "Ein Handy pro Team, QR-Code scannen,
+            fertig. Hier laeuft eine Runde von selbst durch, einen Fragetyp
+            nach dem anderen, genau wie am Quizabend."
+            Wolf am 28.08.: "text oben raus, zu viel zu lesen, spielen des
+            quizzes schwierig weil darstellung zu hoch, man bekommts nicht so
+            richtig auf einen mobile screen". Der Absatz kostete 99 px und
+            stand dreimal woanders: "ein Handy pro Team, QR-Code scannen"
+            entspricht dem Haken "Keine App, kein Login, kein Zettel" unter
+            der Karte, "einen Fragetyp nach dem anderen" der Zeile "Fuenf
+            Fragetypen, eine Runde" darueber, und "fuenf Fragetypen" nochmals
+            dem zweiten Haken. Die zwei Haken bleiben, sie stehen unter der
+            Karte und damit nicht im Weg. */}
         {/* Die fuenf Fragetypen als Zeile, der laufende hell. Auf dem Desktop
             steht dort eine Liste zum Auswaehlen; hier waehlt der Ablauf, also
             zeigt die Zeile, wo man gerade ist. Ohne sie ist "Fuenf Fragetypen"
