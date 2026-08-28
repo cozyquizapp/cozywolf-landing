@@ -384,6 +384,10 @@ const WAND_KORN = 'data:image/svg+xml;utf8,'
  * gehoert auf die Leinwand am Abend. Hier geht es darum, dass es sich bewegt
  * und warum.
  */
+/** Wie oft eine Fraktion punktet, und was so ein Treffer wert ist. */
+const FRAK_TAKT = 3600;
+const FRAK_PUNKTE = [40, 55, 70, 85, 100, 120];
+
 const FRAK_LINKS = [
   { id: 'allwissen', x: 16, y: 14, gr: 86 },
   { id: 'einspruch', x: 34, y: 48, gr: 72 },
@@ -425,6 +429,29 @@ type OPState = {
   beam?: boolean; beamWelcome?: boolean;
   johFan?: boolean; hookI?: number; hookVor?: number | null;
   b01?: number; b01Hand?: Record<number, string>; frak?: string | null;
+  /**
+   * Das Rennen in der Zeile CrowdQuiz.
+   *
+   * Wolf am 28.08.: "crowdquiz avatare machen kein rennen absicht? beim rennen
+   * koennte man freistehend sowas machen wie +85 punkte bei einem team, dann
+   * aendert sich die reihenfolge, das waere nice, weil genau das im spiel
+   * passiert".
+   *
+   * Ja, Absicht -- und die falsche. Mit der Tabelle ist auch das Rennen
+   * rausgeflogen, uebrig blieben acht Logos. Was CrowdQuiz von acht Wappen
+   * unterscheidet, ist nicht die Liste, sondern das Ereignis: eine Fraktion
+   * punktet, und die Reihenfolge kippt.
+   *
+   * frakPunkte  Stand je Fraktion, nur fuer die Reihenfolge gebraucht.
+   * frakTreffer Wer gerade gepunktet hat und um wie viel. Die Zahl steigt
+   *             neben dem Wappen auf und verschwindet.
+   * frakZieht   Wer gerade den Platz wechselt. Wer unterwegs ist, geht auf
+   *             halbe Deckkraft und hinter die stehenden, damit sich beim
+   *             Ueberholen nie zwei volle Wappen verdecken.
+   */
+  frakPunkte?: Record<string, number>;
+  frakTreffer?: { id: string; p: number; n: number } | null;
+  frakZieht?: Record<string, true>;
   /** Avatarwand in 01: Motiv und Farbe je Kachel, und welche gerade dran ist. */
   avObj?: number[]; avFarbe?: number[]; avAn?: number | null;
   /** Lage des Zeigers auf der Leinwand, 0 bis 1, fuer den Lichtkegel. */
@@ -467,6 +494,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   private _beamAuto = false;
   private _weiterT: ReturnType<typeof setTimeout> | undefined;
   private _avT: ReturnType<typeof setInterval> | undefined;
+  private _frakT: ReturnType<typeof setInterval> | undefined;
+  private _frakAusT: ReturnType<typeof setTimeout> | undefined;
   private _hookT: ReturnType<typeof setInterval> | undefined;
   private _boardWinEl: HTMLElement | null = null;
   private _boardWinRO: ResizeObserver | undefined;
@@ -636,8 +665,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     this._reduziert = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     this._spielIO = new IntersectionObserver(([e]) => {
       this._spielSichtbar = e.isIntersecting;
-      if (!e.isIntersecting) { this.brettLauf(false); return; }
+      if (!e.isIntersecting) { this.brettLauf(false); this.frakLauf(false); return; }
       if ((this.state.b01 ?? 0) < MOVES.length) this.brettLauf(true);
+      this.frakLauf(true);
     }, { rootMargin: '0px 0px -12% 0px' });
     this._spielIO.observe(el);
   }
@@ -766,6 +796,50 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     window.addEventListener('scroll', this.onScroll, { passive: true });
   }
 
+  /**
+   * Ein Zug im Rennen: eine Fraktion punktet, danach steht sie anders.
+   *
+   * Die SEITE bleibt je Fraktion fest -- drei links, fuenf rechts -- und daran
+   * aendert kein Punktestand etwas. Sonst spraenge ein Wappen quer ueber die
+   * Textspalte, wenn es von Platz 4 auf 3 zieht. Der PLATZ innerhalb der Seite
+   * folgt dem Gesamtstand: bewegt wird also nur senkrecht in der eigenen
+   * Spalte, und die Plaetze einer Spalte ueberschneiden sich per Konstruktion
+   * nicht.
+   *
+   * Der Preis ist ehrlich zu benennen: eine durchgehende Rangfolge von 1 bis 8
+   * laesst sich so nicht ablesen. Das ist die Aufgabe der Tabelle, und die
+   * gehoert auf die Leinwand am Abend. Hier geht es darum, dass es sich bewegt
+   * und warum.
+   */
+  frakZug() {
+    const ids = FACTIONS.map(f => f.id);
+    const wer = ids[Math.floor(Math.random() * ids.length)];
+    const p = FRAK_PUNKTE[Math.floor(Math.random() * FRAK_PUNKTE.length)];
+    this.setState(st => {
+      const stand = { ...(st.frakPunkte ?? {}) };
+      for (const id of ids) if (stand[id] == null) stand[id] = 0;
+      const platz = (q: Record<string, number>, gruppe: string[]) =>
+        gruppe.slice().sort((a, b) => (q[b] ?? 0) - (q[a] ?? 0));
+      const links = FRAK_LINKS.map(x => x.id), rechts = FRAK_RECHTS.map(x => x.id);
+      const vor = [...platz(stand, links), ...platz(stand, rechts)];
+      stand[wer] += p;
+      const nach = [...platz(stand, links), ...platz(stand, rechts)];
+      const zieht: Record<string, true> = {};
+      for (const id of ids) if (vor.indexOf(id) !== nach.indexOf(id)) zieht[id] = true;
+      return { frakPunkte: stand, frakZieht: zieht,
+        frakTreffer: { id: wer, p, n: (st.frakTreffer?.n ?? 0) + 1 } };
+    });
+    clearTimeout(this._frakAusT);
+    this._frakAusT = setTimeout(() => this.setState({ frakZieht: {}, frakTreffer: null }), 1900);
+  }
+
+  /** Das Rennen laeuft nur, solange 01 im Bild ist. */
+  frakLauf(an: boolean) {
+    clearInterval(this._frakT);
+    if (!an || this._reduziert) return;
+    this._frakT = setInterval(() => { if (!document.hidden) this.frakZug(); }, FRAK_TAKT);
+  }
+
   /** Die naechste Kategorie in 03, im Kreis. */
   naechsteKat() {
     const i = PROBE_ORDER.indexOf(this.state.probeCat || 'mucho');
@@ -812,6 +886,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   /** Zeiger liegt auf einer Kachel: sie wechselt durch, bis er weitergeht. */
   avStart(i: number) {
     clearInterval(this._avT);
+    clearInterval(this._frakT);
+    clearTimeout(this._frakAusT);
     this.setState({ avAn: i });
     if (this._reduziert) { this.avSchritt(i); return; }
     this.avSchritt(i);
@@ -1374,10 +1450,20 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     return (
       <div data-frakfeld={seite} style={sx(`position:relative;min-width:0;height:${hoehe}px`)}
         onMouseLeave={() => { if (!this._coarse) this.setState({ frak: null }); }}>
-        {plaetze.map((pl, i) => {
+        {/* Der Platz folgt dem Stand, nicht der Reihenfolge im Feld: die
+            Wappen einer Seite sortieren sich nach Punkten um. Die Groessen und
+            Lagen bleiben dabei die der Liste -- getauscht wird, WER auf
+            welchem Platz steht, nicht wo die Plaetze sind. */}
+        {plaetze.map((_, i) => {
+          const stand = this.state.frakPunkte ?? {};
+          const rang = plaetze.slice().sort((a, b) => (stand[b.id] ?? 0) - (stand[a.id] ?? 0));
+          const pl = { ...plaetze[i], id: rang[i].id };
           const f = FACTIONS.find(x => x.id === pl.id);
           if (!f) return null;
           const auf = an === f.id, still = !!an && !auf;
+          const zieht = !!(this.state.frakZieht ?? {})[f.id] && !auf;
+          const treffer = this.state.frakTreffer;
+          const trifft = treffer?.id === f.id;
           const nachRechts = pl.x < 50;
           const zeig = () => { if (!this._coarse) this.setState({ frak: f.id }); };
           return (
@@ -1387,7 +1473,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               onBlur={() => this.setState({ frak: null })}
               aria-label={`${L.sim.factions[f.id]} \u2014 ${L.sim.mottos[f.id]}`}
               style={sx(`position:absolute;left:${pl.x}%;top:${pl.y}%;padding:0;border:none;background:none;cursor:default;`
-                + `z-index:${auf ? 6 : 2}`)}>
+                + `z-index:${auf ? 6 : (zieht ? 1 : 2)};transition:left 1.3s ${EASE},top 1.3s ${EASE}`)}>
               <span data-schwebt="" style={sx('display:block;position:relative;'
                 + `animation:cwSchweb${i % 2} ${11 + (i % 3) * 1.6}s ease-in-out ${(i * 0.8).toFixed(1)}s infinite`)}>
                 {/* Der Schein liegt auf einem eigenen Kasten darunter und nicht
@@ -1398,9 +1484,21 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 {/* teammarke() setzt kein display. Ohne bleibt der span inline,
                     und dann greifen Breite und Hoehe nicht. */}
                 <span style={sx('display:block;position:relative;' + teammarke(f.color, `/assets/crest-${f.id}.webp`, pl.gr)
-                  + `transform:scale(${auf ? 1.1 : 1});opacity:${still ? .28 : 1};`
-                  + `filter:saturate(${auf ? 1.15 : .84}) brightness(${auf ? 1.12 : .86});`
-                  + `transition:transform .4s ${EASE},opacity .4s ${EASE},filter .4s ${EASE}`)}></span>
+                  + `transform:scale(${auf ? 1.1 : (zieht ? .92 : 1)});`
+                  + `opacity:${still ? .28 : (zieht ? .5 : 1)};`
+                  + `filter:saturate(${auf ? 1.15 : .84}) brightness(${auf || trifft ? 1.14 : .86});`
+                  + `transition:transform .4s ${EASE},opacity .4s ${EASE},filter .4s ${EASE},width 1.3s ${EASE},height 1.3s ${EASE}`)}></span>
+                {/* Die Zahl, die Wolf gemeint hat: "sowas wie +85 punkte bei
+                    einem team, dann aendert sich die reihenfolge". Sie steigt
+                    neben dem Wappen auf und loest sich auf. Der Schluessel
+                    haengt an einem Zaehler, damit sie auch dann neu anlaeuft,
+                    wenn dieselbe Fraktion zweimal hintereinander punktet. */}
+                {trifft && treffer && (
+                  <span key={treffer.n} aria-hidden="true"
+                    style={sx('position:absolute;left:100%;top:6%;margin-left:8px;white-space:nowrap;pointer-events:none;z-index:7;'
+                      + `font-family:'League Spartan',sans-serif;font-size:19px;font-weight:900;letter-spacing:-.01em;color:${f.color};`
+                      + `animation:cwPunkt 1.9s ${EASE} both`)}>+{treffer.p}</span>
+                )}
                 <span aria-hidden="true" style={sx('position:absolute;top:50%;display:flex;align-items:center;gap:10px;white-space:nowrap;pointer-events:none;'
                   + `${nachRechts ? 'left:100%;flex-direction:row' : 'right:100%;flex-direction:row-reverse'};`
                   + `transform:translateY(-50%) translateX(${auf ? '0' : (nachRechts ? '-8px' : '8px')});`

@@ -69,6 +69,15 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 @keyframes cwRise{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
 @keyframes cwSheen{0%{transform:translateX(-120%)}60%,100%{transform:translateX(220%)}}
 @keyframes cwWeiter{from{width:0}to{width:100%}}
+/* Die Punktzahl in 01: steigt auf, haelt kurz, loest sich auf. Kein Sprung am
+   Anfang -- sie faengt schon leicht angehoben an, sonst zuckt sie erst nach
+   unten, bevor sie steigt. */
+@keyframes cwPunkt{
+  0%{opacity:0;transform:translateY(6px) scale(.9)}
+  18%{opacity:1;transform:translateY(0) scale(1)}
+  62%{opacity:1;transform:translateY(-10px) scale(1)}
+  100%{opacity:0;transform:translateY(-26px) scale(.96)}
+}
 /* Das Schweben der acht Fraktionswappen in 01. Klein gehalten: hoechstens
    5 px, sonst stossen zwei Wappen aneinander -- zwischen ihren Plaetzen liegen
    nach der Rechnung mindestens 31 px, und beim Zeigen kommen 10 Prozent

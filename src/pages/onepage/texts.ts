@@ -119,7 +119,7 @@ const de: OnePageDict = {
     avAria: 'Team-Zeichen durchwechseln',
     arenaChip: 'Ab 40 Personen',
     arenaCalm: 'Der große Abend: alle spielen als Fraktionen gegeneinander, live auf der Leinwand.',
-    arenaLead: 'Ihr spielt wie im CozyQuiz in Teams an einem Handy, nur gehört jedes Team zu einer von acht Fraktionen. Eine Fraktion fasst bis zu fünf Teams. Frage für Frage verschiebt sich die Rangfolge auf der Leinwand.',
+    arenaLead: 'Ihr spielt wie im CozyQuiz in Teams an einem Handy, nur gehört jedes Team zu einer von acht Fraktionen. Eine Fraktion fasst bis zu fünf Teams. Frage für Frage verschiebt sich die Rangfolge.',
     arenaBullets: [
       'Kein Spielbrett, ein Rennen der Fraktionen',
       'Gewertet wird der Anteil richtiger Antworten, eine Fraktion mit acht Leuten hat keinen Vorteil gegenüber einer mit vier',
@@ -330,7 +330,7 @@ const en: OnePageDict = {
     avAria: 'Cycle through team marks',
     arenaChip: 'From 40 people',
     arenaCalm: 'The big night: everyone plays as factions against each other, live on the big screen.',
-    arenaLead: 'You play in teams around one phone, just like in CozyQuiz, only each team belongs to one of eight factions. A faction holds up to five teams. Question by question, the ranking shifts on the big screen.',
+    arenaLead: 'You play in teams around one phone, just like in CozyQuiz, only each team belongs to one of eight factions. A faction holds up to five teams. Question by question, the ranking shifts.',
     arenaBullets: [
       'No game board, a race of factions',
       'Scored by the share of correct answers, a faction of eight has no advantage over one of four',
