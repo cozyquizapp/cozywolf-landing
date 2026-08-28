@@ -911,9 +911,24 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     );
   }
 
+  /**
+   * Die Kennzeile eines Kapitels.
+   *
+   * Fassung K4 macht aus der Ziffer ein Bauteil statt einer Beschriftung: sie
+   * steht dann gross und in Kontur links neben der Ueberschrift, die daneben
+   * herumfliesst. Das passiert in CSS ueber data-nr und float, damit die
+   * sechs Abschnitte nicht einzeln umgebaut werden muessen; die Ziffer kommt
+   * aus dem Attribut, die kleine Zeile wird ausgeblendet.
+   *
+   * Der Anlass: Wolf am 28.08., "wenn man den hero scrollt wirkt der rest
+   * langweilig". Nach Groesse und Bewegung fehlte den Kapiteln noch ein
+   * Anker, den der Hero mit seiner Objektgruppe hat. Die Ziffer ist der
+   * einzige, den wir nicht erfinden muessen, es gibt sie ohnehin.
+   */
   kicker(label: string) {
+    const nr = (label.split('|')[0].match(/\d+/) || [''])[0];
     return (
-      <div data-reveal="" style={sx('display:flex;align-items:center;gap:12px;margin:0 0 14px;font-size:11.5px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap')}>
+      <div data-reveal="" data-nr={nr || undefined} style={sx('display:flex;align-items:center;gap:12px;margin:0 0 14px;font-size:11.5px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap')}>
         {label.split('|')[0]}
         <span style={sx('flex:1;height:1px;background:linear-gradient(90deg,rgba(246,239,230,.28),transparent);max-width:180px')}></span>
         <span style={sx('color:rgba(246,239,230,.5)')}>{label.split('|')[1]}</span>
@@ -2345,7 +2360,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   render() {
     const L = this.T;
     return (
-      <div data-m="root" data-bew={BEWEGUNG || undefined} style={sx('min-height:100vh;background:#0A0814;width:100%')}>
+      <div data-m="root" data-bew={BEWEGUNG || undefined} data-stil={STIL} style={sx('min-height:100vh;background:#0A0814;width:100%')}>
         <div aria-hidden="true" data-cw-grund=""></div>
         <style>{ONEPAGE_CSS}</style>
         {this.renderHeader()}

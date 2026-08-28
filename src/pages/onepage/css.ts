@@ -245,6 +245,32 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
   }
 }
 
+/* ── K4: die Kapitelziffer als Bauteil ────────────────────────────────────
+   Die Ziffer steht gross und in Kontur links, die Ueberschrift fliesst
+   daneben. Umgesetzt mit float statt mit einem Raster, weil Kennzeile und
+   Ueberschrift in allen sechs Abschnitten Geschwister sind: so bleibt der
+   Aufbau der Abschnitte unangetastet und die Fassung ist eine CSS-Regel
+   und kein Umbau.
+   Die kleine Zeile wird dabei nicht geloescht, sondern ausgeblendet: sie
+   traegt den Abschnittsnamen fuer Vorlesewerkzeuge. */
+@media (min-width:901px){
+  /* font-size:0 mit !important, weil die Kennzeile ihre 11,5 px inline
+     traegt und ein Inline-Wert jede Regel ohne !important schlaegt. Ohne das
+     stand die kleine Zeile "[ 04 ]" neben der grossen Ziffer. */
+  [data-stil="4"] [data-nr]{
+    float:left;display:block;margin:0 30px 6px 0;padding:0;font-size:0!important;
+    font-family:'League Spartan',sans-serif;font-weight:900;
+    line-height:.76;letter-spacing:-.04em;color:transparent;
+    -webkit-text-stroke:1.5px rgba(246,239,230,.26);
+  }
+  [data-stil="4"] [data-nr]::before{content:attr(data-nr);font-size:104px}
+  [data-stil="4"] [data-nr]>span{display:none}
+  /* Die Ueberschrift daneben darf kleiner sein, sonst kaempfen Ziffer und
+     Schrift um dieselbe Aufmerksamkeit. */
+  [data-stil="4"] [data-nr]+h2{font-size:clamp(34px,3.6vw,58px)!important;line-height:.98!important}
+  [data-stil="4"] [data-nr]~p{clear:both}
+}
+
 @media (max-width:900px){
 [data-m=modereihe]{grid-template-columns:1fr!important;gap:28px!important;padding:36px 0!important}
 [data-m=modeobjekt]{justify-content:flex-start!important;height:400px!important}

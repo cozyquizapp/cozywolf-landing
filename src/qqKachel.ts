@@ -49,8 +49,12 @@ const FILL: Record<string, number> = {
   // Sanduhr und Puzzle im Hero: eigens gerendert und exakt auf ihre
   // Bounding-Box beschnitten, anders als die App-Motive. Deshalb ein
   // kleinerer Anteil, sonst stossen sie an die Kachelkante.
-  '/assets/obj-sanduhr.webp': 0.74,
-  '/assets/obj-puzzle.webp': 0.78,
+  // 28.08.: neue Fassungen von Wolf. Beide sind enger auf ihr Motiv
+  // beschnitten als die alten, das Quadrat traegt also mehr Luft und der
+  // Anteil darf hoeher liegen. Gemessene Inhaltsflaechen: Sanduhr 510 zu 798,
+  // Puzzle 823 zu 550, beide auf ihre Bounding-Box zugeschnitten.
+  '/assets/obj-sanduhr.webp': 0.80,
+  '/assets/obj-puzzle.webp': 0.86,
   // Die acht Fraktionswappen sind auf ihre Bounding-Box beschnitten und
   // quadratisch zentriert, wie die Anlass-Motive. Das Schild ist hoch und
   // schmal, bei 0.9 stiess es oben und unten an die Kachelkante.
