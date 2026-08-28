@@ -813,23 +813,76 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     // ist aber Absicht: Wolf hat aktuell noch keine Kunden und braucht zuerst
     // Test-Teams (2026-08-27). Sobald Termine laufen, gehoert „Termin anfragen"
     // auf Platz 0 und das Gratisangebot auf Platz 1.
-    const hb = (i: number) => {
-      const hot = on === i, cold = on !== null && !hot;
+    /**
+     * Wolf am 28.08.: "die buttons haben eine alte motion, gefaellt mir nicht
+     * mehr, wie waere es dass sich ein button langsam fuellt mit der aktuellen
+     * farbe des wortes oben wenn man draufbleibt? und sobald das wort wechselt
+     * wechselt die farbe smooth wie oben auch".
+     *
+     * Weg ist die alte Bewegung, und sie war der Grund fuer sein Unbehagen:
+     * der Knopf unter dem Zeiger wuchs von 50 auf 60 Prozent Breite, der
+     * andere schrumpfte auf 40, dazu wechselten beide die Schriftgroesse. Die
+     * zwei Knoepfe sind also bei jeder Mausbewegung gesprungen, und was
+     * springt, laesst sich nicht anklicken, ohne dass man kurz zielt. Beide
+     * behalten jetzt ihre Breite.
+     *
+     * Stattdessen laeuft die Fuellung von links herein, in der Farbe des
+     * Wortes, das oben gerade steht. Damit haengt der Knopf am selben Faden
+     * wie Ueberschrift und Objekt: ein Wort, eine Farbe, ein Gegenstand -- und
+     * jetzt auch ein Knopf.
+     *
+     * Wechselt das Wort, waehrend der Zeiger liegen bleibt, blendet die Farbe
+     * hinueber statt umzuspringen. 0,62 s, dieselbe Dauer wie die Wortwalze
+     * (cwWortEin/cwWortAus in css.ts), damit beide als eine Bewegung gelesen
+     * werden.
+     *
+     * Die Hoehe ist fest vorgehalten. Vorher wuchs der Knopf beim Zeigen von
+     * 66 auf 79 px, weil die Unterzeile aufklappte, und weil die Reihe auf
+     * stretch steht wuchs der andere gleich mit -- die Zeile darunter ist also
+     * bei jeder Mausbewegung 13 px gerutscht. Bei 84 px Mindesthoehe passt die
+     * aufgeklappte Unterzeile hinein, ohne dass sich aussen etwas bewegt.
+     *
+     * Die Schrift wird im gefuellten Zustand dunkel, und zwar bei allen fuenf
+     * Farben. Nachgerechnet nach WCAG gegen den Grund #0A0814 und gegen Creme:
+     *   Orange  7,08 : 2,46      Gruen  8,71 : 2,00
+     *   Violett 5,02 : 3,47      Gelb  12,96 : 1,34
+     *   Blau    5,40 : 3,22
+     * Dunkel gewinnt ueberall, der schlechteste Fall ist 5,02 und liegt damit
+     * ueber den 4,5 der Stufe AA. Es braucht also keine Fallunterscheidung je
+     * Farbe.
+     *
+     * Die Unterzeile stand zuerst auf 70 Prozent Deckkraft und ist deshalb
+     * jetzt voll deckend. Nachgerechnet auf der gefuellten Flaeche:
+     *   70 %:  Orange 4,48  Violett 3,50  Gruen 5,10  Gelb 6,33  Blau 3,68
+     *   80 %:  Orange 5,47  Violett 4,08  Gruen 6,44  Gelb 8,57  Blau 4,34
+     *  100 %:  Orange 7,08  Violett 5,02  Gruen 8,71  Gelb 12,96 Blau 5,40
+     * Bei 12,5 px fett gilt der normale Schwellwert von 4,5, nicht die 3,0 fuer
+     * grosse Schrift -- gross ist erst 18,66 px fett. 70 und 80 Prozent fallen
+     * damit auf Violett und Blau durch, 100 haelt ueberall.
+     */
+    const hb = (i: number, wortFarbe: string) => {
+      const hot = on === i;
       const primary = i === 0;
       return {
-        style: `position:relative;display:flex;align-items:center;justify-content:center;flex:none;min-width:0;box-sizing:border-box;overflow:hidden;border-radius:999px;white-space:nowrap;font-weight:900;min-height:66px;`
-          + `width:${hot ? 'calc(60% - 7px)' : (cold ? 'calc(40% - 7px)' : 'calc(50% - 7px)')};`
-          + `padding:${hot ? '16px 26px 15px' : '19px 22px'};font-size:${cold ? 16 : (hot ? 18 : 17)}px;`
-          + (primary ? 'background:#F6EFE6;' : 'background:transparent;border:1.5px solid rgba(246,239,230,.38);')
-          + `box-shadow:${primary ? (hot ? '0 18px 44px rgba(0,0,0,.5)' : '0 12px 30px rgba(0,0,0,.38)') : 'none'};`
-          + `transition:width .7s ${EASE},padding .7s ${EASE},font-size .7s ${EASE},box-shadow .5s ${EASE}`,
-        fill: `position:absolute;inset:0;background:${primary ? '#FFFDF9' : 'rgba(246,239,230,.12)'};transform:scaleY(${hot ? 1 : 0});transform-origin:bottom center;transition:transform .6s ${EASE}`,
-        lab: `display:block;line-height:1.15em;font-size:inherit;letter-spacing:${hot ? '-.005em' : '0'};color:${primary ? '#0A0814' : '#F6EFE6'};transition:color .4s ${EASE},letter-spacing .5s ${EASE}`,
-        sub: `display:block;overflow:hidden;max-height:${hot ? '22px' : '0'};transition:max-height .6s ${EASE}`,
-        subIn: `display:block;padding-top:4px;font-size:12.5px;font-weight:800;letter-spacing:.02em;white-space:nowrap;color:${primary ? 'rgba(10,8,20,.66)' : 'rgba(246,239,230,.72)'};transform:translateY(${hot ? '0' : '-8px'});opacity:${hot ? 1 : 0};transition:transform .6s ${EASE},opacity .45s ${EASE} ${hot ? '.1s' : '0s'}`,
+        style: 'position:relative;display:flex;align-items:center;justify-content:center;flex:1;min-width:0;box-sizing:border-box;'
+          + 'overflow:hidden;border-radius:999px;white-space:nowrap;font-weight:900;min-height:84px;padding:19px 22px;font-size:17px;'
+          + (primary ? 'background:#F6EFE6;' : 'background:transparent;')
+          + `border:1.5px solid ${primary ? 'transparent' : (hot ? wortFarbe : 'rgba(246,239,230,.38)')};`
+          + `box-shadow:${primary ? '0 12px 30px rgba(0,0,0,.38)' : 'none'};`
+          + `transition:border-color .62s ${EASE}`,
+        // Von links herein, nicht von unten: links faengt der Satz an, und die
+        // Richtung ist dieselbe wie beim Fortschrittsstrich in 03.
+        fill: `position:absolute;inset:0;background:${wortFarbe};`
+          + `transform:scaleX(${hot ? 1 : 0});transform-origin:left center;`
+          + `transition:transform .62s ${EASE},background-color .62s ${EASE}`,
+        lab: `display:block;line-height:1.15em;font-size:inherit;`
+          + `color:${hot ? '#0A0814' : (primary ? '#0A0814' : '#F6EFE6')};transition:color .4s ${EASE}`,
+        sub: `display:block;overflow:hidden;max-height:${hot ? '22px' : '0'};transition:max-height .5s ${EASE}`,
+        subIn: 'display:block;padding-top:4px;font-size:12.5px;font-weight:800;letter-spacing:.02em;white-space:nowrap;'
+          + `color:${hot ? '#0A0814' : 'rgba(10,8,20,.66)'};transform:translateY(${hot ? '0' : '-8px'});opacity:${hot ? 1 : 0};`
+          + `transition:transform .5s ${EASE},opacity .4s ${EASE} ${hot ? '.1s' : '0s'}`,
       };
     };
-    const b0 = hb(0), b1 = hb(1);
     const hookI = this.state.hookI ?? 0;
     const n = L.hero.hooks.length;
     const hook = L.hero.hooks[hookI % n];
@@ -840,6 +893,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const vorI = this.state.hookVor ?? null;
     const vorher = vorI == null ? null : L.hero.hooks[vorI % n];
     const objekt = GRUPPE[WORT_OBJEKT[hookI % n] % GRUPPE.length];
+    // Die Knoepfe kennen die Wortfarbe, deshalb stehen sie hier unten und
+    // nicht oben: objekt.farbe ist erst ab dieser Zeile bekannt.
+    const b0 = hb(0, objekt.farbe), b1 = hb(1, objekt.farbe);
 
     return (
       <section id="top" style={sx('position:relative;overflow:clip;min-height:100dvh;display:flex;flex-direction:column;border-bottom:1px solid rgba(246,239,230,.10)')}>
