@@ -2772,8 +2772,23 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               Pink genau dort gesetzt, wo es raus soll. Uebrig bleibt ein
               rundes Foto mit einer Haarlinie, wie jede andere Kante der Seite. */}
           <div style={sx('display:flex;flex-direction:column;align-items:center;gap:14px')}>
-            <img src="/assets/johannes-rund.jpg" loading="lazy" decoding="async" width={220} height={220} alt={L.johannes.photoAlt}
-              style={sx('width:220px;height:220px;border-radius:50%;object-fit:cover;object-position:center 22%;border:1px solid rgba(246,239,230,.20);' + schatten('box-shadow:0 24px 50px rgba(0,0,0,.55)'))} />
+            {/* Wolf am 28.08.: "kannst du dieses bild an die stelle des
+                aktuellen packen? das ist sympatischer". Stimmt -- Muetze und
+                offener Blick passen besser zu jemandem, der einen Abend
+                moderiert, als ein neutrales Portraet.
+                Der Ausschnitt ist hier schon quadratisch geschnitten (1180 von
+                1180 aus 1180 mal 1600, ab Hoehe 210), deshalb steht die
+                Bildlage jetzt auf center und nicht mehr auf "center 22%" --
+                die 22 Prozent waren auf das alte Bild eingestellt.
+                440 statt 320 px, also das Doppelte der Anzeigegroesse: das
+                alte war fuer Retina schon knapp. Als webp 28 KB.
+                Kein Zeigeeffekt, und das ist eine Entscheidung: jeder Hover auf
+                dieser Seite beantwortet etwas. Ein Portraet hat darauf keine
+                Antwort, und es ist die einzige Stelle, an der einen jemand
+                ansieht -- was sich dabei bewegt, wirkt sofort wie ein
+                Stockfoto. */}
+            <img src="/assets/johannes-rund.webp" loading="lazy" decoding="async" width={440} height={440} alt={L.johannes.photoAlt}
+              style={sx('width:220px;height:220px;border-radius:50%;object-fit:cover;object-position:center;border:1px solid rgba(246,239,230,.20);' + schatten('box-shadow:0 24px 50px rgba(0,0,0,.55)'))} />
             <div style={sx('font-size:18px;font-weight:900;color:#F6EFE6')}>{L.johannes.name}</div>
           </div>
           <div>

@@ -731,7 +731,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             <div style={sx(fanSide('88px', 15, ' .08s'))}>
               <img src="/assets/johannes-arm2.webp" loading="lazy" decoding="async" alt="" style={sx('display:block;width:100%;height:100%;object-fit:cover;border-radius:50%')} />
             </div>
-            <img src="/assets/johannes-rund.jpg" loading="lazy" decoding="async" width={150} height={150} alt={L.johannes.photoAlt}
+            <img src="/assets/johannes-rund.webp" loading="lazy" decoding="async" width={300} height={300} alt={L.johannes.photoAlt}
               style={sx(`position:absolute;inset:0;width:150px;height:150px;border-radius:50%;object-fit:cover;border:2px solid rgba(250,75,163,.45);box-shadow:0 12px 30px rgba(0,0,0,.45);z-index:2;transform:scale(${a ? .94 : 1});transition:transform .9s ${EASE}`)} />
           </div>
           <div style={sx('font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{L.johannes.kicker}</div>
