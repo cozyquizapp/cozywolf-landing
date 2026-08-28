@@ -23,11 +23,11 @@ const LOGO = '/logo.webp';
 const MOBILE_CSS = `
 html{background:#0A0814;color-scheme:dark;scroll-behavior:smooth;scroll-padding-top:76px}
 body{margin:0;background:#0A0814;color:#F6EFE6;font-family:'Bricolage Grotesque',Nunito,system-ui,sans-serif;font-optical-sizing:auto;-webkit-font-smoothing:antialiased;overflow-x:hidden}
-*{-webkit-tap-highlight-color:rgba(250,75,163,.18)}
-a{color:#FA4BA3;text-decoration:none}a:hover{color:#FFC7E4}
+*{-webkit-tap-highlight-color:rgba(246,239,230,.18)}
+a{color:#F6EFE6;text-decoration:none}
 summary::-webkit-details-marker{display:none}
 input,textarea,select,button{font-family:inherit}
-a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #FFC7E4;outline-offset:3px;border-radius:12px}
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #F6EFE6;outline-offset:3px;border-radius:12px}
 :focus:not(:focus-visible){outline:none}
 @keyframes mRise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 @keyframes mLetter{0%{transform:translateY(108%) rotate(6deg);opacity:0}100%{transform:none;opacity:1}}
@@ -36,6 +36,28 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 @keyframes mBurst{0%{transform:scale(.5);opacity:.9}100%{transform:scale(2.1);opacity:0}}
 @keyframes mFlip{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
 `;
+
+/**
+ * Die fuenf Gegenstaende der Marke, in der Reihenfolge der Woerter im Kopf.
+ *
+ * Auf dem Desktop stehen sie als Gruppe neben der Ueberschrift, und wer mit
+ * der Maus auf einen faehrt, wechselt das Wort. Auf dem Handy gibt es kein
+ * Darueberfahren, also wird daraus eine Reihe zum Antippen: fuenf Kacheln,
+ * die zum Wort gehoerende leuchtet. Eine Reihe und keine verstreute Gruppe,
+ * weil eine Gruppe quadratisch waere und damit die Knoepfe unter die Kante
+ * schoebe -- gemessen 350 px Breite gegen 539 px Hoehe des ganzen Kopfes.
+ *
+ * Zuordnung wie in OnePage.tsx (GRUPPE + WORT_OBJEKT):
+ *   Wissen -> Gehirn, Glueck -> Fliegenpilz, Timing -> Sanduhr,
+ *   Teamgeist -> Puzzle, Bauchgefuehl -> Glaskugel.
+ */
+const MOBJEKTE = [
+  { av: '/assets/obj-gehirn.webp', farbe: '#3B82F6' },
+  { av: '/assets/av-qq-mushroom.webp', farbe: '#22C55E' },
+  { av: '/assets/obj-sanduhr.webp', farbe: '#FACC15' },
+  { av: '/assets/obj-puzzle.webp', farbe: '#F97316' },
+  { av: '/assets/av-qq-crystal-ball.webp', farbe: '#A855F7' },
+];
 
 // Team-Avatare: das CozyQuiz-Objektset der App (48 Motive). Die Objekte sind
 // farbneutral, die Teamfarbe kommt aus der Kachel darunter - deshalb sind hier
@@ -312,11 +334,30 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     );
   }
 
+  /**
+   * Ein Wort antippen heisst hier: den Gegenstand antippen.
+   *
+   * Der Takt laeuft danach von vorn, sonst springt das Wort ein paar
+   * Zehntel spaeter weiter und der Tipp fuehlt sich an, als haette er nicht
+   * gezaehlt.
+   */
+  hookWaehlen(i: number) {
+    clearInterval(this._hookT);
+    this.setState({ hookI: i });
+    this._hookT = setInterval(() => {
+      if (!document.hidden) this.setState(s => ({ hookI: s.hookI + 1 }));
+    }, 6800);
+  }
+
   renderHero() {
     const L = this.T;
     const hookI = this.state.hookI;
     const hook = L.hero.hooks[hookI % L.hero.hooks.length];
     const anim = hookI % 2 ? 'mLetterB' : 'mLetter';
+    // Das Wort traegt die Farbe seines Gegenstands, wie oben auf dem Desktop.
+    // Der Wechsel blendet ueber, er springt nicht: 0,62 s, dieselbe Dauer wie
+    // die Buchstabenwalze.
+    const objekt = MOBJEKTE[hookI % MOBJEKTE.length];
     return (
       <section id="top" style={sx('position:relative;overflow:hidden')}>
         <div style={sx('position:relative;padding:28px 20px 34px')}>
@@ -324,16 +365,45 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
           <h1 style={sx("margin:0;font-family:'League Spartan',sans-serif;font-weight:900;font-size:44px;line-height:.94;letter-spacing:-.03em")}>
             <span style={sx('display:block;padding:.14em .1em .06em;margin:-.14em -.1em -.06em;overflow:hidden;white-space:nowrap')}>
               {hook.split('').map((ch, j) => (
-                <span key={`${hookI}-${j}`} style={sx(`display:inline-block;color:#F6EFE6;animation:${anim} 1.05s ${EASE} both ${(j * 0.07).toFixed(3)}s`)}>{ch === ' ' ? ' ' : ch}</span>
+                <span key={`${hookI}-${j}`} style={sx(`display:inline-block;color:${objekt.farbe};transition:color .62s linear;animation:${anim} 1.05s ${EASE} both ${(j * 0.07).toFixed(3)}s`)}>{ch === ' ' ? ' ' : ch}</span>
               ))}
             </span>
             <span style={sx(`display:block;animation:mRise .8s ${EASE} both .12s`)}>{L.hero.rest}</span>
           </h1>
           <p style={sx(`margin:16px 0 0;font-size:16.5px;line-height:1.55;font-weight:600;color:rgba(246,239,230,.78);text-wrap:pretty;animation:mRise .8s ${EASE} both .1s`)}>{L.hero.sub}</p>
           <p style={sx(`margin:10px 0 0;font-size:15px;line-height:1.55;font-weight:700;color:rgba(246,239,230,.62);text-wrap:pretty;animation:mRise .8s ${EASE} both .14s`)}>{L.hero.sub2}</p>
-          <div style={sx(`margin-top:24px;display:flex;flex-direction:column;gap:11px;animation:mRise .8s ${EASE} both .18s`)}>
+          {/* Die Gegenstaende. Antippen wechselt das Wort, der zum Wort
+              gehoerende steht vorn: etwas groesser, volle Helligkeit und ein
+              Schein in seiner Farbe. Die anderen treten zurueck, aber sie
+              verschwinden nicht -- sie sind die Gruppe, aus der eine gerade
+              gemeint ist. Dieselbe Regel wie auf dem Desktop, wo Wolf zweimal
+              darauf bestanden hat, dass Helligkeit regelt und nicht
+              Durchsichtigkeit. */}
+          <div style={sx(`margin-top:22px;display:flex;gap:10px;animation:mRise .8s ${EASE} both .16s`)}>
+            {MOBJEKTE.map((o, i) => {
+              const wach = i === hookI % MOBJEKTE.length;
+              return (
+                <button key={i} type="button" onClick={() => this.hookWaehlen(i)}
+                  aria-label={L.hero.hooks[i]}
+                  style={sx('flex:1;min-width:0;padding:0;border:none;background:none;line-height:0;cursor:pointer;'
+                    + `transform:scale(${wach ? 1.06 : 1});transition:transform .32s ${EASE}`)}>
+                  <span style={sx('display:block;' + teammarke(o.farbe, o.av, 60)
+                    + 'width:100%;height:auto;aspect-ratio:1;background-size:90% auto,auto;border-radius:16%;'
+                    + `filter:brightness(${wach ? 1.08 : 0.68});`
+                    + `box-shadow:${wach ? `0 0 22px ${o.farbe}66` : 'none'};`
+                    + `transition:filter .32s ${EASE},box-shadow .32s ${EASE}`)}></span>
+                </button>
+              );
+            })}
+          </div>
+          <div style={sx(`margin-top:22px;display:flex;flex-direction:column;gap:11px;animation:mRise .8s ${EASE} both .18s`)}>
             <a href="#anfragen" onClick={() => this.setState({ tab: 'test', formStatus: 'idle' })}
-              style={sx('display:flex;flex-direction:column;align-items:center;gap:3px;padding:16px 20px;border-radius:18px;background:#F6EFE6;color:#0A0814;font-weight:900;font-size:17px;min-height:56px;box-sizing:border-box;justify-content:center;box-shadow:0 10px 26px rgba(0,0,0,.5)')}>
+              style={sx('display:flex;flex-direction:column;align-items:center;gap:3px;padding:16px 20px;border-radius:18px;background:#F6EFE6;color:#0A0814;font-weight:900;font-size:17px;min-height:56px;box-sizing:border-box;justify-content:center;'
+                // Der Knopf bleibt creme, er ist der Hauptweg und darf
+                // nicht die Farbe wechseln. Er bekommt nur einen Schein in
+                // der Farbe des Wortes, damit der Faden von oben bis hierher
+                // sichtbar bleibt: ein Wort, ein Gegenstand, ein Knopf.
+                + `box-shadow:0 10px 26px rgba(0,0,0,.5),0 6px 34px ${objekt.farbe}3d;transition:box-shadow .62s linear`)}>
               {L.hero.cta}<span style={sx('font-size:13px;font-weight:800;opacity:.72')}>{L.hero.ctaSub}</span>
             </a>
             <div style={sx('display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap')}>
@@ -343,7 +413,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             </div>
           </div>
           <div style={sx('margin-top:22px;display:flex;align-items:center;gap:9px;font-size:14px;font-weight:700;letter-spacing:.01em;color:rgba(246,239,230,.72)')}>
-            <span style={sx('flex:none;width:7px;height:7px;border-radius:50%;background:#FA4BA3')}></span>
+            <span style={sx(`flex:none;width:7px;height:7px;border-radius:50%;background:${objekt.farbe};transition:background .62s linear`)}></span>
             <span style={sx('text-wrap:pretty')}>{L.hero.avail}</span>
           </div>
         </div>
