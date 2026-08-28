@@ -112,6 +112,12 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
 /* Die Funken auf der Begruessungsfolie atmen, statt still zu stehen. Sehr
    langsam und ohne Groessenwechsel: ein Punkt, der pulsiert, ist ein
    Ladezeichen, ein Punkt, der heller und dunkler wird, ist Licht. */
+/* Folienwechsel in der Beameransicht: das Eintreffende blendet auf und kommt
+   dabei ein Stueck von unten. Kein Herausblenden, das gaebe eine Luecke --
+   in einer Praesentation loest die neue Folie die alte ab, sie verabschiedet
+   sie nicht. */
+@keyframes cwFolie{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){[data-m=screenbox] [style*=cwFolie]{animation:none!important}}
 @keyframes cwFunke{0%,100%{opacity:.35}50%{opacity:1}}
 @media (prefers-reduced-motion:reduce){[data-m=wall] span[style*=cwFunke]{animation:none!important}}
 @keyframes cwBeamOn{0%{opacity:0}6%{opacity:.3}13%{opacity:.1}20%{opacity:.34}30%{opacity:.16}40%{opacity:.3}62%{opacity:.2}82%{opacity:.08}100%{opacity:0}}
@@ -305,8 +311,8 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
    Schichten, und eine Weichzeichnung darauf waehrend des Scrollens kostet
    mehr, als sie zeigt. Sie behaelt den ruhigen Lauf. */
 @keyframes cwEinfahrenStark{
-  from{transform:translateY(52px) scale(.988);opacity:0;filter:blur(6px)}
-  62%{opacity:1}
+  from{transform:translateY(64px) scale(.984);opacity:0;filter:blur(9px)}
+  58%{opacity:1}
   to{transform:none;opacity:1;filter:blur(0)}
 }
 /* Der Spruch am Ende waechst, waehrend sein Halt durchs Fenster faehrt. */
@@ -387,14 +393,32 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
        Element gleich lang: 900 plus Elementhoehe. 26 Prozent davon sind rund
        240 px Scrollweg, gleich viel fuer die Ueberschrift wie fuer die Zeile
        darunter. Die Staffelung bleibt, sie verschiebt jetzt nur den Beginn. */
+    /* Wolf am 28.08.: "scroll effekt ist da aber beginnt zu frueh, waehrend
+       ich noch auf der page bin sieht man unten blurry ... also raeumlich
+       spaeter aber mit mehr staerke vlt?"
+
+       Der Fehler war die Laenge, nicht der Anfang. Bei einem Fenster von
+       900 px ist die Strecke "cover" rund 925 px lang; 26 Prozent davon sind
+       240 px, und mit der Staffelung wurden daraus 36 Prozent, also 333 px.
+       Ein Element war damit erst scharf, wenn seine Oberkante ein Drittel des
+       Fensters ueber der Unterkante stand -- das ganze untere Drittel war
+       dauerhaft weich, und genau das sieht man beim Lesen.
+
+       Jetzt beginnt es spaeter (5 statt 0 Prozent, das Element bleibt die
+       ersten 46 px unsichtbar) und endet frueher (19 statt 26), die Staffelung
+       traegt nur noch 1,5 statt 3 Prozent je Schritt. Unterm Strich laeuft es
+       auf 130 px Scrollweg statt 240 und ist spaetestens 217 px ueber der
+       Unterkante fertig. Dafuer ist es lauter: 64 px Weg und 9 px Unschaerfe
+       statt 52 und 6. Kuerzer und kraeftiger liest sich als Ankommen, lang
+       und leise als Schleier. */
     [data-bew] [data-reveal]{
       animation:cwEinfahren linear both;animation-timeline:view();
-      animation-range:cover 0% cover 26%;
+      animation-range:cover 5% cover 19%;
     }
     [data-bew] [data-reveal]:not([data-m=wall]){animation-name:cwEinfahrenStark}
-    [data-bew] [data-reveal]:nth-child(2){animation-range:cover 3% cover 30%}
-    [data-bew] [data-reveal]:nth-child(3){animation-range:cover 6% cover 33%}
-    [data-bew] [data-reveal]:nth-child(n+4){animation-range:cover 9% cover 36%}
+    [data-bew] [data-reveal]:nth-child(2){animation-range:cover 6.5% cover 20.5%}
+    [data-bew] [data-reveal]:nth-child(3){animation-range:cover 8% cover 22%}
+    [data-bew] [data-reveal]:nth-child(n+4){animation-range:cover 9.5% cover 23.5%}
     /* Wolf am 28.08.: "manchmal koennte es noch ein bisschen mehr sein zb
        beim rausscrollen". Also ein zweiter, sehr viel leiserer Lauf beim
        Verlassen nach oben: der Halt sinkt ein wenig und nimmt Deckkraft ab,

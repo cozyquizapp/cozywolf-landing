@@ -39,7 +39,15 @@ export type OnePageDict = {
   };
   sim: {
     teams: Record<string, string>;
-    questions: { cat: string; col: string; text: string; opts: string[]; correct: number; pick: number }[];
+    questions: {
+      /** mucho: eine richtige Antwort. zehn: 10 Punkte verteilen. schaetz: eine Zahl raten. */
+      art: 'mucho' | 'zehn' | 'schaetz';
+      cat: string; col: string; text: string; opts: string[]; correct: number;
+      /** Nur bei schaetz: die Loesung und ihre Einheit. */
+      loesung?: string; einheit?: string;
+      /** Nur bei zehn: wie die drei Teams ihre zehn Punkte verteilt haben. */
+      punkte?: number[][];
+    }[];
     welcomeKicker: string; welcomeTitle: string; welcomeSub: string;
     answering: string; reveal: string; verbSet: string; verbSteal: string; verbStack: string;
     answeredLine: (n: number, ges: number) => string;
@@ -134,13 +142,21 @@ const de: OnePageDict = {
       // Spielstand zwei von drei Namen leer.
       d: 'Quiz-Mafia', s: 'Pub-Crawl-Profis', b: 'Frag-Mich-Was-Leichtes',
     },
+    /* Wolf am 28.08.: "bitte einmal mucho und einmal 10 v 10 und einmal
+       schaetzchen, nicht 3 mal mucho? geht das?" Ja, aber nicht durch ein
+       anderes Etikett auf derselben Folie -- genau das war der Fehler, den er
+       bei Station 03 zu Recht angestrichen hat. Die drei Kategorien spielen
+       verschieden, also sieht die Folie fuer jede anders aus: Mu-Cho waehlt
+       eine Antwort, 10 von 10 verteilt zehn Punkte auf die drei, Schaetzchen
+       hat gar keine Antworten, sondern eine Zahl. */
     questions: [
-      { cat: 'Mu-Cho', col: '#3B82F6', text: 'Was verschickte Netflix, bevor es Streaming gab?',
-        opts: ['DVDs per Post', 'Videokassetten', 'Musik-CDs'], correct: 0, pick: 0 },
-      { cat: 'Mu-Cho', col: '#3B82F6', text: 'Womit fing Nintendo an?',
-        opts: ['Spielkarten', 'Taschenrechner', 'Spielautomaten'], correct: 0, pick: 0 },
-      { cat: 'Bunte Tüte', col: '#EF4444', text: 'Welche Aussage stimmt nicht?',
-        opts: ['Honig verdirbt nicht', 'Die Chinesische Mauer sieht man vom Mond', 'Bananen sind botanisch Beeren'], correct: 1, pick: 2 },
+      { art: 'mucho', cat: 'Mu-Cho', col: '#3B82F6', text: 'Was verschickte Netflix, bevor es Streaming gab?',
+        opts: ['DVDs per Post', 'Videokassetten', 'Musik-CDs'], correct: 0 },
+      { art: 'zehn', cat: '10 von 10', col: '#22C55E', text: 'Welches Land hat die meisten Zeitzonen?',
+        opts: ['Russland', 'USA', 'Frankreich'], correct: 2,
+        punkte: [[6, 3, 1], [2, 2, 6], [3, 0, 7]] },
+      { art: 'schaetz', cat: 'Schätzchen', col: '#F59E0B', text: 'Wie hoch ist der Michel?',
+        opts: [], correct: 0, loesung: '132', einheit: 'Meter' },
     ],
     welcomeKicker: 'Herzlich willkommen zum', welcomeTitle: 'COZYQUIZ',
     welcomeSub: 'Macht’s euch bequem, gleich geht’s los!',
@@ -343,12 +359,13 @@ const en: OnePageDict = {
       d: 'Quiz Mafia', s: 'Pub Crawl Pros', b: 'Ask-Me-Something-Easy',
     },
     questions: [
-      { cat: 'Mu-Cho', col: '#3B82F6', text: 'What did Netflix ship before streaming existed?',
-        opts: ['DVDs by mail', 'VHS tapes', 'Music CDs'], correct: 0, pick: 0 },
-      { cat: 'Mu-Cho', col: '#3B82F6', text: 'How did Nintendo start?',
-        opts: ['Playing cards', 'Calculators', 'Slot machines'], correct: 0, pick: 0 },
-      { cat: 'Bunte Tüte', col: '#EF4444', text: 'Which statement is false?',
-        opts: ['Honey never spoils', 'You can see the Great Wall from the Moon', 'Bananas are botanically berries'], correct: 1, pick: 2 },
+      { art: 'mucho', cat: 'Mu-Cho', col: '#3B82F6', text: 'What did Netflix ship before streaming existed?',
+        opts: ['DVDs by mail', 'VHS tapes', 'Music CDs'], correct: 0 },
+      { art: 'zehn', cat: 'All In', col: '#22C55E', text: 'Which country has the most time zones?',
+        opts: ['Russia', 'USA', 'France'], correct: 2,
+        punkte: [[6, 3, 1], [2, 2, 6], [3, 0, 7]] },
+      { art: 'schaetz', cat: 'Close Call', col: '#F59E0B', text: 'How tall is Hamburg’s Michel?',
+        opts: [], correct: 0, loesung: '132', einheit: 'metres' },
     ],
     welcomeKicker: 'A warm welcome to', welcomeTitle: 'COZYQUIZ',
     welcomeSub: 'Make yourselves comfortable, we’re about to start!',

@@ -1741,8 +1741,17 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
     const qOptions = q.opts.map((label, k) => {
       const hit = revealed && k === q.correct;
+      // Bei 10 von 10 liegen auf jeder Antwort Punkte statt eines Kreuzes.
+      // Gezaehlt werden nur die Teams, die schon abgegeben haben -- so fuellt
+      // sich die Zeile waehrend der Frage, genau wie am Abend.
+      const punkte = q.art === 'zehn' && q.punkte
+        ? q.punkte.slice(0, answered).reduce((summe, team) => summe + (team[k] ?? 0), 0)
+        : 0;
       return {
-        label, num: k + 1,
+        label, num: k + 1, punkte,
+        punkteStyle: `flex:none;min-width:30px;text-align:right;font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;line-height:1;`
+          + `color:${hit ? q.col : 'rgba(246,239,230,.72)'};font-variant-numeric:tabular-nums;`
+          + `opacity:${punkte > 0 ? 1 : 0};transition:opacity .35s ${EASE},color .4s ${EASE}`,
         style: `flex:1;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:10px;box-sizing:border-box;background:${hit ? q.col + '1f' : 'rgba(0,0,0,.28)'};border:1px solid ${hit ? q.col : 'rgba(246,239,230,.14)'};box-shadow:${hit ? `0 0 26px ${q.col}55` : 'none'};transition:background .4s ${EASE},border-color .4s ${EASE},box-shadow .4s ${EASE}`,
         numStyle: `font-family:'League Spartan',sans-serif;font-size:32px;font-weight:900;line-height:1;color:${q.col}`,
       };
@@ -1951,9 +1960,19 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     return {
       cells, standings, seconds, qOptions, teamDiscs,
       qText: q.text, catName: q.cat,
+      // Die drei Kategorien spielen verschieden, also sieht der Bereich unter
+      // der Frage fuer jede anders aus. Siehe die Anmerkung bei questions in
+      // texts.ts.
+      qArt: q.art,
+      qLoesung: q.loesung ?? '', qEinheit: q.einheit ?? '',
+      schaetzStyle: `display:flex;align-items:baseline;justify-content:center;gap:10px;padding:14px 22px;border-radius:12px;box-sizing:border-box;`
+        + `background:${revealed ? q.col + '1f' : 'rgba(0,0,0,.28)'};border:1px solid ${revealed ? q.col : 'rgba(246,239,230,.14)'};`
+        + `box-shadow:${revealed ? `0 0 26px ${q.col}55` : 'none'};transition:background .4s ${EASE},border-color .4s ${EASE},box-shadow .4s ${EASE}`,
+      schaetzZahlStyle: `font-family:'League Spartan',sans-serif;font-size:40px;font-weight:900;line-height:1;color:${revealed ? q.col : 'rgba(246,239,230,.34)'};font-variant-numeric:tabular-nums;transition:color .4s ${EASE}`,
+      schaetzEinheitStyle: `font-size:15px;font-weight:900;color:${revealed ? '#F6EFE6' : 'rgba(246,239,230,.34)'};transition:color .4s ${EASE}`,
       // Wie weit die Runde ist: ein Zug von MOVES entspricht einer Frage.
       fortschritt: Math.round(Math.min(1, (cycle + 1) / (MOVES.length + 1)) * 100),
-      showQuestion: phase !== 'b', showBoard: phase === 'b',
+      showQuestion: phase !== 'b', showBoard: phase === 'b', showReveal: revealed, runde: cycle,
       statusLine: phase === 'b' ? `${active ? L.sim.teams[active.id] : ''} ${verb}` : (revealed ? L.sim.reveal : L.sim.answering),
       answeredLine: L.sim.answeredLine(answered, TEAMS.length),
       // Die Beamer-Ansicht der App, Stand 27.08., nach den Bildschirmfotos, die
@@ -2884,10 +2903,19 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                         muted playsInline preload="none" width={384} height={440}
                         style={sx('position:absolute;left:-34px;bottom:-26px;width:auto;height:74%;'
                           + 'filter:drop-shadow(0 18px 30px rgba(0,0,0,.55))')} />
-                      <div style={sx('position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0 40px;box-sizing:border-box')}>
-                        <span style={sx('font-size:13px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.78)')}>{L.sim.welcomeKicker}</span>
-                        <span style={sx("font-family:'League Spartan',sans-serif;font-size:76px;font-weight:900;letter-spacing:.06em;line-height:.92;color:#F6EFE6;text-transform:uppercase")}>{L.sim.welcomeTitle}</span>
-                        <span style={sx('margin-top:10px;font-size:19px;font-weight:900;line-height:1.3;color:#F6EFE6;text-align:center')}>{L.sim.welcomeSub}</span>
+                      {/* Wolf am 28.08.: "wolf sieht super aus, jetzt noch text
+                          kleiner dann liegt der wolf nicht vorne dran".
+                          Zwei Griffe: die Wortmarke von 76 auf 58 px, und der
+                          Textblock bekommt links Platz fuer den Wolf. Er steht
+                          bei 74 Prozent Hoehe und reicht damit rund 200 px in
+                          die 640 px breite Folie -- der Text zentriert sich
+                          jetzt in dem, was daneben uebrig ist, statt in der
+                          ganzen Flaeche. Damit steht der Wolf neben der Marke
+                          und nicht davor. */}
+                      <div style={sx('position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:0 34px 0 206px;box-sizing:border-box')}>
+                        <span style={sx('font-size:12px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.78)')}>{L.sim.welcomeKicker}</span>
+                        <span style={sx("font-family:'League Spartan',sans-serif;font-size:58px;font-weight:900;letter-spacing:.05em;line-height:.92;color:#F6EFE6;text-transform:uppercase")}>{L.sim.welcomeTitle}</span>
+                        <span style={sx('margin-top:8px;font-size:17px;font-weight:900;line-height:1.3;color:#F6EFE6;text-align:center')}>{L.sim.welcomeSub}</span>
                       </div>
                     </div>
                     <span aria-hidden="true" style={sx('position:absolute;inset:0;pointer-events:none;overflow:hidden')}>
@@ -2918,29 +2946,58 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                       <span style={sx(g.ringStyle)}>{g.seconds}</span>
                     </div>
 
+                    {/* Wolf am 28.08.: "die uebergaenge in der
+                        beamerpraesentation koennten noch etwas cleaner sein".
+                        Vorher wurde hart geschnitten: Frage weg, Brett da, im
+                        selben Bild. Jetzt blendet das Eintreffende in 0,38 s
+                        auf und kommt dabei 10 px von unten -- eine
+                        Folienschaltung statt eines Sprungs. Der Schluessel
+                        haengt an der Rundennummer, damit die Bewegung bei
+                        jedem Wechsel neu laeuft, aber NICHT beim Uebergang von
+                        der Frage zur Aufloesung: dort blenden Rahmen und Grund
+                        der richtigen Antwort weich um, und ein Neuaufbau
+                        mittendrin wuerde genau das abwuergen. */}
                     {g.showQuestion && (
-                      <>
+                      <div key={`f${g.runde}`} style={sx(`display:flex;flex-direction:column;flex:1;min-height:0;animation:cwFolie .38s ${EASE} both`)}>
                         {/* Die Frage steht frei und mittig, ohne Kasten. Der
                             Kasten war das letzte, was die Folie eingeengt hat,
                             und in der App gibt es ihn nicht. */}
                         <div style={sx('flex:1;display:flex;align-items:center;justify-content:center;padding:0 18px;min-height:0')}>
                           <div style={sx(g.qCardStyle)}>{g.qText}</div>
                         </div>
-                        <div style={sx('display:flex;gap:12px;flex:none')}>
-                          {g.qOptions.map((o, i) => (
-                            <div key={i} style={sx(o.style)}>
-                              <span style={sx(o.numStyle)}>{o.num}</span>
-                              <span style={sx('font-size:14px;font-weight:900;color:#F6EFE6;line-height:1.2')}>{o.label}</span>
+                        {/* Schaetzchen hat keine Antworten zum Anklicken,
+                            sondern eine Zahl. Vor der Aufloesung stehen drei
+                            Striche da, danach die Zahl mit ihrer Einheit -- das
+                            ist der ganze Reiz der Kategorie, und drei
+                            Auswahlzeilen daneben waeren eine Behauptung ueber
+                            ein Spiel, das es so nicht gibt. */}
+                        {g.qArt === 'schaetz' ? (
+                          <div style={sx('display:flex;justify-content:center;flex:none')}>
+                            <div style={sx(g.schaetzStyle)}>
+                              <span style={sx(g.schaetzZahlStyle)}>{g.showReveal ? g.qLoesung : '– – –'}</span>
+                              <span style={sx(g.schaetzEinheitStyle)}>{g.qEinheit}</span>
                             </div>
-                          ))}
-                        </div>
+                          </div>
+                        ) : (
+                          <div style={sx('display:flex;gap:12px;flex:none')}>
+                            {g.qOptions.map((o, i) => (
+                              <div key={i} style={sx(o.style)}>
+                                <span style={sx(o.numStyle)}>{o.num}</span>
+                                <span style={sx('flex:1;font-size:14px;font-weight:900;color:#F6EFE6;line-height:1.2')}>{o.label}</span>
+                                {/* Nur bei 10 von 10: die Punkte, die bisher auf
+                                    dieser Antwort liegen. */}
+                                {g.qArt === 'zehn' && <span style={sx(o.punkteStyle)}>{o.punkte}</span>}
+                              </div>
+                            ))}
+                          </div>
+                        )}
                         <div style={sx('margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:8px;flex:none')}>
                           <span style={sx('font-size:12.5px;font-weight:900;letter-spacing:.04em;color:rgba(246,239,230,.7);white-space:nowrap')}>{g.answeredLine}</span>
                           <div style={sx('display:flex;gap:10px')}>
                             {g.teamDiscs.map((d, i) => <span key={i} style={sx(d.style)}></span>)}
                           </div>
                         </div>
-                      </>
+                      </div>
                     )}
 
                     {/* Das Brett rechnet seine Zellgroesse aus der rechten
@@ -2950,7 +3007,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                         ueberdeckt. Deshalb hier ein Faktor statt einer
                         zweiten Rechnung: dieselbe Zeichnung, kleiner. */}
                     {g.showBoard && (
-                      <div style={sx('flex:1;min-height:0;width:100%;margin-top:8px;display:flex;gap:12px;align-items:center;justify-content:center;overflow:hidden')}>
+                      <div key={`b${g.runde}`} style={sx(`flex:1;min-height:0;width:100%;margin-top:8px;display:flex;gap:12px;align-items:center;justify-content:center;overflow:hidden;animation:cwFolie .38s ${EASE} both`)}>
                         <div style={sx('flex:none;transform:scale(.72);transform-origin:center center')}>
                           {this.renderBoard(g)}
                         </div>
