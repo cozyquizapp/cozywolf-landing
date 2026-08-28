@@ -2227,14 +2227,15 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             <h2 data-reveal="" style={sx(`margin:12px 0 10px;font-family:'League Spartan',sans-serif;font-size:${H2_GROSS};line-height:.9;letter-spacing:-.032em;font-weight:900;color:#F6EFE6`)}>{L.probe.h2}</h2>
             <div data-reveal="" style={sx('margin-bottom:16px;' + UNTERZEILE)}>{L.probe.kicker}</div>
             <p data-reveal="" style={sx('margin:0 0 26px;max-width:520px;font-size:17px;line-height:1.6;color:rgba(246,239,230,.78);font-weight:500')}>{L.probe.sub}</p>
-            {/* Zweitens war das hier der letzte Kasten der Seite: Rahmen,
-                Fuellung, dicker Balken links. 01, 02, 04 und 06 tragen
-                Haarlinien, also traegt 03 jetzt auch eine. Die Farbe des
-                Fragetyps bleibt, sie steht nur nicht mehr als Flaeche da. */}
-            <div style={sx(`margin-bottom:26px;padding:20px 0 0;border-top:1px solid rgba(246,239,230,.14);transition:border-color .3s ${EASE}`)}>
-              <div style={sx(`font-size:18px;font-weight:900;line-height:1.35;color:${col};margin-bottom:7px;transition:color .3s ${EASE}`)}>{catT.claim}</div>
-              <div style={sx('font-size:15.5px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78)')}>{catT.detail}</div>
-            </div>
+            {/* Hier standen Anspruch und Satz des gewaehlten Fragetyps. Sie
+                sind in die Spalte der Liste gewandert, siehe dort.
+                Wolf am 28.08.: "text unten zu lange blurry, wie waere es den
+                text ueber die kategorien zu machen?" Die Meldung galt der
+                Unschaerfe, der eigentliche Fehler lag aber in der Zuordnung:
+                die zwei Zeilen gehoeren zu der Kategorie, die man gerade
+                gewaehlt hat, standen aber in einer anderen Spalte weit unter
+                der Liste. Man aendert etwas in der Mitte und liest die Folge
+                links unten. */}
             <div data-reveal="" style={sx('display:flex;flex-direction:column;gap:10px;font-size:15.5px;font-weight:700;color:#F6EFE6')}>
               <span style={sx('display:flex;align-items:center;gap:11px')}><span style={sx('color:#22C55E')}>✓</span>{L.probe.check1}</span>
               <span style={sx('display:flex;align-items:center;gap:11px')}><span style={sx('color:#22C55E')}>✓</span>{L.probe.check2}</span>
@@ -2249,7 +2250,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             }}
             onMouseLeave={() => this.setState({ ptilt: null })}
             data-m="probe" style={sx('display:flex;align-items:center;gap:52px;perspective:1200px')}>
-            <div style={sx('display:flex;flex-direction:column;flex:none;min-width:250px')}>
+            <div style={sx('display:flex;flex-direction:column;flex:none;min-width:250px;max-width:300px')}>
               {PROBE_ORDER.map((k, i) => {
                 const mt = CAT_META.find(c => c.key === k);
                 const ct = L.probe.cats[k];
@@ -2289,6 +2290,16 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   </button>
                 );
               })}
+              {/* Anspruch und Satz des gewaehlten Fragetyps, direkt unter der
+                  Liste. Dort passiert die Wahl, dort gehoert die Antwort hin.
+                  Die Haarlinie schliesst die Liste ab, wie die Linie ueber
+                  jeder Zeile sie oeffnet. Eine feste Mindesthoehe, damit die
+                  Liste beim Wechseln nicht springt: der laengste der fuenf
+                  Saetze braucht drei Zeilen, der kuerzeste eine. */}
+              <div style={sx(`margin-top:20px;padding:18px 0 0;min-height:104px;border-top:1px solid rgba(246,239,230,.14)`)}>
+                <div style={sx(`font-size:17px;font-weight:900;line-height:1.35;color:${col};margin-bottom:6px;transition:color .3s ${EASE}`)}>{catT.claim}</div>
+                <div style={sx('font-size:15px;line-height:1.6;font-weight:500;color:rgba(246,239,230,.78);text-wrap:pretty')}>{catT.detail}</div>
+              </div>
             </div>
             <div style={sx('transform-style:preserve-3d;transform-origin:50% 84%;'
               + `transform:rotateX(${up ? (tilt ? -tilt.y * 9 : 0) : 64}deg) rotateY(${up && tilt ? (tilt.x * 12).toFixed(1) : 0}deg) rotateZ(${up ? 0 : -8}deg) scale(${up ? 1 : .9});`
@@ -3333,17 +3344,30 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             Scrollbehaelter, der nicht scrollt, und darin bleibt eine
             Ansichts-Zeitleiste stehen. Gemessen war der Spruch vorher an
             beiden Scrollstaenden exakt gleich gross. */}
-        {/* Wolf am 28.08.: "platziere die schrift mittig wenn die scrollbar ganz
-            unten ist, aktuell schiebt sich der text noch leicht ueber die
-            mitte". Stimmt, und es ist Arithmetik: am Seitenende zeigt das
-            Fenster die letzten 100svh, davon belegt der Fussbereich die
-            unteren F Pixel. Der Text steht in einem Halt der Hoehe 100svh
-            mittig, also svh/2 ueber dessen Unterkante; mittig im FENSTER
-            waere svh/2 minus F. Ein Polster von 2F oben schiebt die Mitte um
-            genau F nach unten und loest das exakt.
-            F wird gemessen und nicht geschaetzt, der Fussbereich ist in
-            beiden Sprachen verschieden hoch. */}
-        <section data-halt="" data-spruch="" style={sx('background:#0A0814;height:clamp(420px,92svh,980px);min-height:0;padding:0 32px;box-sizing:border-box')}>
+        {/* Wolf am 28.08. zweimal: erst "platziere die schrift mittig wenn
+            die scrollbar ganz unten ist", dann "text ist nicht mittig wenn ganz
+            unten (ist das browser abhaengig?)".
+
+            Die erste Fassung rechnete mit einem Polster von zwei Fusshoehen
+            oben, das die Mitte um genau eine Fusshoehe nach unten schiebt. Die
+            Rechnung stimmt, nur stand sie am Ende nicht mehr im Code: gemessen
+            war --fuss korrekt auf 113 px, das padding-top des Abschnitts aber
+            auf 0. Uebrig blieb ein Abschnitt von 92svh, der hoeher ist als der
+            freie Bereich ueber dem Fuss, und dessen Mitte damit zu weit oben
+            liegt. In Chromium waren das 16 px bei 2000x1013, 21 bei 1440x900,
+            25 bei 1280x800 -- und ja, das ist browserabhaengig, weil svh je
+            nach Browser und Werkzeugleisten verschieden ausfaellt.
+
+            Statt die Rechnung zu reparieren, faellt sie weg: der Abschnitt ist
+            jetzt genau so hoch wie der freie Bereich, 100svh minus Fusshoehe.
+            Dann ist seine Unterkante die Oberkante des Fusses und seine eigene
+            Mitte ist die Mitte des Fensters, ohne Ausgleich. Die 420 px als
+            Untergrenze bleiben, damit der Spruch auf sehr flachen Fenstern
+            nicht zerdrueckt wird.
+            F wird weiter gemessen und nicht geschaetzt, der Fussbereich ist in
+            beiden Sprachen verschieden hoch; 113 px ist nur der Notwert, falls
+            die Messung noch nicht gelaufen ist. */}
+        <section data-halt="" data-spruch="" style={sx('background:#0A0814;height:max(420px,calc(100svh - var(--fuss,113px)));min-height:0;padding:0 32px;box-sizing:border-box')}>
           {/* Wolf am 28.08.: "die schrift fuellt sich satisfying beim hovern,
               hast du ne idee mit was, soll geil aussehen, und nur da wo man
               mit der maus drueber hovert".

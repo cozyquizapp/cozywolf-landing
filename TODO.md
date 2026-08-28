@@ -50,64 +50,25 @@ Dazu die Form: es ist die einzige Stelle der Seite mit einer Wolke aus
 Kapseln. Das Muster kommt aus Lebenslaeufen und Profilseiten, und unter einem
 persoenlichen Zitat liest es sich als Faehigkeitsliste.
 
-Zu tun: raus, samt chips aus texts.ts in beiden Sprachen.
+Zu tun: raus, samt chips aus texts.ts in beiden Sprachen. Wolf am 28.08.
+dazu: "denk daran den text dann wieder richtig auszurichten ans bild" -- die
+rechte Spalte steht heute mittig zur linken, weil die Kapseln sie nach unten
+verlaengern. Ohne sie muss die Ausrichtung neu gesetzt werden, sonst haengt
+der Text neben dem Foto in der Luft.
 
-### 4. Der Aufbau von 03 auf dem Desktop
+## Erledigt
 
-Gemeldet am 28.08.: "text unten zu lange blurry, wie waere es den text also
-die 2 saetze ueber die kategorien zu machen? oder besser diesen bereich ueber
-die kategorien und den anderen text hochschieben?"
-
-Zwei Sachen liegen da uebereinander, und sie haben verschiedene Ursachen.
-
-Erstens die Unschaerfe. Die zwei Haken sind das vierte und fuenfte Element
-ihrer Spalte, und die Staffelung schiebt deren Strecke bis cover 23,5 Prozent
-nach hinten. Sie sind damit erst scharf, wenn ihre Oberkante rund 220 px ueber
-der Unterkante steht, und weil sie ganz unten in einer langen Spalte stehen,
-faellt genau das auf. Das ist unabhaengig vom Aufbau zu beheben: die
-Staffelung fuer alles ab dem vierten Element kappen, damit kein Element
-spaeter als cover 19 Prozent fertig wird.
-
-Zweitens die Zuordnung, und das ist der eigentliche Punkt. Der farbige
-Anspruch und der Satz darunter ("Spend your points wisely. / 3 answers, 10
-points.") gehoeren zu der Kategorie, die man gerade gewaehlt hat -- sie stehen
-aber in einer anderen Spalte, weit unter der Liste. Man aendert etwas rechts
-und liest die Folge links unten.
-
-Von Wolf am 28.08. so entschieden ("wir nehmen deinen vorschlag fuer punkt
-4"), statt beider Varianten aus der Meldung:
- * Anspruch und Satz wandern direkt unter die Kategorienliste, in dieselbe
-   Spalte. Dort gehoeren sie hin, dort passiert die Wahl.
- * Die zwei Haken ruecken in der linken Spalte direkt unter den Absatz. Die
-   linke Spalte ist dann durchgehend "worum es hier geht", die mittlere
-   "waehl eine, das ist sie".
- * Damit ist die linke Spalte kuerzer, endet hoeher, und die Unschaerfe faellt
-   ohnehin weniger auf.
-
-### 5. Der Spruch am Seitenende steht nicht mittig
-
-Gemeldet am 28.08.: "text ist nicht mittig wenn ganz unten (ist das browser
-abhaengig?)".
-
-Teils. Der Hauptgrund ist aber ein anderer, und der ist eindeutig: der
-Ausgleich, der im Kommentar steht, ist im Code gar nicht da. Dort heisst es,
-ein Polster von zwei Fusshoehen oben schiebe die Mitte um genau eine Fusshoehe
-nach unten. Gemessen steht --fuss korrekt auf 113 px, das padding-top des
-Abschnitts aber auf 0. Der Ausgleich ist also entweder nie eingebaut oder
-irgendwann mit rausgeflogen.
-
-Was ich messen konnte (Chromium, ganz unten gescrollt, Abweichung nach oben):
-16 px bei 2000x1013, 21 px bei 1440x900, 25 px bei 1280x800. In Wolfs
-Bildschirmfoto sieht es nach deutlich mehr aus, und das ist der browserabhaengige
-Teil: 92svh faellt je nach Browser und Werkzeugleisten verschieden aus, und
-je hoeher der Abschnitt gegenueber dem freien Bereich ist, desto weiter
-rutscht seine Mitte nach oben.
-
-Zu tun, und zwar so, dass die Frage nach dem Browser gar nicht mehr aufkommt:
-dem Abschnitt height:calc(100svh - var(--fuss)) geben statt clamp(...92svh...).
-Dann ist seine Unterkante genau die Oberkante des Fusses, und seine eigene
-Mitte ist die Mitte des freien Bereichs -- ohne Ausgleichsrechnung. Danach bei
-1280, 1440 und 2000 nachmessen, Abweichung muss 0 sein.
+* **4. Der Aufbau von 03 auf dem Desktop.** Anspruch und Satz des gewaehlten
+  Fragetyps stehen jetzt direkt unter der Kategorienliste, in derselben
+  Spalte, statt weit darunter in einer anderen. Die zwei Haken folgen in der
+  linken Spalte direkt auf den Absatz. Dazu endet die Staffelung des
+  Einfahreffekts jetzt fuer alle Elemente bei cover 19 Prozent statt bis 23,5
+  zu laufen: der letzte laeuft kuerzer, nicht spaeter.
+* **5. Der Spruch am Seitenende steht nicht mittig.** Der Abschnitt ist jetzt
+  genau so hoch wie der freie Bereich, 100svh minus gemessene Fusshoehe,
+  statt 92svh mit einer Ausgleichsrechnung, die im Code gar nicht stand.
+  Gemessen, Abweichung von der Fenstermitte: 0 px bei 2000x1013, 1440x900 und
+  1280x800; vorher 16, 21 und 25 px.
 
 ## Ideen, die wir verworfen haben (damit sie nicht zweimal kommen)
 

@@ -416,9 +416,17 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
       animation-range:cover 5% cover 19%;
     }
     [data-bew] [data-reveal]:not([data-m=wall]){animation-name:cwEinfahrenStark}
-    [data-bew] [data-reveal]:nth-child(2){animation-range:cover 6.5% cover 20.5%}
-    [data-bew] [data-reveal]:nth-child(3){animation-range:cover 8% cover 22%}
-    [data-bew] [data-reveal]:nth-child(n+4){animation-range:cover 9.5% cover 23.5%}
+    /* Die Staffelung verschiebt nur noch den Anfang, nicht mehr das Ende.
+       Wolf am 28.08.: "text unten zu lange blurry". Vorher lief das vierte
+       Element einer Spalte bis cover 23,5 Prozent, war also erst scharf, wenn
+       seine Oberkante rund 220 px ueber der Unterkante stand -- und weil das
+       vierte Element ganz unten in einer langen Spalte steht, faellt genau da
+       auf, was oben niemand merkt. Jetzt endet alles bei 19 Prozent, und die
+       Staffelung frisst sich in den Anfang: der letzte laeuft kuerzer, nicht
+       spaeter. */
+    [data-bew] [data-reveal]:nth-child(2){animation-range:cover 6.5% cover 19%}
+    [data-bew] [data-reveal]:nth-child(3){animation-range:cover 8% cover 19%}
+    [data-bew] [data-reveal]:nth-child(n+4){animation-range:cover 9.5% cover 19%}
     /* Wolf am 28.08.: "manchmal koennte es noch ein bisschen mehr sein zb
        beim rausscrollen". Also ein zweiter, sehr viel leiserer Lauf beim
        Verlassen nach oben: der Halt sinkt ein wenig und nimmt Deckkraft ab,
