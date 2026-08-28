@@ -37,8 +37,21 @@ Geprueft und gemessen: die Seite setzt null Cookies, schreibt vor einer
 Nutzerhandlung gar nichts, und danach genau einen Eintrag, die Sprachwahl.
 Der faellt unter Paragraf 25 Absatz 2 Nummer 2 TDDDG (technisch
 erforderlich), GoatCounter speichert nichts auf dem Geraet. Kein Banner
-noetig. Zwei Angebote stehen offen, falls es wasserdicht sein soll: das
-Zaehlskript selbst hosten, und die Sprachwahl auf sessionStorage umstellen.
+noetig.
+
+Wolf am 28.08. zu den zwei Angeboten (Zaehlskript selbst hosten,
+Sprachwahl auf sessionStorage): "ne das machen wir nicht selbst kannst du
+abhaken". Damit ist der Punkt zu.
+
+### Ein englischer Name fuer "10 von 10"
+
+Wolf am 28.08.: "mit dem namen all in muss ich mir was ueberlegen, was
+waere denn ein guter name auf englisch fuer die kategorie?"
+
+Zusammenhang: die Kategorie und die Fraktion "Risiko" heissen in der App
+beide "All In". Zu aendern ist es in der App
+(shared/quarterQuizTypes.ts, QQ_CATEGORY_LABELS), danach hier nachziehen.
+Vorschlaege stehen im Verlauf vom 28.08.; meine Empfehlung war "Ten Chips".
 
 ## Erledigt
 
