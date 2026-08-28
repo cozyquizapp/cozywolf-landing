@@ -5,6 +5,28 @@ ist die Reihenfolge der Meldung, nicht die der Dringlichkeit.
 
 ## Offen, zur Entscheidung
 
+### DNS: Vercel empfiehlt neue Adressen
+
+Gemeldet am 28.08. mit einem Bildschirmfoto der Vercel-Domainliste:
+"DNS Change Recommended" bei cozywolf.de und www.cozywolf.de.
+
+Es ist eine Empfehlung, kein Fehler. Vercel vergroessert seinen
+Adressbereich und schreibt selbst, dass die alten Eintraege weiter
+funktionieren. Nachgeschaut, Stand 28.08.: beide Namen zeigen auf
+76.76.21.21, also auf die alte Vercel-Adresse. Die Seite ist erreichbar,
+nichts ist kaputt.
+
+Zu tun, wenn Zeit ist: beim Domain-Anbieter (nicht bei Vercel) den
+A-Record fuer @ von 76.76.21.21 auf 216.198.79.1 aendern. Fuer www den
+Wert nehmen, der in der zweiten Karte der Vercel-Liste steht; auf dem
+Bildschirmfoto war sie abgeschnitten, also nicht raten.
+
+Danach cozywolf.de und www.cozywolf.de aufrufen und pruefen, dass Vercel
+"Valid Configuration" zeigt. Nicht kurz vor einem Termin machen, an dem
+jemand den Link bekommt: die Aenderung braucht Minuten bis Stunden.
+
+Prioritaet: die niedrigste von allem, was offen ist.
+
 ### Bilder tragen keinen Fingerabdruck im Namen
 
 Aufgefallen am 28.08. an den Wappen: Wolf sah auf dem Handy einen anderen
