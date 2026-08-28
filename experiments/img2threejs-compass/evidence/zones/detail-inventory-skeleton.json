@@ -1,0 +1,91 @@
+{
+  "sourceImage": "/home/user/cozywolf-landing/experiments/img2threejs-compass/reference.png",
+  "zonesDir": "/tmp/claude-0/-home-user-cozywolf-landing/5ddc3f91-9acd-5de9-8b41-c7236bf60128/scratchpad/work/zones",
+  "detailInventory": {
+    "scanMethod": "component-zones",
+    "targetMinDetails": 10,
+    "details": [
+      {
+        "id": "dial",
+        "kind": "",
+        "description": "",
+        "region": {
+          "x": 0.26,
+          "y": 0.31,
+          "width": 0.48,
+          "height": 0.52,
+          "units": "normalized"
+        },
+        "scale": "",
+        "affects": "",
+        "mapsTo": {
+          "type": "",
+          "ref": ""
+        },
+        "evidenceRef": "/tmp/claude-0/-home-user-cozywolf-landing/5ddc3f91-9acd-5de9-8b41-c7236bf60128/scratchpad/work/zones/dial.png",
+        "confidence": 0.0
+      },
+      {
+        "id": "crown",
+        "kind": "",
+        "description": "",
+        "region": {
+          "x": 0.68,
+          "y": 0.24,
+          "width": 0.18,
+          "height": 0.16,
+          "units": "normalized"
+        },
+        "scale": "",
+        "affects": "",
+        "mapsTo": {
+          "type": "",
+          "ref": ""
+        },
+        "evidenceRef": "/tmp/claude-0/-home-user-cozywolf-landing/5ddc3f91-9acd-5de9-8b41-c7236bf60128/scratchpad/work/zones/crown.png",
+        "confidence": 0.0
+      },
+      {
+        "id": "bow",
+        "kind": "",
+        "description": "",
+        "region": {
+          "x": 0.5,
+          "y": 0.05,
+          "width": 0.3,
+          "height": 0.26,
+          "units": "normalized"
+        },
+        "scale": "",
+        "affects": "",
+        "mapsTo": {
+          "type": "",
+          "ref": ""
+        },
+        "evidenceRef": "/tmp/claude-0/-home-user-cozywolf-landing/5ddc3f91-9acd-5de9-8b41-c7236bf60128/scratchpad/work/zones/bow.png",
+        "confidence": 0.0
+      },
+      {
+        "id": "bezel-left",
+        "kind": "",
+        "description": "",
+        "region": {
+          "x": 0.15,
+          "y": 0.35,
+          "width": 0.18,
+          "height": 0.45,
+          "units": "normalized"
+        },
+        "scale": "",
+        "affects": "",
+        "mapsTo": {
+          "type": "",
+          "ref": ""
+        },
+        "evidenceRef": "/tmp/claude-0/-home-user-cozywolf-landing/5ddc3f91-9acd-5de9-8b41-c7236bf60128/scratchpad/work/zones/bezel-left.png",
+        "confidence": 0.0
+      }
+    ]
+  },
+  "authoringInstruction": "Open each zone crop under zonesDir and replace every detail stub's kind, description, scale, affects, mapsTo, and confidence with what is actually observed. Add more detail entries per zone if a single zone contains multiple distinct marks; do not leave stubs unfilled or unlinked (mapsTo must reference a real component.localFeatures or material.localOverrides entry)."
+}

@@ -1,0 +1,514 @@
+{
+  "targetName": "Adventure Compass",
+  "sourceImage": "/home/user/cozywolf-landing/experiments/img2threejs-compass/reference.png",
+  "preSpecAssessment": {
+    "objectClass": {
+      "primaryType": "pocket compass (bezel-cased magnetic compass with bow-and-ring suspension)",
+      "primaryDomain": "object",
+      "formLanguage": [
+        "geometric",
+        "radially-symmetric",
+        "large-radius-fillet",
+        "stylized-3d-icon"
+      ],
+      "structureKind": [
+        "lathed-body",
+        "layered-dial-assembly",
+        "rim-mounted-hardware"
+      ],
+      "motionPotential": [
+        "needle-rotation-about-dial-axis",
+        "bow-ring-swing",
+        "crown-rotation",
+        "lid-less-static-case"
+      ],
+      "materialFamilies": [
+        "stylized-gold-dielectric",
+        "matte-cream-dielectric",
+        "matte-navy-dielectric",
+        "matte-red-dielectric"
+      ],
+      "notes": "Stylized icon render, not a photograph: broad soft speculars, zero environment reflection, alpha cutout, single key light upper-left. The gold reads as a dielectric with roughness ~0.4, NOT metalness 1.0 - a physical gold would mirror an environment that is absent here."
+    },
+    "complexity": {
+      "tier": "complex",
+      "scores": {
+        "silhouetteComplexity": 2,
+        "componentCount": 2,
+        "hierarchyDepth": 2,
+        "repetitionDensity": 3,
+        "materialLayerCount": 1,
+        "localDetailDensity": 2,
+        "occlusionRisk": 2,
+        "actionReadinessNeed": 2
+      },
+      "estimatedCounts": {
+        "macroComponents": 4,
+        "mesoComponents": 10,
+        "microFeatureGroups": 5,
+        "materialLayers": 4,
+        "repetitionSystems": 3
+      },
+      "reasoning": [
+        "Four macro assemblies: case, dial assembly, suspension hardware, crown.",
+        "Three repetition systems: 12-capsule tick ring (30 deg), 8-point rose (4 long + 4 short), crown knurl flutes.",
+        "Only four material layers and no texture detail, so not ultra-complex.",
+        "Occlusion risk moderate: the entire rear of the case is unseen; the needle occludes part of the rose.",
+        "Action-readiness matters: the needle must spin about the dial axis and the ring must swing, so pivots are required."
+      ]
+    },
+    "specDepthDecision": {
+      "requiredDepth": "complex",
+      "minimumComponentLevels": [
+        "macro",
+        "meso",
+        "micro"
+      ],
+      "needsRepetitionSystems": true,
+      "needsMaterialLocalOverrides": true,
+      "needsMultipleReviewViews": true,
+      "needsActionReadyHierarchy": true,
+      "rationale": "Complex: a radial repetition system plus a layered dial stack plus two rim-mounted hardware sub-assemblies. A single-root spec would lose the tick ring and the rose, which are the identity of the object."
+    },
+    "unknownsToResolveBeforeImplementation": [],
+    "detailInventory": {
+      "scanMethod": "component-zones",
+      "targetMinDetails": 10,
+      "note": "Enumerate every identity-defining small detail before authoring the spec. Each detail must map to a component.localFeatures entry or material.localOverrides entry, never prose only. Use forge/stage1_intake/build_detail_inventory.py to scan zones.",
+      "details": [
+        {
+          "id": "tick-ring-12",
+          "kind": "ridge",
+          "description": "12 rounded-cap capsule ticks on the dial plate at 30 deg spacing, centred at r/R=0.75 of the dial radius, long axis radial. Measured by connected-component clustering, NOT 16.",
+          "scale": "meso",
+          "affects": "silhouette-and-identity",
+          "mapsTo": {
+            "type": "component",
+            "ref": "tick-ring-12"
+          },
+          "evidenceRef": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/zones/dial.png",
+          "confidence": 0.88,
+          "region": {
+            "x": 0.26,
+            "y": 0.31,
+            "width": 0.48,
+            "height": 0.52,
+            "units": "normalized"
+          }
+        },
+        {
+          "id": "rose-8-point",
+          "kind": "ridge",
+          "description": "8-point compass rose: 4 long cardinal points reaching r/R=0.72 of the dial radius and 4 shorter intercardinal points at ~0.45, raised off the dial plate with a soft contact shadow.",
+          "scale": "macro",
+          "affects": "identity-defining",
+          "mapsTo": {
+            "type": "component",
+            "ref": "rose-8-point"
+          },
+          "evidenceRef": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/zones/dial.png",
+          "confidence": 0.9,
+          "region": {
+            "x": 0.26,
+            "y": 0.31,
+            "width": 0.48,
+            "height": 0.52,
+            "units": "normalized"
+          }
+        },
+        {
+          "id": "needle-red-both-halves",
+          "kind": "contour",
+          "description": "Lens-shaped needle, both halves red (no dark south half); principal axis measured at -77.6 deg image-space, i.e. close to vertical, overhanging the rose points at both ends.",
+          "scale": "macro",
+          "affects": "identity-defining",
+          "mapsTo": {
+            "type": "component",
+            "ref": "needle"
+          },
+          "evidenceRef": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/zones/dial.png",
+          "confidence": 0.92,
+          "region": {
+            "x": 0.26,
+            "y": 0.31,
+            "width": 0.48,
+            "height": 0.52,
+            "units": "normalized"
+          }
+        },
+        {
+          "id": "pivot-boss",
+          "kind": "contour",
+          "description": "Gold hemispherical boss at the needle pivot, diameter ~0.19 of the dial diameter, sitting proud of the needle.",
+          "scale": "meso",
+          "affects": "identity-defining",
+          "mapsTo": {
+            "type": "component",
+            "ref": "pivot-boss"
+          },
+          "evidenceRef": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/zones/dial.png",
+          "confidence": 0.9,
+          "region": {
+            "x": 0.4,
+            "y": 0.45,
+            "width": 0.2,
+            "height": 0.2,
+            "units": "normalized"
+          }
+        },
+        {
+          "id": "bezel-width",
+          "kind": "contour",
+          "description": "Bezel ring occupies 0.271 of the case radius (91 px of 335) - substantially thicker than a first glance suggests; dial/case diameter ratio 0.729.",
+          "scale": "macro",
+          "affects": "silhouette",
+          "mapsTo": {
+            "type": "component",
+            "ref": "bezel-width"
+          },
+          "evidenceRef": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/zones/bezel-left.png",
+          "confidence": 0.95,
+          "region": {
+            "x": 0.15,
+            "y": 0.35,
+            "width": 0.18,
+            "height": 0.45,
+            "units": "normalized"
+          }
+        },
+        {
+          "id": "bezel-fillet",
+          "kind": "bevel",
+          "description": "Every bezel edge is a large-radius round; the silhouette contains no hard corner anywhere. Torus-like outer rim with the highlight band running upper-left to lower-right.",
+          "scale": "meso",
+          "affects": "silhouette",
+          "mapsTo": {
+            "type": "material",
+            "ref": "mat-gold"
+          },
+          "evidenceRef": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/zones/bezel-left.png",
+          "confidence": 0.9,
+          "region": {
+            "x": 0.15,
+            "y": 0.35,
+            "width": 0.18,
+            "height": 0.45,
+            "units": "normalized"
+          }
+        },
+        {
+          "id": "dial-recess-wall",
+          "kind": "groove",
+          "description": "The dial plate is recessed below the bezel top face; a short inner wall is visible as a darker cream band along the lower-right inner edge (occlusion shading, not albedo).",
+          "scale": "meso",
+          "affects": "depth-cue",
+          "mapsTo": {
+            "type": "component",
+            "ref": "dial-plate"
+          },
+          "evidenceRef": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/zones/dial.png",
+          "confidence": 0.8,
+          "region": {
+            "x": 0.26,
+            "y": 0.31,
+            "width": 0.48,
+            "height": 0.52,
+            "units": "normalized"
+          }
+        },
+        {
+          "id": "crown-knurl",
+          "kind": "ridge",
+          "description": "Knurled crown at ~1-2 o'clock on the case rim, axis radial; 6-7 vertical flutes visible on the near face, rounded cap, ~0.13 of case diameter.",
+          "scale": "micro",
+          "affects": "identity-defining",
+          "mapsTo": {
+            "type": "component",
+            "ref": "crown"
+          },
+          "evidenceRef": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/zones/crown.png",
+          "confidence": 0.75,
+          "region": {
+            "x": 0.68,
+            "y": 0.24,
+            "width": 0.18,
+            "height": 0.16,
+            "units": "normalized"
+          }
+        },
+        {
+          "id": "bow-ring",
+          "kind": "contour",
+          "description": "Open torus suspension ring at 12 o'clock, outer diameter ~0.30 of case diameter, ring plane parallel to the dial plane, joined by a short stepped collar.",
+          "scale": "macro",
+          "affects": "silhouette",
+          "mapsTo": {
+            "type": "component",
+            "ref": "bow-ring"
+          },
+          "evidenceRef": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/zones/bow.png",
+          "confidence": 0.9,
+          "region": {
+            "x": 0.5,
+            "y": 0.05,
+            "width": 0.3,
+            "height": 0.26,
+            "units": "normalized"
+          }
+        },
+        {
+          "id": "bow-collar-step",
+          "kind": "seam",
+          "description": "Short stepped cylindrical collar between case rim and bow ring, with a visible flange lip at its top.",
+          "scale": "meso",
+          "affects": "identity-defining",
+          "mapsTo": {
+            "type": "component",
+            "ref": "bow-collar"
+          },
+          "evidenceRef": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/zones/bow.png",
+          "confidence": 0.85,
+          "region": {
+            "x": 0.5,
+            "y": 0.05,
+            "width": 0.3,
+            "height": 0.26,
+            "units": "normalized"
+          }
+        },
+        {
+          "id": "gold-gradient",
+          "kind": "gloss",
+          "description": "Gold body gradient, ordered stops upper-left to lower-right: (253,183,73) highlight -> (223,140,31) mid -> (196,116,27) terminator. Broad soft speculars, no environment reflection.",
+          "scale": "macro",
+          "affects": "material-response",
+          "mapsTo": {
+            "type": "material",
+            "ref": "mat-gold"
+          },
+          "evidenceRef": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/zones/bezel-left.png",
+          "confidence": 0.9,
+          "region": {
+            "x": 0.15,
+            "y": 0.35,
+            "width": 0.18,
+            "height": 0.45,
+            "units": "normalized"
+          }
+        },
+        {
+          "id": "navy-two-tone",
+          "kind": "gloss",
+          "description": "Rose facets alternate lit (79,97,120) and shadowed (48,65,88) navy - this is facet shading from a single albedo, not two materials. Modelling it as two albedos would be wrong.",
+          "scale": "meso",
+          "affects": "material-response",
+          "mapsTo": {
+            "type": "material",
+            "ref": "mat-navy"
+          },
+          "evidenceRef": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/zones/dial.png",
+          "confidence": 0.85,
+          "region": {
+            "x": 0.26,
+            "y": 0.31,
+            "width": 0.48,
+            "height": 0.52,
+            "units": "normalized"
+          }
+        }
+      ]
+    },
+    "anatomy": {
+      "applies": false,
+      "styleHeads": 0.0,
+      "proportions": {
+        "headUnit": 0.0,
+        "torso": 0.0,
+        "legs": 0.0,
+        "shoulderWidth": 0.0,
+        "hipWidth": 0.0
+      },
+      "pose": {
+        "type": "unassessed",
+        "jointAngles": {}
+      },
+      "faceLandmarks": {
+        "eyeLine": 0.0,
+        "eyeSpacing": 0.0,
+        "noseBase": 0.0,
+        "mouthLine": 0.0,
+        "hairline": 0.0
+      },
+      "features": [],
+      "confidence": 0.0,
+      "note": "Only meaningful when objectClass.primaryDomain is character or hybrid. Set applies=true and fill from forge/stage1_intake/extract_landmarks.py. See grimoire/character/reconstruction.md and grimoire/character/likeness_maximization.md."
+    },
+    "sourceImage": "/home/user/cozywolf-landing/experiments/img2threejs-compass/reference.png",
+    "resolvedUnknowns": [
+      {
+        "id": "rear-case-profile",
+        "question": "What does the back plate look like?",
+        "status": "hidden",
+        "resolution": "Flat back plate with the same rim round. INFERRED, not observed."
+      },
+      {
+        "id": "case-thickness",
+        "question": "True case thickness relative to diameter?",
+        "status": "uncertain",
+        "resolution": "0.22 of diameter, read from the foreshortened right-side wall band, +/-40%."
+      },
+      {
+        "id": "bezel-separability",
+        "question": "Separate rotating ring or one lathed body?",
+        "status": "undetermined",
+        "resolution": "Modelled as part of the lathed case body; visually identical from this view."
+      },
+      {
+        "id": "crown-flute-count",
+        "question": "Total knurl flute count?",
+        "status": "uncertain",
+        "resolution": "10 around the revolve; 6-7 visible on the near face."
+      },
+      {
+        "id": "rose-short-points",
+        "question": "Do the intercardinal points continue behind the needle?",
+        "status": "occluded",
+        "resolution": "Assumed yes, symmetric 8-point rose."
+      }
+    ]
+  },
+  "qualityContract": {
+    "qualityBar": "complex",
+    "definitionOfDone": [
+      "Rendered model matches the reference silhouette: case circle, bezel at 0.271 of case radius, bow ring at 0.30 of case diameter, crown bump at 1-2 o'clock.",
+      "Tick ring reads as exactly 12 capsules at 30 deg spacing.",
+      "Rose reads as 8 points, 4 long + 4 short, raised off the dial.",
+      "Needle is red across both halves, lens-shaped, overhanging the rose points.",
+      "Gold reads as stylized dielectric (soft broad highlight), not mirrored metal.",
+      "Needle, bezel, ring and crown are separate pivoted components (explodable and clickable)."
+    ],
+    "minimumSpecDepth": {
+      "macroComponents": 3,
+      "mesoComponents": 8,
+      "microFeatureGroups": 5,
+      "materialLayers": 3,
+      "repetitionSystems": 1,
+      "reviewViewpoints": 4
+    },
+    "featureGroups": [
+      {
+        "id": "overall-silhouette",
+        "name": "Overall silhouette and proportions",
+        "required": true,
+        "qualityCriteria": [
+          "Bounding shape, dominant curves, negative spaces, and scale relationships are explicitly described."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "model reads as a generic placeholder instead of the reference object",
+          "major proportions are guessed without evidence"
+        ]
+      },
+      {
+        "id": "primary-structure",
+        "name": "Primary structure and hierarchy",
+        "required": true,
+        "qualityCriteria": [
+          "Major parts, joints, seams, contact points, and parent-child relationships are named before code generation."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "large visible parts are merged into one mesh",
+          "component hierarchy is too shallow for the observed complexity"
+        ]
+      },
+      {
+        "id": "attachment-joint-correctness",
+        "name": "Attachment and joint correctness",
+        "required": true,
+        "qualityCriteria": [
+          "Every visible child appendage, branch, limb, handle, connector, tube, cable, horn, wing, leg, or hinged part has an attachment contract with parent socket, localStart/localEnd, contact type, embed/overlap, and gap tolerance."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "child part root floats away from the parent",
+          "branch/limb/tube is centered in space instead of pivoting from its root",
+          "parent-child transform mixes world and local coordinates"
+        ]
+      },
+      {
+        "id": "surface-material-response",
+        "name": "Surface material response",
+        "required": true,
+        "qualityCriteria": [
+          "Albedo zones, roughness, normal/bump/displacement intent, cavity dirt, edge wear, and local overrides are specified where visible.",
+          "Important materials define independent albedo, roughness, height/normal, and AO responses instead of reusing one texture for unrelated PBR channels.",
+          "Surface response is decomposed into macro, meso, and micro frequency bands with scale and amplitude tied to object scale."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "surface looks like flat plastic",
+          "local material variation is missing or not tied to image evidence"
+        ]
+      },
+      {
+        "id": "reference-lookdev",
+        "name": "Reference color, material, and lighting response",
+        "required": true,
+        "qualityCriteria": [
+          "Material-pass names the reference-derived albedo palette, roughness variation, tactile normal/bump/displacement response, and local masks.",
+          "When a source image is available, run reference PBR extraction and require confidence >= 0.7 before treating maps as implementation-ready.",
+          "Lighting-pass names key/fill/rim or environment light, exposure, tone mapping, background, and contact shadow behavior.",
+          "Neutral, grazing-angle, and reference-matched renders prove that surface relief survives relighting and is not painted into albedo."
+        ],
+        "evidenceRefs": [
+          "full-object"
+        ],
+        "failureModes": [
+          "model has acceptable shape but reads as flat shaded or plastic",
+          "colors are a generic average instead of reference-observed local color zones",
+          "lighting is evenly ambient and cannot reproduce the source value range"
+        ]
+      }
+    ],
+    "visualDeltaChecks": [
+      "silhouette and negative-space delta",
+      "component hierarchy depth delta",
+      "repetition density and distribution delta",
+      "material albedo/roughness/normal response delta",
+      "local feature placement and scale delta"
+    ],
+    "antiShallowSpecRules": [
+      "Do not proceed to code if qualityContract.qualityBar is unassessed.",
+      "Do not proceed to code if the spec only contains a root component for a moderate or complex object.",
+      "Do not proceed to code if required featureGroups are not represented by componentTree, materials, or repetitionSystems.",
+      "Do not proceed to code if visible local features are described only in prose and not attached to components/materials/evidenceRefs.",
+      "Do not proceed past structural-pass if attached child parts lack attachment.parentSocket, localStart, localEnd, embedDepth/overlap, and gapTolerance.",
+      "Do not pass material look-dev when albedo is reused as roughness, height, normal, or AO.",
+      "Do not pass material look-dev without macro, meso, and micro surface frequency bands for close-up materials.",
+      "Do not pass reference-fidelity material look-dev from a source image without usable referencePbr maps or an explicit documented limitation.",
+      "Do not patch a spec with extracted PBR maps when extraction confidence is below the target threshold unless the user explicitly accepts lower fidelity.",
+      "Do not place adjacent separate-geometry parts below 0.02 world-unit seam overlap (source: grimoire/build/geometry_patterns.md).",
+      "Do not satisfy raised or recessed relief, fasteners, or grip structure with a map alone when the feature affects form; use geometry or displacement (source: grimoire/build/geometry_patterns.md)."
+    ]
+  },
+  "authoringInstruction": "Fill observed object class, complexity reasoning, featureGroups, visualDeltaChecks, and unknowns before generating or implementing ObjectSculptSpec.",
+  "localSpecSearch": {
+    "collection": "core_3d",
+    "query": "Adventure Compass",
+    "index": {
+      "status": "hit",
+      "reason": "current",
+      "fingerprint": "6857e5ab528b42ac12f4f411f862610a0bffce8e47aee3610a7603c318072fe8"
+    },
+    "matches": []
+  }
+}

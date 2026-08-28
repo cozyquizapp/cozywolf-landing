@@ -1,0 +1,156 @@
+{
+ "parts": [
+  {
+   "id": "case-body",
+   "name": "case-body"
+  },
+  {
+   "id": "dial-plate",
+   "name": "dial-plate"
+  },
+  {
+   "id": "tick-01",
+   "name": "tick-01"
+  },
+  {
+   "id": "tick-02",
+   "name": "tick-02"
+  },
+  {
+   "id": "tick-03",
+   "name": "tick-03"
+  },
+  {
+   "id": "tick-04",
+   "name": "tick-04"
+  },
+  {
+   "id": "tick-05",
+   "name": "tick-05"
+  },
+  {
+   "id": "tick-06",
+   "name": "tick-06"
+  },
+  {
+   "id": "tick-07",
+   "name": "tick-07"
+  },
+  {
+   "id": "tick-08",
+   "name": "tick-08"
+  },
+  {
+   "id": "tick-09",
+   "name": "tick-09"
+  },
+  {
+   "id": "tick-10",
+   "name": "tick-10"
+  },
+  {
+   "id": "tick-11",
+   "name": "tick-11"
+  },
+  {
+   "id": "tick-12",
+   "name": "tick-12"
+  },
+  {
+   "id": "rose-long-1",
+   "name": "rose-long-1"
+  },
+  {
+   "id": "rose-long-2",
+   "name": "rose-long-2"
+  },
+  {
+   "id": "rose-long-3",
+   "name": "rose-long-3"
+  },
+  {
+   "id": "rose-long-4",
+   "name": "rose-long-4"
+  },
+  {
+   "id": "rose-short-1",
+   "name": "rose-short-1"
+  },
+  {
+   "id": "rose-short-2",
+   "name": "rose-short-2"
+  },
+  {
+   "id": "rose-short-3",
+   "name": "rose-short-3"
+  },
+  {
+   "id": "rose-short-4",
+   "name": "rose-short-4"
+  },
+  {
+   "id": "rose-hub",
+   "name": "rose-hub"
+  },
+  {
+   "id": "needle",
+   "name": "needle"
+  },
+  {
+   "id": "pivot-boss",
+   "name": "pivot-boss"
+  },
+  {
+   "id": "bow-collar",
+   "name": "bow-collar"
+  },
+  {
+   "id": "bow-ring",
+   "name": "bow-ring"
+  },
+  {
+   "id": "crown",
+   "name": "crown"
+  },
+  {
+   "id": "crown-flute-01",
+   "name": "crown-flute-01"
+  },
+  {
+   "id": "crown-flute-02",
+   "name": "crown-flute-02"
+  },
+  {
+   "id": "crown-flute-03",
+   "name": "crown-flute-03"
+  },
+  {
+   "id": "crown-flute-04",
+   "name": "crown-flute-04"
+  },
+  {
+   "id": "crown-flute-05",
+   "name": "crown-flute-05"
+  },
+  {
+   "id": "crown-flute-06",
+   "name": "crown-flute-06"
+  },
+  {
+   "id": "crown-flute-07",
+   "name": "crown-flute-07"
+  },
+  {
+   "id": "crown-flute-08",
+   "name": "crown-flute-08"
+  },
+  {
+   "id": "crown-flute-09",
+   "name": "crown-flute-09"
+  },
+  {
+   "id": "crown-flute-10",
+   "name": "crown-flute-10"
+  }
+ ]
+}

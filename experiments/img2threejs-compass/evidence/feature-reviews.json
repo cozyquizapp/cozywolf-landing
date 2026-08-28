@@ -1,0 +1,9 @@
+[
+ {"id":"overall-silhouette","score":0.86,"tier":"critical","notes":"Divine Eye silhouette IoU 0.8666 and scale delta 0.0000 at the locked review framing (margin 1.22); aspect-ratio delta 0.0038. Case circle, bezel width, bow ring and crown bump all read."},
+ {"id":"tick-count-12","score":0.90,"tier":"critical","notes":"12 capsules at 30 deg, r/R 0.87 -- matches the measured reference ring. Slightly shorter than the reference capsules."},
+ {"id":"rose-8-point","score":0.72,"tier":"critical","notes":"8 points present, 4 long + 4 short, flat extruded plates rather than round cones. Proportions read spindlier than the reference and the cast shadow under the star is far heavier than the reference's soft contact shadow."},
+ {"id":"needle-form","score":0.85,"tier":"critical","notes":"Lens spindle at 47.4 deg, both halves red, tips overhang the rose points. Cross-section is rounder than the reference's flatter lens."},
+ {"id":"gold-is-dielectric","score":0.80,"tier":"critical","notes":"Reads as a stylized dielectric with broad soft speculars and no environment reflection, as specified. Hue sits slightly more orange than the reference's yellow-gold."},
+ {"id":"bow-assembly","score":0.78,"tier":"important","notes":"Ring outer diameter 0.30 D and stepped collar present; the ring/case gap is now proportionally correct after lowering the ring (this was the single biggest silhouette-IoU cost)."},
+ {"id":"crown-knurl","score":0.75,"tier":"important","notes":"Chunky knurled knob at 57 deg with 10 flutes; reads correctly but the flutes are finer than the reference's."}
+]

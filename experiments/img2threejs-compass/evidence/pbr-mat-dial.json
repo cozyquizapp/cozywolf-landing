@@ -1,0 +1,87 @@
+{
+  "ok": true,
+  "verdict": "pass",
+  "confidence": 0.847,
+  "estimatedFidelity": 0.847,
+  "targetThreshold": 0.7,
+  "materialId": "mat-dial",
+  "sourceImage": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/zones/dial.png",
+  "outDir": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/pbr",
+  "palette": [
+    "#FBDDAE",
+    "#EEA447",
+    "#BB5213",
+    "#F4CC91",
+    "#364253"
+  ],
+  "maps": {
+    "albedo": {
+      "path": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/pbr/mat-dial_albedo.png",
+      "url": "mat-dial_albedo.png",
+      "channel": "albedo",
+      "source": "reference-pixel-extraction"
+    },
+    "roughness": {
+      "path": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/pbr/mat-dial_roughness.png",
+      "url": "mat-dial_roughness.png",
+      "channel": "roughness",
+      "source": "reference-pixel-extraction"
+    },
+    "height": {
+      "path": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/pbr/mat-dial_height.png",
+      "url": "mat-dial_height.png",
+      "channel": "height",
+      "source": "reference-pixel-extraction"
+    },
+    "normal": {
+      "path": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/pbr/mat-dial_normal.png",
+      "url": "mat-dial_normal.png",
+      "channel": "normal",
+      "source": "reference-pixel-extraction"
+    },
+    "ao": {
+      "path": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/pbr/mat-dial_ao.png",
+      "url": "mat-dial_ao.png",
+      "channel": "ao",
+      "source": "reference-pixel-extraction"
+    }
+  },
+  "diagnostics": {
+    "sourceWidth": 492,
+    "sourceHeight": 532,
+    "mapSize": 1024,
+    "cropBBoxPixels": {
+      "x": 0,
+      "y": 0,
+      "width": 492,
+      "height": 532
+    },
+    "mask": {
+      "backgroundColor": "#FFFFFF",
+      "backgroundNoise": 0.0,
+      "transparentPixelFraction": 0.0,
+      "foregroundCoverage": 0.9848
+    },
+    "mapStats": {
+      "valueRange": 0.6886,
+      "heightP90Gradient": 0.05513,
+      "roughnessBase": 0.698,
+      "roughnessVariation": 0.105,
+      "normalStrength": 0.221,
+      "blurRadius": 21
+    },
+    "palette": [
+      "#FBDDAE",
+      "#EEA447",
+      "#BB5213",
+      "#F4CC91",
+      "#364253"
+    ]
+  },
+  "warnings": [
+    "image is not clearly isolated from background; using most pixels as material evidence",
+    "object/background separation is weak",
+    "single-image inverse rendering cannot prove true physical PBR; confidence is capped"
+  ],
+  "limitation": "single-image PBR extraction is an estimate; 70%+ extraction confidence still needs render screenshot review"
+}

@@ -1,0 +1,34 @@
+{
+  "model": null,
+  "specifiedComponents": 37,
+  "builtParts": 38,
+  "errors": 0,
+  "warnings": 3,
+  "result": "pass",
+  "findings": [
+    {
+      "check": "detail-dangling",
+      "severity": "warning",
+      "subject": "bezel-fillet",
+      "detail": "mapsTo 'mat-gold' matches no component, localFeature or localOverride"
+    },
+    {
+      "check": "detail-dangling",
+      "severity": "warning",
+      "subject": "gold-gradient",
+      "detail": "mapsTo 'mat-gold' matches no component, localFeature or localOverride"
+    },
+    {
+      "check": "detail-dangling",
+      "severity": "warning",
+      "subject": "navy-two-tone",
+      "detail": "mapsTo 'mat-navy' matches no component, localFeature or localOverride"
+    },
+    {
+      "check": "part-not-specified",
+      "severity": "info",
+      "subject": "case-body",
+      "detail": "built part has no matching component in the spec (fine for detail groups; a sign of spec drift for anything larger)"
+    }
+  ]
+}

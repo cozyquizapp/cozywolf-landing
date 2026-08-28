@@ -1,0 +1,14 @@
+{
+  "admitted": true,
+  "reasons": [],
+  "provenance": {
+    "viewpoint": "front-three-quarter",
+    "sourcePath": "/home/user/cozywolf-landing/experiments/img2threejs-compass/reference.png",
+    "width": 1024,
+    "height": 1024,
+    "foregroundCoverage": 0.364,
+    "largestComponentFraction": 1.0,
+    "pHash": 18082140038236995712,
+    "duplicateOfHash": null
+  }
+}

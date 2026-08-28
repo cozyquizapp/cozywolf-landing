@@ -1,0 +1,295 @@
+{
+  "schemaVersion": 1,
+  "status": "active",
+  "profile": "generic",
+  "currentStep": "build-current-pass",
+  "currentPass": "structural-pass",
+  "checklist": [
+    {
+      "id": "image-analysis",
+      "scope": "setup",
+      "status": "done",
+      "evidence": [
+        "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/stage1-image-analysis.md"
+      ],
+      "reason": "",
+      "command": "Read grimoire/intake/image_analysis.md and analyze {reference}"
+    },
+    {
+      "id": "reference-suitability",
+      "scope": "setup",
+      "status": "done",
+      "evidence": [
+        "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/stage1-image-analysis.md"
+      ],
+      "reason": "",
+      "command": "Read grimoire/intake/validation_rubric.md and record a pass, conditional, or reject verdict for {reference}"
+    },
+    {
+      "id": "reference-admission",
+      "scope": "setup",
+      "status": "done",
+      "evidence": [
+        "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/reference-admission.json"
+      ],
+      "reason": "",
+      "command": "python3 forge/stage1_intake/check_reference_admission.py {reference}"
+    },
+    {
+      "id": "local-spec-search",
+      "scope": "setup",
+      "status": "done",
+      "evidence": [
+        "/home/user/cozywolf-landing/experiments/img2threejs-compass/assessment.json"
+      ],
+      "reason": "",
+      "command": "Run the local evidence search before authoring the assessment"
+    },
+    {
+      "id": "pre-spec-assessment",
+      "scope": "setup",
+      "status": "done",
+      "evidence": [
+        "/home/user/cozywolf-landing/experiments/img2threejs-compass/assessment.json"
+      ],
+      "reason": "",
+      "command": "python3 forge/stage2_spec/new_pre_spec_assessment.py \"<name>\" --image {reference} --out assessment.json"
+    },
+    {
+      "id": "detail-inventory",
+      "scope": "setup",
+      "status": "done",
+      "evidence": [
+        "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/zones/detail-inventory-skeleton.json"
+      ],
+      "reason": "",
+      "command": "python3 forge/stage1_intake/build_detail_inventory.py {reference} --mode grid-3x3 --out-dir detail-inventory --out di.json"
+    },
+    {
+      "id": "projection-route",
+      "scope": "setup",
+      "status": "skipped",
+      "evidence": [],
+      "reason": "No patterned or reference-matched surface: all four materials are flat stylized albedos with no decals, print, or texture. Per the skill's own rule (solid albedo for flat paint, reference crop for patterned finishes) projection would add a baked lighting artifact for zero fidelity gain.",
+      "command": "Record whether projection is required; if required run solve_camera_pose.py, delight_albedo.py, and bake_projected_texture.py, otherwise skip with a reason"
+    },
+    {
+      "id": "spec-authoring",
+      "scope": "setup",
+      "status": "done",
+      "evidence": [
+        "/home/user/cozywolf-landing/experiments/img2threejs-compass/object-sculpt-spec.json"
+      ],
+      "reason": "",
+      "command": "python3 forge/stage2_spec/new_sculpt_spec.py \"<name>\" --image {reference} --assessment assessment.json --out object-sculpt-spec.json"
+    },
+    {
+      "id": "material-evidence",
+      "scope": "setup",
+      "status": "done",
+      "evidence": [
+        "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/pbr-mat-gold.json"
+      ],
+      "reason": "",
+      "command": "python3 forge/stage1_intake/material_region_analysis.py --manifest material-regions.json --out-dir material-evidence --out material-analysis.json (single-crop route: analyze_texture.py + extract_pbr_evidence.py per verified crop; otherwise skip with a reason)"
+    },
+    {
+      "id": "material-spec-wiring",
+      "scope": "setup",
+      "status": "skipped",
+      "evidence": [],
+      "reason": "All four materials are declared textureless with evidence (validate_textureless path): the reference is a flat-shaded icon with no grain, print or pores at 1:1. Wiring extracted PBR maps would bake the reference's own lighting into albedo and contradict the textureless declaration. Measured albedo/roughness scalars are wired into the spec instead.",
+      "command": "python3 forge/stage2_spec/apply_material_analysis.py {spec} material-analysis.json --in-place"
+    },
+    {
+      "id": "strict-validation",
+      "scope": "setup",
+      "status": "done",
+      "evidence": [
+        "/home/user/cozywolf-landing/experiments/img2threejs-compass/object-sculpt-spec.json"
+      ],
+      "reason": "",
+      "command": "python3 forge/stage2_spec/validate_sculpt_spec.py {spec} --strict-quality"
+    },
+    {
+      "id": "build-current-pass",
+      "scope": "pass",
+      "status": "pending",
+      "evidence": [],
+      "reason": "",
+      "command": "python3 forge/stage3_build/generate_threejs_factory.py {spec} --out src/createObjectModel.ts --pass-id {pass_id}"
+    },
+    {
+      "id": "render-capture",
+      "scope": "pass",
+      "status": "pending",
+      "evidence": [],
+      "reason": "",
+      "command": "Render {pass_id} and capture the fixed review view plus meaningful orbit views"
+    },
+    {
+      "id": "review-contract-read",
+      "scope": "pass",
+      "status": "pending",
+      "evidence": [],
+      "reason": "",
+      "command": "Read grimoire/review/gates_reference.md and grimoire/review/self_correction.md completely"
+    },
+    {
+      "id": "tier1-diagnostics",
+      "scope": "pass",
+      "status": "pending",
+      "evidence": [],
+      "reason": "",
+      "command": "python3 forge/stage4_review/diagnose_render.py --reference {reference} --render <shot> --spec {spec} --pass-id {pass_id} --in-place"
+    },
+    {
+      "id": "multi-angle-review",
+      "scope": "pass",
+      "status": "pending",
+      "evidence": [],
+      "reason": "",
+      "command": "python3 forge/stage4_review/diagnose_render_multi_angle.py --reference <fixed-shot> --orbit <orbit-shot> --orbit <orbit-shot>"
+    },
+    {
+      "id": "pass-gate-check",
+      "scope": "pass",
+      "status": "pending",
+      "evidence": [],
+      "reason": "",
+      "command": "python3 forge/stage3_build/orchestrate_passes.py check {spec} --pass-id {pass_id}"
+    },
+    {
+      "id": "ai-review-recorded",
+      "scope": "pass",
+      "status": "pending",
+      "evidence": [],
+      "reason": "",
+      "command": "Create the comparison sheet, inspect it with agent vision, and append exactly one review action"
+    },
+    {
+      "id": "pipeline-sync",
+      "scope": "pass",
+      "status": "pending",
+      "evidence": [],
+      "reason": "",
+      "command": "python3 forge/stage3_build/orchestrate_passes.py sync {spec} --in-place"
+    },
+    {
+      "id": "part-coverage",
+      "scope": "final",
+      "status": "pending",
+      "evidence": [],
+      "reason": "",
+      "command": "python3 forge/stage4_review/check_part_coverage.py --spec {spec} --manifest parts.json"
+    },
+    {
+      "id": "action-ready",
+      "scope": "final",
+      "status": "pending",
+      "evidence": [],
+      "reason": "",
+      "command": "Verify explodable/clickable hierarchy, pivots, sockets, and root.userData.sculptRuntime"
+    }
+  ],
+  "loops": {
+    "perPass": {},
+    "total": 0,
+    "maxPerPass": 3,
+    "maxTotal": 6
+  },
+  "artifacts": {
+    "reference": "/home/user/cozywolf-landing/experiments/img2threejs-compass/reference.png",
+    "spec": "/home/user/cozywolf-landing/experiments/img2threejs-compass/object-sculpt-spec.json"
+  },
+  "passHistory": [
+    {
+      "passId": "blockout",
+      "checklist": [
+        {
+          "id": "build-current-pass",
+          "scope": "pass",
+          "status": "done",
+          "evidence": [
+            "/home/user/cozywolf-landing/experiments/img2threejs-compass/src/createCompassModel.ts"
+          ],
+          "reason": "",
+          "command": "python3 forge/stage3_build/generate_threejs_factory.py {spec} --out src/createObjectModel.ts --pass-id {pass_id}"
+        },
+        {
+          "id": "render-capture",
+          "scope": "pass",
+          "status": "done",
+          "evidence": [
+            "/home/user/cozywolf-landing/experiments/img2threejs-compass/renders/view_az0_el0.png"
+          ],
+          "reason": "",
+          "command": "Render {pass_id} and capture the fixed review view plus meaningful orbit views"
+        },
+        {
+          "id": "review-contract-read",
+          "scope": "pass",
+          "status": "done",
+          "evidence": [
+            "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/feature-reviews.json"
+          ],
+          "reason": "",
+          "command": "Read grimoire/review/gates_reference.md and grimoire/review/self_correction.md completely"
+        },
+        {
+          "id": "tier1-diagnostics",
+          "scope": "pass",
+          "status": "done",
+          "evidence": [
+            "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/tier1-diagnostics.json"
+          ],
+          "reason": "",
+          "command": "python3 forge/stage4_review/diagnose_render.py --reference {reference} --render <shot> --spec {spec} --pass-id {pass_id} --in-place"
+        },
+        {
+          "id": "multi-angle-review",
+          "scope": "pass",
+          "status": "done",
+          "evidence": [
+            "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/turntable-gate.json"
+          ],
+          "reason": "",
+          "command": "python3 forge/stage4_review/diagnose_render_multi_angle.py --reference <fixed-shot> --orbit <orbit-shot> --orbit <orbit-shot>"
+        },
+        {
+          "id": "pass-gate-check",
+          "scope": "pass",
+          "status": "done",
+          "evidence": [
+            "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/divine-eye-pass1.json"
+          ],
+          "reason": "",
+          "command": "python3 forge/stage3_build/orchestrate_passes.py check {spec} --pass-id {pass_id}"
+        },
+        {
+          "id": "ai-review-recorded",
+          "scope": "pass",
+          "status": "done",
+          "evidence": [
+            "/home/user/cozywolf-landing/experiments/img2threejs-compass/renders/cmp-final.png"
+          ],
+          "reason": "",
+          "command": "Create the comparison sheet, inspect it with agent vision, and append exactly one review action"
+        },
+        {
+          "id": "pipeline-sync",
+          "scope": "pass",
+          "status": "done",
+          "evidence": [
+            "/home/user/cozywolf-landing/experiments/img2threejs-compass/object-sculpt-spec.json"
+          ],
+          "reason": "",
+          "command": "python3 forge/stage3_build/orchestrate_passes.py sync {spec} --in-place"
+        }
+      ]
+    }
+  ],
+  "reviewCursor": 1,
+  "iterationAction": "new-pass",
+  "stopReason": ""
+}

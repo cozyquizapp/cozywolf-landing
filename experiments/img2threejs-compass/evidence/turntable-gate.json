@@ -1,0 +1,98 @@
+{
+  "angles": [
+    {
+      "azimuth": 0.0,
+      "path": "/home/user/cozywolf-landing/experiments/img2threejs-compass/renders/view_az0_el0.png",
+      "isReference": true,
+      "segmented": true,
+      "holed": true,
+      "interiorHolePixelCount": 7279,
+      "interiorHoleFraction": 0.019203473984687875,
+      "largestHolePixelCount": 7082,
+      "largestHoleBBox": {
+        "x": 459,
+        "y": 151,
+        "width": 106,
+        "height": 92
+      },
+      "areaFraction": 0.36148643493652344,
+      "ratio": 1.0,
+      "degenerate": false
+    },
+    {
+      "azimuth": 90.0,
+      "path": "/home/user/cozywolf-landing/experiments/img2threejs-compass/renders/view_az90_el0.png",
+      "isReference": false,
+      "segmented": true,
+      "holed": false,
+      "interiorHolePixelCount": 8,
+      "interiorHoleFraction": 5.783731808356046e-05,
+      "largestHolePixelCount": 8,
+      "largestHoleBBox": {
+        "x": 460,
+        "y": 554,
+        "width": 1,
+        "height": 8
+      },
+      "areaFraction": 0.1319112777709961,
+      "ratio": 0.3649134933490922,
+      "degenerate": false
+    },
+    {
+      "azimuth": 180.0,
+      "path": "/home/user/cozywolf-landing/experiments/img2threejs-compass/renders/view_az180_el0.png",
+      "isReference": false,
+      "segmented": true,
+      "holed": true,
+      "interiorHolePixelCount": 7867,
+      "interiorHoleFraction": 0.018731799771894445,
+      "largestHolePixelCount": 7867,
+      "largestHoleBBox": {
+        "x": 456,
+        "y": 130,
+        "width": 112,
+        "height": 97
+      },
+      "areaFraction": 0.4005250930786133,
+      "ratio": 1.1079948080180242,
+      "degenerate": false
+    },
+    {
+      "azimuth": 270.0,
+      "path": "/home/user/cozywolf-landing/experiments/img2threejs-compass/renders/view_az270_el0.png",
+      "isReference": false,
+      "segmented": true,
+      "holed": false,
+      "interiorHolePixelCount": 0,
+      "interiorHoleFraction": 0.0,
+      "largestHolePixelCount": 0,
+      "largestHoleBBox": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0
+      },
+      "areaFraction": 0.13025951385498047,
+      "ratio": 0.3603441270980303,
+      "degenerate": false
+    }
+  ],
+  "referenceAzimuth": 0.0,
+  "requiredAzimuths": [
+    0.0,
+    90.0,
+    180.0,
+    270.0
+  ],
+  "azimuthTolerance": 5.0,
+  "missingAzimuths": [],
+  "covered": true,
+  "collapseRatio": 0.15,
+  "degenerate": false,
+  "allowHoles": true,
+  "holed": true,
+  "unsegmentedAzimuths": [],
+  "segmentationReliable": true,
+  "passed": true,
+  "note": "deterministic; zero token; mandatory azimuth coverage catches off-axis-only defects, interior-hole flood fill catches silhouette-enclosed background that an area-only check misses"
+}

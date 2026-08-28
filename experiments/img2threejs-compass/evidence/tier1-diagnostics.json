@@ -1,0 +1,174 @@
+STATUS pass=structural-pass completed=1 blocked=none next=diagnose_render.py
+{
+  "passed": true,
+  "checks": {
+    "silhouetteIoU": 0.8666,
+    "aspectRatioDelta": 0.0,
+    "scaleDelta": 0.0,
+    "bilateralSymmetryError": 0.0169,
+    "colorDelta": {
+      "checked": 38,
+      "maxDeltaE": 37.11,
+      "perComponent": [
+        {
+          "componentId": null,
+          "deltaE": 7.2
+        },
+        {
+          "componentId": null,
+          "deltaE": 11.29
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 14.35
+        },
+        {
+          "componentId": null,
+          "deltaE": 37.11
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.2
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.2
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.2
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.2
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.2
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.2
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.2
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.2
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.2
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.2
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.2
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.2
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.2
+        },
+        {
+          "componentId": null,
+          "deltaE": 7.2
+        }
+      ],
+      "gated": false
+    }
+  },
+  "failures": [],
+  "maskWarnings": [],
+  "renderHash": "6cadcb71525b390c",
+  "passId": "blockout",
+  "mapStrippedRender": "/home/user/cozywolf-landing/experiments/img2threejs-compass/renders/blockout_flat_az0.png"
+}

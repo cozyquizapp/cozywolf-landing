@@ -1,0 +1,85 @@
+{
+  "ok": true,
+  "verdict": "pass",
+  "confidence": 0.86,
+  "estimatedFidelity": 0.86,
+  "targetThreshold": 0.7,
+  "materialId": "mat-gold",
+  "sourceImage": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/zones/bezel-left.png",
+  "outDir": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/pbr",
+  "palette": [
+    "#F6B248",
+    "#FAD8A5",
+    "#D6821F",
+    "#F4C783",
+    "#A25B14"
+  ],
+  "maps": {
+    "albedo": {
+      "path": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/pbr/mat-gold_albedo.png",
+      "url": "mat-gold_albedo.png",
+      "channel": "albedo",
+      "source": "reference-pixel-extraction"
+    },
+    "roughness": {
+      "path": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/pbr/mat-gold_roughness.png",
+      "url": "mat-gold_roughness.png",
+      "channel": "roughness",
+      "source": "reference-pixel-extraction"
+    },
+    "height": {
+      "path": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/pbr/mat-gold_height.png",
+      "url": "mat-gold_height.png",
+      "channel": "height",
+      "source": "reference-pixel-extraction"
+    },
+    "normal": {
+      "path": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/pbr/mat-gold_normal.png",
+      "url": "mat-gold_normal.png",
+      "channel": "normal",
+      "source": "reference-pixel-extraction"
+    },
+    "ao": {
+      "path": "/home/user/cozywolf-landing/experiments/img2threejs-compass/evidence/pbr/mat-gold_ao.png",
+      "url": "mat-gold_ao.png",
+      "channel": "ao",
+      "source": "reference-pixel-extraction"
+    }
+  },
+  "diagnostics": {
+    "sourceWidth": 184,
+    "sourceHeight": 461,
+    "mapSize": 1024,
+    "cropBBoxPixels": {
+      "x": 20,
+      "y": 0,
+      "width": 164,
+      "height": 461
+    },
+    "mask": {
+      "backgroundColor": "#FFFFFF",
+      "backgroundNoise": 222.405,
+      "transparentPixelFraction": 0.0,
+      "foregroundCoverage": 0.7122
+    },
+    "mapStats": {
+      "valueRange": 0.4939,
+      "heightP90Gradient": 0.03638,
+      "roughnessBase": 0.69,
+      "roughnessVariation": 0.058,
+      "normalStrength": 0.199,
+      "blurRadius": 21
+    },
+    "palette": [
+      "#F6B248",
+      "#FAD8A5",
+      "#D6821F",
+      "#F4C783",
+      "#A25B14"
+    ]
+  },
+  "warnings": [
+    "single-image inverse rendering cannot prove true physical PBR; confidence is capped"
+  ],
+  "limitation": "single-image PBR extraction is an estimate; 70%+ extraction confidence still needs render screenshot review"
+}
