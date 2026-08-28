@@ -1206,6 +1206,12 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
         <div data-shell="" data-m="hero" style={sx('position:relative;z-index:2;flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);align-items:center;gap:56px;width:100%;max-width:1180px;margin:0 auto;padding:88px 32px 72px;box-sizing:border-box')}>
           <div style={sx('position:relative;z-index:1;min-width:0')}>
+            {/* Die Zeile hier oben bleibt ohne die Bewegung. Gemessen: sie
+                ist 14 px hoch, und "exit" ist genau so lang wie das Element
+                -- die ganze Aufloesung laege damit in 14 px Scrollweg und
+                waere ein Sprung, kein Verwehen. Sie ist ausserdem das Erste,
+                was oben hinauslaeuft, also gar nicht das, was Wolf gemeint
+                hat ("sonst bleibt er hart stehen wenn anderes verblurrt"). */}
             <p style={sx(`margin:0 0 22px;display:flex;align-items:center;gap:13px;font-size:12px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);animation:cwRise .8s ${EASE} both`)}>
               {L.hero.kicker}
               <span aria-hidden="true" style={sx('flex:1;max-width:110px;height:1px;background:linear-gradient(90deg,rgba(246,239,230,.20),transparent)')}></span>
@@ -1244,6 +1250,13 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               </span>
               <span style={sx(`display:block;animation:cwRise .9s ${EASE} both .12s`)}>{L.hero.rest}</span>
             </h1>
+            {/* Die Huelle traegt die Scrollbewegung, die Zeilen darin ihren
+                Auftritt. Beides auf dasselbe Element zu legen geht nicht: der
+                Auftritt steht als animation im style-Attribut, und ein
+                style-Attribut schlaegt jede Regel aus dem Stylesheet. Genau
+                deshalb sitzt cwRise auch bei der Ueberschrift auf den Spans
+                und nicht auf dem h1. */}
+            <div data-verwehen="" style={sx('will-change:transform,filter,opacity')}>
             <p data-m="herosub" style={sx(`margin:26px 0 0;animation:cwRise .8s ${EASE} both .26s;font-size:18.5px;line-height:1.55;font-weight:500;color:rgba(246,239,230,.78);max-width:44ch;text-wrap:pretty`)}>{L.hero.sub}</p>
             <div onMouseLeave={() => this.setState({ hbOn: null })} style={sx(`margin-top:34px;animation:cwRise .8s ${EASE} both .34s;display:flex;align-items:stretch;gap:14px;max-width:520px`)}>
               <a href="#anfragen" onClick={() => this.openForm('test')} onMouseEnter={() => this.setState({ hbOn: 0 })} style={sx(b0.style)}>
@@ -1262,6 +1275,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               </a>
             </div>
             <p style={sx(`margin:24px 0 0;animation:cwRise .8s ${EASE} both .42s;font-size:11.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)`)}>{L.hero.availability}</p>
+            </div>
           </div>
 
           {/* z-Index 3: die Objekte stehen ueber der Ueberschrift, damit das

@@ -123,12 +123,25 @@ summary span:last-child{transition:transform .25s cubic-bezier(.22,1,.36,1)}
    des Farbwechsels: naeher, weicher, weg. Dieselbe Strecke, damit beide
    Haelften im selben Moment im Grund ankommen. */
 @keyframes cwTreiben{to{transform:scale(1.9);filter:blur(22px);opacity:0}}
+/* Wolf am 28.08. zum Kopf: "den bereich auch leicht ausblurren oder auch
+   zoomen? sonst bleibt er hart stehen wenn anderes verblurrt".
+
+   Er meint die Zeilen unter der Ueberschrift -- Unterzeile, Knoepfe, Preis.
+   Ueberschrift und Objektgruppe loesen sich beim Verlassen auf, dieser Block
+   stand als einziger scharf im Bild und ist damit beim Rausscrollen das
+   Letzte, was man sieht: der Rest weicht, und die Knoepfe stehen wie
+   angeklebt. Jetzt geht er mit, aber deutlich leiser als die Schrift daneben
+   (1,35 statt 1,85, und die Unschaerfe halb so stark wie bei den Kacheln).
+   Es ist Text, den man lesen koennen soll, solange er im Bild ist -- die
+   Strecke faengt erst an, wenn er oben hinauslaeuft. */
+@keyframes cwVerwehen{to{transform:scale(1.35);filter:blur(14px);opacity:0}}
 /* Auftritt der Objektgruppe: fallen von oben ein, gestaffelt. */
 @keyframes cwKachelEin{from{opacity:0;transform:translate3d(0,-38px,0) rotate(var(--r,0deg)) scale(.82)}to{opacity:1;transform:translate3d(0,0,0) rotate(var(--r,0deg)) scale(1)}}
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion:no-preference){
     [data-aufloesen]{animation-name:cwAufloesen;animation-duration:auto;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:view();animation-range:exit 0% exit 92%}
+    [data-verwehen]{animation-name:cwVerwehen;animation-duration:auto;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:view();animation-range:exit 0% exit 92%}
     [data-treiben]{animation-name:cwTreiben;animation-duration:auto;animation-timing-function:linear;animation-fill-mode:both;animation-timeline:view();animation-range:exit 0% exit 92%}
   }
 }
