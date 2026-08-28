@@ -4,15 +4,24 @@
 
   Wolf am 28.08.: "vorschaubild der website ist komplett veraltet". Stimmt, und
   der Grund war nicht Nachlaessigkeit, sondern dass es keine Quelle gab: das
-  alte Bild war eine einzelne PNG-Datei ohne Bauanleitung. Es zeigte eine
-  Ueberschrift, die es nicht mehr gibt, Tieravatare, die die Seite nicht mehr
-  benutzt, und "1. Abend gratis" statt "Gratis fuer Test-Teams".
+  alte Bild war eine einzelne PNG-Datei ohne Bauanleitung. Deshalb liegt es
+  jetzt als Seite hier, mit denselben Schriften, Farben und Objekten wie der
+  Kopf der Website. Aendert sich die erste Zeile, aendert man sie hier mit und
+  baut neu.
 
-  Deshalb liegt es jetzt als Seite hier, mit denselben Schriften, Farben und
-  Objekten wie der Kopf der Website. Aendert sich die erste Zeile, aendert man
-  sie hier mit und baut neu.
+  Wolf am 28.08., zweite Meldung: "das vorschaubild ist nix", mit einem Bild
+  einer Link-Vorschau. Grund: WhatsApp, Signal und die meisten Messenger
+  zeigen die Vorschau quadratisch und schneiden mittig zu, also x 285 bis 915.
+  Vom zweispaltigen Entwurf blieb dann "en / cht alles." uebrig, Wortmarke
+  links und Objekte rechts fielen beide weg.
 
-  Neu bauen:
+  Deshalb steht jetzt alles Wichtige mittig in diesem Quadrat, und die
+  Gegenstaende liegen ringsum: vier innerhalb des Quadrats in dessen Ecken,
+  zwei weiter aussen, die nur im breiten Zuschnitt zu sehen sind. Wer hier
+  etwas verschiebt, prueft danach beide Zuschnitte mit tools/og-cover.mjs,
+  das misst und meldet, wenn Text aus dem Quadrat laeuft.
+
+  Neu bauen (Playwright muss auflösbar sein, notfalls global installiert):
     npm run build
     npx vite preview --port 4192 --strictPort &
     node tools/og-cover.mjs
@@ -25,38 +34,53 @@
 @font-face{font-family:'League Spartan';font-weight:900;src:url('/fonts/league-spartan-latin-900-normal.woff2') format('woff2')}
 *{margin:0;padding:0;box-sizing:border-box}
 body{width:1200px;height:630px;overflow:hidden;background:#0A0814;font-family:'Bricolage Grotesque',system-ui,sans-serif;color:#F6EFE6}
-.blatt{position:relative;width:1200px;height:630px;padding:56px 64px;display:flex;align-items:center;gap:24px}
-.schein{position:absolute;left:50%;top:-300px;transform:translateX(-50%);width:1500px;height:900px;
-  background:radial-gradient(ellipse at center,rgba(246,239,230,.055),rgba(10,8,20,0) 62%);pointer-events:none}
-.links{position:relative;z-index:2;flex:1;min-width:0}
-.marke{display:flex;align-items:center;gap:14px;margin-bottom:30px}
-.marke img{width:44px;height:44px}
-.marke span{font-family:'League Spartan',sans-serif;font-weight:900;font-size:27px;letter-spacing:-.01em}
-.kicker{display:flex;align-items:center;gap:13px;white-space:nowrap;font-size:13px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);margin-bottom:20px}
-.kicker i{display:block;width:70px;height:1px;flex:none;background:linear-gradient(90deg,rgba(246,239,230,.20),transparent)}
-h1{font-family:'League Spartan',sans-serif;font-weight:900;font-size:96px;line-height:.84;letter-spacing:-.038em;white-space:nowrap}
+.blatt{position:relative;width:1200px;height:630px}
+
+/* Der Schein sitzt ueber der Mitte des Quadrats, nicht ueber der Blattmitte
+   der breiten Fassung -- beides ist hier x 600, deshalb dieselbe Angabe. */
+.schein{position:absolute;left:50%;top:-46%;transform:translateX(-50%);width:1180px;height:900px;
+  background:radial-gradient(ellipse at center,rgba(246,239,230,.075),rgba(10,8,20,0) 62%);pointer-events:none}
+
+/* Der mittlere quadratische Ausschnitt: x 285 bis 915. Alles Wichtige liegt
+   drin, mit 30 px Luft an beiden Seiten. */
+.mitte{position:absolute;left:315px;top:0;width:570px;height:630px;z-index:3;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.marke{display:flex;align-items:center;gap:12px;margin-bottom:26px}
+.marke img{width:40px;height:40px}
+.marke span{font-family:'League Spartan',sans-serif;font-weight:900;font-size:25px;letter-spacing:-.01em}
+h1{font-family:'League Spartan',sans-serif;font-weight:900;font-size:74px;line-height:.86;letter-spacing:-.038em;white-space:nowrap}
 h1 em{font-style:normal;color:#3B82F6}
-p.sub{margin-top:24px;font-size:23px;line-height:1.45;font-weight:500;color:rgba(246,239,230,.78);max-width:30ch}
-.fuss{margin-top:30px;font-size:13.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)}
-.rechts{position:relative;z-index:3;flex:none;width:470px;height:470px;align-self:center;margin-right:-14px}
-.rechts img{position:absolute;border-radius:16%}
+p.sub{margin-top:20px;font-size:22px;line-height:1.4;font-weight:500;color:rgba(246,239,230,.80);max-width:24ch}
+.fuss{display:flex;align-items:center;gap:12px;margin-top:26px;white-space:nowrap;
+  font-size:13px;font-weight:900;letter-spacing:.17em;text-transform:uppercase;color:rgba(246,239,230,.60)}
+.fuss i{display:block;width:44px;height:1px;flex:none;background:rgba(246,239,230,.22)}
+
+.objekte img{position:absolute;z-index:2;border-radius:16%;
+  filter:drop-shadow(0 14px 26px rgba(0,0,0,.5))}
+/* Die zwei aeusseren sind nur im breiten Zuschnitt zu sehen und deshalb
+   etwas ruhiger, damit sie die Mitte nicht ueberstimmen. */
+.objekte img.aussen{opacity:.9}
 </style></head>
 <body>
 <div class="blatt">
   <div class="schein"></div>
-  <div class="links">
+
+  <div class="objekte">
+    <!-- innerhalb des Quadrats, in dessen vier Ecken -->
+    <img src="/assets/obj-puzzle.webp"         style="left:300px;top:26px;width:116px;transform:rotate(-9deg)">
+    <img src="/assets/av-qq-crystal-ball.webp" style="left:790px;top:36px;width:104px;transform:rotate(11deg)">
+    <img src="/assets/obj-sanduhr.webp"        style="left:312px;top:486px;width:92px;transform:rotate(-14deg)">
+    <img src="/assets/av-qq-mushroom.webp"     style="left:788px;top:474px;width:106px;transform:rotate(7deg)">
+    <!-- ausserhalb, nur im breiten Zuschnitt -->
+    <img class="aussen" src="/assets/obj-gehirn.webp"   style="left:96px;top:236px;width:104px;transform:rotate(13deg)">
+    <img class="aussen" src="/assets/av-qq-teapot.webp" style="left:1010px;top:246px;width:110px;transform:rotate(-10deg)">
+  </div>
+
+  <div class="mitte">
     <div class="marke"><img src="/logo.webp" alt=""><span>CozyWolf</span></div>
-    <div class="kicker">Moderiertes Live-Quiz für Teams in Hamburg<i></i></div>
     <h1><em>Wissen</em><br>ist nicht alles.</h1>
     <p class="sub">Der gemütlichste Quizabend, den ihr je gespielt habt.</p>
-    <div class="fuss">Ab 350 € · Termine ab Mitte September</div>
-  </div>
-  <div class="rechts">
-    <img src="/assets/obj-puzzle.webp"         style="left:4%;top:6%;width:40%;transform:rotate(-8deg)">
-    <img src="/assets/av-qq-crystal-ball.webp" style="left:46%;top:0%;width:33%;transform:rotate(10deg)">
-    <img src="/assets/av-qq-mushroom.webp"     style="left:33%;top:44%;width:30%;transform:rotate(6deg)">
-    <img src="/assets/obj-sanduhr.webp"        style="left:68%;top:40%;width:24%;transform:rotate(-14deg)">
-    <img src="/assets/obj-gehirn.webp"         style="left:12%;top:66%;width:21%;transform:rotate(14deg)">
+    <div class="fuss"><i></i>Live-Quiz in Hamburg &middot; ab 350 &euro;<i></i></div>
   </div>
 </div>
 </body></html>
