@@ -1,0 +1,62 @@
+<!doctype html>
+<!--
+  Das Vorschaubild fuer geteilte Links (og:image), 1200 auf 630.
+
+  Wolf am 28.08.: "vorschaubild der website ist komplett veraltet". Stimmt, und
+  der Grund war nicht Nachlaessigkeit, sondern dass es keine Quelle gab: das
+  alte Bild war eine einzelne PNG-Datei ohne Bauanleitung. Es zeigte eine
+  Ueberschrift, die es nicht mehr gibt, Tieravatare, die die Seite nicht mehr
+  benutzt, und "1. Abend gratis" statt "Gratis fuer Test-Teams".
+
+  Deshalb liegt es jetzt als Seite hier, mit denselben Schriften, Farben und
+  Objekten wie der Kopf der Website. Aendert sich die erste Zeile, aendert man
+  sie hier mit und baut neu.
+
+  Neu bauen:
+    npm run build
+    npx vite preview --port 4192 --strictPort &
+    node tools/og-cover.mjs
+-->
+<html lang="de"><head><meta charset="utf-8">
+<base href="http://localhost:4192/">
+<style>
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;src:url('/fonts/bricolage-grotesque-latin-opsz-variable.woff2') format('woff2-variations');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:'Bricolage Grotesque';font-style:normal;font-weight:200 800;src:url('/fonts/bricolage-grotesque-latin-ext-opsz-variable.woff2') format('woff2-variations');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'League Spartan';font-weight:900;src:url('/fonts/league-spartan-latin-900-normal.woff2') format('woff2')}
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1200px;height:630px;overflow:hidden;background:#0A0814;font-family:'Bricolage Grotesque',system-ui,sans-serif;color:#F6EFE6}
+.blatt{position:relative;width:1200px;height:630px;padding:56px 64px;display:flex;align-items:center;gap:24px}
+.schein{position:absolute;left:50%;top:-300px;transform:translateX(-50%);width:1500px;height:900px;
+  background:radial-gradient(ellipse at center,rgba(246,239,230,.055),rgba(10,8,20,0) 62%);pointer-events:none}
+.links{position:relative;z-index:2;flex:1;min-width:0}
+.marke{display:flex;align-items:center;gap:14px;margin-bottom:30px}
+.marke img{width:44px;height:44px}
+.marke span{font-family:'League Spartan',sans-serif;font-weight:900;font-size:27px;letter-spacing:-.01em}
+.kicker{display:flex;align-items:center;gap:13px;white-space:nowrap;font-size:13px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62);margin-bottom:20px}
+.kicker i{display:block;width:70px;height:1px;flex:none;background:linear-gradient(90deg,rgba(246,239,230,.20),transparent)}
+h1{font-family:'League Spartan',sans-serif;font-weight:900;font-size:96px;line-height:.84;letter-spacing:-.038em;white-space:nowrap}
+h1 em{font-style:normal;color:#3B82F6}
+p.sub{margin-top:24px;font-size:23px;line-height:1.45;font-weight:500;color:rgba(246,239,230,.78);max-width:30ch}
+.fuss{margin-top:30px;font-size:13.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)}
+.rechts{position:relative;z-index:3;flex:none;width:470px;height:470px;align-self:center;margin-right:-14px}
+.rechts img{position:absolute;border-radius:16%}
+</style></head>
+<body>
+<div class="blatt">
+  <div class="schein"></div>
+  <div class="links">
+    <div class="marke"><img src="/logo.webp" alt=""><span>CozyWolf</span></div>
+    <div class="kicker">Moderiertes Live-Quiz für Teams in Hamburg<i></i></div>
+    <h1><em>Wissen</em><br>ist nicht alles.</h1>
+    <p class="sub">Der gemütlichste Quizabend, den ihr je gespielt habt.</p>
+    <div class="fuss">Ab 350 € · Termine ab Mitte September</div>
+  </div>
+  <div class="rechts">
+    <img src="/assets/obj-puzzle.webp"         style="left:4%;top:6%;width:40%;transform:rotate(-8deg)">
+    <img src="/assets/av-qq-crystal-ball.webp" style="left:46%;top:0%;width:33%;transform:rotate(10deg)">
+    <img src="/assets/av-qq-mushroom.webp"     style="left:33%;top:44%;width:30%;transform:rotate(6deg)">
+    <img src="/assets/obj-sanduhr.webp"        style="left:68%;top:40%;width:24%;transform:rotate(-14deg)">
+    <img src="/assets/obj-gehirn.webp"         style="left:12%;top:66%;width:21%;transform:rotate(14deg)">
+  </div>
+</div>
+</body></html>
