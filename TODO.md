@@ -3,20 +3,25 @@
 Was hier steht, ist von Wolf gemeldet und noch nicht erledigt. Reihenfolge
 ist die Reihenfolge der Meldung, nicht die der Dringlichkeit.
 
-## Nach der Handy-Fassung
+## Offen, zur Entscheidung
 
-### 1. Das Vorschaubild taugt im quadratischen Zuschnitt nicht
+### Zwei Namen heissen auf Englisch gleich
 
-Gemeldet am 28.08. mit einem Bildschirmfoto einer Link-Vorschau: WhatsApp
-und aehnliche schneiden das 1200 auf 630 grosse Bild auf ein Quadrat zu, und
-zwar mittig. Vom heutigen Entwurf bleibt dann "en / cht alles." uebrig, die
-Wortmarke links und die Objekte rechts sind beide weg.
+Der Joker "Risiko" heisst in der App auf Englisch "All In", und seit heute
+heisst die Kategorie "10 von 10" auf Englisch ebenfalls "All In". Beides
+kommt so aus der App, ich habe es deshalb nicht eigenmaechtig geaendert. Auf
+der Seite stehen die beiden in verschiedenen Abschnitten, es faellt also
+kaum auf. Wenn es dich stoert, muss es in der App geaendert werden, nicht
+hier.
 
-Zu tun: tools/og-cover.html so umbauen, dass der mittlere quadratische
-Ausschnitt (630 auf 630, also x 285 bis 915) fuer sich allein funktioniert.
-Also mittige Anordnung statt der zweispaltigen, Wortmarke und eine kurze
-Aussage in der Mitte, Objekte darum herum. Danach beide Zuschnitte pruefen,
-das ganze Bild und das Quadrat.
+### Cookie-Banner, gemeldet am 28.08.
+
+Geprueft und gemessen: die Seite setzt null Cookies, schreibt vor einer
+Nutzerhandlung gar nichts, und danach genau einen Eintrag, die Sprachwahl.
+Der faellt unter Paragraf 25 Absatz 2 Nummer 2 TDDDG (technisch
+erforderlich), GoatCounter speichert nichts auf dem Geraet. Kein Banner
+noetig. Zwei Angebote stehen offen, falls es wasserdicht sein soll: das
+Zaehlskript selbst hosten, und die Sprachwahl auf sessionStorage umstellen.
 
 ## Handy, gemeldet am 28.08. nach dem Umbau
 
@@ -86,6 +91,22 @@ Wolf schickt noch die drei restlichen Abschnitte mit Bildern nach.
 
 ## Erledigt
 
+* **1. Das Vorschaubild im quadratischen Zuschnitt.** Messenger schneiden
+  mittig auf 630 auf 630 zu; vom zweispaltigen Entwurf blieb "en / cht alles."
+  uebrig. Jetzt steht alles Wichtige mittig in diesem Quadrat, die
+  Gegenstaende liegen ringsum, vier in dessen Ecken und zwei weiter aussen
+  fuer den breiten Zuschnitt. Breitestes Element ist die Ueberschrift mit
+  378 bis 822, also 93 px Luft je Seite. Das Bauskript misst das jetzt selbst
+  und bricht ab, wenn etwas herausragt.
+* **Kategorienamen auf Englisch.** Gemeldet am 28.08.: "kategorien in eng
+  sind noch auf deutsch", und danach dasselbe fuer das Handy. Stimmte, und es
+  war sogar dreifach uneinheitlich: der Desktop nannte in der Liste die
+  deutschen Namen, in der Beamer-Vorfuehrung aber schon englische, und das
+  Handy hatte eine dritte, frei erfundene Reihe (Ballpark, Look Closer,
+  10 of 10, Mixed Bag). Jetzt stehen ueberall die offiziellen Namen aus der
+  App (shared/quarterQuizTypes.ts, QQ_CATEGORY_LABELS): Mu-Cho, Close Call,
+  Lucky Bag, All In, Picture This. Gemessen: im Desktop-Abschnitt 03 stehen
+  alle fuenf, im Handy-Ablauf kein einziger deutscher Rest mehr.
 * **2. Der Wolf auf der Begruessungsfolie war links angeschnitten.** Er steht
   auf dem Desktop jetzt bei left:12px statt -34px, im Handy bei left:1% statt
   -3%; der Textblock daneben bekam entsprechend mehr Polster links (Desktop

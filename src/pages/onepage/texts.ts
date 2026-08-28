@@ -417,10 +417,10 @@ const en: OnePageDict = {
     check2: 'Five question types, no round feels the same',
     cats: {
       mucho: { name: 'Mu-Cho', claim: 'Pick the right answer.', detail: '4 options, only 1 is right. Speed decides.' },
-      schaetzchen: { name: 'Schätzchen', claim: 'Who guesses closest?', detail: 'The closest guess wins. Nearly right counts too.' },
-      cheese: { name: 'Schau mal!', claim: 'What is that?', detail: 'Recognise the picture and type your answer on the phone.' },
-      zehn: { name: '10 von 10', claim: 'Spend your points wisely.', detail: '3 answers, 10 points. All in, or spread them out?' },
-      tuete: { name: 'Bunte Tüte', claim: 'Always a surprise.', detail: 'Hot Potato, Top 5, Fix It, Pin It. Nobody knows which one is next.' },
+      schaetzchen: { name: 'Close Call', claim: 'Who guesses closest?', detail: 'The closest guess wins. Nearly right counts too.' },
+      cheese: { name: 'Picture This', claim: 'What is that?', detail: 'Recognise the picture and type your answer on the phone.' },
+      zehn: { name: 'All In', claim: 'Spend your points wisely.', detail: '3 answers, 10 points. All in, or spread them out?' },
+      tuete: { name: 'Lucky Bag', claim: 'Always a surprise.', detail: 'Hot Potato, Top 5, Fix It, Pin It. Nobody knows which one is next.' },
     },
     probes: {
       mucho: { kind: 'pick', q: 'What did Netflix ship before streaming existed?',
