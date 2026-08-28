@@ -21,8 +21,10 @@ große Formen, wenige Kanten, die Linse deutlich als Kreis.
 
 ## 2. Stil: wortgleich zum vorhandenen Satz
 
-Die Rezeptur steht schon, sie ist die aus `KioskQuiz/docs/AVATAR_BRIEF.md`,
-Abschnitt 4. Nicht neu erfinden, sondern übernehmen:
+Die Rezeptur steht schon. Sie stammt aus dem **App-Repo** (`cozyquizapp/KioskQuiz`,
+Datei `docs/AVATAR_BRIEF.md`, Abschnitt 4) und ist hier vollständig
+wiedergegeben — dieser Auftrag steht also für sich, man braucht das andere Repo
+nicht dafür. Nicht neu erfinden, sondern übernehmen:
 
 * **Material.** Matt. Ton, Weichgummi, Filz. Keine Glanzlichter, kein Plastik.
   Leichte Wärme im Halbschatten, keine harten Verlaufskanten. Keine
@@ -84,8 +86,9 @@ das Licht dazwischen sind ehrlich, ein Zimmer wäre wieder derselbe Fehler.
 * **Kein Schlagschatten auf einen Boden.** Es gibt keinen Boden.
 * **Kein Tisch, kein Regal, keine Wand, kein Hintergrund.** Nur das Gerät.
 * **Kein Staub im Strahl, keine Lichtstreifen, kein Bokeh.**
-* **Kein Gesicht.** Geräte bekommen im Satz konsequent keine Augen (siehe
-  AVATAR_BRIEF: „Ein Bierkrug mit Augen ist genau der Rückfall").
+* **Kein Gesicht.** Geräte bekommen im Satz konsequent keine Augen. Der Satz
+  dazu aus dem Avatar-Auftrag der App: „Ein Bierkrug mit Augen ist genau der
+  Rückfall, den wir vermeiden.".
 * **Kein Kabel**, es hinge im Nichts.
 * **Keine Marke, keine Beschriftung, keine Knöpfe mit Symbolen.**
 

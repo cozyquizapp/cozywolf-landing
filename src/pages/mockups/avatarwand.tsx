@@ -50,8 +50,8 @@ export const AVATAR_ENTWUERFE: Record<AvatarEntwurf, { name: string; idee: { de:
   1: {
     name: 'Band unter dem Text',
     idee: {
-      de: 'Die Wand steht klein in der Zeile CozyQuiz, unter der Aufzaehlung, mit der Zeile "48 Objekte × 8 Farben, frei kombinierbar" darunter. Sie besetzt damit genau den Platz, an dem in der Zeile CrowdQuiz die Spruchkarte steht -- beide Zeilen bekommen dieselbe Form, und das Brett rechts bleibt unangetastet das Aushaengeschild. Nebenbei sagt die Seite damit zum ersten Mal ueberhaupt, dass ein Team sich ein Zeichen und eine Farbe aussucht.',
-      en: 'The wall sits small in the CozyQuiz row, under the bullets, with the line "48 objects × 8 colours, mix freely" beneath it. It takes exactly the slot the motto card holds in the CrowdQuiz row -- both rows get the same shape, and the board on the right stays untouched as the showpiece. In passing, the page says for the first time that a team picks a mark and a colour.',
+      de: 'Die Wand steht klein in der Zeile CozyQuiz, unter der Aufzaehlung, mit der Zeile "48 Objekte × 8 Farben, frei kombinierbar" darunter. Nicht in der Objektspalte -- dort steht das Brett, und zwei bewegte Dinge in einer Zeile kaempfen um denselben Blick. Und hier laeuft sie RUHIG: die Farbwelle wandert langsam weiter (3,4 statt 2,2 s), die Objekte springen erst, wenn jemand hinzeigt. Auf dem Beamer in drei Metern liest sich der App-Takt als lebendig, auf einer Website in fuenfzig Zentimetern als Flackern. Wolfs Argument traegt die Fassung: bei CrowdQuiz waehlt man eine bestehende Fraktion, bei CozyQuiz stellt man Farbe und Emoji selbst zusammen -- ohne Bezug zu CozyQuiz haette die Wand keinen Ort.',
+      en: 'The wall sits small in the CozyQuiz row, under the bullets, with the line "48 objects × 8 colours, mix freely" beneath it. Not in the object column -- the board lives there, and two moving things in one row fight over the same glance. And here it runs CALM: the colour wave drifts on slowly (3.4s instead of 2.2), the objects only jump when someone points at it. On a projector three metres away the app rhythm reads as lively; on a website fifty centimetres away it reads as flicker. Wolf\'s own argument carries this version: in CrowdQuiz you pick an existing faction, in CozyQuiz you put colour and emoji together yourself -- without the tie to CozyQuiz the wall would have no home.',
     },
   },
   2: {
@@ -74,13 +74,44 @@ export const AVATAR_ENTWUERFE: Record<AvatarEntwurf, { name: string; idee: { de:
  * Die Wand selbst. Zwei Uhren wie in der App.
  * @param kachel Kantenlaenge einer Kachel in px.
  */
-export function Wand({ kachel: kw, spalten = 4 }: { kachel: number; spalten?: number }) {
+export function Wand({ kachel: kw, spalten = 4, ruhig = false }: {
+  kachel: number; spalten?: number;
+  /**
+   * Ruhig heisst: die Farbwelle laeuft langsam weiter, die Objekte springen
+   * erst, wenn jemand hinzeigt.
+   *
+   * 2026-08-28. Wolf: "aber du hast gesagt das wechselnde grid ist zu unruhig
+   * im sektor cozyquiz... jetzt widersprichst du dir". Er hat recht, ich habe
+   * mir widersprochen -- die Ueberschrift meiner Antwort lautete "nicht in der
+   * Zeile CozyQuiz" und die Empfehlung war dann V1, und V1 liegt genau dort.
+   *
+   * Gemeint war: nicht in die OBJEKTSPALTE neben das Brett. Dort stehen sonst
+   * zwei bewegte Dinge in einer Zeile, und das Brett verliert, weil es langsam
+   * ist und die Wand schnell.
+   *
+   * Der Einwand trifft aber auch unter dem Text noch zur Haelfte. Auf dem
+   * Beamer, drei Meter entfernt, liest sich der App-Takt (Objekt alle 420 ms)
+   * als lebendig. Auf einer Website in fuenfzig Zentimetern Abstand liest er
+   * sich als Flackern, und daneben spielt das Brett.
+   *
+   * Also wird getrennt, was laut ist, von dem, was leise ist. Der Farbwechsel
+   * ist eine Kreuzblende ueber 900 ms, die als Welle laeuft -- das ist der
+   * leise Teil und darf immer laufen, nur langsamer (3,4 statt 2,2 s). Das
+   * springende Objekt ist der laute Teil und kommt erst beim Zeigen.
+   *
+   * Der Satz "frei kombinierbar" bleibt trotzdem sichtbar: die Farbe wandert
+   * ueber die Objekte hinweg, und genau das ist ja die Aussage.
+   */
+  ruhig?: boolean;
+}) {
   const anzahl = 8;
   const [objekte, setObjekte] = useState<number[]>(() => Array.from({ length: anzahl }, (_, i) => i));
   const [farbSchritt, setFarbSchritt] = useState(0);
+  const [zeigt, setZeigt] = useState(false);
 
   useEffect(() => {
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (ruhig && !zeigt) { const nur = setInterval(() => setFarbSchritt(f => f + 1), 3400); return () => clearInterval(nur); }
     let n = 0;
     const objektUhr = setInterval(() => {
       const k = n % anzahl;
@@ -99,12 +130,13 @@ export function Wand({ kachel: kw, spalten = 4 }: { kachel: number; spalten?: nu
       });
       n++;
     }, 420);
-    const farbUhr = setInterval(() => setFarbSchritt(f => f + 1), 2200);
+    const farbUhr = setInterval(() => setFarbSchritt(f => f + 1), ruhig ? 3400 : 2200);
     return () => { clearInterval(objektUhr); clearInterval(farbUhr); };
-  }, []);
+  }, [ruhig, zeigt]);
 
   return (
-    <div style={sx(`display:grid;grid-template-columns:repeat(${spalten},${kw}px);gap:${Math.round(kw * 0.13)}px`)}>
+    <div onMouseEnter={() => setZeigt(true)} onMouseLeave={() => setZeigt(false)}
+      style={sx(`display:grid;grid-template-columns:repeat(${spalten},${kw}px);gap:${Math.round(kw * 0.13)}px`)}>
       {objekte.map((mi, i) => {
         const farbe = FARBEN[(i + farbSchritt) % FARBEN.length];
         // Die Staffelung macht aus dem gleichzeitigen Farbwechsel eine Welle,
@@ -145,7 +177,7 @@ export function AvatarWand({ mobil, entwurf, L }: {
       </ul>
       {entwurf === 1 && (
         <div style={sx('margin-top:28px')}>
-          <Wand kachel={mobil ? 48 : 54} />
+          <Wand kachel={mobil ? 48 : 54} ruhig />
           <div style={sx('margin-top:13px;font-size:13px;font-weight:800;color:rgba(246,239,230,.55)')}>
             48 Objekte × 8 Farben, frei kombinierbar
           </div>
