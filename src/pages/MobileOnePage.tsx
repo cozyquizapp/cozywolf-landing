@@ -217,6 +217,14 @@ type MOPState = {
   avObj?: number[]; avFarbe?: number[];
   /** Angetipptes Wappen in 01. */
   frak?: string | null;
+  /**
+   * Zuletzt gezeichnete Sprache, und ob der naechste Anstrich die
+   * Buchstabenwalze in der Ueberschrift ueberspringt. Gleiche Sache wie auf
+   * dem Desktop, siehe OnePage.tsx: die Buchstaben tragen ihren Platz in
+   * der Liste als Schluessel, beim Sprachwechsel bleiben also die ersten
+   * stehen und nur die ueberzaehligen laufen herein.
+   */
+  sprache?: Lang; stumm?: boolean;
 };
 
 class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
@@ -225,6 +233,12 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     step: 0, hookI: 0, wallOn: false, guess: 180, guessDone: false,
     pts: [0, 0, 0], ptsDone: false, act: -1, acts: {}, splash: false, count: 3, done: false,
   };
+
+  /** Sprachwechsel erkennen, bevor gezeichnet wird. Siehe OnePage.tsx. */
+  static getDerivedStateFromProps(props: { lang: Lang }, state: MOPState): Partial<MOPState> | null {
+    if (state.sprache === props.lang) return null;
+    return { sprache: props.lang, stumm: state.sprache !== undefined };
+  }
 
   private _io: IntersectionObserver | undefined;
   private _wio: IntersectionObserver | undefined;
@@ -277,7 +291,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
       window.addEventListener('scroll', this._onScroll, { passive: true });
 
       this._hookT = setInterval(() => {
-        if (!document.hidden) this.setState(s => ({ hookI: s.hookI + 1 }));
+        if (!document.hidden) this.setState(s => ({ hookI: s.hookI + 1, stumm: false }));
       }, 6800);
     }
 
@@ -571,9 +585,9 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
    */
   hookWaehlen(i: number) {
     clearInterval(this._hookT);
-    this.setState({ hookI: i });
+    this.setState({ hookI: i, stumm: false });
     this._hookT = setInterval(() => {
-      if (!document.hidden) this.setState(s => ({ hookI: s.hookI + 1 }));
+      if (!document.hidden) this.setState(s => ({ hookI: s.hookI + 1, stumm: false }));
     }, 6800);
   }
 
@@ -586,6 +600,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     // Der Wechsel blendet ueber, er springt nicht: 0,62 s, dieselbe Dauer wie
     // die Buchstabenwalze.
     const objekt = MOBJEKTE[MWORT_OBJ[hookI % MWORT_OBJ.length]];
+    const stumm = this.state.stumm === true;
     return (
       <section id="top" style={sx('position:relative;overflow:hidden')}>
         <div style={sx('position:relative;padding:28px 20px 34px')}>
@@ -593,7 +608,9 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
           <h1 style={sx("margin:0;font-family:'League Spartan',sans-serif;font-weight:900;font-size:44px;line-height:.94;letter-spacing:-.03em")}>
             <span style={sx('display:block;padding:.14em .1em .06em;margin:-.14em -.1em -.06em;overflow:hidden;white-space:nowrap')}>
               {hook.split('').map((ch, j) => (
-                <span key={`${hookI}-${j}`} style={sx(`display:inline-block;color:${objekt.farbe};transition:color .62s linear;animation:${anim} 1.05s ${EASE} both ${(j * 0.07).toFixed(3)}s`)}>{ch === ' ' ? ' ' : ch}</span>
+                <span key={stumm ? `s-${j}` : `${hookI}-${j}`}
+                  style={sx(`display:inline-block;color:${objekt.farbe};transition:color .62s linear`
+                    + (stumm ? '' : `;animation:${anim} 1.05s ${EASE} both ${(j * 0.07).toFixed(3)}s`))}>{ch === ' ' ? ' ' : ch}</span>
               ))}
             </span>
             <span style={sx(`display:block;animation:mRise .8s ${EASE} both .12s`)}>{L.hero.rest}</span>

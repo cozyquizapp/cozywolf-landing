@@ -91,6 +91,16 @@ Wolf schickt noch die drei restlichen Abschnitte mit Bildern nach.
 
 ## Erledigt
 
+* **Formular 3 zu 1, Schalter, Sprachwechsel** (gemeldet am 28.08. von einem
+  Bekannten von Wolf). Die Felder standen auf breiten Bildschirmen 3 zu 1
+  statt 2 zu 2: die Angabe war repeat(auto-fit,minmax(220px,1fr)), also nimmt
+  der Browser so viele Spalten wie passen. Jetzt steht die Zwei fest, gemessen
+  am Formularkasten und nicht am Fenster. Gemessen bei 2560, 1920, 1440, 1280,
+  1100 und 1000 px: ueberall 2 zu 2, und beide Fassungen des Formulars sind
+  weiterhin gleich hoch (575 px). Unter 460 px Kastenbreite eine Spalte.
+  Der zweite Schalter in der Kopfzeile des Formulars ist raus, gewaehlt wird
+  links in der Spalte. Und beim Sprachwechsel laeuft die Buchstabenwalze nicht
+  mehr, weder auf dem Desktop noch im Handy.
 * **1. Das Vorschaubild im quadratischen Zuschnitt.** Messenger schneiden
   mittig auf 630 auf 630 zu; vom zweispaltigen Entwurf blieb "en / cht alles."
   uebrig. Jetzt steht alles Wichtige mittig in diesem Quadrat, die

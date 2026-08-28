@@ -542,6 +542,25 @@ header a[href="#anfragen"]{display:none!important}
 [data-m=foot] a{margin-left:0!important}
 [data-m=sticky]{display:flex!important}
 }
+/* Die Felder des Anfrageformulars.
+
+   Gemeldet am 28.08.: "auf breiteren screens geht request an event auf 3:1
+   statt 2:2, das soll nicht passieren". Stimmte. Der Kommentar im Formular
+   behauptete seit dem 27.08. "jetzt stehen beide als zwei mal zwei", die
+   Angabe darunter war aber repeat(auto-fit,minmax(220px,1fr)): auto-fit
+   nimmt so viele Spalten, wie hineinpassen, und ab etwa 700 px Kastenbreite
+   sind das drei. Bei vier Feldern ergibt das 3 zu 1.
+
+   Zwei ist hier keine Folge der Breite, sondern eine Entscheidung, also
+   steht sie jetzt auch so da. Gemessen wird der Formularkasten selbst und
+   nicht das Fenster, denn wie breit er ist, haengt von der Wahlspalte
+   daneben ab und nicht von der Fenstergroesse. 460 px ist die Schwelle:
+   darunter waeren zwei Spalten je unter 223 px, und ein Eingabefeld mit
+   Beschriftung wie "Ungefaehre Personenzahl" bricht dort um. */
+[data-m=formfelder]{grid-template-columns:1fr}
+@container (min-width:460px){
+[data-m=formfelder]{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 @media (max-width:860px){
 [data-m=two2]>*,[data-m=joh]>*,[data-m=two]>*,[data-m=three]>*{min-width:0!important}
 [data-m=root]{overflow-x:clip!important}

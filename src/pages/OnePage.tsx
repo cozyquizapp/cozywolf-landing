@@ -451,6 +451,24 @@ type OPState = {
   wallScale?: number;
   beam?: boolean; beamWelcome?: boolean;
   johFan?: boolean; hookI?: number; hookVor?: number | null;
+  /**
+   * Die Sprache, mit der zuletzt gezeichnet wurde, und ob der naechste
+   * Anstrich die Wortwalze ueberspringen soll.
+   *
+   * Gemeldet am 28.08. von einem Bekannten von Wolf, mit Video: beim
+   * Sprachwechsel bricht die Ueberschrift. Reproduziert und gefilmt bei
+   * 1440 px: aus "Wissen" wird "Knowledge", und weil die Buchstaben ihren
+   * Platz in der Liste als Schluessel tragen, bleiben die ersten sechs
+   * stehen und nur "dge" laeuft von unten herein. Auf halber Strecke steht
+   * also "Knowle" und daneben ein halbes, angeschnittenes "d".
+   *
+   * Sein Vorschlag war, beim Sprachwechsel gar nicht zu animieren, und der
+   * ist richtig: die Walze erzaehlt "dasselbe Wort, neue Bedeutung". Beim
+   * Sprachwechsel wechselt aber nicht das Wort, sondern die ganze Seite,
+   * und dann ist ein Rollen die falsche Aussage, selbst wenn es sauber
+   * liefe. Also: einmal stumm zeichnen, danach laeuft alles wie vorher.
+   */
+  sprache?: Lang; stumm?: boolean;
   b01?: number; b01Hand?: Record<number, string>; frak?: string | null;
   /**
    * Das Rennen in der Zeile CrowdQuiz.
@@ -495,6 +513,24 @@ type OPState = {
 
 class OnePageInner extends Component<{ lang: Lang }, OPState> {
   state: OPState = { formMode: 'event', formStatus: 'idle' };
+
+  /**
+   * Sprachwechsel erkennen, bevor gezeichnet wird.
+   *
+   * Es muss hier stehen und nicht in componentDidUpdate: dort waere der
+   * kaputte Anstrich schon auf dem Schirm gewesen und wuerde erst im
+   * naechsten Bild korrigiert -- also genau das Zucken, das wir loswerden
+   * wollen. Dazu faellt das vorherige Wort weg (hookVor), sonst laeuft
+   * beim Wechsel ein Wort nach oben hinaus, das in dieser Sprache nie auf
+   * dem Schirm stand.
+   */
+  static getDerivedStateFromProps(props: { lang: Lang }, state: OPState): Partial<OPState> | null {
+    if (state.sprache === props.lang) return null;
+    // Beim allerersten Anstrich gibt es nichts stummzuschalten, da laeuft
+    // noch gar keine Walze.
+    const erster = state.sprache === undefined;
+    return { sprache: props.lang, stumm: !erster, hookVor: null };
+  }
 
   gameTimer: ReturnType<typeof setInterval> | undefined;
   _spielSichtbar = false;
@@ -780,7 +816,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     this._coarse = window.matchMedia('(hover:none)').matches || window.innerWidth < 861;
     this._hookT = setInterval(() => {
       if (document.hidden || this._wortHalt) return;
-      this.setState(s => ({ hookVor: s.hookI ?? 0, hookI: (s.hookI ?? 0) + 1 }));
+      this.setState(s => ({ hookVor: s.hookI ?? 0, hookI: (s.hookI ?? 0) + 1, stumm: false }));
     }, 6800);
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduced) return;
@@ -1141,6 +1177,11 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     // Zeigen auf ein Objekt springt die Ueberschrift auf ein beliebiges Wort,
     // und dann ist der Vorgaenger eben nicht das Wort davor in der Liste.
     const vorI = this.state.hookVor ?? null;
+    // Beim Sprachwechsel einmal ohne Walze zeichnen, siehe
+    // getDerivedStateFromProps. Der Schluessel der Buchstaben wechselt dabei
+    // mit, damit React sie neu aufbaut statt die alten weiterzubenutzen --
+    // sonst behielten sie die Klasse aus dem vorigen Anstrich.
+    const stumm = this.state.stumm === true;
     const vorher = vorI == null ? null : L.hero.hooks[vorI % n];
     const objekt = GRUPPE[WORT_OBJEKT[hookI % n] % GRUPPE.length];
     // Die Knoepfe kennen die Wortfarbe, deshalb stehen sie hier unten und
@@ -1191,7 +1232,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                     startet. */}
                 <span style={sx(`display:inline-block;color:${objekt.farbe};transition:color .62s linear`)}>
                   {hook.split('').map((ch, j) => (
-                    <span key={`${hookI}-${j}`} className="cwWortEin" style={sx(`animation-delay:${(j * 0.032).toFixed(3)}s`)}>{ch === ' ' ? '\u00A0' : ch}</span>
+                    <span key={stumm ? `s-${j}` : `${hookI}-${j}`} className={stumm ? undefined : 'cwWortEin'}
+                      style={stumm ? undefined : sx(`animation-delay:${(j * 0.032).toFixed(3)}s`)}>{ch === ' ' ? '\u00A0' : ch}</span>
                   ))}
                 </span>
               </span>
@@ -1249,7 +1291,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 this._wortHalt = true;
                 const w = OBJEKT_WORT[i];
                 if (w < 0 || (this.state.hookI ?? 0) % n === w) return;
-                this.setState(st => ({ hookVor: st.hookI ?? 0, hookI: w }));
+                this.setState(st => ({ hookVor: st.hookI ?? 0, hookI: w, stumm: false }));
               };
               return (
               <span key={k.av}
@@ -3195,7 +3237,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               fuellen -- sonst sind zwar die Spalten gleich hoch und die Karte
               endet trotzdem irgendwo dazwischen. Genau das war zu sehen:
               gemessen beide Spalten 575 px, die Karte darin nur 470. */}
-          <div data-form-panel="" style={sx('min-width:0;display:flex;flex-direction:column')}>
+          <div data-form-panel="" style={sx('min-width:0;display:flex;flex-direction:column;container-type:inline-size')}>
 
             {st === 'ok' && (
               <div role="status" style={sx('width:100%;box-sizing:border-box;padding:clamp(22px,3vw,34px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);text-align:center' + schatten(';box-shadow:0 16px 40px rgba(0,0,0,.35)'))}>
@@ -3217,21 +3259,22 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   <span style={sx('font-size:11.5px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:rgba(246,239,230,.5)')}>{L.form.label}</span>
                   <span style={sx("font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;line-height:1;letter-spacing:-.02em;color:#F6EFE6;white-space:nowrap;"
                     + `min-width:${Math.max(L.form.tabEvent.length, L.form.tabTest.length)}ch`)}>{test ? L.form.tabTest : L.form.tabEvent}</span>
-                  <span style={sx('flex:1')}></span>
-                  {/* Und der Verweis wanderte um 35 px, weil seine Breite von
-                      seinem eigenen Text kam und der beim Wechsel wechselt.
-                      Jetzt haelt er die Breite des laengeren der beiden. */}
-                  <button type="button" onClick={() => this.openForm(test ? 'event' : 'test')}
-                    style={sx('background:none;border:none;padding:0;cursor:pointer;font-family:inherit;font-size:13.5px;font-weight:700;'
-                      + `min-width:${Math.max(L.form.tabEvent.length, L.form.tabTest.length)}ch;text-align:right;`
-                      + 'color:rgba(246,239,230,.62);text-decoration:underline;text-decoration-color:rgba(246,239,230,.3);text-underline-offset:3px')}>
-                    {test ? L.form.tabEvent : L.form.tabTest}
-                  </button>
+                  {/* Hier stand bis zum 28.08. ein zweiter Schalter, der
+                      auf die jeweils andere Fassung wechselte. Wolf: "der
+                      switcher test team, free kann raus, er hat nur
+                      verwirrt". Zu Recht: er stand direkt neben der
+                      Aufschrift, die sagt, welches Formular gerade offen ist,
+                      und sah damit aus wie deren Beschriftung, nicht wie ein
+                      Knopf. Gewaehlt wird links in der Spalte, und zwar mit
+                      zwei grossen Feldern, die genau dafuer da sind. Ein
+                      zweites Bedienelement fuer dieselbe Entscheidung, drei
+                      Zentimeter daneben und in anderer Form, macht aus einer
+                      klaren Wahl eine Frage. */}
                 </div>
                 <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden="true" style={sx('display:none')} />
                 <input type="hidden" name="_subject" value={test ? 'Neues Test-Team' : 'Quiz-Anfrage'} />
                 <input type="hidden" name="art" value={test ? 'Test-Team' : 'Event-Anfrage'} />
-                <div style={sx('display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))')}>
+                <div data-m="formfelder" style={sx('display:grid;gap:14px')}>
                   {!test && (
                     <>
                       <div style={sx(fieldWrap)}>
@@ -3250,7 +3293,8 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                           nicht aendern. Gemessen waren es 553 gegen 475 px.
                           Beide Formulare haben vier Felder, aber dieses hier
                           lag ueber die volle Breite und machte aus zwei Reihen
-                          drei. Jetzt stehen beide als zwei mal zwei. */}
+                          drei. Die Aufteilung steht jetzt in css.ts unter
+                          [data-m=formfelder], fest auf zwei Spalten. */}
                       <div style={sx(fieldWrap)}>
                         <label htmlFor="f-email" style={sx(labelStyle)}>{L.form.email}{req}</label>
                         <input id="f-email" name="email" type="email" maxLength={150} required style={sx(inputStyle)} />
@@ -3286,7 +3330,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                       <span aria-hidden="true" style={sx('display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;border:1px solid rgba(246,239,230,.38);font-size:14px;font-weight:900;line-height:1')}>+</span>
                       {L.form.mehr}
                     </summary>
-                    <div style={sx('display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));padding-top:14px')}>
+                    <div data-m="formfelder" style={sx('display:grid;gap:14px;padding-top:14px')}>
                       <div style={sx(fieldWrap + ';grid-column:1/-1')}>
                         <label htmlFor="f-datum" style={sx(labelStyle)}>{test ? L.form.termin : L.form.datum}</label>
                         <input id="f-datum" name={test ? 'termin' : 'datum'} type="text" maxLength={120} placeholder={test ? L.form.terminPh : L.form.datumPh} style={sx(inputStyle)} />
