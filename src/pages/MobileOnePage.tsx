@@ -14,6 +14,7 @@ import type { FormEvent, ReactNode } from 'react';
 import { useLang, setLang, type Lang } from '../lang';
 import { FORMSPREE_ID, INSTA_URL, EMAIL } from '../brand';
 import { sx } from './onepage/sx';
+import { WAND_FUGEN, WAND_RAND, WAND_STEINE } from './onepage/wand';
 import { motivAnteil, qqGridSize, teammarke } from '../qqKachel';
 import { mobileT, type MobileDict, type MobileCat } from './onepage/mobileTexts';
 
@@ -37,6 +38,15 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 @keyframes mPop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
 @keyframes mBurst{0%{transform:scale(.5);opacity:.9}100%{transform:scale(2.1);opacity:0}}
 @keyframes mFlip{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
+/* Die Wand in 04, dieselben Griffe wie auf dem Desktop: das Muster steht
+   still, bewegt wird nur die Maske, und zwei Scharen schmaler Linien laufen
+   verschieden schnell gegeneinander. Ohne Zeigerlicht, das gibt es hier
+   nicht. */
+@keyframes mWelle{from{mask-position:-2000px -2000px;-webkit-mask-position:-2000px -2000px}to{mask-position:-1690.8px -2000px;-webkit-mask-position:-1690.8px -2000px}}
+@keyframes mNetz{from{mask-position:-2000px -2000px;-webkit-mask-position:-2000px -2000px}to{mask-position:-2000px -1649.6px;-webkit-mask-position:-2000px -1649.6px}}
+@keyframes mFunke{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes mBeam{0%{opacity:0}6%{opacity:.3}13%{opacity:.1}20%{opacity:.34}30%{opacity:.16}40%{opacity:.3}62%{opacity:.2}82%{opacity:.08}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){[data-welle],[data-netz],[data-funke]{animation:none!important}}
 `;
 
 /**
@@ -99,6 +109,15 @@ const AV_START_FARBE = [0, 1, 2, 3, 4, 5, 6, 7];
  * Frei und ueberlappend, ohne Kachel -- eine Kachel bedeutet im Spiel ein
  * Feld oder eine Teammarke, neben "Geburtstag" bedeutet sie nichts.
  */
+/** Die Funken der Begruessungsfolie, warm wie in der App (#F7E4A8). */
+const MFUNKEN = Array.from({ length: 22 }, (_, i) => ({
+  x: (i * 37) % 97,
+  y: (i * 53) % 91,
+  g: 1.4 + (i % 4) * 0.5,
+  o: (0.30 + (i % 5) * 0.14).toFixed(2),
+  d: ((i * 13) % 47) / 10,
+}));
+
 const ANLASS_GRUPPEN = [
   [
     { av: '/assets/obj-namensschild.webp', gr: 54, x: 0, y: 10, r: -9 },
@@ -201,6 +220,8 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
   private _actT: ReturnType<typeof setInterval> | undefined;
   private _hookT: ReturnType<typeof setInterval> | undefined;
   private _sio: IntersectionObserver | undefined;
+  /** Der Wolf auf der Begruessungsfolie in 04. */
+  private _wolfV: HTMLVideoElement | null = null;
   private _catT: ReturnType<typeof setTimeout> | undefined;
   private _cdT: ReturnType<typeof setInterval> | undefined;
 
@@ -248,7 +269,20 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
 
     if (this._wall) {
       this._wio = new IntersectionObserver((es) => {
-        es.forEach(e => this.setState({ wallOn: e.isIntersecting && e.intersectionRatio > .45 }));
+        es.forEach(e => {
+          const an = e.isIntersecting && e.intersectionRatio > .45;
+          if (an !== this.state.wallOn) {
+            // Der Wolf laeuft einmal, wenn die Lampe angeht, und haelt an,
+            // wenn die Wand aus dem Bild ist. preload="none": die 966 KB
+            // sollen nicht beim Seitenaufbau ueber Mobilfunk gehen.
+            const v = this._wolfV;
+            if (v) {
+              if (an) { try { v.currentTime = 0; void v.play().catch(() => { /* stumm, blockt nicht */ }); } catch { /* egal */ } }
+              else v.pause();
+            }
+          }
+          this.setState({ wallOn: an });
+        });
       }, { threshold: [.2, .5, .75] });
       this._wio.observe(this._wall);
     }
@@ -970,30 +1004,88 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
           <span style={sx("font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;color:#F6EFE6;white-space:nowrap")}>{L.ablauf.priceBig}</span>
           <span style={sx('font-size:13.5px;font-weight:700;color:#F6EFE6;white-space:nowrap')}>{L.ablauf.priceSub}</span>
         </div>
-        <div ref={el => { this._wall = el; }} data-rv="" style={sx('position:relative;overflow:hidden;margin:0 -20px 26px')}>
-          <img src="/assets/wand.webp" loading="lazy" decoding="async" alt={L.ablauf.wallAltOff} style={sx('display:block;width:100%;height:auto')} />
-          <img src="/assets/wand-an.webp" loading="lazy" decoding="async" alt="" aria-hidden="true"
-            style={sx(`position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:${s.wallOn ? 1 : 0};transition:opacity 1.5s ${EASE}`)} />
-          <div style={sx(`position:absolute;left:29.1%;top:13.7%;width:44.7%;height:31.4%;border-radius:8px;overflow:hidden;container-type:inline-size;display:flex;align-items:center;justify-content:center;background:${s.wallOn ? '#0b0714' : 'transparent'};box-shadow:${s.wallOn ? '0 0 46px rgba(255,242,250,.2)' : 'none'};transition:background 1.1s ease,box-shadow 1.3s ease`)}>
-            <div style={sx(`display:flex;flex-direction:column;align-items:center;opacity:${s.wallOn ? 1 : 0};transform:scale(${s.wallOn ? 1 : .92});transition:opacity .9s ease ${s.wallOn ? '1.15s' : '0s'},transform 1.1s ${EASE} ${s.wallOn ? '1.15s' : '0s'}`)}>
-              <div style={sx('display:flex;flex-direction:column;align-items:center;gap:.4cqw;padding:2cqw 5cqw;border-radius:3cqw;border:1px solid rgba(246,239,230,.20);background:rgba(246,239,230,.05)')}>
-                <span style={sx('font-size:2.6cqw;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,239,230,.62);white-space:nowrap;line-height:1.2')}>{L.ablauf.welcomeKicker}</span>
-                <span style={sx("font-family:'League Spartan',sans-serif;font-size:9.4cqw;font-weight:900;letter-spacing:.02em;line-height:1;color:#F6EFE6")}>{L.ablauf.welcomeTitle}</span>
-              </div>
-              <div style={sx('display:flex;align-items:center;gap:2.4cqw;margin-top:2.2cqw')}>
-                <img src={LOGO} alt="" loading="lazy" width={26} height={26} style={sx('width:8.6cqw;height:8.6cqw;object-fit:contain')} />
-                <span style={sx('padding:1.6cqw 2.8cqw;border-radius:2.4cqw;border:1px solid rgba(246,239,230,.20);background:rgba(246,239,230,.03);font-size:3cqw;font-weight:900;line-height:1.25;color:#F6EFE6;text-align:center;white-space:nowrap')}>{L.ablauf.welcomeSub}</span>
+        {/* Hier lagen zwei KI-Fotos: ein Raum mit Leinwand, einmal dunkel
+            und einmal beleuchtet, und die Projektion als Ausschnitt darauf.
+            Genau die Sorte Bild, die auf dem Desktop rausgeflogen ist, und
+            ausgerechnet unter der Ueberschrift, die sagt, dass man nichts
+            braucht ausser einer Wand. Ein behaupteter Raum widerspricht dem
+            Satz darueber.
+
+            Jetzt dieselbe gezeichnete Wand wie auf dem Desktop: nur die Fugen,
+            dazwischen der Seitengrund, und zwei Scharen Licht, die
+            gegeneinander darueberlaufen. Ohne Zeigerlicht und ohne Kippung,
+            beides haengt an einer Maus. Die Projektion steht gerade statt
+            schraeg -- auf 350 px Breite kostet eine Drehung nur Flaeche. */}
+        <div ref={el => { this._wall = el; }} data-rv="" style={sx('position:relative;overflow:hidden;margin:0 -20px 26px;padding:34px 0 30px')}>
+          {/* Die Wand. Wolke und Ziegelraster als Maske, damit sie
+              unregelmaessig ausblendet und am Rand ganze Steine verschwinden
+              statt halber Fugen. */}
+          <div aria-hidden="true" style={sx('position:absolute;inset:-6% -4%;pointer-events:none;'
+            + `mask-image:url("${WAND_RAND}"),url("${WAND_STEINE}");`
+            + `-webkit-mask-image:url("${WAND_RAND}"),url("${WAND_STEINE}");`
+            + 'mask-size:100% 100%,540px 216px;-webkit-mask-size:100% 100%,540px 216px;'
+            + 'mask-repeat:no-repeat,repeat;-webkit-mask-repeat:no-repeat,repeat;'
+            + 'mask-composite:intersect')}>
+            <div style={sx('position:absolute;inset:0;'
+              + `background-image:url("${WAND_FUGEN}");background-size:108px 36px;`
+              + `opacity:${s.wallOn ? .38 : .24};transition:opacity 1.2s ${EASE}`)}></div>
+            <div data-welle="" style={sx('position:absolute;inset:0;mix-blend-mode:screen;'
+              + `background-image:url("${WAND_FUGEN}");background-size:108px 36px;`
+              + `opacity:${s.wallOn ? .98 : .72};`
+              + 'mask-image:repeating-linear-gradient(104deg,transparent 0px,transparent 168px,rgba(0,0,0,.26) 206px,#000 226px,rgba(0,0,0,.26) 246px,transparent 300px);'
+              + '-webkit-mask-image:repeating-linear-gradient(104deg,transparent 0px,transparent 168px,rgba(0,0,0,.26) 206px,#000 226px,rgba(0,0,0,.26) 246px,transparent 300px);'
+              + 'mask-size:4000px 4000px;-webkit-mask-size:4000px 4000px;mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;'
+              + `animation:mWelle ${s.wallOn ? 9 : 14}s linear infinite;transition:opacity 1.2s ${EASE}`)}></div>
+            <div data-netz="" style={sx('position:absolute;inset:0;mix-blend-mode:screen;'
+              + `background-image:url("${WAND_FUGEN}");background-size:108px 36px;`
+              + `opacity:${s.wallOn ? .72 : .52};`
+              + 'mask-image:repeating-linear-gradient(166deg,transparent 0px,transparent 196px,rgba(0,0,0,.24) 236px,#000 254px,rgba(0,0,0,.24) 272px,transparent 340px);'
+              + '-webkit-mask-image:repeating-linear-gradient(166deg,transparent 0px,transparent 196px,rgba(0,0,0,.24) 236px,#000 254px,rgba(0,0,0,.24) 272px,transparent 340px);'
+              + 'mask-size:4000px 4000px;-webkit-mask-size:4000px 4000px;mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat;'
+              + `animation:mNetz ${s.wallOn ? 13 : 19}s linear infinite;transition:opacity 1.2s ${EASE}`)}></div>
+          </div>
+
+          {/* Die Projektion. In Ruhe hat sie weder Rand noch Grund: der Beamer
+              ist aus, dort ist nichts ausser Wand. */}
+          <div style={sx('position:relative;width:82%;margin:0 auto;aspect-ratio:16/9;border-radius:4px;overflow:hidden;container-type:inline-size;'
+            + `border:1px solid ${s.wallOn ? 'rgba(246,239,230,.22)' : 'transparent'};`
+            + `background:${s.wallOn ? 'radial-gradient(ellipse at 50% -10%,rgba(246,239,230,.10),transparent 55%),radial-gradient(ellipse at 85% 110%,rgba(99,102,241,.08),transparent 55%),#120F18' : 'transparent'};`
+            + `box-shadow:${s.wallOn ? '0 0 60px rgba(255,242,250,.06)' : 'none'};`
+            + `transition:border-color .9s ${EASE},box-shadow 1.1s ${EASE},background .9s ${EASE}`)}>
+            {/* In Ruhe steht dort, was zu tun ist. */}
+            <div aria-hidden={s.wallOn} style={sx('position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;'
+              + `opacity:${s.wallOn ? 0 : 1};transition:opacity .5s ${EASE}`)}>
+              <span style={sx('padding:2.4cqw 4cqw;border-radius:999px;border:1px solid rgba(246,239,230,.18);background:rgba(246,239,230,.04);font-size:3.4cqw;font-weight:800;color:rgba(246,239,230,.62);white-space:nowrap')}>{L.ablauf.wallAltOff}</span>
+            </div>
+            {/* Die Funken der Begruessungsfolie, warm wie in der App. */}
+            <div aria-hidden="true" style={sx(`position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:${s.wallOn ? 1 : 0};transition:opacity .9s ${EASE} ${s.wallOn ? '.6s' : '0s'}`)}>
+              {MFUNKEN.map((f, i) => (
+                <span key={i} data-funke="" style={sx(`position:absolute;left:${f.x}%;top:${f.y}%;width:${f.g}px;height:${f.g}px;border-radius:50%;`
+                  + `background:rgba(247,228,168,${f.o});box-shadow:0 0 6px rgba(247,228,168,.55);animation:mFunke 5.4s ease-in-out ${f.d}s infinite`)}></span>
+              ))}
+              <video ref={el => { this._wolfV = el; }}
+                src="/assets/wolf-willkommen.webm" poster="/assets/wolf-3d.webp"
+                muted playsInline preload="none"
+                style={sx('position:absolute;left:-3%;bottom:-4%;height:74%;width:auto;filter:drop-shadow(0 6px 14px rgba(0,0,0,.55))')} />
+              <div style={sx('position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.4cqw;padding:0 5cqw 0 30cqw;box-sizing:border-box')}>
+                <span style={sx('font-size:2.6cqw;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.78);white-space:nowrap')}>{L.ablauf.welcomeKicker}</span>
+                <span style={sx("font-family:'League Spartan',sans-serif;font-size:9.2cqw;font-weight:900;letter-spacing:.05em;line-height:.92;color:#F6EFE6;text-transform:uppercase")}>{L.ablauf.welcomeTitle}</span>
+                <span style={sx('margin-top:1.2cqw;font-size:3cqw;font-weight:900;line-height:1.3;color:#F6EFE6;text-align:center;text-wrap:balance')}>{L.ablauf.welcomeSub}</span>
               </div>
             </div>
+            {/* Das Aufflackern der Lampe. Kein eigener Eckradius, den schneidet
+                der Kasten -- sonst blieben in den vier Ecken dunkle Zwickel. */}
+            <div aria-hidden="true" style={sx('position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(160deg,#efe4dc,#cdbfcb);'
+              + `animation:${s.wallOn ? 'mBeam 1.9s cubic-bezier(.4,0,.3,1) both' : 'none'}`)}></div>
           </div>
         </div>
         <div data-rv="" style={sx('padding:20px;border-radius:20px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);display:flex;flex-direction:column;gap:16px')}>
           <div style={sx('display:flex;gap:12px')}>
-            <span style={sx('flex:none;width:7px;height:7px;border-radius:50%;background:#FA4BA3;margin-top:9px')}></span>
-            <span style={sx('flex:1;font-size:15.5px;line-height:1.55;font-weight:700;color:#F6EFE6')}><strong style={sx('color:#FFC7E4')}>{L.ablauf.bringT}</strong> {L.ablauf.bring}</span>
+            <span style={sx('flex:none;width:16px;height:1px;background:rgba(246,239,230,.62);margin-top:12px')}></span>
+            <span style={sx('flex:1;font-size:15.5px;line-height:1.55;font-weight:700;color:#F6EFE6')}><strong style={sx('color:#F6EFE6')}>{L.ablauf.bringT}</strong> {L.ablauf.bring}</span>
           </div>
           <div style={sx('display:flex;gap:12px')}>
-            <span style={sx('flex:none;width:7px;height:7px;border-radius:50%;background:rgba(246,239,230,.42);margin-top:9px')}></span>
+            <span style={sx('flex:none;width:16px;height:1px;background:rgba(246,239,230,.32);margin-top:12px')}></span>
             <span style={sx('flex:1;font-size:15.5px;line-height:1.55;font-weight:700;color:rgba(246,239,230,.78)')}><strong style={sx('color:#F6EFE6')}>{L.ablauf.needT}</strong> {L.ablauf.need}</span>
           </div>
         </div>
