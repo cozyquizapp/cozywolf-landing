@@ -117,6 +117,34 @@ export function kachel(farbe: string, radius: string = KACHEL_RADIUS): string {
  * @param px Kantenlaenge in Bildpunkten.
  * @param radius Eckenradius, per Vorgabe 16 Prozent.
  */
+/**
+ * Dieselbe Teammarke, aber ohne eigene Groesse: sie nimmt die des Elements an.
+ *
+ * Gebraucht, wo die Kachel in Prozent steht statt in Bildpunkten, etwa im
+ * Wappenfeld der Handy-Fassung: dort sitzt jedes Wappen auf einem Prozentwert
+ * der Flaeche, eine feste Kantenlaenge gaebe es also gar nicht.
+ *
+ * Der Unterschied zu teammarke() ist nur die Rechnung, nicht das Aussehen:
+ * die Motivgroesse steht in Prozent der Kachelkante statt in Bildpunkten. Das
+ * geht auf, weil die Kachel quadratisch ist und ein Prozentwert bei
+ * background-size gegen die Breite der Flaeche rechnet.
+ *
+ * Was hier NICHT geht, ist die Sitz-Korrektur aus NUDGE: die steht in Prozent
+ * der Kante, und background-position rechnet Prozente gegen den Rest der
+ * Flaeche neben dem Motiv, nicht gegen die Kante. Betroffen ist einzig der
+ * Pilz, und der steht ueberall in fester Groesse. Wer hier ein Motiv mit
+ * Sitz-Korrektur einsetzt, muss teammarke() nehmen.
+ */
+export function teammarkeFlaeche(farbe: string, av: string, radius: string = KACHEL_RADIUS): string {
+  return `border-radius:${radius};`
+    + `background-image:url(${av}),${KACHEL_VERLAUF};`
+    + `background-color:${farbe};`
+    + `background-size:${(motivAnteil(av) * 100).toFixed(1)}% auto,auto;`
+    + `background-position:center,center;`
+    + `background-repeat:no-repeat,no-repeat;`
+    + `box-shadow:${KANTEN};`;
+}
+
 export function teammarke(farbe: string, av: string, px: number, radius: string = KACHEL_RADIUS): string {
   const sitz = motivSitz(av);
   const pos = sitz

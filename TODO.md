@@ -7,12 +7,14 @@ ist die Reihenfolge der Meldung, nicht die der Dringlichkeit.
 
 ### Zwei Namen heissen auf Englisch gleich
 
-Der Joker "Risiko" heisst in der App auf Englisch "All In", und seit heute
-heisst die Kategorie "10 von 10" auf Englisch ebenfalls "All In". Beides
-kommt so aus der App, ich habe es deshalb nicht eigenmaechtig geaendert. Auf
-der Seite stehen die beiden in verschiedenen Abschnitten, es faellt also
-kaum auf. Wenn es dich stoert, muss es in der App geaendert werden, nicht
-hier.
+Die Fraktion "Risiko" heisst in der App auf Englisch "All In", und seit dem
+28.08. heisst die Kategorie "10 von 10" auf Englisch ebenfalls "All In".
+Beides kommt so aus der App (shared/quarterQuizTypes.ts, QQ_MEGA_FACTIONS und
+QQ_CATEGORY_LABELS), ich habe deshalb hier nichts davon abweichen lassen.
+
+Auf der Seite stehen die beiden in verschiedenen Abschnitten, die Fraktion in
+01 bei CrowdQuiz und die Kategorie in 03, es faellt also kaum auf. Wenn es
+stoert, gehoert es in der App geaendert, nicht hier.
 
 ### GoatCounter bleibt, aber der Instagram-Link braucht einen Anhang
 
@@ -41,14 +43,6 @@ Zaehlskript selbst hosten, und die Sprachwahl auf sessionStorage umstellen.
 ## Handy, gemeldet am 28.08. nach dem Umbau
 
 Reihenfolge laut Wolf: erst die drei Desktop-Punkte oben, dann diese hier.
-
-### H3. Die Wappen tragen den falschen Rahmen
-
-"wappen haben runde umrandung statt bunte team kachel, bitte anpassen"
-
-Zu tun: statt Kreis mit farbigem Rand die Kachelform der App (teammarke),
-wie bei den Avataren und den Feldern auf dem Brett. Betrifft das Wappenfeld
-in 01 im Handy.
 
 ### H4. 03 Ausprobieren ist zu hoch
 
@@ -115,6 +109,18 @@ Zu tun:
 
 ## Erledigt
 
+* **H3 die Wappen, und der Absatz in 01.** Die Wappen trugen einen Kreis mit
+  farbigem Rand auf dunklem Grund, eine Form, die es sonst nirgends auf der
+  Seite gibt. Sie tragen jetzt dieselbe Kachel wie die Avatare, das Brett und
+  die Wappen auf dem Desktop, mit der Fraktionsfarbe als Flaeche. Dafuer gibt
+  es in qqKachel.ts eine zweite Fassung der Teammarke ohne feste Kantenlaenge,
+  weil die Wappen im Handy auf Prozentwerten sitzen. Gemessen: Feld 350 auf
+  199 px, Wappen zwischen 63 und 91 px, Ueberschneidung 0 Quadratpixel, die
+  Lage traegt die eckige Form also unveraendert.
+  Dazu ist der Absatz ueber den drei Strichen raus (Wolf: "mach den absatz
+  raus in 01 ueber den 3 strichen"). Abschnitt 01 steht damit bei 1675 px,
+  also knapp unter dem Stand vor dem Umbau (1680) und mit dem grossen Brett
+  darin.
 * **H1 Kopf und H2 Abschnitt 01.** Der Hauptknopf traegt jetzt die Farbe des
   Wortes, das oben steht, mit dunkler Schrift; gemessen ueber alle fuenf
   Farben ergibt das 7,08 / 5,02 / 8,71 / 12,96 / 5,40 gegen den dunklen Grund,

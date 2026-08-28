@@ -21,7 +21,7 @@ export type MobileDict = {
   };
   modes: {
     label: string; h2: string;
-    quizChip: string; quizP: string; quizBullets: string[];
+    quizChip: string; quizBullets: string[];
     avZeile: string; avAria: string;
     actIdle: string; actions: string[];
     arenaChip: string; arenaP: string; arenaFactions: string; arenaBullets: string[];
@@ -98,7 +98,6 @@ const de: MobileDict = {
   modes: {
     label: 'Die Spielarten', h2: 'Zwei Modi, ein Abend',
     quizChip: 'Bis 40 Personen',
-    quizP: 'Ihr spielt in Teams zu viert oder fünft an einem Handy, der Beamer ist die Bühne. Wer eine Frage richtig hat, setzt ein Feld.',
     quizBullets: [
       'Nicht wer die meisten Felder hat gewinnt, sondern wer die größte zusammenhängende Fläche hält',
       'Setzen, klauen, stapeln oder Joker',
@@ -275,7 +274,6 @@ const en: MobileDict = {
   modes: {
     label: 'The formats', h2: 'Two modes, one evening',
     quizChip: 'Up to 40 people',
-    quizP: 'You play in teams of four or five around one phone, the projector is the stage. Answer correctly, claim a tile.',
     quizBullets: [
       'It’s not the most tiles that wins, but the largest connected area',
       'Claim, steal, stack or play a joker',

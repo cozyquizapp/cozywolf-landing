@@ -15,7 +15,7 @@ import { useLang, setLang, type Lang } from '../lang';
 import { FORMSPREE_ID, INSTA_URL, EMAIL } from '../brand';
 import { sx } from './onepage/sx';
 import { WAND_FUGEN, WAND_RAND, WAND_STEINE } from './onepage/wand';
-import { motivAnteil, qqGridSize, teammarke } from '../qqKachel';
+import { motivAnteil, qqGridSize, teammarke, teammarkeFlaeche } from '../qqKachel';
 import { mobileT, type MobileDict, type MobileCat } from './onepage/mobileTexts';
 
 const EASE = 'cubic-bezier(.22,1,.36,1)';
@@ -508,12 +508,25 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
                   + 'padding:0;border:none;background:none;cursor:pointer;'
                   + `z-index:${wach ? 9 : lage.z};`
                   + `transform:scale(${wach ? 1.12 : 1});transition:transform .34s ${EASE}`)}>
-                <span style={sx(`display:block;width:100%;height:100%;border-radius:50%;`
-                  + `background:#111827 url(/assets/crest-${f.file}.webp) center/78% no-repeat;`
-                  + `border:2px solid ${f.color}${wach ? 'ff' : '77'};`
-                  + `box-shadow:0 4px 12px rgba(0,0,0,.5)${wach ? `,0 0 22px ${f.color}88` : ''};`
-                  + `filter:brightness(${wach ? 1.1 : 0.82});`
-                  + `transition:border-color .34s ${EASE},box-shadow .34s ${EASE},filter .34s ${EASE}`)}></span>
+                {/* Wolf am 28.08.: "wappen haben runde umrandung statt bunte
+                    team kachel, bitte anpassen". Vorher war es ein Kreis mit
+                    farbigem Rand und dunklem Grund, also eine Form, die es
+                    sonst nirgends auf der Seite gibt. Jetzt tragen die Wappen
+                    dieselbe Kachel wie die Avatare darueber, das Brett und die
+                    Wappen auf dem Desktop, mit der Fraktionsfarbe als Flaeche.
+
+                    Der Schein liegt auf einem eigenen Kasten darunter und
+                    nicht in box-shadow: box-shadow traegt hier die vier
+                    Kanten, die der Kachel ihre Tiefe geben, ein zweiter Wert
+                    wuerde sie ueberschreiben. Genauso macht es der Desktop. */}
+                {wach && (
+                  <span aria-hidden="true" style={sx('position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;'
+                    + `width:160%;height:160%;background:radial-gradient(circle,${f.color}55,transparent 68%)`)}></span>
+                )}
+                <span style={sx('display:block;position:relative;width:100%;height:100%;'
+                  + teammarkeFlaeche(f.color, `/assets/crest-${f.file}.webp`)
+                  + `filter:saturate(${wach ? 1.15 : .84}) brightness(${wach ? 1.14 : .86});`
+                  + `transition:filter .34s ${EASE}`)}></span>
               </button>
             );
           })}
@@ -743,8 +756,18 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
               kacheln raus!"). Sie zeigte dieselben Kacheln ein drittes Mal,
               nach der Wand darueber und vor dem Brett darunter. */}
           {this.renderAvatarWand()}
-          <p style={sx('margin:22px 0 0;font-size:15.5px;line-height:1.55;font-weight:500;color:rgba(246,239,230,.82);text-wrap:pretty')}>{L.modes.quizP}</p>
-          <div style={sx('margin-top:16px;display:flex;flex-direction:column;gap:11px')}>
+          {/* Hier stand ein Absatz: "Ihr spielt in Teams zu viert oder fuenft
+              an einem Handy, der Beamer ist die Buehne. Wer eine Frage richtig
+              hat, setzt ein Feld."
+              Wolf am 28.08., nachdem das Brett auf volle Breite ging und der
+              Abschnitt dadurch waechst: "mach den absatz raus in 01 ueber den
+              3 strichen". Der Absatz kostete 72 px und sagte dreimal etwas,
+              das daneben ohnehin steht: "in Teams an einem Handy" steht als
+              Reichweite darueber und wird von der Wand darueber gezeigt, "der
+              Beamer ist die Buehne" steht als eigener Abschnitt in 04, und
+              "wer richtig hat, setzt ein Feld" steht als Bildunterschrift
+              unter dem Brett. */}
+          <div style={sx('margin-top:22px;display:flex;flex-direction:column;gap:11px')}>
             {L.modes.quizBullets.map(b => this.bullet(b, AKZENT))}
           </div>
             {/* Das Brett auf voller Spaltenbreite statt auf 246 px.
