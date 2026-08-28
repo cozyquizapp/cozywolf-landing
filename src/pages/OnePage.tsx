@@ -2000,13 +2000,13 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 vier Kanten ausserhalb der Ellipse. Gemessen: in der ersten
                 Fassung lag die Maske an der Oberkante noch bei 0,68, und das
                 war die sichtbare Linie. */}
-            <div aria-hidden="true" style={sx('position:absolute;inset:-30% -8%;z-index:0;pointer-events:none;'
-              + 'background:linear-gradient(166deg,rgba(246,239,230,.17),rgba(246,239,230,.075) 46%,rgba(246,239,230,.012) 82%,rgba(246,239,230,0));'
-              + 'mask-image:radial-gradient(48% 44% at 50% 47%,#000 26%,transparent 100%);'
-              + '-webkit-mask-image:radial-gradient(48% 44% at 50% 47%,#000 26%,transparent 100%);'
-              + `opacity:${on ? .5 : 1};transition:opacity 1.2s ${EASE}`)}></div>
-            <div aria-hidden="true" style={sx('position:absolute;inset:-30% -8%;z-index:0;pointer-events:none;'
-              + 'background:radial-gradient(46% 42% at 50% 47%,rgba(255,246,232,.12),transparent 100%);'
+            <div aria-hidden="true" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;'
+              + 'background:linear-gradient(174deg,rgba(246,239,230,.30),rgba(246,239,230,.235) 40%,rgba(246,239,230,.205) 70%,rgba(246,239,230,.19));'
+              + 'mask-image:radial-gradient(54% 50% at 50% 50%,#000 30%,transparent 100%);'
+              + '-webkit-mask-image:radial-gradient(54% 50% at 50% 50%,#000 30%,transparent 100%);'
+              + `opacity:${on ? .55 : 1};transition:opacity 1.2s ${EASE}`)}></div>
+            <div aria-hidden="true" style={sx('position:absolute;inset:-38% -8%;z-index:0;pointer-events:none;'
+              + 'background:radial-gradient(47% 43% at 50% 47%,rgba(255,246,232,.30),rgba(255,246,232,.10) 52%,transparent 100%);'
               + `opacity:${on ? 1 : 0};transition:opacity 1.2s ${EASE}`)}></div>
             {/* In Ruhe hat die Projektion weder Rand noch Grund: der Beamer ist
                 aus, also ist dort nichts ausser der Wand. Genau das behauptet
