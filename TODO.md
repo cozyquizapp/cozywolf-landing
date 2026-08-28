@@ -56,6 +56,72 @@ rechte Spalte steht heute mittig zur linken, weil die Kapseln sie nach unten
 verlaengern. Ohne sie muss die Ausrichtung neu gesetzt werden, sonst haengt
 der Text neben dem Foto in der Luft.
 
+## Handy, gemeldet am 28.08. nach dem Umbau
+
+Reihenfolge laut Wolf: erst die drei Desktop-Punkte oben, dann diese hier.
+
+### H1. Kopf: Farbe des Knopfes, und die Fuelle
+
+"farbe von button 'free for test teams' sollte in farbe der schrift oben
+sein (insgesamt wirkts ziemlich voll was denkst du?)"
+
+Zu tun: der Hauptknopf traegt die Farbe des gerade stehenden Wortes statt
+Creme, mit dunkler Schrift. Die fuenf Farben sind gegen dunkle Schrift alle
+geprueft (Orange 7,08 zu 1, Gruen 8,71, geringster Wert Blau) -- das war die
+Rechnung fuer die Fuellung auf dem Desktop und gilt hier genauso.
+
+Zur Fuelle, meine Antwort: ja, und die ueberzaehlige Zeile ist "Lieber direkt
+buchen?". Der Desktop hat im Kopf zwei Knoepfe nebeneinander und sonst nichts;
+das Handy hat den Knopf, dann eine Frage, dann einen zweiten Knopf. Die Frage
+ist der einzige Satz auf der Seite, der nichts sagt, sondern nur ueberleitet.
+Vorschlag: raus, die zwei Knoepfe untereinander, fertig.
+
+### H2. 01 CozyQuiz ist zu voll
+
+"sehr voll - entweder team emoji kacheln ueber den text und grid drunter oder
+grid ganz raus. falls grid drin bleibt muss es an breite angepasst werden (ich
+finde es koennte raus aus der mobile) den bereich 4-8 teams mit den 4 kacheln
+raus!"
+
+Zu tun:
+ * Die Zeile "4 bis 8 Teams" mit den vier ueberlappenden Kacheln faellt weg.
+ * Das Brett: Wolf tendiert zu raus. Zu klaeren, bevor ich es entferne -- es
+   ist das einzige Bild auf der Seite, das zeigt, wie CozyQuiz aussieht.
+   Falls es bleibt, muss es die volle Spaltenbreite bekommen statt der 246 px
+   aus dem alten Entwurf.
+ * Die Avatarwand ueber den Text, das Brett darunter.
+
+### H3. Die Wappen tragen den falschen Rahmen
+
+"wappen haben runde umrandung statt bunte team kachel, bitte anpassen"
+
+Zu tun: statt Kreis mit farbigem Rand die Kachelform der App (teammarke),
+wie bei den Avataren und den Feldern auf dem Brett. Betrifft das Wappenfeld
+in 01 im Handy.
+
+### H4. 03 Ausprobieren ist zu hoch
+
+"text oben raus, zu viel zu lesen, 'spielen' des quizzes schwierig weil
+darstellung zu hoch, man bekommts nicht so richtig auf einen mobile screen"
+
+Zu tun: den Absatz ueber der Fragetyp-Zeile kuerzen oder streichen, und die
+Fragekarte so hoch bauen, dass Frage und Antworten zusammen auf einen
+Bildschirm passen. Heute ist die Karte allein 470 px hoch plus Ueberschrift,
+Zeile und Absatz darueber.
+
+### H5. 02 Anlaesse: die Gegenstaende neben den Text
+
+"symbole gerne weiter nach rechts neben den text leicht nach unten versetzt
+wie aktuelle hoehenposition? das saehe glaube ich besser aus als oben drueber"
+
+Zu tun: die drei Gegenstaende je Anlass rechts neben den Text setzen, etwas
+tiefer, statt darueber. Auf 350 px heisst das eine schmale zweite Spalte
+oder ein Ueberlappen; beides messen, bevor ich mich festlege.
+
+### H6 bis H8
+
+Wolf schickt noch die drei restlichen Abschnitte mit Bildern nach.
+
 ## Erledigt
 
 * **4. Der Aufbau von 03 auf dem Desktop.** Anspruch und Satz des gewaehlten
