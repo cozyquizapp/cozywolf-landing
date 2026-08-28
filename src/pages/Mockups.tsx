@@ -39,7 +39,7 @@ import { Einrasten, SNAP_ENTWUERFE, type SnapEntwurf } from './mockups/einrasten
 import { HoverMuster, HOVER_ENTWUERFE, type HoverEntwurf } from './mockups/hover';
 import { Trennung, TRENN_ENTWUERFE, type TrennEntwurf } from './mockups/trennung';
 import { Kapitel, KAPITEL_ENTWUERFE, type KapitelEntwurf } from './mockups/kapitel';
-import { Crowd, CROWD_ENTWUERFE, type CrowdEntwurf } from './mockups/crowd';
+import { Crowd, CROWD_ENTWUERFE, NAMENS_ARTEN, type CrowdEntwurf, type NamensArt } from './mockups/crowd';
 import {
   Ablauf, UeberMich, Fragen, Anfragen,
   ABLAUF_ENTWUERFE, JOH_ENTWUERFE, FAQ_ENTWUERFE, FORM_ENTWUERFE,
@@ -204,6 +204,7 @@ export default function Mockups() {
   const [tr, setTr] = useState<TrennEntwurf>(2);
   const [kp, setKp] = useState<KapitelEntwurf>(3);
   const [cw, setCw] = useState<CrowdEntwurf>(2);
+  const [nm, setNm] = useState<NamensArt>(1);
   const [mobil, setMobil] = useState(false);
 
   const modi: Modus[] = [
@@ -230,7 +231,7 @@ export default function Mockups() {
   };
   const w = WEITERE[station];
 
-  const inhalt = station === 'CW' ? <Crowd mobil={mobil} entwurf={cw} />
+  const inhalt = station === 'CW' ? <Crowd mobil={mobil} entwurf={cw} namensart={nm} L={L} />
     : station === 'KP' ? <Kapitel mobil={mobil} entwurf={kp} />
     : station === 'TR' ? <Trennung mobil={mobil} entwurf={tr} />
     : station === 'HV' ? <HoverMuster mobil={mobil} entwurf={hv} />
@@ -268,8 +269,10 @@ export default function Mockups() {
           </span>
           <span style={sx('flex:1')}></span>
           {station === 'CW'
-            ? <Schalter werte={([1, 2, 3] as CrowdEntwurf[]).map(k => ({ k: String(k), label: `W${k}  ${CROWD_ENTWUERFE[k].name}` }))}
+            ? <><Schalter werte={([2, 1, 3] as CrowdEntwurf[]).map(k => ({ k: String(k), label: `W${k}  ${CROWD_ENTWUERFE[k].name}` }))}
                 aktiv={String(cw)} waehle={k => setCw(Number(k) as CrowdEntwurf)} />
+              <Schalter werte={([1, 2, 3] as NamensArt[]).map(k => ({ k: String(k), label: `N${k}  ${NAMENS_ARTEN[k].name}` }))}
+                aktiv={String(nm)} waehle={k => setNm(Number(k) as NamensArt)} /></>
             : station === 'KP'
             ? <Schalter werte={([1, 2, 3, 4, 5] as KapitelEntwurf[]).map(k => ({ k: String(k), label: `K${k}  ${KAPITEL_ENTWUERFE[k].name}` }))}
               aktiv={String(kp)} waehle={k => setKp(Number(k) as KapitelEntwurf)} />
@@ -309,7 +312,7 @@ export default function Mockups() {
         </div>
         <div style={sx(`max-width:1000px;margin:0 auto;padding:0 24px 14px;font-size:14.5px;line-height:1.55;color:rgba(246,239,230,.66)`)}>
           {station === 'CW'
-            ? <><b style={sx(`color:${CREME}`)}>W{cw}. {CROWD_ENTWUERFE[cw].name}.</b> {CROWD_ENTWUERFE[cw].idee[lang]} <i style={sx('opacity:.7')}>Zeig auf ein Wappen. In W2 und W3 laeuft die Wertung, damit sich beurteilen laesst, ob die Bewegung ohne Tabelle noch lesbar ist.</i></>
+            ? <><b style={sx(`color:${CREME}`)}>W{cw}. {CROWD_ENTWUERFE[cw].name}.</b> {CROWD_ENTWUERFE[cw].idee[lang]}<br /><b style={sx(`color:${CREME}`)}>N{nm}. {NAMENS_ARTEN[nm].name}.</b> {NAMENS_ARTEN[nm].idee[lang]} <i style={sx('opacity:.7')}>Objektfassung und Namensanzeige lassen sich frei kombinieren. Zeig auf ein Wappen; in W2 und W3 laeuft die Wertung.</i></>
             : station === 'KP'
             ? <><b style={sx(`color:${CREME}`)}>K{kp}. {KAPITEL_ENTWUERFE[kp].name}.</b> {KAPITEL_ENTWUERFE[kp].idee[lang]} <i style={sx('opacity:.7')}>Nur Geruest und Typografie, ohne Inhalt: es geht um Groessen, Luft und Linien.</i></>
             : station === 'TR'
