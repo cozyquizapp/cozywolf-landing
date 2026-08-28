@@ -20,13 +20,15 @@ export type MobileDict = {
     cta: string; ctaSub: string; bookQ: string; bookCta: string; avail: string;
   };
   modes: {
-    label: string; h2: string; sub: string;
+    label: string; h2: string;
     quizChip: string; quizP: string; quizTeams: string; quizBullets: string[];
+    avZeile: string; avAria: string;
     actIdle: string; actions: string[];
     arenaChip: string; arenaP: string; arenaFactions: string; arenaBullets: string[];
+    frakHinweis: string;
   };
   teams: Record<string, string>;
-  factions: { name: string; color: string; file: string; p: number }[];
+  factions: { name: string; color: string; file: string; spruch: string }[];
   probe: {
     label: string; h2: string; sub: string; team: string; skipHint: string;
     cats: MobileCat[];
@@ -87,19 +89,20 @@ const de: MobileDict = {
     sub: G.de.heroSub,
     cta: 'Gratis für Test-Teams', ctaSub: G.de.ctaSub,
     bookQ: 'Lieber direkt buchen?', bookCta: 'Termin anfragen →',
-    avail: `Hamburg & Umland · Nächste Termine ab ${TERMIN_AB.de}`,
+    avail: `Ab 350 € · Termine ab ${TERMIN_AB.de}`,
   },
   modes: {
     label: 'Die Spielarten', h2: 'Zwei Modi, ein Abend',
-    sub: 'Tippt einen Modus an, um zu sehen, wie er gespielt wird.',
-    quizChip: 'bis 40 Personen',
-    quizP: G.de.quizCalm,
+    quizChip: 'Bis 40 Personen',
+    quizP: 'Ihr spielt in Teams zu viert oder fünft an einem Handy, der Beamer ist die Bühne. Wer eine Frage richtig hat, setzt ein Feld.',
     quizTeams: '4 bis 8 Teams',
     quizBullets: [
-      'Teams zu viert oder fünft, ein Handy pro Team.',
-      'Nicht die meisten Felder gewinnen, sondern die größte zusammenhängende Fläche.',
-      'Jede gewonnene Frage ist eine Entscheidung.',
+      'Nicht wer die meisten Felder hat gewinnt, sondern wer die größte zusammenhängende Fläche hält',
+      'Setzen, klauen, stapeln oder Joker',
+      'Fünf Kategorien, drei Runden, Finale',
     ],
+    avZeile: 'Sucht euch ein Team-Emoji aus',
+    avAria: 'Team-Zeichen durchwechseln',
     actIdle: 'Jede richtige Antwort ist ein Zug auf dem Feld.',
     actions: [
       'Setzen, Glühbirnen erobern ein freies Feld',
@@ -107,26 +110,26 @@ const de: MobileDict = {
       'Stapeln, Glühbirnen verstärken ein eigenes Feld',
       'Joker, Quiz-Mafia dreht ein Feld um',
     ],
-    arenaChip: 'ab 40 Personen',
-    arenaP: 'Die große Runde. Teams zu viert an einem Handy, bis zu fünf Teams je Fraktion, acht Fraktionen treten gegeneinander an.',
+    arenaChip: 'Ab 40 Personen',
+    arenaP: 'Ihr spielt wie im CozyQuiz in Teams an einem Handy, nur gehört jedes Team zu einer von acht Fraktionen. Eine Fraktion fasst bis zu fünf Teams. Frage für Frage verschiebt sich die Rangfolge.',
     arenaFactions: '8 Fraktionen',
     arenaBullets: [
-      'Beim Beitreten wählt jeder eine Fraktion: Bauchgefühl, Glückstreffer, Allwissen und fünf weitere.',
-      'Kein Spielbrett, sondern ein Balken-Rennen der Fraktionen.',
-      'Gewertet wird der Anteil richtiger Antworten, eine Fraktion mit acht Leuten hat keinen Vorteil gegenüber einer mit vier.',
-      'Am Ende Siegerehrung mit fünf Awards und Krönung.',
+      'Kein Spielbrett, ein Rennen der Fraktionen',
+      'Gewertet wird der Anteil richtiger Antworten, eine Fraktion mit acht Leuten hat keinen Vorteil gegenüber einer mit vier',
+      'Zum Schluss fünf Awards und die Krönung',
     ],
+    frakHinweis: 'Tippt ein Wappen an',
   },
   teams: { g: 'Quiz-Mafia', p: 'Glühbirnen', y: 'Hirnsturm', o: 'Pub-Crawl-Profis' },
   factions: [
-    { name: 'Bauchgefühl', color: '#F97316', file: 'bauchgefuehl', p: 92 },
-    { name: 'Allwissen', color: '#FACC15', file: 'allwissen', p: 84 },
-    { name: 'Letzte Sekunde', color: '#A855F7', file: 'letztesekunde', p: 71 },
-    { name: 'Glückstreffer', color: '#22C55E', file: 'glueckstreffer', p: 63 },
-    { name: 'Risiko', color: '#EF4444', file: 'risiko', p: 55 },
-    { name: 'Improvisation', color: '#3B82F6', file: 'improvisation', p: 44 },
-    { name: 'Einspruch', color: '#EC4899', file: 'einspruch', p: 36 },
-    { name: 'Feierabend', color: '#14B8A6', file: 'feierabend', p: 28 },
+    { name: 'Bauchgefühl', color: '#F97316', file: 'bauchgefuehl', spruch: 'Das Gefühl trügt nie.' },
+    { name: 'Allwissen', color: '#FACC15', file: 'allwissen', spruch: 'Wir wissen es einfach.' },
+    { name: 'Letzte Sekunde', color: '#A855F7', file: 'letztesekunde', spruch: 'Kurz vor knapp.' },
+    { name: 'Glückstreffer', color: '#22C55E', file: 'glueckstreffer', spruch: 'Hauptsache richtig.' },
+    { name: 'Risiko', color: '#EF4444', file: 'risiko', spruch: 'Alles oder nichts.' },
+    { name: 'Improvisation', color: '#3B82F6', file: 'improvisation', spruch: 'Läuft schon irgendwie.' },
+    { name: 'Einspruch', color: '#EC4899', file: 'einspruch', spruch: 'Das zählt nicht!' },
+    { name: 'Feierabend', color: '#14B8A6', file: 'feierabend', spruch: 'Hauptsache dabei.' },
   ],
   probe: {
     label: 'Fragetypen', h2: 'So spielt ihr',
@@ -255,19 +258,20 @@ const en: MobileDict = {
     sub: G.en.heroSub,
     cta: 'Free for test teams', ctaSub: G.en.ctaSub,
     bookQ: 'Rather book directly?', bookCta: 'Request a date →',
-    avail: `Hamburg & around · next dates from ${TERMIN_AB.en}`,
+    avail: `From €350 · dates from ${TERMIN_AB.en}`,
   },
   modes: {
     label: 'The formats', h2: 'Two modes, one evening',
-    sub: 'Tap a mode to see how it’s played.',
-    quizChip: 'up to 40 people',
-    quizP: G.en.quizCalm,
+    quizChip: 'Up to 40 people',
+    quizP: 'You play in teams of four or five around one phone, the projector is the stage. Answer correctly, claim a tile.',
     quizTeams: '4 to 8 teams',
     quizBullets: [
-      'Teams of four or five, one phone per team.',
-      'It’s not the most tiles that win, but the largest connected area.',
-      'Every question you win is a decision.',
+      'It’s not the most tiles that wins, but the largest connected area',
+      'Claim, steal, stack or play a joker',
+      'Five categories, three rounds, a finale',
     ],
+    avZeile: 'Pick your team emoji',
+    avAria: 'Cycle through team marks',
     actIdle: 'Every correct answer is a move on the board.',
     actions: [
       'Claim, Lightbulbs take a free tile',
@@ -275,27 +279,28 @@ const en: MobileDict = {
       'Stack, Lightbulbs reinforce their own tile',
       'Joker, Quiz Mafia flips a tile',
     ],
-    arenaChip: 'from 40 people',
-    arenaP: 'The big round. Teams of four around one phone, up to five teams per faction, eight factions compete.',
+    arenaChip: 'From 40 people',
+    arenaP: 'You play like in CozyQuiz, in teams around one phone, except every team belongs to one of eight factions. A faction holds up to five teams. Question by question the ranking shifts.',
     arenaFactions: '8 factions',
     arenaBullets: [
-      'When joining, everyone picks a faction: Gut Feeling, Lucky Strike, Know-It-Alls and five more.',
-      'No game board, but a bar race of the factions.',
-      'Scored by the share of correct answers, a faction of eight has no advantage over one of four.',
-      'At the end, an award ceremony with five awards and the coronation.',
+      'No game board, a race of the factions',
+      'Scored by the share of correct answers, a faction of eight has no advantage over one of four',
+      'Five awards and the coronation at the end',
     ],
+    frakHinweis: 'Tap a crest',
   },
   teams: { g: 'Quiz Mafia', p: 'Lightbulbs', y: 'Brainstorm', o: 'Pub Crawl Pros' },
   factions: [
-    { name: 'Gut Feeling', color: '#F97316', file: 'bauchgefuehl', p: 92 },
-    { name: 'Know-It-Alls', color: '#FACC15', file: 'allwissen', p: 84 },
-    { name: 'Last Second', color: '#A855F7', file: 'letztesekunde', p: 71 },
-    { name: 'Lucky Strike', color: '#22C55E', file: 'glueckstreffer', p: 63 },
-    { name: 'Risk', color: '#EF4444', file: 'risiko', p: 55 },
-    { name: 'Improv', color: '#3B82F6', file: 'improvisation', p: 44 },
-    { name: 'Objection', color: '#EC4899', file: 'einspruch', p: 36 },
-    { name: 'After Hours', color: '#14B8A6', file: 'feierabend', p: 28 },
+    { name: 'Gut Feeling', color: '#F97316', file: 'bauchgefuehl', spruch: 'The gut never lies.' },
+    { name: 'Know-It-All', color: '#FACC15', file: 'allwissen', spruch: 'We just know.' },
+    { name: 'Last Second', color: '#A855F7', file: 'letztesekunde', spruch: 'Just in time.' },
+    { name: 'Lucky Shot', color: '#22C55E', file: 'glueckstreffer', spruch: 'Right is right.' },
+    { name: 'Risk', color: '#EF4444', file: 'risiko', spruch: 'All or nothing.' },
+    { name: 'Improv', color: '#3B82F6', file: 'improvisation', spruch: 'We\u2019ll figure it out.' },
+    { name: 'Objection', color: '#EC4899', file: 'einspruch', spruch: 'That doesn\u2019t count!' },
+    { name: 'Knock-Off', color: '#14B8A6', file: 'feierabend', spruch: 'Just here for fun.' },
   ],
+
   probe: {
     label: 'Question types', h2: 'How you play',
     sub: 'Scan a QR code, done. Answer one question, then the next category comes up.',

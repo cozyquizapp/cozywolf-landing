@@ -19,6 +19,8 @@ import { mobileT, type MobileDict, type MobileCat } from './onepage/mobileTexts'
 
 const EASE = 'cubic-bezier(.22,1,.36,1)';
 const LOGO = '/logo.webp';
+// Der Akzent der Seite, wie in OnePage.tsx: creme, nicht mehr rosa.
+const AKZENT = '#F6EFE6';
 
 const MOBILE_CSS = `
 html{background:#0A0814;color-scheme:dark;scroll-behavior:smooth;scroll-padding-top:76px}
@@ -68,6 +70,38 @@ const MOBJEKTE = [
 /** Wort -> Gegenstand. Umkehrung von MOBJEKTE[].wort, wie OBJEKT_WORT im Desktop. */
 const MWORT_OBJ = [0, 1, 2, 3, 4].map(w => MOBJEKTE.findIndex(o => o.wort === w));
 
+/**
+ * Die Avatarwand in 01: Motive und Farben, wie in OnePage.tsx.
+ *
+ * Sechzehn Motive reichen: mehr sieht niemand, der acht Kacheln durchtippt,
+ * und jede Datei ist ein eigener Abruf.
+ */
+const AV_MOTIVE = ['donut', 'strawberry', 'game-die', 'crystal-ball', 'mushroom', 'table-lamp',
+  'teapot', 'treasure-chest', 'paper-boat', 'croissant', 'cookie', 'compass',
+  'popcorn', 'rocket', 'cheese', 'candle'];
+const AV_FARBEN = ['#F97316', '#22C55E', '#14B8A6', '#A855F7', '#FACC15', '#3B82F6', '#EC4899', '#EF4444'];
+const AV_START_OBJ = [0, 1, 2, 3, 4, 5, 6, 7];
+const AV_START_FARBE = [0, 1, 2, 3, 4, 5, 6, 7];
+
+/**
+ * Die Lage der acht Wappen im Feld von 01, in Prozent des Feldes.
+ *
+ * Auf dem Desktop schweben sie in zwei Gruppen, drei links und fuenf rechts.
+ * Auf 350 px Breite gibt es keine zwei Gruppen, also ein Feld: 330 auf 188,
+ * die Groessen gestaffelt wie dort (von 26 bis 17 Prozent), die Lagen
+ * gerechnet, damit sich keine zwei Wappen verdecken. z gibt die Ebene.
+ */
+const FRAK_LAGE = [
+  { x: 0,  y: 2,  gr: 26, z: 3 },
+  { x: 28, y: 16, gr: 22, z: 2 },
+  { x: 52, y: 0,  gr: 24, z: 4 },
+  { x: 78, y: 10, gr: 20, z: 1 },
+  { x: 6,  y: 56, gr: 22, z: 2 },
+  { x: 31, y: 64, gr: 19, z: 3 },
+  { x: 54, y: 52, gr: 18, z: 1 },
+  { x: 74, y: 58, gr: 24, z: 5 },
+];
+
 // Team-Avatare: das CozyQuiz-Objektset der App (48 Motive). Die Objekte sind
 // farbneutral, die Teamfarbe kommt aus der Kachel darunter - deshalb sind hier
 // Motiv und Farbe getrennt. Die Zuordnung folgt den Farb-Slots der App: die
@@ -116,6 +150,10 @@ type MOPState = {
   splash: boolean; count: number; done: boolean;
   scrolled?: boolean; menu?: boolean; fan?: boolean; stickyOn?: boolean;
   anlass?: string;
+  /** Avatarwand in 01: Motiv und Farbe je Kachel. */
+  avObj?: number[]; avFarbe?: number[];
+  /** Angetipptes Wappen in 01. */
+  frak?: string | null;
 };
 
 class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
@@ -136,6 +174,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
   private _fill: ReturnType<typeof setInterval> | undefined;
   private _actT: ReturnType<typeof setInterval> | undefined;
   private _hookT: ReturnType<typeof setInterval> | undefined;
+  private _sio: IntersectionObserver | undefined;
   private _catT: ReturnType<typeof setTimeout> | undefined;
   private _cdT: ReturnType<typeof setInterval> | undefined;
 
@@ -192,12 +231,26 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     this._onKey = (e) => { if (e.key === 'Escape' && this.state.menu) this.setState({ menu: false }); };
     window.addEventListener('keydown', this._onKey);
 
-    // Die initial offene Quiz-Karte fuellt ihr Brett direkt beim Laden
-    this.open('quiz');
+    // Das Brett in 01 faengt an, wenn der Abschnitt zu sehen ist, nicht beim
+    // Laden. Vorher hing es an der aufgeklappten Karte; seit beide Bloecke
+    // offen stehen, waere es sonst schon durchgelaufen, bevor jemand
+    // hinsieht.
+    const sp = document.getElementById('spielarten');
+    if (sp && typeof IntersectionObserver !== 'undefined') {
+      this._sio = new IntersectionObserver(([e]) => {
+        if (!e.isIntersecting) return;
+        this._sio?.disconnect();
+        this.open('quiz');
+      }, { threshold: 0.12 });
+      this._sio.observe(sp);
+    } else {
+      this.open('quiz');
+    }
   }
 
   componentWillUnmount() {
     this._io?.disconnect();
+    this._sio?.disconnect();
     this._wio?.disconnect();
     this._jio?.disconnect();
     if (this._onScroll) window.removeEventListener('scroll', this._onScroll);
@@ -277,28 +330,121 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     return (
       <div data-rv="" style={sx('display:flex;align-items:center;gap:10px;margin:0 0 10px;font-size:10.5px;font-weight:900;letter-spacing:.2em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>
         {num}
-        <span style={sx('flex:1;height:1px;background:linear-gradient(90deg,rgba(250,75,163,.35),transparent)')}></span>
+        <span style={sx('flex:1;height:1px;background:linear-gradient(90deg,rgba(246,239,230,.28),transparent)')}></span>
         <span style={sx('color:rgba(246,239,230,.5)')}>{label}</span>
       </div>
     );
   }
 
+  /**
+   * Ein Punkt war es frueher, jetzt ist es ein Strich.
+   *
+   * Auf dem Desktop steht vor jeder Zeile ein 18 px langer Strich in der
+   * Akzentfarbe, kein Punkt: "der Akzent bleibt als Strich vor den Punkten"
+   * (Wolf am 27.08.). Damit die beiden Fassungen dieselbe Handschrift haben,
+   * gilt das hier auch.
+   */
   bullet(text: string, color: string) {
     return (
-      <span key={text} style={sx('display:flex;gap:11px;font-size:15px;line-height:1.5;font-weight:700;color:#F6EFE6')}>
-        <span style={sx(`flex:none;width:7px;height:7px;border-radius:50%;background:${color};margin-top:8px`)}></span>{text}
+      <span key={text} style={sx('display:flex;gap:12px;font-size:15px;line-height:1.5;font-weight:600;color:rgba(246,239,230,.78);text-wrap:pretty')}>
+        <span style={sx(`flex:none;width:16px;height:1px;background:${color};margin-top:11px`)}></span>{text}
       </span>
     );
   }
 
-  card(active: boolean, accent: string) {
-    return `padding:20px;border-radius:22px;background:${active ? 'rgba(250,75,163,.06)' : 'rgba(246,239,230,.03)'};border:1px solid ${active ? accent : 'rgba(246,239,230,.09)'};cursor:pointer;transition:background .45s ${EASE},border-color .45s ${EASE}`;
+
+  /**
+   * Die Avatarwand in 01, acht Kacheln zu vier mal zwei.
+   *
+   * Auf dem Desktop wechselt eine Kachel, wenn der Zeiger darauf liegt, und
+   * das Feld traegt danach die Paarungen, die man selbst gemacht hat. Hier
+   * gibt es keinen Zeiger, also macht das Antippen dasselbe: ein Tipp, ein
+   * Schritt. Motiv und Farbe haengen nicht aneinander, sie ruecken beide um
+   * eins weiter -- genau das ist der Punkt, den die Wand zeigen soll.
+   */
+  avSchritt(i: number) {
+    this.setState(st => {
+      const obj = [...(st.avObj ?? AV_START_OBJ)];
+      const far = [...(st.avFarbe ?? AV_START_FARBE)];
+      obj[i] = (obj[i] + 1) % AV_MOTIVE.length;
+      far[i] = (far[i] + 1) % AV_FARBEN.length;
+      return { avObj: obj, avFarbe: far };
+    });
   }
-  bodyStyle(open: boolean) {
-    return `display:grid;grid-template-rows:${open ? '1fr' : '0fr'};min-height:0;opacity:${open ? 1 : 0};transition:grid-template-rows .62s ${EASE},opacity .5s ease ${open ? '.08s' : '0s'};overflow:hidden`;
+
+  renderAvatarWand() {
+    const L = this.T;
+    const obj = this.state.avObj ?? AV_START_OBJ;
+    const far = this.state.avFarbe ?? AV_START_FARBE;
+    return (
+      <div style={sx('margin-top:18px')}>
+        <div style={sx('display:grid;grid-template-columns:repeat(4,1fr);gap:8px')}>
+          {obj.map((mi, i) => (
+            <button key={i} type="button" onClick={() => this.avSchritt(i)} aria-label={L.modes.avAria}
+              style={sx('display:block;width:100%;padding:0;border:none;background:none;line-height:0;cursor:pointer')}>
+              <span style={sx('display:block;' + teammarke(AV_FARBEN[far[i]], `/assets/av-qq-${AV_MOTIVE[mi]}.webp`, 60)
+                + `width:100%;height:auto;aspect-ratio:1;background-size:90% auto,auto;transition:background-color .45s ${EASE}`)}></span>
+            </button>
+          ))}
+        </div>
+        <div style={sx('margin-top:11px;text-align:center;font-size:12.5px;font-weight:800;color:rgba(246,239,230,.55)')}>{L.modes.avZeile}</div>
+      </div>
+    );
   }
-  plus(open: boolean, color: string) {
-    return `flex:none;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900;color:${color};background:rgba(246,239,230,.06);transform:rotate(${open ? 45 : 0}deg);transition:transform .5s ${EASE}`;
+
+  /**
+   * Das Feld der acht Wappen in 01.
+   *
+   * Auf dem Desktop schweben sie verteilt, drei links unter dem Namen und
+   * fuenf rechts, und wer mit dem Zeiger drueberfaehrt, sieht Namen und
+   * Spruch. Hier ist die Breite knapp, also stehen alle acht in einem Feld,
+   * und ein Tipp zeigt Namen und Spruch darunter. Keine Tabelle und keine
+   * Balken: die Tabelle ist am 28.08. auf dem Desktop rausgeflogen, weil sie
+   * nicht die Staerke von CrowdQuiz ist, sondern nur eine Loesung, um viele
+   * Teams unterzubringen.
+   */
+  renderFrakFeld() {
+    const L = this.T;
+    const an = this.state.frak ?? null;
+    const aktiv = L.factions.find(f => f.file === an) ?? null;
+    return (
+      <div style={sx('margin-top:18px')}>
+        <div style={sx('position:relative;width:100%;aspect-ratio:330/188')}>
+          {FRAK_LAGE.map((lage, i) => {
+            const f = L.factions[i];
+            const wach = an === f.file;
+            return (
+              <button key={f.file} type="button"
+                onClick={() => this.setState(st => ({ frak: st.frak === f.file ? null : f.file }))}
+                aria-label={f.name}
+                style={sx(`position:absolute;left:${lage.x}%;top:${lage.y}%;width:${lage.gr}%;aspect-ratio:1;`
+                  + 'padding:0;border:none;background:none;cursor:pointer;'
+                  + `z-index:${wach ? 9 : lage.z};`
+                  + `transform:scale(${wach ? 1.12 : 1});transition:transform .34s ${EASE}`)}>
+                <span style={sx(`display:block;width:100%;height:100%;border-radius:50%;`
+                  + `background:#111827 url(/assets/crest-${f.file}.webp) center/78% no-repeat;`
+                  + `border:2px solid ${f.color}${wach ? 'ff' : '77'};`
+                  + `box-shadow:0 4px 12px rgba(0,0,0,.5)${wach ? `,0 0 22px ${f.color}88` : ''};`
+                  + `filter:brightness(${wach ? 1.1 : 0.82});`
+                  + `transition:border-color .34s ${EASE},box-shadow .34s ${EASE},filter .34s ${EASE}`)}></span>
+              </button>
+            );
+          })}
+        </div>
+        {/* Name und Spruch stehen unter dem Feld und nicht in einem Kasten am
+            Wappen: Wolf am 28.08. zum Desktop, "der kasten gefaellt mir
+            nicht". Solange nichts angetippt ist, steht dort die Aufforderung,
+            damit die Zeile nicht springt. */}
+        <div style={sx('margin-top:14px;min-height:44px;text-align:center')}>
+          <div style={sx(`font-size:15px;font-weight:900;line-height:1.25;color:${aktiv ? aktiv.color : 'rgba(246,239,230,.5)'};transition:color .3s ease`)}>
+            {aktiv ? aktiv.name : L.modes.frakHinweis}
+          </div>
+          <div style={sx(`margin-top:3px;font-size:13.5px;font-weight:700;line-height:1.3;color:rgba(246,239,230,.62);opacity:${aktiv ? 1 : 0};transition:opacity .3s ease`)}>
+            {aktiv ? aktiv.spruch : '\u00A0'}
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // ------------------------------------------------- Abschnitte
@@ -454,117 +600,98 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     const at = (r: number, c: number) => (r < 0 || c < 0 || r >= GS || c >= GS) ? null : owner[r * GS + c];
     const actTeam = s.act >= 0 ? TEAMS.find(t => t.id === ACTIONS[s.act].id) : null;
 
+    /* Wolf am 28.08.: "die sektionen direkt unter dem hero sehen noch
+          nicht aus wie in desktop, geh bitte alles stueck fuer stueck durch".
+
+          Der groesste Unterschied war nicht die Farbe, sondern die Bauart.
+          Hier standen zwei Klappkarten: eine offen, eine zu, mit Pluszeichen
+          und der Zeile "Tippt einen Modus an". Der Desktop zeigt beide Zeilen
+          offen. Wer aufklappen muss, sieht das Brett und die Wappen nie, und
+          genau die sind das Beste an dem Abschnitt. Also weg mit der Klappe:
+          zwei Bloecke untereinander, durch Haarlinien getrennt, wie die zwei
+          Zeilen oben.
+
+          Dazu die Reihenfolge des Desktops in jedem Block: Name, Reichweite,
+          Absatz, drei Striche, dann der Gegenstand -- fuer CozyQuiz die
+          Avatarwand und das Brett, fuer CrowdQuiz das Wappenfeld. */
     return (
       <section id="spielarten" style={sx('padding:14px 20px 42px;border-top:1px solid rgba(246,239,230,.10)')}>
         {this.kicker('[ 01 ]', L.modes.label)}
-        <h2 data-rv="" style={sx("margin:0 0 6px;font-family:'League Spartan',sans-serif;font-size:29px;font-weight:900;letter-spacing:-.015em")}>{L.modes.h2}</h2>
-        <p data-rv="" style={sx('margin:0 0 22px;font-size:15.5px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:600;text-wrap:pretty')}>{L.modes.sub}</p>
+        <h2 data-rv="" style={sx("margin:0 0 26px;font-family:'League Spartan',sans-serif;font-size:29px;font-weight:900;letter-spacing:-.015em")}>{L.modes.h2}</h2>
 
-        <div data-rv="" style={sx('display:flex;flex-direction:column;gap:14px')}>
-          <div onClick={() => this.open(s.open === 'quiz' ? null : 'quiz')} style={sx(this.card(s.open === 'quiz', 'rgba(250,75,163,.45)'))}>
-            <div style={sx('display:flex;align-items:center;gap:12px')}>
-              <span style={sx("font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;color:#F6EFE6")}>CozyQuiz</span>
-              <span style={sx('margin-left:auto;padding:5px 11px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);font-size:11.5px;font-weight:900;color:#F6EFE6;white-space:nowrap')}>{L.modes.quizChip}</span>
-              <span style={sx(this.plus(s.open === 'quiz', '#FA4BA3'))}>+</span>
-            </div>
-            <p style={sx('margin:10px 0 0;font-size:15px;line-height:1.55;color:rgba(246,239,230,.78);font-weight:600;text-wrap:pretty')}>{L.modes.quizP}</p>
-            <div style={sx('margin-top:14px;display:flex;align-items:center;gap:9px')}>
-              <div style={sx('display:flex')}>
-                {TEAMS.map((t, i) => (
-                  <span key={t.id} style={sx(teammarke(t.color, t.av, 32) + `border:2px solid #0f0a1a;margin-left:${i ? '-10px' : '0'};`)}></span>
-                ))}
-              </div>
-              <span style={sx('font-size:12.5px;font-weight:800;letter-spacing:.04em;color:rgba(246,239,230,.5)')}>{L.modes.quizTeams}</span>
-            </div>
-            <div style={sx(this.bodyStyle(s.open === 'quiz'))}>
-              <div style={sx('min-height:0;overflow:hidden;padding-top:16px;display:flex;flex-direction:column;gap:12px')}>
-                {L.modes.quizBullets.map(b => this.bullet(b, '#FA4BA3'))}
-                <div style={sx('width:100%;max-width:246px;margin:4px auto 0')}>
-                  <div style={sx(`padding:9px;border-radius:16px;background:rgba(246,239,230,.015);border:1.5px solid ${actTeam ? actTeam.color : 'rgba(246,239,230,.1)'};box-shadow:${actTeam ? '0 0 24px ' + actTeam.color + '44' : 'none'};transition:border-color .5s ease,box-shadow .5s ease`)}>
-                    <div style={sx(`display:grid;grid-template-columns:repeat(${GS},1fr);gap:0.72%`)}>
-                      {owner.map((id, i) => {
-                        const ov = acts[i];
-                        const t = id ? TEAMS.find(x => x.id === id) : null;
-                        const cellBase = 'position:relative;aspect-ratio:1;box-sizing:border-box;display:flex;align-items:center;justify-content:center;transition:background .45s ' + EASE + ',box-shadow .45s ' + EASE + ';';
-                        if (!t) return <span key={i} style={sx(cellBase + 'border-radius:16%;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20)')}></span>;
-                        const r = Math.floor(i / GS), c = i % GS, col = t.color;
-                        const nT = at(r - 1, c) === id, nR = at(r, c + 1) === id, nB = at(r + 1, c) === id, nL = at(r, c - 1) === id;
-                        const rTL = (nT || nL) ? '0' : '16%', rTR = (nT || nR) ? '0' : '16%', rBR = (nB || nR) ? '0' : '16%', rBL = (nB || nL) ? '0' : '16%';
-                        // Steg ueber den Rasterabstand zum gleichfarbigen Nachbarn.
-                        // So lang wie die Zellkante ohne ihre beiden Rundungen,
-                        // sonst schoebe er sich ueber die Ecke hinaus. Gezeichnet
-                        // wird nur nach rechts und unten, sonst doppelt sich jede
-                        // Verbindung.
-                        const bruecke = `position:absolute;background:${col};z-index:2;pointer-events:none;`;
-                        const steg = '68%';   // Zellkante ohne die beiden 16-Prozent-Rundungen
-                        const fresh = !!ov;
-                        const isStack = !!ov && ov.kind === 'stack';
-                        const shadow = [
-                          nT ? '' : 'inset 0 1px 0 rgba(246,239,230,.22)',
-                          nB ? '' : 'inset 0 -3px 0 rgba(0,0,0,.2)',
-                          (nR && nB) ? '' : `${nR ? 0 : 2}px ${nB ? 0 : 3}px 0 rgba(0,0,0,.45)`,
-                          '0 5px 9px rgba(0,0,0,.3)',
-                          fresh ? `0 0 22px ${col}bb` : '',
-                          isStack ? `0 0 16px ${col}77` : '',
-                        ].filter(Boolean).join(',');
-                        const edge = (fused: boolean) => fused ? 'none' : `1px solid ${col}${fresh ? 'ff' : '55'}`;
-                        return (
-                          <span key={i} style={sx(cellBase
-                            + `border-radius:${rTL} ${rTR} ${rBR} ${rBL};background:${col};box-shadow:${shadow};`
-                            + `border-top:${edge(nT)};border-right:${edge(nR)};border-bottom:${edge(nB)};border-left:${edge(nL)}`)}>
-                            <span style={sx(`width:${(motivAnteil(t.av) * 100).toFixed(0)}%;height:${(motivAnteil(t.av) * 100).toFixed(0)}%;background:url(${t.av}) center/contain no-repeat;animation:${ov && ov.kind === 'joker' ? 'mFlip .8s ' + EASE + ' both' : 'mPop .42s cubic-bezier(.34,1.56,.64,1) both'}`)}></span>
-                            {isStack && <span style={sx(`position:absolute;right:6%;bottom:6%;width:${(motivAnteil(t.av) * 52).toFixed(0)}%;height:${(motivAnteil(t.av) * 52).toFixed(0)}%;background:url(${t.av}) center/contain no-repeat;animation:mPop .5s cubic-bezier(.34,1.56,.64,1) both .12s`)}></span>}
-                            {nR && <span style={sx(bruecke + `right:-3.8%;top:16%;width:4.2%;height:${steg}`)}></span>}
-                            {nB && <span style={sx(bruecke + `bottom:-3.8%;left:16%;height:4.2%;width:${steg}`)}></span>}
-                            {!!ov && (ov.kind === 'steal' || ov.kind === 'joker') && <span style={sx(`position:absolute;inset:-3px;border-radius:20%;border:2px solid ${col};pointer-events:none;animation:mBurst .7s ease-out both`)}></span>}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-                <div style={sx(`margin-top:12px;min-height:38px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13.5px;font-weight:900;line-height:1.4;color:${s.act < 0 ? 'rgba(246,239,230,.5)' : (actTeam ? actTeam.color : 'rgba(246,239,230,.5)')};transition:color .4s ease`)}>
-                  {s.act < 0 ? L.modes.actIdle : L.modes.actions[s.act]}
-                </div>
-              </div>
-            </div>
+        <div data-rv="" style={sx('padding:22px 0;border-top:1px solid rgba(246,239,230,.14)')}>
+          <div style={sx("font-family:'League Spartan',sans-serif;font-size:30px;font-weight:900;line-height:.9;letter-spacing:-.03em;color:#F6EFE6")}>CozyQuiz</div>
+          <div style={sx('margin-top:10px;font-size:11.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{L.modes.quizChip}</div>
+          <p style={sx('margin:14px 0 0;font-size:15.5px;line-height:1.55;font-weight:500;color:rgba(246,239,230,.82);text-wrap:pretty')}>{L.modes.quizP}</p>
+          <div style={sx('margin-top:16px;display:flex;flex-direction:column;gap:11px')}>
+            {L.modes.quizBullets.map(b => this.bullet(b, AKZENT))}
           </div>
-
-          <div onClick={() => this.open(s.open === 'arena' ? null : 'arena')} style={sx(this.card(s.open === 'arena', 'rgba(96,165,250,.45)'))}>
-            <div style={sx('display:flex;align-items:center;gap:12px')}>
-              <span style={sx("font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;color:#60A5FA")}>CrowdQuiz</span>
-              <span style={sx('margin-left:auto;padding:5px 11px;border-radius:999px;background:rgba(96,165,250,.14);border:1px solid rgba(96,165,250,.3);font-size:11.5px;font-weight:900;color:#BFDBFE;white-space:nowrap')}>{L.modes.arenaChip}</span>
-              <span style={sx(this.plus(s.open === 'arena', '#60A5FA'))}>+</span>
+          {this.renderAvatarWand()}
+          <div style={sx('margin-top:20px;display:flex;align-items:center;gap:9px')}>
+            <div style={sx('display:flex')}>
+              {TEAMS.map((t, i) => (
+                <span key={t.id} style={sx(teammarke(t.color, t.av, 32) + `border:2px solid #0f0a1a;margin-left:${i ? '-10px' : '0'};`)}></span>
+              ))}
             </div>
-            <p style={sx('margin:10px 0 0;font-size:15px;line-height:1.55;color:rgba(246,239,230,.78);font-weight:600;text-wrap:pretty')}>{L.modes.arenaP}</p>
-            <div style={sx('margin-top:14px;display:flex;align-items:center;gap:9px')}>
-              <div style={sx('display:flex')}>
-                {L.factions.map((fa, i) => (
-                  <span key={fa.file} style={sx(`width:32px;height:32px;border-radius:50%;flex:none;background:#111827 url(/assets/crest-${fa.file}.webp) center/78% no-repeat;border:2px solid ${fa.color}88;margin-left:${i ? '-11px' : '0'};box-shadow:0 3px 8px rgba(0,0,0,.45)`)}></span>
-                ))}
-              </div>
-              <span style={sx('font-size:12.5px;font-weight:800;letter-spacing:.04em;color:rgba(246,239,230,.5)')}>{L.modes.arenaFactions}</span>
-            </div>
-            <div style={sx(this.bodyStyle(s.open === 'arena'))}>
-              <div style={sx('min-height:0;overflow:hidden;padding-top:16px;display:flex;flex-direction:column;gap:12px')}>
-                {L.modes.arenaBullets.map(b => this.bullet(b, '#60A5FA'))}
-                <div style={sx('margin-top:4px;padding:12px;border-radius:16px;background:rgba(246,239,230,.03);border:1px solid rgba(246,239,230,.08);display:flex;flex-direction:column;gap:8px')}>
-                  {L.factions.slice(0, 3).map((b, i) => (
-                    <div key={b.file} style={sx('display:flex;align-items:center;gap:9px')}>
-                      <span style={sx(`flex:none;width:26px;height:26px;background:url(/assets/crest-${b.file}.webp) center/contain no-repeat`)}></span>
-                      <span style={sx('flex:1;min-width:0;display:flex;flex-direction:column;gap:3px')}>
-                        <span style={sx('font-size:12.5px;font-weight:900;color:#F6EFE6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis')}>{b.name}</span>
-                        <span style={sx('height:6px;border-radius:999px;background:rgba(246,239,230,.07);overflow:hidden')}>
-                          <span style={sx(`display:block;height:100%;width:${s.open === 'arena' ? b.p : 0}%;border-radius:999px;background:${b.color};transition:width 1.1s ${EASE} ${i * .12}s`)}></span>
-                        </span>
+            <span style={sx('font-size:12.5px;font-weight:800;letter-spacing:.04em;color:rgba(246,239,230,.5)')}>{L.modes.quizTeams}</span>
+          </div>
+            <div style={sx('width:100%;max-width:246px;margin:4px auto 0')}>
+              <div style={sx(`padding:9px;border-radius:16px;background:rgba(246,239,230,.015);border:1.5px solid ${actTeam ? actTeam.color : 'rgba(246,239,230,.1)'};box-shadow:${actTeam ? '0 0 24px ' + actTeam.color + '44' : 'none'};transition:border-color .5s ease,box-shadow .5s ease`)}>
+                <div style={sx(`display:grid;grid-template-columns:repeat(${GS},1fr);gap:0.72%`)}>
+                  {owner.map((id, i) => {
+                    const ov = acts[i];
+                    const t = id ? TEAMS.find(x => x.id === id) : null;
+                    const cellBase = 'position:relative;aspect-ratio:1;box-sizing:border-box;display:flex;align-items:center;justify-content:center;transition:background .45s ' + EASE + ',box-shadow .45s ' + EASE + ';';
+                    if (!t) return <span key={i} style={sx(cellBase + 'border-radius:16%;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20)')}></span>;
+                    const r = Math.floor(i / GS), c = i % GS, col = t.color;
+                    const nT = at(r - 1, c) === id, nR = at(r, c + 1) === id, nB = at(r + 1, c) === id, nL = at(r, c - 1) === id;
+                    const rTL = (nT || nL) ? '0' : '16%', rTR = (nT || nR) ? '0' : '16%', rBR = (nB || nR) ? '0' : '16%', rBL = (nB || nL) ? '0' : '16%';
+                    // Steg ueber den Rasterabstand zum gleichfarbigen Nachbarn.
+                    // So lang wie die Zellkante ohne ihre beiden Rundungen,
+                    // sonst schoebe er sich ueber die Ecke hinaus. Gezeichnet
+                    // wird nur nach rechts und unten, sonst doppelt sich jede
+                    // Verbindung.
+                    const bruecke = `position:absolute;background:${col};z-index:2;pointer-events:none;`;
+                    const steg = '68%';   // Zellkante ohne die beiden 16-Prozent-Rundungen
+                    const fresh = !!ov;
+                    const isStack = !!ov && ov.kind === 'stack';
+                    const shadow = [
+                      nT ? '' : 'inset 0 1px 0 rgba(246,239,230,.22)',
+                      nB ? '' : 'inset 0 -3px 0 rgba(0,0,0,.2)',
+                      (nR && nB) ? '' : `${nR ? 0 : 2}px ${nB ? 0 : 3}px 0 rgba(0,0,0,.45)`,
+                      '0 5px 9px rgba(0,0,0,.3)',
+                      fresh ? `0 0 22px ${col}bb` : '',
+                      isStack ? `0 0 16px ${col}77` : '',
+                    ].filter(Boolean).join(',');
+                    const edge = (fused: boolean) => fused ? 'none' : `1px solid ${col}${fresh ? 'ff' : '55'}`;
+                    return (
+                      <span key={i} style={sx(cellBase
+                        + `border-radius:${rTL} ${rTR} ${rBR} ${rBL};background:${col};box-shadow:${shadow};`
+                        + `border-top:${edge(nT)};border-right:${edge(nR)};border-bottom:${edge(nB)};border-left:${edge(nL)}`)}>
+                        <span style={sx(`width:${(motivAnteil(t.av) * 100).toFixed(0)}%;height:${(motivAnteil(t.av) * 100).toFixed(0)}%;background:url(${t.av}) center/contain no-repeat;animation:${ov && ov.kind === 'joker' ? 'mFlip .8s ' + EASE + ' both' : 'mPop .42s cubic-bezier(.34,1.56,.64,1) both'}`)}></span>
+                        {isStack && <span style={sx(`position:absolute;right:6%;bottom:6%;width:${(motivAnteil(t.av) * 52).toFixed(0)}%;height:${(motivAnteil(t.av) * 52).toFixed(0)}%;background:url(${t.av}) center/contain no-repeat;animation:mPop .5s cubic-bezier(.34,1.56,.64,1) both .12s`)}></span>}
+                        {nR && <span style={sx(bruecke + `right:-3.8%;top:16%;width:4.2%;height:${steg}`)}></span>}
+                        {nB && <span style={sx(bruecke + `bottom:-3.8%;left:16%;height:4.2%;width:${steg}`)}></span>}
+                        {!!ov && (ov.kind === 'steal' || ov.kind === 'joker') && <span style={sx(`position:absolute;inset:-3px;border-radius:20%;border:2px solid ${col};pointer-events:none;animation:mBurst .7s ease-out both`)}></span>}
                       </span>
-                      <span style={sx(`flex:none;width:28px;text-align:right;font-size:12.5px;font-weight:900;color:${b.color}`)}>{b.p}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>
+          <div style={sx(`margin-top:12px;min-height:38px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:13.5px;font-weight:900;line-height:1.4;color:${s.act < 0 ? 'rgba(246,239,230,.5)' : (actTeam ? actTeam.color : 'rgba(246,239,230,.5)')};transition:color .4s ease`)}>
+            {s.act < 0 ? L.modes.actIdle : L.modes.actions[s.act]}
           </div>
+        </div>
+
+        <div data-rv="" style={sx('padding:22px 0;border-top:1px solid rgba(246,239,230,.14);border-bottom:1px solid rgba(246,239,230,.14)')}>
+          <div style={sx("font-family:'League Spartan',sans-serif;font-size:30px;font-weight:900;line-height:.9;letter-spacing:-.03em;color:#F6EFE6")}>CrowdQuiz</div>
+          <div style={sx('margin-top:10px;font-size:11.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{L.modes.arenaChip}</div>
+          <p style={sx('margin:14px 0 0;font-size:15.5px;line-height:1.55;font-weight:500;color:rgba(246,239,230,.82);text-wrap:pretty')}>{L.modes.arenaP}</p>
+          <div style={sx('margin-top:16px;display:flex;flex-direction:column;gap:11px')}>
+            {L.modes.arenaBullets.map(b => this.bullet(b, '#FACC15'))}
+          </div>
+          {this.renderFrakFeld()}
         </div>
       </section>
     );
