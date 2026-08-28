@@ -14,6 +14,21 @@ der Seite stehen die beiden in verschiedenen Abschnitten, es faellt also
 kaum auf. Wenn es dich stoert, muss es in der App geaendert werden, nicht
 hier.
 
+### GoatCounter bleibt, aber der Instagram-Link braucht einen Anhang
+
+Wolf am 28.08.: "ok behalten wir es". Damit ist die Frage entschieden.
+
+Offen ist noch die kleine Massnahme, die die Statistik erst nuetzlich macht:
+den Link in der Instagram-Biografie um ?ref=instagram ergaenzen. Aus
+In-App-Browsern kommt die Herkunft oft nicht mit, solche Besuche landen sonst
+unter "direkt", und dann beantwortet die Zahl genau die Frage nicht, wegen
+der wir sie behalten. Das ist nichts am Code, das macht Wolf in seinem
+Profil.
+
+Dazu ein Termin: Ende November pruefen, ob das Dashboard ueberhaupt
+angeschaut wurde und ob je etwas aufgrund der Zahlen anders gemacht wurde.
+Wenn nein, faellt GoatCounter samt Absatz in der Datenschutzerklaerung raus.
+
 ### Cookie-Banner, gemeldet am 28.08.
 
 Geprueft und gemessen: die Seite setzt null Cookies, schreibt vor einer
@@ -85,9 +100,49 @@ Zu tun: die drei Gegenstaende je Anlass rechts neben den Text setzen, etwas
 tiefer, statt darueber. Auf 350 px heisst das eine schmale zweite Spalte
 oder ein Ueberlappen; beides messen, bevor ich mich festlege.
 
-### H6 bis H8
+### H6. 04 Beamer: alter Text raus, und der Wolf ist nicht freigestellt
 
-Wolf schickt noch die drei restlichen Abschnitte mit Bildern nach.
+"beamersection, hier ist viel alter text der in desktop nicht mehr [ist],
+das from 350 und unten das fenster mit i bring you need rausnehmen, dann das
+obvious der wolf ist nicht freigestellt auf mobile"
+
+Zu tun:
+ * Die Kapsel "ab 350 EUR" in diesem Abschnitt faellt weg. Der Preis steht in
+   06 bei der Wahl zwischen Test-Team und Event, und dort gehoert er hin.
+ * Der Kasten "Ich bringe mit / Ihr braucht" faellt weg. Der Desktop hat ihn
+   nicht mehr; im Handy ist er stehengeblieben.
+ * Der Wolf auf der Begruessungsfolie steht im Handy in einem weissen Kasten.
+   Der Grund ist die Datei: wolf-willkommen.webm ist VP9 mit Alphakanal, und
+   iOS-Safari zeigt VP9-Alpha nicht. Auf dem Desktop faellt es nicht auf, weil
+   Chrome und Firefox es koennen. Braucht eine zweite Fassung, entweder HEVC
+   mit Alpha fuer Safari oder als Rueckfall das Standbild wolf-3d.webp.
+   Vorher messen, welchen Weg das Geraet tatsaechlich nimmt.
+
+### H7. 06 Formular: zu hoch, und die Hoehe springt
+
+"request form ist zu hoch fuer mobile und veraendert hoehe je nach auswahl,
+das ist nicht so schoen, kann man das optimieren?"
+
+Zu tun: die Hoehe zwischen den beiden Fassungen angleichen (auf dem Desktop
+ist das schon so, dort stehen beide bei 575 px) und die Gesamthoehe druecken.
+Zu messen, bevor ich etwas verschiebe: wie hoch ist das Formular heute je
+Fassung, und welcher Teil traegt die Hoehe.
+
+### H8. Der Spruch darf groesser, und der Fuss muss anders
+
+"stay cozy stay curious darf groesser sein, 2 zeilig ist auf mobile gut /
+footer muss anderst sein, das sieht nicht gut aus vlt logo cozywolf und insta
+logo in eine zeile mittig und darunter imprint und pirvacy in eine mittig?
+was denkst du?"
+
+Zu tun:
+ * Der Spruch groesser, auf zwei Zeilen gebrochen.
+ * Der Fuss nach Wolfs Vorschlag: Logo, Wortmarke und Instagram-Zeichen
+   mittig in einer Zeile, darunter Impressum und Datenschutz mittig in einer
+   zweiten. Meine Antwort dazu: ja. Der Fuss steht heute als Reihe, die im
+   Handy umbricht und dadurch linksbuendig ausfranst; zwei bewusst gesetzte
+   mittige Zeilen sind das Gegenteil davon und passen zum Spruch darueber,
+   der ebenfalls mittig steht.
 
 ## Erledigt
 
