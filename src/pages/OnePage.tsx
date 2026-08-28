@@ -57,10 +57,23 @@ const AKZENT = '#F6EFE6';
  * aus der Zahl einen Vorgabewert und die Zeile hier faellt weg.
  */
 const STIL = (() => {
-  if (typeof window === 'undefined') return 1;
+  // Wolf am 27.08.: "K3, mach den Aufraeumdurchgang ... machs so, dass es
+  // reversibel ist, falls es mir gar nicht gefaellt".
+  //
+  // Deshalb kein Umbau, sondern eine Umstellung des Vorgabewerts. K3 ist jetzt
+  // der Normalfall, und /d/?stil=1 zeigt weiterhin genau den Stand von vorher:
+  // kleine Ueberschriften, Haarlinien zwischen den Kapiteln, gleiche Polster,
+  // Schatten an der Oberflaeche. Zurueck geht es also mit einer Adresse und
+  // nicht mit einem Rueckbau, und wenn es bleibt, faellt hier eine Zeile weg.
+  if (typeof window === 'undefined') return 3;
   const n = Number(new URLSearchParams(window.location.search).get('stil'));
-  return n >= 1 && n <= 5 ? n : 1;
+  return n >= 1 && n <= 5 ? n : 3;
 })();
+/** Ab K3 traegt die Oberflaeche keine Schatten mehr. Spielsteine schon:
+ *  ihre Kanten stehen in der Kacheldefinition der App und gehoeren zum
+ *  Stein, nicht zum Layout. */
+const OHNE_SCHATTEN = STIL >= 3;
+const schatten = (wert: string) => (OHNE_SCHATTEN ? '' : wert);
 /** Ueberschrift eines Kapitels: gross ab Fassung 2, mit Ziffer ab 4. */
 const H2_GROSS = STIL >= 2 ? 'clamp(40px,5.2vw,84px)' : null;
 
@@ -661,7 +674,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const L = this.T;
     const langBtn = (on: boolean) => `appearance:none;border:0;cursor:pointer;font:inherit;font-size:12.5px;font-weight:900;letter-spacing:.06em;padding:6px 11px;border-radius:999px;transition:background .25s ${EASE},color .25s ${EASE};background:${on ? '#F6EFE6' : 'transparent'};color:${on ? '#0A0814' : 'rgba(246,239,230,.62)'}`;
     return (
-      <header data-header="" style={sx(`position:sticky;overflow:visible;top:0;z-index:20;transition:padding .3s ${EASE},background .3s ${EASE},border-color .3s ${EASE};backdrop-filter:blur(14px);background:rgba(10,8,20,.86);box-shadow:0 12px 34px rgba(10,8,20,.55)`)}>
+      <header data-header="" style={sx(`position:sticky;overflow:visible;top:0;z-index:20;transition:padding .3s ${EASE},background .3s ${EASE},border-color .3s ${EASE};backdrop-filter:blur(14px);background:rgba(10,8,20,.86)${schatten(';box-shadow:0 12px 34px rgba(10,8,20,.55)')}`)}>
         <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;gap:32px;white-space:nowrap')}>
           <a href="#top" style={sx('display:flex;align-items:center;gap:10px')}>
             <img src={LOGO} alt="CozyWolf" width={38} height={38} style={sx('width:38px;height:38px')} />
@@ -1992,7 +2005,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               rundes Foto mit einer Haarlinie, wie jede andere Kante der Seite. */}
           <div style={sx('display:flex;flex-direction:column;align-items:center;gap:14px')}>
             <img src="/assets/johannes-rund.jpg" loading="lazy" decoding="async" width={220} height={220} alt={L.johannes.photoAlt}
-              style={sx('width:220px;height:220px;border-radius:50%;object-fit:cover;object-position:center 22%;border:1px solid rgba(246,239,230,.20);box-shadow:0 24px 50px rgba(0,0,0,.55)')} />
+              style={sx('width:220px;height:220px;border-radius:50%;object-fit:cover;object-position:center 22%;border:1px solid rgba(246,239,230,.20);' + schatten('box-shadow:0 24px 50px rgba(0,0,0,.55)'))} />
             <div style={sx('font-size:18px;font-weight:900;color:#F6EFE6')}>{L.johannes.name}</div>
           </div>
           <div>
@@ -2149,7 +2162,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           <div data-form-panel="" style={sx('min-width:0')}>
 
             {st === 'ok' && (
-              <div role="status" style={sx('width:100%;box-sizing:border-box;padding:clamp(22px,3vw,34px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);box-shadow:0 16px 40px rgba(0,0,0,.35);text-align:center')}>
+              <div role="status" style={sx('width:100%;box-sizing:border-box;padding:clamp(22px,3vw,34px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);text-align:center' + schatten(';box-shadow:0 16px 40px rgba(0,0,0,.35)'))}>
                 <div style={sx('font-size:22px;font-weight:900;color:#F6EFE6')}>{test ? L.form.okTitleTest : L.form.okTitleEvent}</div>
                 <p style={sx('margin:10px 0 0;color:rgba(246,239,230,.78);font-weight:500;line-height:1.6')}>{test ? L.form.okBodyTest : L.form.okBodyEvent}</p>
               </div>
@@ -2157,7 +2170,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
 
             {st !== 'ok' && (
               <form key={this.state.formMode} onSubmit={this.submitForm}
-                style={sx('width:100%;text-align:left;padding:clamp(22px,3vw,30px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);box-shadow:0 16px 40px rgba(0,0,0,.35);box-sizing:border-box')}>
+                style={sx('width:100%;text-align:left;padding:clamp(22px,3vw,30px);border-radius:24px;background:rgba(246,239,230,.03);border:1.5px solid rgba(246,239,230,.20);box-sizing:border-box' + schatten(';box-shadow:0 16px 40px rgba(0,0,0,.35)'))}>
                 {/* Die Aufschrift. Wolfs Auflage war, dass klar getrennt sein
                     muss, welches der beiden Formulare man ausfuellt. Links
                     steht die Wahl, hier steht die Antwort darauf, in derselben
@@ -2308,7 +2321,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
           </div>
           <div data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:0 32px 26px;font-size:12.5px;font-weight:600;color:rgba(246,239,230,.5)')}>{L.footer.aiNote}</div>
         </footer>
-        <a href="#anfragen" data-m="sticky" style={sx('position:fixed;left:14px;right:14px;bottom:14px;z-index:40;align-items:center;justify-content:center;padding:15px 20px;border-radius:999px;background:#F6EFE6;color:#0A0814;font-weight:900;font-size:16px;box-shadow:0 14px 34px rgba(0,0,0,.55)')}>{L.sticky}</a>
+        <a href="#anfragen" data-m="sticky" style={sx('position:fixed;left:14px;right:14px;bottom:14px;z-index:40;align-items:center;justify-content:center;padding:15px 20px;border-radius:999px;background:#F6EFE6;color:#0A0814;font-weight:900;font-size:16px' + schatten(';box-shadow:0 14px 34px rgba(0,0,0,.55)'))}>{L.sticky}</a>
       </div>
     );
   }
