@@ -193,7 +193,7 @@ type MOPState = {
   pts: number[]; ptsDone: boolean;
   act: number; acts: Record<number, BoardAction>;
   splash: boolean; count: number; done: boolean;
-  scrolled?: boolean; menu?: boolean; fan?: boolean; stickyOn?: boolean;
+  scrolled?: boolean; menu?: boolean; stickyOn?: boolean;
   anlass?: string;
   /** Avatarwand in 01: Motiv und Farbe je Kachel. */
   avObj?: number[]; avFarbe?: number[];
@@ -210,9 +210,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
 
   private _io: IntersectionObserver | undefined;
   private _wio: IntersectionObserver | undefined;
-  private _jio: IntersectionObserver | undefined;
   private _wall: HTMLElement | null = null;
-  private _joh: HTMLElement | null = null;
   private _onScroll: (() => void) | undefined;
   private _onKey: ((e: KeyboardEvent) => void) | undefined;
   private _raf = 0;
@@ -312,7 +310,6 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     this._io?.disconnect();
     this._sio?.disconnect();
     this._wio?.disconnect();
-    this._jio?.disconnect();
     if (this._onScroll) window.removeEventListener('scroll', this._onScroll);
     if (this._onKey) window.removeEventListener('keydown', this._onKey);
     cancelAnimationFrame(this._raf);
@@ -1093,37 +1090,34 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     );
   }
 
+  /**
+   * Ueber mich.
+   *
+   * Vorher faecherten beim Hereinscrollen zwei weitere Fotos hinter dem
+   * Portraet auf, und Portraet wie Zitat trugen Rosa. Auf dem Desktop ist
+   * beides am 27.08. geflogen, mit einer Begruendung, die hier genauso gilt:
+   * die zwei Nebenbilder waren Schmuck, der aufsprang und sonst nichts sagte,
+   * und der Ring hat Rosa genau dort gesetzt, wo es raus soll. Uebrig bleibt
+   * ein rundes Foto mit einer Haarlinie, wie jede andere Kante der Seite.
+   *
+   * Im Zitat traegt jetzt die Helligkeit die Betonung statt einer zweiten
+   * Farbe: das Hervorgehobene in vollem Creme, der Rest gedaempft. Ohne
+   * Zeigeeffekt, den gibt es hier nicht.
+   */
   renderJohannes() {
     const L = this.T;
-    const a = !!this.state.fan;
-    const fanSide = (x: string, deg: number, delay: string) =>
-      `position:absolute;left:0;top:0;width:150px;height:150px;border-radius:50%;overflow:hidden;border:1.5px solid rgba(250,75,163,.3);box-shadow:0 10px 24px rgba(0,0,0,.4);transform-origin:50% 50%;transform:translateX(${a ? x : '0'}) scale(${a ? .78 : .9}) rotate(${a ? deg : 0}deg);opacity:${a ? 1 : 0};transition:transform .95s ${EASE}${delay},opacity .6s ease${delay}`;
     return (
       <section id="johannes" style={sx('padding:36px 20px 42px;border-top:1px solid rgba(246,239,230,.10)')}>
-        <div data-rv="" style={sx('display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px')}>
-          <div ref={el => {
-            if (!el || this._joh === el) return;
-            this._joh = el;
-            this._jio?.disconnect();
-            this._jio = new IntersectionObserver((es) => {
-              es.forEach(e => this.setState({ fan: e.isIntersecting && e.intersectionRatio > .55 }));
-            }, { threshold: [.2, .6, .8] });
-            this._jio.observe(el);
-          }} style={sx('position:relative;width:150px;height:150px')}>
-            <div style={sx(fanSide('-88px', -15, ''))}>
-              <img src="/assets/johannes-arm1.webp" loading="lazy" decoding="async" alt="" style={sx('display:block;width:100%;height:100%;object-fit:cover;border-radius:50%')} />
-            </div>
-            <div style={sx(fanSide('88px', 15, ' .08s'))}>
-              <img src="/assets/johannes-arm2.webp" loading="lazy" decoding="async" alt="" style={sx('display:block;width:100%;height:100%;object-fit:cover;border-radius:50%')} />
-            </div>
-            <img src="/assets/johannes-rund.webp" loading="lazy" decoding="async" width={300} height={300} alt={L.johannes.photoAlt}
-              style={sx(`position:absolute;inset:0;width:150px;height:150px;border-radius:50%;object-fit:cover;border:2px solid rgba(250,75,163,.45);box-shadow:0 12px 30px rgba(0,0,0,.45);z-index:2;transform:scale(${a ? .94 : 1});transition:transform .9s ${EASE}`)} />
-          </div>
-          <div style={sx('font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{L.johannes.kicker}</div>
-          <h2 style={sx("margin:0;font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;line-height:1.28;text-wrap:pretty")}>
-            {L.johannes.quote.map((seg, i) => seg.hot
-              ? <span key={i} style={sx('color:#FA4BA3')}>{seg.t}</span>
-              : <span key={i}>{seg.t}</span>)}
+        <div data-rv="" style={sx('display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px')}>
+          <img src="/assets/johannes-rund.webp" loading="lazy" decoding="async" width={440} height={440} alt={L.johannes.photoAlt}
+            style={sx('width:170px;height:170px;border-radius:50%;object-fit:cover;object-position:center;border:1px solid rgba(246,239,230,.20);box-shadow:0 20px 40px rgba(0,0,0,.55)')} />
+          <div style={sx('font-size:17px;font-weight:900;color:#F6EFE6')}>{L.johannes.name}</div>
+          <div style={sx('margin-top:-6px;font-size:13.5px;font-weight:700;color:rgba(246,239,230,.62)')}>{L.johannes.role}</div>
+          <div style={sx('margin-top:6px;font-size:11px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{L.johannes.kicker}</div>
+          <h2 style={sx("margin:4px 0 0;font-family:'League Spartan',sans-serif;font-size:23px;font-weight:900;line-height:1.24;text-wrap:pretty;hyphens:none")}>
+            {L.johannes.quote.map((seg, i) => (
+              <span key={i} style={sx(`color:${seg.hot ? '#F6EFE6' : 'rgba(246,239,230,.6)'}`)}>{seg.t}</span>
+            ))}
           </h2>
         </div>
       </section>

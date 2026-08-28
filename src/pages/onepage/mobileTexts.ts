@@ -53,7 +53,7 @@ export type MobileDict = {
     wallAltOff: string; welcomeKicker: string; welcomeTitle: string; welcomeSub: string;
     bringT: string; bring: string; needT: string; need: string;
   };
-  johannes: { kicker: string; quote: { t: string; hot?: boolean }[]; photoAlt: string };
+  johannes: { kicker: string; quote: { t: string; hot?: boolean }[]; name: string; role: string; photoAlt: string };
   faq: { label: string; h2: string; items: { q: string; a: string }[] };
   form: {
     label: string; h2: string; sub: string;
@@ -201,13 +201,14 @@ const de: MobileDict = {
     needT: 'Ihr braucht:', need: 'Eine freie Wand, Strom und WLAN. Ein Handy pro Team habt ihr dabei.',
   },
   johannes: {
-    kicker: 'Gründer & Quizmaster',
+    kicker: 'Über mich',
     quote: [
       { t: '„Mein Ziel: Ein Abend voller ' }, { t: 'Aha-Momente', hot: true }, { t: ', ' },
       { t: 'Lacher', hot: true }, { t: ' und guter ' }, { t: 'Stimmung', hot: true },
       { t: ', über den ihr noch lange sprecht."' },
     ],
-    photoAlt: 'Johannes, Gründer und Quizmaster von CozyWolf',
+    name: 'Johannes', role: 'Gründer & Quizmaster',
+    photoAlt: 'Johannes, Quizmaster von CozyWolf',
   },
   faq: {
     label: 'Fragen', h2: 'Häufige Fragen',
@@ -374,13 +375,14 @@ const en: MobileDict = {
     needT: 'You need:', need: 'A free wall, power and WiFi. One phone per team, you have that on you.',
   },
   johannes: {
-    kicker: 'Founder & quizmaster',
+    kicker: 'About me',
     quote: [
       { t: '“My goal: an evening full of ' }, { t: 'aha moments', hot: true }, { t: ', ' },
       { t: 'laughs', hot: true }, { t: ' and good ' }, { t: 'vibes', hot: true },
       { t: ' that you’ll still talk about.”' },
     ],
-    photoAlt: 'Johannes, founder and quizmaster of CozyWolf',
+    name: 'Johannes', role: 'Founder & quizmaster',
+    photoAlt: 'Johannes, quizmaster of CozyWolf',
   },
   faq: {
     label: 'Questions', h2: 'Frequently asked questions',
