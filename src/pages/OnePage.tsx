@@ -2874,9 +2874,51 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             F wird gemessen und nicht geschaetzt, der Fussbereich ist in
             beiden Sprachen verschieden hoch. */}
         <section data-halt="" data-spruch="" style={sx('background:#0A0814;height:clamp(420px,92svh,980px);min-height:0;padding:0 32px;box-sizing:border-box')}>
-          <div data-kinetic="" data-m="kin" style={sx("width:100%;text-align:center;font-family:'League Spartan',sans-serif;"
-            + 'font-size:clamp(30px,6.8vw,118px);font-weight:900;line-height:1;color:transparent;'
-            + '-webkit-text-stroke:1.4px rgba(246,239,230,.42);letter-spacing:-.01em;white-space:nowrap')}>{L.kinetic}</div>
+          {/* Wolf am 28.08.: "die schrift fuellt sich satisfying beim hovern,
+              hast du ne idee mit was, soll geil aussehen, und nur da wo man
+              mit der maus drueber hovert".
+
+              Womit: mit dem Licht des Beamers. Die ganze Seite handelt davon,
+              dass Licht auf eine Flaeche faellt -- in 04 auf die Wand, hier auf
+              die Schrift. Der Zeiger ist der Lichtfleck, und wo er steht, sind
+              die Buchstaben gefuellt statt nur umrandet. Es ist derselbe
+              Gedanke wie oben, nur am Ende der Seite und in der Hand des
+              Lesers.
+
+              Zwei Lagen uebereinander: unten die Kontur wie bisher, darueber
+              dieselbe Zeile gefuellt, aber mit einer Maske aus einem
+              Radialverlauf, dessen Mitte am Zeiger haengt. Sichtbar ist die
+              Fuellung nur im Fleck.
+
+              Die Zeigerposition laeuft ueber zwei CSS-Variablen und nicht
+              ueber den Zustand: setProperty kostet kein Neuzeichnen der
+              Komponente, setState bei jeder Mausbewegung schon. Bei einer
+              Zeile, die ueber die volle Fensterbreite laeuft, waeren das
+              hunderte Durchlaeufe je Sekunde.
+
+              Ohne Zeiger (Handy, Tastatur) bleibt die Kontur stehen. Der
+              Fleck faengt bei Groesse null an, es blitzt also nichts auf,
+              bevor die Maus da war. */}
+          <div data-kinetic="" data-m="kin"
+            onMouseMove={e => {
+              const el = e.currentTarget as HTMLElement;
+              const r = el.getBoundingClientRect();
+              el.style.setProperty('--mx', `${e.clientX - r.left}px`);
+              el.style.setProperty('--my', `${e.clientY - r.top}px`);
+              el.style.setProperty('--r', '190px');
+            }}
+            onMouseLeave={e => (e.currentTarget as HTMLElement).style.setProperty('--r', '0px')}
+            style={sx("position:relative;width:100%;text-align:center;font-family:'League Spartan',sans-serif;"
+              + 'font-size:clamp(30px,6.8vw,118px);font-weight:900;line-height:1;color:transparent;'
+              + '-webkit-text-stroke:1.4px rgba(246,239,230,.42);letter-spacing:-.01em;white-space:nowrap')}>
+            {L.kinetic}
+            <span aria-hidden="true" data-spruchlicht="" style={sx('position:absolute;left:0;top:0;width:100%;'
+              + 'color:#F6EFE6;-webkit-text-stroke:0;pointer-events:none;'
+              + 'background:linear-gradient(92deg,#FFF6E8,#F6EFE6 46%,#FFE9C9);'
+              + '-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;'
+              + 'mask-image:radial-gradient(circle var(--r,0px) at var(--mx,50%) var(--my,50%),#000 0%,rgba(0,0,0,.55) 55%,transparent 100%);'
+              + 'transition:mask-image .25s linear')}>{L.kinetic}</span>
+          </div>
         </section>
         <footer style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
           <div data-m="foot" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:30px 32px;display:flex;align-items:center;gap:20px;font-size:14px;font-weight:600;color:rgba(246,239,230,.62)')}>
