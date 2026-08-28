@@ -261,6 +261,21 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
     [data-bew] [data-m=modereihe]>*:nth-child(2){animation-range:entry 8% entry 82%}
     [data-bew] [data-m=modereihe]>*:nth-child(3){animation-range:entry 16% entry 94%}
     [data-bew] [data-halt]>[data-shell]>*{animation-range:entry 0% entry 80%}
+    /* Die Ueberschriften und Textbloecke selbst, damit der Effekt auch beim
+       Zurueckscrollen wieder laeuft. Vorher hing er an einem
+       IntersectionObserver, der nach dem ersten Mal abmeldete -- einmal je
+       Seitenaufruf, danach nie wieder. Jetzt haengt er an der Scrollposition
+       und laeuft in beide Richtungen.
+       Die Staffelung kommt aus der Geschwisterfolge: das zweite Element faengt
+       spaeter an als das erste, das dritte noch spaeter. Alles ab dem vierten
+       teilt sich einen Bereich, sonst wuerde der Aufbau am Ende zaeh. */
+    [data-bew] [data-reveal]{
+      animation:cwEinfahren linear both;animation-timeline:view();
+      animation-range:entry 0% entry 62%;
+    }
+    [data-bew] [data-reveal]:nth-child(2){animation-range:entry 6% entry 70%}
+    [data-bew] [data-reveal]:nth-child(3){animation-range:entry 12% entry 78%}
+    [data-bew] [data-reveal]:nth-child(n+4){animation-range:entry 18% entry 86%}
     /* Wolf am 28.08.: "manchmal koennte es noch ein bisschen mehr sein zb
        beim rausscrollen". Also ein zweiter, sehr viel leiserer Lauf beim
        Verlassen nach oben: der Halt sinkt ein wenig und nimmt Deckkraft ab,

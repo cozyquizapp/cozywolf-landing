@@ -734,6 +734,39 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduced) return;
 
+    /* Wolf am 28.08.: "der scrolleffekt der ueberschriften geht nach einmal
+       scrollen nicht mehr, kann das sein?"
+
+       Ja, und es war so gebaut. Der Beobachter unten meldet das Element nach
+       dem ersten Auftauchen ab (unobserve) und setzt Deckkraft und Verschiebung
+       fest auf den Endwert. Eine Einfahrt, einmal je Seitenaufruf -- wer
+       zurueckscrollt, sieht nichts mehr.
+
+       Das ist nicht das, was T3 sein sollte. Der Effekt soll an der
+       SCROLLPOSITION haengen, nicht an einem einmaligen Ereignis: dann laeuft
+       er beim Hochscrollen rueckwaerts und beim Runterscrollen wieder vor, so
+       oft man will.
+
+       Wo der Browser Scroll-Zeitgeber kennt, uebernimmt also das CSS
+       (animation-timeline:view(), siehe css.ts), und der Beobachter hier haelt
+       sich ganz raus -- inklusive der Startwerte, denn inline gesetzte
+       Deckkraft null waere sonst der Zustand, den Firefox ohne Zeitgeber
+       nie wieder verliert.
+
+       Der Beobachter bleibt als Rueckfallebene fuer Browser ohne
+       Scroll-Zeitgeber. Dort ist eine einmalige Einfahrt besser als keine. */
+    const zeitgeber = typeof CSS !== 'undefined'
+      && typeof CSS.supports === 'function'
+      && CSS.supports('animation-timeline', 'view()');
+    if (zeitgeber) {
+      requestAnimationFrame(() => {
+        this.grundfarbenBeobachten();
+        this.spielartenBeobachten();
+        this.ablaufBeobachten();
+      });
+      return;
+    }
+
     // Die Bewegung sitzt am Abschnittswechsel: der ganze Abschnitt baut sich
     // beim Erreichen einmal in Folge auf (Richtung E3 des Entwurfs).
     this.io = new IntersectionObserver((entries) => {
