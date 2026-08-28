@@ -91,6 +91,32 @@ const AV_START_FARBE = [0, 1, 2, 3, 4, 5, 6, 7];
  * die Groessen gestaffelt wie dort (von 26 bis 17 Prozent), die Lagen
  * gerechnet, damit sich keine zwei Wappen verdecken. z gibt die Ebene.
  */
+/**
+ * Drei Gegenstaende je Anlass, wie auf dem Desktop (ANLASS_GRUPPEN).
+ *
+ * Drei und nicht einer, weil einer den Anlass nie trifft: eine Torte allein
+ * ist ein Kuchen, Torte mit Luftballons und Geschenk ist ein Geburtstag.
+ * Frei und ueberlappend, ohne Kachel -- eine Kachel bedeutet im Spiel ein
+ * Feld oder eine Teammarke, neben "Geburtstag" bedeutet sie nichts.
+ */
+const ANLASS_GRUPPEN = [
+  [
+    { av: '/assets/obj-namensschild.webp', gr: 54, x: 0, y: 10, r: -9 },
+    { av: '/assets/obj-sekt.webp', gr: 48, x: 48, y: 0, r: 10 },
+    { av: '/assets/obj-wimpel.webp', gr: 38, x: 42, y: 52, r: -6 },
+  ],
+  [
+    { av: '/assets/obj-torte.webp', gr: 56, x: 2, y: 10, r: -7 },
+    { av: '/assets/obj-ballons.webp', gr: 46, x: 52, y: 0, r: 9 },
+    { av: '/assets/obj-geschenk.webp', gr: 38, x: 44, y: 54, r: -12 },
+  ],
+  [
+    { av: '/assets/obj-bier.webp', gr: 54, x: 2, y: 8, r: -8 },
+    { av: '/assets/obj-kaffee.webp', gr: 46, x: 50, y: 2, r: 11 },
+    { av: '/assets/obj-tafel.webp', gr: 40, x: 40, y: 54, r: -5 },
+  ],
+];
+
 const FRAK_LAGE = [
   { x: 0,  y: 2,  gr: 26, z: 3 },
   { x: 28, y: 16, gr: 22, z: 2 },
@@ -808,9 +834,34 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
 
     return (
       <section id="probieren" style={sx('padding:36px 20px 42px;border-top:1px solid rgba(246,239,230,.10);background:radial-gradient(ellipse at 50% 0%,rgba(246,239,230,.04),transparent 62%)')}>
-        {this.kicker('[ 02 ]', L.probe.label)}
-        <h2 data-rv="" style={sx("margin:0 0 6px;font-family:'League Spartan',sans-serif;font-size:29px;font-weight:900;text-wrap:balance")}>{L.probe.h2}</h2>
-        <p data-rv="" style={sx('margin:0 0 20px;font-size:15.5px;line-height:1.6;color:rgba(246,239,230,.78);font-weight:600;text-wrap:pretty')}>{L.probe.sub}</p>
+        {this.kicker('[ 03 ]', L.probe.label)}
+        <h2 data-rv="" style={sx("margin:0 0 10px;font-family:'League Spartan',sans-serif;font-size:29px;font-weight:900;letter-spacing:-.015em;text-wrap:balance")}>{L.probe.h2}</h2>
+        {/* Dieselbe Reihenfolge wie auf dem Desktop: Ueberschrift, die kurze
+            Zeile mit der Zahl, dann der Absatz. Der Absatz ist nicht woertlich
+            derselbe -- auf dem Desktop sucht man sich einen Fragetyp aus, hier
+            laeuft die Runde von selbst durch. Ein Text, der zum Antippen einer
+            Liste auffordert, die es nicht gibt, waere schlimmer als eine
+            Abweichung. */}
+        <div data-rv="" style={sx('margin:0 0 8px;font-size:15.5px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:600')}>{L.probe.kicker}</div>
+        <p data-rv="" style={sx('margin:0 0 16px;font-size:15.5px;line-height:1.6;color:rgba(246,239,230,.78);font-weight:600;text-wrap:pretty')}>{L.probe.sub}</p>
+        {/* Die fuenf Fragetypen als Zeile, der laufende hell. Auf dem Desktop
+            steht dort eine Liste zum Auswaehlen; hier waehlt der Ablauf, also
+            zeigt die Zeile, wo man gerade ist. Ohne sie ist "Fuenf Fragetypen"
+            eine Behauptung, die man erst nach fuenf Runden nachpruefen kann. */}
+        <div data-rv="" aria-hidden="true" style={sx('margin:0 0 18px;display:flex;align-items:center;justify-content:space-between;gap:8px')}>
+          {L.probe.cats.map((c, i) => {
+            const hier = !s.done && i === s.cat;
+            const durch = s.done || i < s.cat;
+            return (
+              <span key={c.key} style={sx('flex:1;display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0')}>
+                <span style={sx(`display:block;width:100%;max-width:38px;aspect-ratio:1;background:url(${c.icon}) center/contain no-repeat;`
+                  + `filter:brightness(${hier ? 1.1 : durch ? 0.9 : 0.55});transform:scale(${hier ? 1.12 : 1});`
+                  + `transition:filter .4s ${EASE},transform .4s ${EASE}`)}></span>
+                <span style={sx(`display:block;width:100%;height:2px;border-radius:2px;background:${hier ? c.col : durch ? 'rgba(246,239,230,.28)' : 'rgba(246,239,230,.10)'};transition:background .4s ${EASE}`)}></span>
+              </span>
+            );
+          })}
+        </div>
 
         {s.done && (
           <div style={sx('border-radius:26px;padding:34px 22px 28px;background:radial-gradient(ellipse at 50% 34%,rgba(246,239,230,.05),#0b0714 70%);border:1px solid rgba(246,239,230,.20);box-shadow:0 18px 44px rgba(0,0,0,.45);display:flex;flex-direction:column;align-items:center;min-height:470px;box-sizing:border-box;justify-content:center;text-align:center')}>
@@ -853,31 +904,56 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             <div style={sx(`margin-top:14px;font-size:13.5px;line-height:1.55;font-weight:700;color:${hintCol};text-wrap:pretty`)}>{hint}</div>
           </div>
         )}
+        {/* Die zwei Haken vom Desktop. Sie beantworten die zwei Fragen, die
+            jeder stellt, bevor er zusagt: muss ich etwas installieren, und
+            wird das nicht schnell langweilig. */}
+        <div data-rv="" style={sx('margin-top:18px;display:flex;flex-direction:column;gap:9px')}>
+          {[L.probe.check1, L.probe.check2].map(t => (
+            <span key={t} style={sx('display:flex;gap:11px;font-size:14.5px;line-height:1.45;font-weight:700;color:#F6EFE6;text-wrap:pretty')}>
+              <span style={sx('flex:none;color:#22C55E;font-weight:900')}>✓</span>{t}
+            </span>
+          ))}
+        </div>
       </section>
     );
   }
 
+  /**
+   * Anlaesse, aufgebaut wie die Zeilen auf dem Desktop.
+   *
+   * Vorher waren es Karten mit Rahmen, einem Rangzeichen in Rosa ("01") und
+   * dem kurzen Text. Der Desktop hat weder Rahmen noch Rangzeichen: Titel,
+   * Anlass in Versalien, der lange Text, ein Verweis, und daneben drei
+   * Gegenstaende. Das Rangzeichen war ausserdem irrefuehrend, es gibt keine
+   * Reihenfolge unter den Anlaessen.
+   *
+   * Die drei Gegenstaende kommen mit, sie stehen hier ueber dem Text statt
+   * daneben -- auf 350 px gibt es keine dritte Spalte. Ohne Auffaechern beim
+   * Zeigen, das haengt am Zeiger.
+   */
   renderAnlaesse() {
     const L = this.T;
     return (
       <section id="anlaesse" style={sx('padding:36px 20px 42px;border-top:1px solid rgba(246,239,230,.10)')}>
-        {this.kicker('[ 03 ]', L.anlaesse.label)}
-        <h2 data-rv="" style={sx("margin:0 0 6px;font-family:'League Spartan',sans-serif;font-size:29px;font-weight:900")}>{L.anlaesse.h2}</h2>
-        <p data-rv="" style={sx('margin:0 0 22px;font-size:15.5px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:600;text-wrap:pretty')}>{L.anlaesse.sub}</p>
-        <div data-rv="" style={sx('display:flex;flex-direction:column;gap:12px')}>
-          {L.anlaesse.cards.map((c, i) => (
-            <div key={i} style={sx('padding:20px;border-radius:20px;background:rgba(246,239,230,.03);border:1px solid rgba(246,239,230,.20)')}>
-              <div style={sx('display:flex;align-items:center;gap:10px;margin-bottom:8px')}>
-                <span style={sx('font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{c.badge}</span>
-                <span style={sx("margin-left:auto;font-family:'League Spartan',sans-serif;font-size:15px;font-weight:900;color:rgba(250,75,163,.35)")}>{`0${i + 1}`}</span>
-              </div>
-              <div style={sx("font-family:'League Spartan',sans-serif;font-size:21px;font-weight:900;margin-bottom:8px")}>{c.title}</div>
-              <p style={sx('margin:0 0 14px;font-size:14.5px;line-height:1.6;color:rgba(246,239,230,.78);font-weight:600;text-wrap:pretty')}>{c.p}</p>
-              <a href="#anfragen" onClick={() => this.setState({ tab: 'event', formStatus: 'idle', anlass: this.T.form.anlassOpts[Math.min(i, 2)] })}
-                style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);color:#F6EFE6;font-weight:900;font-size:14.5px')}>{L.anlaesse.cta}</a>
+        {this.kicker('[ 02 ]', L.anlaesse.label)}
+        <h2 data-rv="" style={sx("margin:0 0 10px;font-family:'League Spartan',sans-serif;font-size:29px;font-weight:900;letter-spacing:-.015em")}>{L.anlaesse.h2}</h2>
+        <p data-rv="" style={sx('margin:0 0 8px;font-size:15.5px;line-height:1.6;color:rgba(246,239,230,.62);font-weight:600;text-wrap:pretty')}>{L.anlaesse.sub}</p>
+        {L.anlaesse.cards.map((c, i) => (
+          <div key={c.title} data-rv="" style={sx(`padding:24px 0;border-top:1px solid rgba(246,239,230,.14)${i === L.anlaesse.cards.length - 1 ? ';border-bottom:1px solid rgba(246,239,230,.14)' : ''}`)}>
+            <div aria-hidden="true" style={sx('position:relative;width:100%;max-width:190px;margin:0 0 16px;aspect-ratio:1/1')}>
+              {ANLASS_GRUPPEN[i].map(o => (
+                <span key={o.av} style={sx(`position:absolute;left:${o.x}%;top:${o.y}%;width:${o.gr}%;aspect-ratio:1/1;`
+                  + `transform:rotate(${o.r}deg);background:url(${o.av}) center/contain no-repeat;`
+                  + 'filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))')}></span>
+              ))}
             </div>
-          ))}
-        </div>
+            <div style={sx("font-family:'League Spartan',sans-serif;font-size:26px;font-weight:900;line-height:.95;letter-spacing:-.028em;color:#F6EFE6;text-wrap:balance")}>{c.title}</div>
+            <div style={sx('margin-top:10px;font-size:11.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{c.badge}</div>
+            <p style={sx('margin:14px 0 16px;font-size:15px;line-height:1.6;color:rgba(246,239,230,.82);font-weight:500;text-wrap:pretty')}>{c.p}</p>
+            <a href="#anfragen" onClick={() => this.setState({ tab: 'event', formStatus: 'idle', anlass: this.T.form.anlassOpts[Math.min(i, 2)] })}
+              style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 18px;border-radius:999px;background:rgba(246,239,230,.05);border:1px solid rgba(246,239,230,.20);color:#F6EFE6;font-weight:900;font-size:14.5px')}>{L.anlaesse.cta}</a>
+          </div>
+        ))}
       </section>
     );
   }
@@ -1067,8 +1143,12 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
         <div inert={s.menu || undefined}>
           {this.renderHero()}
           {this.renderModes()}
-          {this.renderProbe()}
+          {/* Reihenfolge wie auf dem Desktop: erst der Anlass, dann das
+              Ausprobieren. Der Handy-Entwurf hatte beide vertauscht, und mit
+              zwei Fassungen derselben Seite waeren das zwei verschiedene
+              Argumentationen. Erst wofuer, dann wie. */}
           {this.renderAnlaesse()}
+          {this.renderProbe()}
           {this.renderAblauf()}
           {this.renderJohannes()}
           {this.renderFaq()}

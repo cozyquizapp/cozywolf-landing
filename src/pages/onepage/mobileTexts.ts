@@ -30,7 +30,8 @@ export type MobileDict = {
   teams: Record<string, string>;
   factions: { name: string; color: string; file: string; spruch: string }[];
   probe: {
-    label: string; h2: string; sub: string; team: string; skipHint: string;
+    label: string; kicker: string; h2: string; sub: string; check1: string; check2: string;
+    team: string; skipHint: string;
     cats: MobileCat[];
     progress: (n: number, total: number) => string;
     doneKicker: string; doneTitle: string; doneText: string;
@@ -132,8 +133,11 @@ const de: MobileDict = {
     { name: 'Feierabend', color: '#14B8A6', file: 'feierabend', spruch: 'Hauptsache dabei.' },
   ],
   probe: {
-    label: 'Fragetypen', h2: 'So spielt ihr',
-    sub: 'QR-Code scannen, fertig. Beantwortet eine Frage, danach kommt die nächste Kategorie.',
+    label: 'Ausprobieren', kicker: 'Fünf Fragetypen, eine Runde',
+    h2: 'So spielt ihr am Handy mit',
+    sub: 'Ein Handy pro Team, QR-Code scannen, fertig. Hier läuft eine Runde von selbst durch, einen Fragetyp nach dem anderen, genau wie am Quizabend.',
+    check1: 'Keine App, kein Login, kein Zettel',
+    check2: 'Fünf Fragetypen, keine Runde fühlt sich gleich an',
     team: 'Team Glühbirnen', skipHint: 'Tippen zum Überspringen',
     progress: (n, total) => `Fragetyp ${n} von ${total}`,
     doneKicker: 'Demo durchgespielt',
@@ -187,7 +191,7 @@ const de: MobileDict = {
     ],
   },
   ablauf: {
-    label: 'Der Abend', h2: G.de.ablaufH2,
+    label: 'Ablauf', h2: G.de.ablaufH2,
     sub: G.de.ablaufSub,
     priceBig: 'ab 350 €', priceSub: 'für den ganzen Abend',
     wallAltOff: 'Wohnzimmer mit Beamer, Wand noch dunkel',
@@ -302,8 +306,11 @@ const en: MobileDict = {
   ],
 
   probe: {
-    label: 'Question types', h2: 'How you play',
-    sub: 'Scan a QR code, done. Answer one question, then the next category comes up.',
+    label: 'Try it', kicker: 'Five question types, one round',
+    h2: 'This is how you play along on your phone',
+    check1: 'No app, no login, no paper',
+    check2: 'Five question types, no round feels the same',
+    sub: 'One phone per team, scan a QR code, done. Here a round plays through by itself, one question type after another, just like on quiz night.',
     team: 'Team Lightbulbs', skipHint: 'Tap to skip',
     progress: (n, total) => `Question type ${n} of ${total}`,
     doneKicker: 'Demo complete',
@@ -357,7 +364,7 @@ const en: MobileDict = {
     ],
   },
   ablauf: {
-    label: 'The evening', h2: G.en.ablaufH2,
+    label: 'How it works', h2: G.en.ablaufH2,
     sub: G.en.ablaufSub,
     priceBig: 'from €350', priceSub: 'for the whole evening',
     wallAltOff: 'Living room with projector, wall still dark',
