@@ -193,7 +193,7 @@ type MOPState = {
   pts: number[]; ptsDone: boolean;
   act: number; acts: Record<number, BoardAction>;
   splash: boolean; count: number; done: boolean;
-  scrolled?: boolean; menu?: boolean; stickyOn?: boolean;
+  scrolled?: boolean; menu?: boolean;
   anlass?: string;
   /** Avatarwand in 01: Motiv und Farbe je Kachel. */
   avObj?: number[]; avFarbe?: number[];
@@ -254,8 +254,6 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
           this._raf = 0;
           const sc = window.scrollY > 60;
           if (sc !== this.state.scrolled) this.setState({ scrolled: sc });
-          const st = window.scrollY > window.innerHeight * 0.8;
-          if (st !== this.state.stickyOn) this.setState({ stickyOn: st });
         });
       };
       window.addEventListener('scroll', this._onScroll, { passive: true });
@@ -1222,7 +1220,7 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     const L = this.T;
     const s = this.state;
     return (
-      <div style={sx('max-width:520px;margin:0 auto;position:relative;overflow:hidden;background:#0A0814;padding-bottom:96px')}>
+      <div style={sx('max-width:520px;margin:0 auto;position:relative;overflow:hidden;background:#0A0814;padding-bottom:24px')}>
         <style>{MOBILE_CSS}</style>
         {this.renderHeader()}
         {/* inert, solange das Menue offen ist: Fokus bleibt im Menue (Handoff 7) */}
@@ -1252,12 +1250,15 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             <div style={sx('font-size:12.5px;line-height:1.6;color:rgba(246,239,230,.5);font-weight:600')}>{L.footer.aiNote}</div>
           </footer>
 
-          <div style={sx(`position:fixed;left:0;right:0;bottom:0;z-index:50;transform:translateY(${this.state.stickyOn ? '0' : '130%'});transition:transform .3s ${EASE};display:flex;justify-content:center;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(10,8,20,0),rgba(10,8,20,.94) 42%);pointer-events:none`)}>
-            <a href="#anfragen" onClick={() => this.setState({ tab: 'test', formStatus: 'idle' })}
-              style={sx('pointer-events:auto;width:100%;max-width:488px;display:flex;align-items:center;justify-content:center;gap:9px;min-height:54px;border-radius:999px;background:#F6EFE6;color:#0A0814;font-size:16.5px;font-weight:900;box-shadow:0 12px 30px rgba(0,0,0,.5)')}>
-              {L.sticky.label}<span style={sx('font-size:13px;font-weight:800;opacity:.7')}>{L.sticky.tag}</span>
-            </a>
-          </div>
+          {/* Hier klebte eine Leiste am unteren Rand mit "Gratis fuer
+              Test-Teams", die ab 80 Prozent Fensterhoehe aufgetaucht ist.
+              Wolf am 28.08.: "nimm den button gratis fuer test teams raus
+              unten in mobile der verdeckt zu viel". Stimmt, und sie war
+              teurer, als sie aussah: 54 px Knopf plus Polster plus der
+              Verlauf darueber sind rund 100 px, also zwoelf Prozent des
+              Bildschirms, dauerhaft, ueber jedem Abschnitt. Der Desktop hat
+              nichts dergleichen, und der Weg zum Formular steht ohnehin im
+              Kopf, in jedem Anlass und in 06. */}
         </div>
       </div>
     );

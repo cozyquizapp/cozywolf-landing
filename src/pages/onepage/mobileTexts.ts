@@ -67,7 +67,6 @@ export type MobileDict = {
     privacy1: string; privacyLink: string; privacy2: string;
   };
   footer: { imprint: string; privacy: string; instagram: string; aiNote: string };
-  sticky: { label: string; tag: string };
 };
 
 const de: MobileDict = {
@@ -240,7 +239,6 @@ const de: MobileDict = {
     privacyLink: 'Datenschutzerklärung', privacy2: '.',
   },
   footer: { imprint: 'Impressum', privacy: 'Datenschutz', instagram: 'Instagram', aiNote: G.de.aiHinweis },
-  sticky: { label: 'Gratis für Test-Teams', tag: '0 €' },
 };
 
 const en: MobileDict = {
@@ -414,7 +412,6 @@ const en: MobileDict = {
     privacyLink: 'privacy policy', privacy2: '.',
   },
   footer: { imprint: 'Imprint', privacy: 'Privacy', instagram: 'Instagram', aiNote: G.en.aiHinweis },
-  sticky: { label: 'Free for test teams', tag: '€0' },
 };
 
 const DICTS: Record<Lang, MobileDict> = { de, en };
