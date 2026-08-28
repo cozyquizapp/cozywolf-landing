@@ -17,11 +17,11 @@ export type MobileDict = {
   nav: { items: { href: string; label: string }[]; menuLabel: string };
   hero: {
     kicker: string; hooks: string[]; rest: string; sub: string;
-    cta: string; ctaSub: string; bookQ: string; bookCta: string; avail: string;
+    cta: string; ctaSub: string; bookCta: string; avail: string;
   };
   modes: {
     label: string; h2: string;
-    quizChip: string; quizP: string; quizTeams: string; quizBullets: string[];
+    quizChip: string; quizP: string; quizBullets: string[];
     avZeile: string; avAria: string;
     actIdle: string; actions: string[];
     arenaChip: string; arenaP: string; arenaFactions: string; arenaBullets: string[];
@@ -92,14 +92,13 @@ const de: MobileDict = {
     rest: 'ist nicht alles.',
     sub: G.de.heroSub,
     cta: 'Gratis für Test-Teams', ctaSub: G.de.ctaSub,
-    bookQ: 'Lieber direkt buchen?', bookCta: 'Termin anfragen →',
+    bookCta: 'Termin anfragen →',
     avail: `Ab 350 € · Termine ab ${TERMIN_AB.de}`,
   },
   modes: {
     label: 'Die Spielarten', h2: 'Zwei Modi, ein Abend',
     quizChip: 'Bis 40 Personen',
     quizP: 'Ihr spielt in Teams zu viert oder fünft an einem Handy, der Beamer ist die Bühne. Wer eine Frage richtig hat, setzt ein Feld.',
-    quizTeams: '4 bis 8 Teams',
     quizBullets: [
       'Nicht wer die meisten Felder hat gewinnt, sondern wer die größte zusammenhängende Fläche hält',
       'Setzen, klauen, stapeln oder Joker',
@@ -270,14 +269,13 @@ const en: MobileDict = {
     rest: 'isn’t everything.',
     sub: G.en.heroSub,
     cta: 'Free for test teams', ctaSub: G.en.ctaSub,
-    bookQ: 'Rather book directly?', bookCta: 'Request a date →',
+    bookCta: 'Request a date →',
     avail: `From €350 · dates from ${TERMIN_AB.en}`,
   },
   modes: {
     label: 'The formats', h2: 'Two modes, one evening',
     quizChip: 'Up to 40 people',
     quizP: 'You play in teams of four or five around one phone, the projector is the stage. Answer correctly, claim a tile.',
-    quizTeams: '4 to 8 teams',
     quizBullets: [
       'It’s not the most tiles that wins, but the largest connected area',
       'Claim, steal, stack or play a joker',

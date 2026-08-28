@@ -652,21 +652,40 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
               );
             })}
           </div>
+          {/* Wolf am 28.08.: "farbe von button 'free for test teams' sollte in
+              farbe der schrift oben sein". Der Knopf stand vorher creme, mit
+              einem Schein in der Wortfarbe; jetzt traegt er die Farbe selbst.
+              Damit haengt der ganze Faden an einem Wort: Ueberschrift,
+              Gegenstand und Knopf wechseln gemeinsam.
+
+              Die Schrift darauf ist dunkel, und zwar bei allen fuenf Farben.
+              Nachgerechnet nach WCAG gegen #0A0814 und gegen Creme:
+                Orange  7,08 : 2,46      Gruen  8,71 : 2,00
+                Violett 5,02 : 3,47      Gelb  12,96 : 1,34
+                Blau    5,40 : 3,22
+              Dunkel gewinnt ueberall, der schlechteste Fall ist 5,02 und
+              liegt ueber den 4,5 der Stufe AA. Die Unterzeile steht deshalb
+              voll deckend statt bei 72 Prozent: bei 13 px fett gilt der
+              normale Schwellwert, und 70 Prozent faellt auf Violett (3,50)
+              und Blau (3,68) durch.
+
+              Dazu Wolfs zweite Frage, "insgesamt wirkts ziemlich voll was
+              denkst du?": ja. Rausgeflogen ist die Zeile "Lieber direkt
+              buchen?". Der Desktop hat im Kopf zwei Knoepfe nebeneinander und
+              sonst nichts; hier stand Knopf, Frage, Knopf. Die Frage war der
+              einzige Satz im Kopf, der nichts sagt, sondern nur ueberleitet.
+              Jetzt stehen die zwei Wege untereinander, gleich breit. */}
           <div style={sx(`margin-top:22px;display:flex;flex-direction:column;gap:11px;animation:mRise .8s ${EASE} both .18s`)}>
             <a href="#anfragen" onClick={() => this.setState({ tab: 'test', formStatus: 'idle' })}
-              style={sx('display:flex;flex-direction:column;align-items:center;gap:3px;padding:16px 20px;border-radius:18px;background:#F6EFE6;color:#0A0814;font-weight:900;font-size:17px;min-height:56px;box-sizing:border-box;justify-content:center;'
-                // Der Knopf bleibt creme, er ist der Hauptweg und darf
-                // nicht die Farbe wechseln. Er bekommt nur einen Schein in
-                // der Farbe des Wortes, damit der Faden von oben bis hierher
-                // sichtbar bleibt: ein Wort, ein Gegenstand, ein Knopf.
-                + `box-shadow:0 10px 26px rgba(0,0,0,.5),0 6px 34px ${objekt.farbe}3d;transition:box-shadow .62s linear`)}>
-              {L.hero.cta}<span style={sx('font-size:13px;font-weight:800;opacity:.72')}>{L.hero.ctaSub}</span>
+              style={sx('display:flex;flex-direction:column;align-items:center;gap:3px;padding:16px 20px;border-radius:18px;color:#0A0814;font-weight:900;font-size:17px;min-height:56px;box-sizing:border-box;justify-content:center;'
+                + `background:${objekt.farbe};`
+                + `box-shadow:0 10px 26px rgba(0,0,0,.5),0 6px 34px ${objekt.farbe}55;`
+                + 'transition:background-color .62s linear,box-shadow .62s linear')}>
+              {L.hero.cta}<span style={sx('font-size:13px;font-weight:800')}>{L.hero.ctaSub}</span>
             </a>
-            <div style={sx('display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap')}>
-              <span style={sx('font-size:14.5px;font-weight:600;color:rgba(246,239,230,.62)')}>{L.hero.bookQ}</span>
-              <a href="#anfragen" onClick={() => this.setState({ tab: 'event', formStatus: 'idle' })}
-                style={sx('display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid rgba(246,239,230,.38);color:#F6EFE6;font-weight:800;font-size:14.5px')}>{L.hero.bookCta}</a>
-            </div>
+            <a href="#anfragen" onClick={() => this.setState({ tab: 'event', formStatus: 'idle' })}
+              style={sx('display:flex;align-items:center;justify-content:center;padding:0 20px;min-height:52px;box-sizing:border-box;'
+                + 'border-radius:18px;border:1px solid rgba(246,239,230,.38);color:#F6EFE6;font-weight:800;font-size:16px')}>{L.hero.bookCta}</a>
           </div>
           <div style={sx('margin-top:22px;display:flex;align-items:center;gap:9px;font-size:14px;font-weight:700;letter-spacing:.01em;color:rgba(246,239,230,.72)')}>
             <span style={sx(`flex:none;width:7px;height:7px;border-radius:50%;background:${objekt.farbe};transition:background .62s linear`)}></span>
@@ -712,22 +731,37 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
         <div data-rv="" style={sx('padding:22px 0;border-top:1px solid rgba(246,239,230,.14)')}>
           <div style={sx("font-family:'League Spartan',sans-serif;font-size:30px;font-weight:900;line-height:.9;letter-spacing:-.03em;color:#F6EFE6")}>CozyQuiz</div>
           <div style={sx('margin-top:10px;font-size:11.5px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:rgba(246,239,230,.62)')}>{L.modes.quizChip}</div>
-          <p style={sx('margin:14px 0 0;font-size:15.5px;line-height:1.55;font-weight:500;color:rgba(246,239,230,.82);text-wrap:pretty')}>{L.modes.quizP}</p>
+          {/* Wolf am 28.08.: "avatarwand ueber den text und das brett drunter".
+              Vorher stand die Reihenfolge des Desktops hier: Absatz, drei
+              Striche, dann erst die Wand. Im Handy liest sich das anders,
+              weil alles untereinander steht: die Wand ist das Erste, was
+              zeigt, worum es geht, und gehoert deshalb vor die Erklaerung,
+              nicht dahinter.
+
+              Rausgeflogen ist dabei die Zeile "4 bis 8 Teams" mit den vier
+              ueberlappenden Kacheln (Wolf: "den bereich 4-8 teams mit den 4
+              kacheln raus!"). Sie zeigte dieselben Kacheln ein drittes Mal,
+              nach der Wand darueber und vor dem Brett darunter. */}
+          {this.renderAvatarWand()}
+          <p style={sx('margin:22px 0 0;font-size:15.5px;line-height:1.55;font-weight:500;color:rgba(246,239,230,.82);text-wrap:pretty')}>{L.modes.quizP}</p>
           <div style={sx('margin-top:16px;display:flex;flex-direction:column;gap:11px')}>
             {L.modes.quizBullets.map(b => this.bullet(b, AKZENT))}
           </div>
-          {this.renderAvatarWand()}
-          <div style={sx('margin-top:20px;display:flex;align-items:center;gap:9px')}>
-            <div style={sx('display:flex')}>
-              {TEAMS.map((t, i) => (
-                <span key={t.id} style={sx(teammarke(t.color, t.av, 32) + `border:2px solid #0f0a1a;margin-left:${i ? '-10px' : '0'};`)}></span>
-              ))}
-            </div>
-            <span style={sx('font-size:12.5px;font-weight:800;letter-spacing:.04em;color:rgba(246,239,230,.5)')}>{L.modes.quizTeams}</span>
-          </div>
-            <div style={sx('width:100%;max-width:246px;margin:4px auto 0')}>
+            {/* Das Brett auf voller Spaltenbreite statt auf 246 px.
+                Gemessen bei 390 px Fensterbreite: vorher 226 px breit mit 62 px
+                Leerraum an jeder Seite und einer Zelle von 36 px, jetzt 330 px
+                und 55 px. Bei 36 px sah man bunte Punkte; bei 55 px sieht man,
+                dass ein Team drei zusammenhaengende Felder haelt, und genau das
+                behauptet die Zeile darueber ("wer die groesste zusammenhaengende
+                Flaeche haelt"). Es bleibt quadratisch, 6 auf 6, wie im Spiel. */}
+            <div style={sx('width:100%;margin:18px auto 0')}>
               <div style={sx(`padding:9px;border-radius:16px;background:rgba(246,239,230,.015);border:1.5px solid ${actTeam ? actTeam.color : 'rgba(246,239,230,.1)'};box-shadow:${actTeam ? '0 0 24px ' + actTeam.color + '44' : 'none'};transition:border-color .5s ease,box-shadow .5s ease`)}>
-                <div style={sx(`display:grid;grid-template-columns:repeat(${GS},1fr);gap:0.72%`)}>
+                {/* Der Rasterabstand steht als Laenge und nicht in Prozent. Ein
+                    Prozentwert loest sich beim Zeilenabstand gegen die Hoehe
+                    des Rasters auf, und die steht hier nicht fest, ergibt also
+                    null: gemessen war das Brett 330 breit und 318 hoch. Mit
+                    2 px stimmen beide Achsen, das Brett ist quadratisch. */}
+                <div style={sx(`display:grid;grid-template-columns:repeat(${GS},1fr);gap:2px`)}>
                   {owner.map((id, i) => {
                     const ov = acts[i];
                     const t = id ? TEAMS.find(x => x.id === id) : null;
