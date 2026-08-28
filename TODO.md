@@ -52,6 +52,37 @@ persoenlichen Zitat liest es sich als Faehigkeitsliste.
 
 Zu tun: raus, samt chips aus texts.ts in beiden Sprachen.
 
+### 4. Der Aufbau von 03 auf dem Desktop
+
+Gemeldet am 28.08.: "text unten zu lange blurry, wie waere es den text also
+die 2 saetze ueber die kategorien zu machen? oder besser diesen bereich ueber
+die kategorien und den anderen text hochschieben?"
+
+Zwei Sachen liegen da uebereinander, und sie haben verschiedene Ursachen.
+
+Erstens die Unschaerfe. Die zwei Haken sind das vierte und fuenfte Element
+ihrer Spalte, und die Staffelung schiebt deren Strecke bis cover 23,5 Prozent
+nach hinten. Sie sind damit erst scharf, wenn ihre Oberkante rund 220 px ueber
+der Unterkante steht, und weil sie ganz unten in einer langen Spalte stehen,
+faellt genau das auf. Das ist unabhaengig vom Aufbau zu beheben: die
+Staffelung fuer alles ab dem vierten Element kappen, damit kein Element
+spaeter als cover 19 Prozent fertig wird.
+
+Zweitens die Zuordnung, und das ist der eigentliche Punkt. Der farbige
+Anspruch und der Satz darunter ("Spend your points wisely. / 3 answers, 10
+points.") gehoeren zu der Kategorie, die man gerade gewaehlt hat -- sie stehen
+aber in einer anderen Spalte, weit unter der Liste. Man aendert etwas rechts
+und liest die Folge links unten.
+
+Mein Vorschlag, statt beider Varianten aus der Meldung:
+ * Anspruch und Satz wandern direkt unter die Kategorienliste, in dieselbe
+   Spalte. Dort gehoeren sie hin, dort passiert die Wahl.
+ * Die zwei Haken ruecken in der linken Spalte direkt unter den Absatz. Die
+   linke Spalte ist dann durchgehend "worum es hier geht", die mittlere
+   "waehl eine, das ist sie".
+ * Damit ist die linke Spalte kuerzer, endet hoeher, und die Unschaerfe faellt
+   ohnehin weniger auf.
+
 ## Ideen, die wir verworfen haben (damit sie nicht zweimal kommen)
 
 * Pfote als Mauszeiger. Verworfen am 28.08., "die neue pfote sieht doof aus".

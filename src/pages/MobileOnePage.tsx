@@ -45,6 +45,24 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 @keyframes mWelle{from{mask-position:-2000px -2000px;-webkit-mask-position:-2000px -2000px}to{mask-position:-1690.8px -2000px;-webkit-mask-position:-1690.8px -2000px}}
 @keyframes mNetz{from{mask-position:-2000px -2000px;-webkit-mask-position:-2000px -2000px}to{mask-position:-2000px -1649.6px;-webkit-mask-position:-2000px -1649.6px}}
 @keyframes mFunke{0%,100%{opacity:.35}50%{opacity:1}}
+/* Der Spruch am Seitenende. Waechst, waehrend sein Abschnitt durchs Fenster
+   faehrt, und ein schmaler Streifen Licht huscht hin und wieder durch. Ohne
+   Fuellung unter dem Finger: die gibt es auf dem Desktop, weil dort ein
+   Zeiger liegt. */
+@keyframes mSpruchWaechst{from{transform:scale(.42);opacity:.4}to{transform:scale(1);opacity:1}}
+@keyframes mSpruchHuschen{
+  0%{mask-position:-16% 50%;-webkit-mask-position:-16% 50%}
+  9.2%{mask-position:116% 50%;-webkit-mask-position:116% 50%}
+  100%{mask-position:116% 50%;-webkit-mask-position:116% 50%}
+}
+[data-spruchidle]{opacity:.28;animation:mSpruchHuschen 10.8s linear infinite}
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion:no-preference){
+    [data-spruch]{view-timeline-name:--mSpruch;view-timeline-axis:block}
+    [data-kinetic]{animation:mSpruchWaechst linear both;animation-timeline:--mSpruch;animation-range:cover 18% cover 52%;transform-origin:center center}
+  }
+}
+@media (prefers-reduced-motion:reduce){[data-spruchidle]{animation:none;opacity:0}}
 @keyframes mBeam{0%{opacity:0}6%{opacity:.3}13%{opacity:.1}20%{opacity:.34}30%{opacity:.16}40%{opacity:.3}62%{opacity:.2}82%{opacity:.08}100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){[data-welle],[data-netz],[data-funke]{animation:none!important}}
 `;
@@ -1219,8 +1237,15 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
   render() {
     const L = this.T;
     const s = this.state;
+    /* overflow-x:clip statt overflow:hidden. hidden macht aus diesem Kasten
+          einen Scrollbehaelter, und dann rechnet jede scrollgetriebene
+          Animation gegen einen Behaelter, der nie scrollt -- der Spruch am
+          Ende blieb dadurch auf seiner Anfangsgroesse stehen, gemessen 0,42
+          an jeder Scrollposition. clip schneidet waagerecht ab, ohne einen
+          Scrollbehaelter zu erzeugen; genau deshalb steht auf dem Desktop
+          dasselbe. */
     return (
-      <div style={sx('max-width:520px;margin:0 auto;position:relative;overflow:hidden;background:#0A0814;padding-bottom:24px')}>
+            <div style={sx('max-width:520px;margin:0 auto;position:relative;overflow-x:clip;background:#0A0814;padding-bottom:24px')}>
         <style>{MOBILE_CSS}</style>
         {this.renderHeader()}
         {/* inert, solange das Menue offen ist: Fokus bleibt im Menue (Handoff 7) */}
@@ -1237,6 +1262,31 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
           {this.renderJohannes()}
           {this.renderFaq()}
           {this.renderForm()}
+          {/* Der Spruch am Ende. Auf dem Desktop steht er einzeilig ueber
+              die volle Breite; auf 390 px waere er dann 15 px hoch und damit
+              kein Schlusspunkt, sondern eine Fussnote. Also zwei Zeilen.
+              Was mitkommt: das Wachsen, waehrend der Abschnitt durchs Fenster
+              faehrt, und der Lichtstreifen, der alle zehn Sekunden einmal
+              durchhuscht. Was nicht mitkommt: das Fuellen unter dem Zeiger,
+              den es hier nicht gibt. */}
+          <section data-spruch="" style={sx('height:52svh;min-height:300px;padding:0 20px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;background:#0A0814;border-top:1px solid rgba(246,239,230,.10)')}>
+            <div data-kinetic="" style={sx("position:relative;width:100%;text-align:center;font-family:'League Spartan',sans-serif;"
+              + 'font-size:clamp(30px,9.4vw,52px);font-weight:900;line-height:1.02;color:transparent;'
+              + '-webkit-text-stroke:1.2px rgba(246,239,230,.42);letter-spacing:-.01em;white-space:nowrap')}>
+              {L.kinetic.map(z => <div key={z}>{z}</div>)}
+              <span aria-hidden="true" data-spruchidle="" style={sx('position:absolute;left:0;top:0;width:100%;'
+                + 'color:#F6EFE6;-webkit-text-stroke:0;pointer-events:none;'
+                + 'background:linear-gradient(92deg,#FFF6E8,#F6EFE6 46%,#FFE9C9);'
+                + '-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;'
+                + 'mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.5) 46%,transparent 100%);'
+                + '-webkit-mask-image:radial-gradient(closest-side,#000 0%,rgba(0,0,0,.5) 46%,transparent 100%);'
+                + 'mask-size:150px 300%;-webkit-mask-size:150px 300%;'
+                + 'mask-repeat:no-repeat;-webkit-mask-repeat:no-repeat')}>
+                {L.kinetic.map(z => <div key={z}>{z}</div>)}
+              </span>
+            </div>
+          </section>
+
           <footer style={sx('padding:28px 20px 34px;border-top:1px solid rgba(246,239,230,.10);display:flex;flex-direction:column;gap:16px')}>
             <div style={sx('display:flex;align-items:center;gap:10px')}>
               <img src={LOGO} alt="" loading="lazy" width={32} height={32} style={sx('width:32px;height:32px;object-fit:contain')} />

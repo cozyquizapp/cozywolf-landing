@@ -53,6 +53,8 @@ export type MobileDict = {
     wallAltOff: string; welcomeKicker: string; welcomeTitle: string; welcomeSub: string;
     bringT: string; bring: string; needT: string; need: string;
   };
+  /** Der Spruch am Seitenende, zwei Zeilen. */
+  kinetic: string[];
   johannes: { kicker: string; quote: { t: string; hot?: boolean }[]; name: string; role: string; photoAlt: string };
   faq: { label: string; h2: string; items: { q: string; a: string }[] };
   form: {
@@ -199,6 +201,7 @@ const de: MobileDict = {
     bringT: 'Ich bringe mit:', bring: 'Beamer, Sound, Moderation und die Fragen, auf eure Runde abgestimmt.',
     needT: 'Ihr braucht:', need: 'Eine freie Wand, Strom und WLAN. Ein Handy pro Team habt ihr dabei.',
   },
+  kinetic: ['STAY COZY.', 'STAY CURIOUS.'],
   johannes: {
     kicker: 'Über mich',
     quote: [
@@ -372,6 +375,7 @@ const en: MobileDict = {
     bringT: 'I bring:', bring: 'Projector, sound, hosting and the questions, tuned to your crowd.',
     needT: 'You need:', need: 'A free wall, power and WiFi. One phone per team, you have that on you.',
   },
+  kinetic: ['STAY COZY.', 'STAY CURIOUS.'],
   johannes: {
     kicker: 'About me',
     quote: [
