@@ -1,0 +1,326 @@
+<title>Compass Teardown</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --ground: #EDE3D0;
+    --panel: #FBF6EC;
+    --line: #D9CBB2;
+    --line-soft: #E6DBC6;
+    --text: #232E3D;
+    --text-dim: #5E6C7E;
+    --brass: #A96A0C;
+    --brass-bright: #C98A1E;
+    --needle: #C33A20;
+    --stage: #F6EFE2;
+    --shadow: 0 1px 2px rgba(35,46,61,.06), 0 8px 24px rgba(35,46,61,.07);
+    --display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #131A24;
+      --panel: #1C2532;
+      --line: #2C3949;
+      --line-soft: #232E3C;
+      --text: #EFE1C6;
+      --text-dim: #94A3B4;
+      --brass: #E9A038;
+      --brass-bright: #F7B248;
+      --needle: #E4472C;
+      --stage: #0E141C;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #131A24;
+    --panel: #1C2532;
+    --line: #2C3949;
+    --line-soft: #232E3C;
+    --text: #EFE1C6;
+    --text-dim: #94A3B4;
+    --brass: #E9A038;
+    --brass-bright: #F7B248;
+    --needle: #E4472C;
+    --stage: #0E141C;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--text);
+    font-family: var(--display);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 14px;
+    padding: 14px;
+    min-height: 100vh;
+    align-items: stretch;
+  }
+
+  /* ---------- stage ---------- */
+  .stage {
+    position: relative;
+    background: var(--stage);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    overflow: hidden;
+    min-height: 420px;
+  }
+  #view { display: block; width: 100%; height: 100%; touch-action: none; cursor: grab; }
+  #view:active { cursor: grabbing; }
+  .stage-head {
+    position: absolute; top: 0; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+    padding: 14px 16px;
+    pointer-events: none;
+  }
+  .wordmark { font-weight: 700; font-size: 15px; letter-spacing: -.01em; }
+  .wordmark span { color: var(--brass); }
+  .stage-note {
+    font-family: var(--mono); font-size: 11px; color: var(--text-dim);
+    letter-spacing: .02em; text-align: right;
+  }
+  .hint {
+    position: absolute; bottom: 14px; left: 16px;
+    font-family: var(--mono); font-size: 11px; color: var(--text-dim);
+    letter-spacing: .04em; text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  /* ---------- rail ---------- */
+  .rail { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 13px 14px;
+  }
+  .label {
+    font-family: var(--mono); font-size: 10px; font-weight: 500;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--text-dim);
+    margin: 0 0 10px;
+  }
+
+  /* bearing dial: 12 ticks at 30 degrees, the same ring the pipeline measured on the reference */
+  .bearing { display: flex; align-items: center; gap: 16px; }
+  .dial { flex: none; }
+  .dial-figure { display: block; }
+  .bearing-read { font-family: var(--mono); font-size: 30px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .bearing-sub { font-family: var(--mono); font-size: 11px; color: var(--text-dim); letter-spacing: .04em; }
+
+  /* segmented control */
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .seg button, .btn {
+    font-family: var(--display); font-size: 13px; font-weight: 500;
+    color: var(--text); background: transparent;
+    border: 1px solid var(--line); border-radius: 3px;
+    padding: 7px 6px; cursor: pointer;
+    transition: background .12s ease, border-color .12s ease, color .12s ease;
+  }
+  .seg button:hover, .btn:hover { border-color: var(--brass); }
+  .seg button[aria-pressed="true"] { background: var(--brass); border-color: var(--brass); color: var(--stage); font-weight: 600; }
+  .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .btn[aria-pressed="true"] { border-color: var(--brass); color: var(--brass); }
+  :is(button, input, a):focus-visible { outline: 2px solid var(--brass-bright); outline-offset: 2px; }
+
+  input[type="range"] { width: 100%; accent-color: var(--brass); margin: 2px 0 0; }
+  .slider-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .slider-val { font-family: var(--mono); font-size: 11px; color: var(--brass); font-variant-numeric: tabular-nums; }
+
+  /* inspector */
+  .insp { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 150px; }
+  .insp-empty { color: var(--text-dim); font-size: 13px; margin: 0; }
+  .insp-name { font-size: 17px; font-weight: 600; margin: 0 0 2px; letter-spacing: -.01em; text-wrap: balance; }
+  .insp-id { font-family: var(--mono); font-size: 11px; color: var(--brass); margin: 0 0 12px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+  .chip {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .06em; text-transform: uppercase;
+    border: 1px solid var(--line); border-radius: 2px; padding: 3px 6px; color: var(--text-dim);
+  }
+  .insp-note { font-size: 12.5px; line-height: 1.55; color: var(--text-dim); margin: 0; }
+  .insp-size { font-family: var(--mono); font-size: 11px; color: var(--text-dim); margin: 0 0 10px; font-variant-numeric: tabular-nums; }
+
+  /* gates */
+  .gates { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line-soft); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+  .gate { background: var(--panel); padding: 10px 12px; }
+  .gate dt { font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim); margin: 0 0 3px; }
+  .gate dd { margin: 0; font-family: var(--mono); font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .pass { color: var(--brass); }
+  .gap { color: var(--needle); }
+  .footnote { font-size: 12px; color: var(--text-dim); margin: 10px 0 0; line-height: 1.5; }
+  .footnote b { color: var(--text); font-weight: 600; }
+
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: minmax(0, 1fr); padding: 12px; gap: 12px; }
+    .stage { min-height: 58vh; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .seg button, .btn { transition: none; }
+  }
+</style>
+
+<div class="shell">
+  <main class="stage">
+    <canvas id="view"></canvas>
+    <div class="stage-head">
+      <div class="wordmark">Compass<span>&middot;</span>Teardown</div>
+      <div class="stage-note">38 parts &middot; 41,528 tris &middot; no mesh imported</div>
+    </div>
+    <div class="hint">Drag to orbit &middot; scroll to zoom &middot; click a part</div>
+  </main>
+
+  <aside class="rail">
+    <section class="card">
+      <p class="label">Camera bearing</p>
+      <div class="bearing">
+        <svg class="dial" width="72" height="72" viewBox="0 0 72 72" aria-hidden="true">
+          <g class="dial-figure" id="dial-ticks"></g>
+          <circle cx="36" cy="36" r="3.2" fill="var(--brass)"></circle>
+          <line id="dial-needle" x1="36" y1="36" x2="36" y2="10" stroke="var(--needle)" stroke-width="2.4" stroke-linecap="round"></line>
+        </svg>
+        <div>
+          <div class="bearing-read"><span id="bearing">000</span>&deg;</div>
+          <div class="bearing-sub">12 ticks &middot; 30&deg; apart</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <p class="label">Surface</p>
+      <div class="seg" role="group" aria-label="Surface mode">
+        <button type="button" data-mode="shaded" aria-pressed="true">Shaded</button>
+        <button type="button" data-mode="clay" aria-pressed="false">Clay</button>
+        <button type="button" data-mode="wire" aria-pressed="false">Wire</button>
+      </div>
+      <div class="btn-row">
+        <button type="button" class="btn" id="spin" aria-pressed="false">Auto-orbit</button>
+        <button type="button" class="btn" id="reset">Reset view</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="slider-head">
+        <p class="label">Exploded view</p>
+        <span class="slider-val" id="explode-val">0%</span>
+      </div>
+      <input type="range" id="explode" min="0" max="100" value="0" aria-label="Exploded view amount">
+    </section>
+
+    <section class="card insp">
+      <p class="label">Part inspector</p>
+      <div id="insp">
+        <p class="insp-empty">Click any part of the model. Every one is a separate authored component with its own pivot, socket and collider &mdash; the pipeline requires the model to be explodable and clickable, not one fused mesh.</p>
+      </div>
+    </section>
+
+    <section>
+      <dl class="gates">
+        <div class="gate"><dt>Silhouette IoU</dt><dd class="pass">0.8666</dd></div>
+        <div class="gate"><dt>Scale delta</dt><dd class="pass">0.0000</dd></div>
+        <div class="gate"><dt>Tonal parity</dt><dd class="gap">0.2732</dd></div>
+        <div class="gate"><dt>Passes run</dt><dd class="gap">1 / 8</dd></div>
+      </dl>
+      <p class="footnote">Both hard gates pass. <b>Tonal parity is the honest gap</b> &mdash; the dial cream renders tan, which the material and lighting passes would fix. Only the blockout pass has run.</p>
+    </section>
+  </aside>
+</div>
+
+<script>/*__BUNDLE__*/</script>
+<script>
+(function () {
+  // Bearing dial: 12 ticks at 30 degrees -- the ring the pipeline measured on the reference
+  // (12, not the 16 a first glance suggested), redrawn here as the camera readout.
+  var ticks = document.getElementById('dial-ticks');
+  for (var i = 0; i < 12; i++) {
+    var a = (i * 30 - 90) * Math.PI / 180;
+    var long = i % 3 === 0;
+    var r1 = long ? 24 : 27, r2 = 31;
+    var l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    l.setAttribute('x1', (36 + Math.cos(a) * r1).toFixed(2));
+    l.setAttribute('y1', (36 + Math.sin(a) * r1).toFixed(2));
+    l.setAttribute('x2', (36 + Math.cos(a) * r2).toFixed(2));
+    l.setAttribute('y2', (36 + Math.sin(a) * r2).toFixed(2));
+    l.setAttribute('stroke', 'currentColor');
+    l.setAttribute('stroke-width', long ? '2' : '1.2');
+    l.setAttribute('stroke-linecap', 'round');
+    l.setAttribute('opacity', long ? '.75' : '.4');
+    ticks.appendChild(l);
+  }
+
+  var bearingEl = document.getElementById('bearing');
+  var needleEl = document.getElementById('dial-needle');
+  var inspEl = document.getElementById('insp');
+
+  function renderPart(p) {
+    if (!p) {
+      inspEl.innerHTML = '<p class="insp-empty">Click any part of the model. Every one is a separate authored component with its own pivot, socket and collider &mdash; the pipeline requires the model to be explodable and clickable, not one fused mesh.</p>';
+      return;
+    }
+    var size = p.size ? p.size.map(function (v) { return (+v).toFixed(3); }).join(' &times; ') : '&mdash;';
+    var chips = [p.level, p.role, p.primitive, p.material].filter(Boolean).map(function (c) {
+      return '<span class="chip">' + esc(c) + '</span>';
+    }).join('');
+    inspEl.innerHTML =
+      '<p class="insp-name">' + esc(p.name) + '</p>' +
+      '<p class="insp-id">' + esc(p.id) + '</p>' +
+      '<div class="chips">' + chips + '</div>' +
+      '<p class="insp-size">size ' + size + ' &nbsp;&middot;&nbsp; units of case diameter = 1.0</p>' +
+      (p.note ? '<p class="insp-note">' + esc(p.note) + '</p>' : '');
+  }
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+
+  function groundHex() {
+    var v = getComputedStyle(document.documentElement).getPropertyValue('--stage').trim();
+    return parseInt(v.replace('#', ''), 16) || 0x0e141c;
+  }
+
+  var viewer = CompassViewer.mountCompassViewer(document.getElementById('view'), {
+    onPick: renderPart,
+    onBearing: function (deg) {
+      bearingEl.textContent = String(Math.round(deg)).padStart(3, '0');
+      var a = (deg - 90) * Math.PI / 180;
+      needleEl.setAttribute('x2', (36 + Math.cos(a) * 26).toFixed(2));
+      needleEl.setAttribute('y2', (36 + Math.sin(a) * 26).toFixed(2));
+    },
+    background: groundHex
+  });
+
+  document.querySelectorAll('.seg button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.seg button').forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+      viewer.setMode(b.dataset.mode);
+    });
+  });
+
+  var spinBtn = document.getElementById('spin');
+  spinBtn.addEventListener('click', function () {
+    viewer.toggleSpin();
+    spinBtn.setAttribute('aria-pressed', String(viewer.isSpinning()));
+  });
+  document.getElementById('reset').addEventListener('click', function () { viewer.resetView(); });
+
+  var ex = document.getElementById('explode');
+  var exVal = document.getElementById('explode-val');
+  ex.addEventListener('input', function () {
+    viewer.setExplode(+ex.value / 100);
+    exVal.textContent = ex.value + '%';
+  });
+
+  // The stage is a grid cell, so its pixel size settles after layout, not on first paint.
+  requestAnimationFrame(function () { viewer.resize(); });
+  window.addEventListener('load', function () { viewer.resize(); });
+})();
+</script>

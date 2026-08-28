@@ -13,6 +13,18 @@ npm install
 npm run dev          # http://localhost:5173  (?az=..&el=..&flat=1&margin=.. drive the review camera)
 ```
 
+## Look at it in 3D
+
+```bash
+npm run dev            # local review harness
+npx vite build --config vite.artifact.config.ts   # bundles src/artifact-entry.ts for the web viewer
+```
+
+`artifact/shell.html` is the standalone viewer page: orbit, clay/wireframe toggles, an exploded-view
+slider, and a click-to-inspect panel that reads each part's authored `sculptComponent` data. Assemble
+it by substituting the built bundle for the `/*__BUNDLE__*/` marker in the shell's last-but-one
+`<script>`.
+
 ## Where it got to
 
 The **blockout pass is complete and gated**. Passes 2–8 (structural → optimization) are not run.
