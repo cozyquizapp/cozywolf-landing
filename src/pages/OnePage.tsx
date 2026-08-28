@@ -2325,25 +2325,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
               Spalten wieder untereinander, dort ist die Leinwand zurecht die
               volle Breite. */}
           <div data-m="ablaufraum" style={sx('position:relative;display:grid;grid-template-columns:minmax(0,440px) minmax(0,1fr);gap:clamp(36px,4.6vw,72px);align-items:center')}>
-            {/* Der Lichtkegel liegt ueber beiden Spalten, deshalb haengt er am
-                Raster und nicht am Geraet: er muss von links unten bis auf die
-                Leinwand rechts reichen.
-
-                Wolf am 28.08.: "nehmen wir die harte kante raus und weniger
-                glow generell". Der Keil war vorher ein clip-path-Polygon, also
-                eine Form mit Kanten -- Licht hat keine. Jetzt eine sehr weite
-                Ellipse, die nach aussen ausblendet, dazu eine Maske entlang
-                der Laufrichtung, damit er am Geraet anfaengt und zur Wand hin
-                ausduennt. Keine einzige gerade Kante mehr.
-
-                mix-blend-mode:screen bleibt: ein Lichtstrahl verdeckt nichts,
-                er macht heller. Ueber dem dunklen Grund ist er zu sehen, auf
-                der hellen Projektion tut er fast nichts. */}
-            <span aria-hidden="true" style={sx('position:absolute;left:9%;top:64%;width:74%;height:30%;z-index:2;pointer-events:none;'
-              + 'mix-blend-mode:screen;transform-origin:left center;transform:rotate(-17deg);'
-              + 'background:radial-gradient(ellipse 120% 58% at 1% 50%,rgba(255,246,232,.28),rgba(255,246,232,.13) 40%,rgba(255,246,232,.04) 70%,transparent 88%);'
-              + 'mask-image:linear-gradient(90deg,#000,#000 58%,rgba(0,0,0,.5) 84%,transparent);'
-              + `filter:blur(10px);opacity:${on ? 1 : 0};transition:opacity 1.4s ${EASE}`)}></span>
             <div>
               {this.kicker(`[ 04 ]|${L.ablauf.label}`)}
               <h2 data-reveal="" style={sx(`margin:0 0 10px;font-family:'League Spartan',sans-serif;font-size:clamp(34px,3.4vw,56px);line-height:.96;letter-spacing:-.03em;font-weight:900;color:#F6EFE6;text-wrap:balance`)}>{L.ablauf.h2}</h2>
@@ -2357,6 +2338,33 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                   ("weniger glow generell"). Im Bild selbst ist kein Licht,
                   sonst gaebe es keinen Unterschied zwischen aus und an. */}
               <div data-beamer="" style={sx('position:relative;margin-top:38px;width:186px;max-width:52%')}>
+                {/* Der Lichtkegel, dritter Anlauf.
+                    Wolf am 28.08. zum Bildschirmfoto: "hier muessen wir
+                    optimieren, siehst du es?" -- ja: es war ein STRAHL, kein
+                    Kegel. Das Licht eines Beamers oeffnet sich, bis es so gross
+                    ist wie das Bild; unseres kam als schmales Band an der Wand
+                    an, etwa ein Sechstel ihrer Hoehe. Damit liest es sich als
+                    Taschenlampe und nicht als Projektor.
+                    Ein Kegel aus einem gedrehten Kasten mit Verlauf geht nicht,
+                    der ist ueberall gleich breit. Ein clip-path-Keil hat harte
+                    Kanten, die sollten ja gerade weg. Beides loest ein
+                    KEGELVERLAUF: er ist von Natur aus winkelfoermig, oeffnet
+                    sich also mit der Entfernung von selbst, und seine Raender
+                    sind weich, weil sie Farbstopps sind und keine Form.
+                    Achse 14 Grad nach oben (also 76 statt 90 Grad in der
+                    Rechnung des Verlaufs), Oeffnung rund 18 Grad zu jeder
+                    Seite. Auf 330 px bis zur Leinwandkante sind das etwa
+                    215 px Hoehe, auf ganzer Strecke deutlich mehr -- der Kegel
+                    kommt also breiter an, als er losfaehrt.
+                    Die Maske laesst ihn mit der Entfernung ausduennen, screen
+                    laesst ihn nur heller machen und nie verdecken. */}
+                <span aria-hidden="true" style={sx('position:absolute;left:92%;top:44%;width:min(900px,60vw);height:min(900px,60vw);'
+                  + 'transform:translateY(-50%);z-index:0;pointer-events:none;mix-blend-mode:screen;'
+                  + 'background:conic-gradient(from 58deg at 0% 50%,'
+                  + 'transparent 0deg,rgba(255,246,232,.05) 6deg,rgba(255,246,232,.20) 13deg,'
+                  + 'rgba(255,246,232,.20) 23deg,rgba(255,246,232,.05) 30deg,transparent 36deg);'
+                  + 'mask-image:radial-gradient(circle at 0% 50%,#000 0%,rgba(0,0,0,.9) 26%,rgba(0,0,0,.5) 62%,transparent 96%);'
+                  + `filter:blur(5px);opacity:${on ? 1 : 0};transition:opacity 1.4s ${EASE}`)}></span>
                 <span aria-hidden="true" style={sx('position:absolute;left:54%;top:50%;transform:translate(-50%,-50%);border-radius:50%;'
                   + 'width:118%;height:150%;z-index:0;background:radial-gradient(circle,rgba(255,246,232,.09),transparent 66%);'
                   + `opacity:${on ? 1 : 0};transition:opacity 1.4s ${EASE}`)}></span>
