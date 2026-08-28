@@ -5,17 +5,6 @@ ist die Reihenfolge der Meldung, nicht die der Dringlichkeit.
 
 ## Offen, zur Entscheidung
 
-### Die Kategorie heisst auf Englisch jetzt "Ten Chips" -- die App zieht nach
-
-Die Fraktion "Risiko" und die Kategorie "10 von 10" hiessen auf Englisch
-beide "All In", beides aus der App. Wolf am 28.08.: "ja nehmen wir 10
-chips". Auf der Landing ist es geaendert, die Fraktion behaelt "All In".
-
-Offen: in der App nachziehen, shared/quarterQuizTypes.ts,
-QQ_CATEGORY_LABELS, ZEHN_VON_ZEHN.en von "All In" auf "Ten Chips". Solange
-das nicht passiert, sagt die Website einen anderen Namen als der Abend --
-und die Landing hat die App bisher immer als Massgabe behandelt.
-
 ### Bilder tragen keinen Fingerabdruck im Namen
 
 Aufgefallen am 28.08. an den Wappen: Wolf sah auf dem Handy einen anderen
@@ -43,20 +32,15 @@ werden; die Pfade stehen heute als Zeichenketten in den Textdateien, das
 sind rund 50 Fundstellen. Lohnt sich, wenn die Seite steht und die Bilder
 sich nicht mehr taeglich aendern.
 
-### GoatCounter bleibt, aber der Instagram-Link braucht einen Anhang
+### GoatCounter bleibt
 
-Wolf am 28.08.: "ok behalten wir es". Damit ist die Frage entschieden.
+Wolf am 28.08.: "ok behalten wir es". Der Anhang ?ref=instagram am Link in
+der Instagram-Biografie ist gesetzt.
 
-Offen ist noch die kleine Massnahme, die die Statistik erst nuetzlich macht:
-den Link in der Instagram-Biografie um ?ref=instagram ergaenzen. Aus
-In-App-Browsern kommt die Herkunft oft nicht mit, solche Besuche landen sonst
-unter "direkt", und dann beantwortet die Zahl genau die Frage nicht, wegen
-der wir sie behalten. Das ist nichts am Code, das macht Wolf in seinem
-Profil.
-
-Dazu ein Termin: Ende November pruefen, ob das Dashboard ueberhaupt
-angeschaut wurde und ob je etwas aufgrund der Zahlen anders gemacht wurde.
-Wenn nein, faellt GoatCounter samt Absatz in der Datenschutzerklaerung raus.
+Offen bleibt nur der Termin: Ende November pruefen, ob das Dashboard
+ueberhaupt angeschaut wurde und ob je etwas aufgrund der Zahlen anders
+gemacht wurde. Wenn nein, faellt GoatCounter samt Absatz in der
+Datenschutzerklaerung raus.
 
 ### Cookie-Banner, gemeldet am 28.08.
 
@@ -72,6 +56,12 @@ abhaken". Damit ist der Punkt zu.
 
 ## Erledigt
 
+* **Die Kategorie heisst auf Englisch "Ten Chips".** Sie hiess "All In",
+  genau wie die Fraktion "Risiko". Auf der Landing am 28.08. geaendert, in
+  der App hat Wolf am selben Tag nachgezogen. Die Fraktion behaelt "All In".
+* **Der Instagram-Link traegt ?ref=instagram.** Damit landen Besuche aus dem
+  In-App-Browser nicht mehr unter "direkt", und die Statistik beantwortet die
+  Frage, wegen der wir sie behalten haben.
 * **H8 der Spruch und der Fuss.** Der Spruch steht jetzt bei 12,2vw statt
   9,4, also 48 statt 37 px bei 390, weiter zweizeilig. Die Grenze setzt die
   laengere Zeile, die ohne Umbruch steht: gemessen fuellt ihr Text jetzt 326
