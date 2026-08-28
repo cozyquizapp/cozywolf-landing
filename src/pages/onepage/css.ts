@@ -189,6 +189,52 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 }
 @media (prefers-reduced-motion:reduce){html{scroll-snap-type:none}}
 
+/* ── Auftritt der Abschnitte, T2 und T3 ───────────────────────────────────
+   Gebaut mit animation-timeline: view(), also ohne JavaScript: der
+   Fortschritt kommt daraus, wie weit der Halt im Fenster steht.
+
+   Gestaffelt wird NICHT ueber animation-delay, das greift auf einer
+   Scroll-Zeitleiste nicht. Stattdessen bekommt jede Spalte einen eigenen
+   animation-range: die erste ist frueher fertig als die letzte, und genau
+   das ergibt das Nacheinander.
+
+   Kurven und Dauern aus dem Bericht zu dylanbrouwer.com, der als einziger
+   der vier Referenzen genau wird: Eingang cubic-bezier(.32,.72,0,1),
+   bewegt werden nur transform und opacity, nie Breite oder Hoehe.
+
+   @supports, weil Firefox die Zeitleiste bis heute nicht kennt. Dort greift
+   nichts und der Inhalt steht einfach da. Das ist der richtige Rueckfall. */
+@keyframes cwEinfahren{from{transform:translateY(34px);opacity:0}to{transform:none;opacity:1}}
+@keyframes cwEindrehen{from{transform:translateY(34px) rotate(-7deg) scale(.94);opacity:0}to{transform:none;opacity:1}}
+/* Der Spruch am Ende waechst, waehrend sein Halt durchs Fenster faehrt. */
+@keyframes cwSpruchWaechst{from{transform:scale(.32);opacity:.35}to{transform:scale(1);opacity:1}}
+@supports (animation-timeline: view()){
+  @media (min-width:901px) and (prefers-reduced-motion:no-preference){
+    [data-bew] [data-m=modereihe]>*,
+    [data-bew] [data-halt]>[data-shell]>*{
+      animation:cwEinfahren linear both;animation-timeline:view();
+    }
+    /* Der Bereich endet spaetestens am Ende des Eintritts, also in dem Moment,
+       in dem der Halt vollstaendig im Fenster steht. Ein spaeteres Ende
+       (cover 30 Prozent) sah in der Messung so aus: Spalte bei Deckkraft
+       null, obwohl sie schon zur Haelfte im Bild stand. Sichtbarkeit geht
+       vor Choreografie. */
+    [data-bew] [data-m=modereihe]>*{animation-range:entry 0% entry 70%}
+    [data-bew] [data-m=modereihe]>*:nth-child(2){animation-range:entry 8% entry 82%}
+    [data-bew] [data-m=modereihe]>*:nth-child(3){animation-range:entry 16% entry 94%}
+    [data-bew] [data-halt]>[data-shell]>*{animation-range:entry 0% entry 80%}
+    /* T2: nur der Gegenstand dreht sich ein, nie der Text. */
+    [data-bew="2"] [data-m=modereihe]>*:nth-child(3),
+    [data-bew="2"] [data-m=modeobjekt]{animation-name:cwEindrehen}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    [data-kinetic]{
+      animation:cwSpruchWaechst linear both;animation-timeline:view();
+      animation-range:entry 0% cover 40%;transform-origin:center center;
+    }
+  }
+}
+
 @media (max-width:900px){
 [data-m=modereihe]{grid-template-columns:1fr!important;gap:28px!important;padding:36px 0!important}
 [data-m=modeobjekt]{justify-content:flex-start!important;height:400px!important}
@@ -247,7 +293,7 @@ header a[href="#anfragen"]{display:none!important}
 [data-m=cats]{grid-template-columns:repeat(2,1fr)!important}
 [data-m=bento]{grid-template-columns:1fr!important;grid-auto-rows:auto!important}
 [data-m=bento]>div{grid-column:auto!important;grid-row:auto!important;padding:22px!important}
-[data-m=kin]{font-size:29px!important;padding:32px 0!important}
+[data-m=kin]{font-size:clamp(30px,13vw,56px)!important}
 [data-m=faqgrid]{grid-template-columns:1fr!important;gap:26px!important}
 [data-m=formraum]{grid-template-columns:1fr!important;gap:30px!important}
 [data-m=ctarow],[data-m=pricerow]{flex-direction:column!important}

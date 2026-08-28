@@ -73,6 +73,30 @@ const STIL = (() => {
  *  ihre Kanten stehen in der Kacheldefinition der App und gehoeren zum
  *  Stein, nicht zum Layout. */
 const OHNE_SCHATTEN = STIL >= 3;
+
+/**
+ * Der Auftritt der Abschnitte, zum Vergleichen.
+ *
+ *   /d/?bew=3   T3, versetzt hereinfahren: die Spalten eines Halts kommen
+ *               nacheinander von unten, links zuerst, der Gegenstand zuletzt.
+ *               Nur Lage und Deckkraft.
+ *   /d/?bew=2   T2, eindrehen: dazu dreht sich der Gegenstand in seine Lage,
+ *               der Griff von der Mana-Mate-Dose. Nur der Gegenstand, nie
+ *               der Text.
+ *
+ * Ohne Zusatz steht alles sofort, wie bisher.
+ *
+ * Gebaut mit animation-timeline: view(), also ohne eine Zeile JavaScript. Der
+ * Fortschritt kommt daraus, wie weit der Halt im Fenster steht. In Browsern
+ * ohne diese Zeitleiste, heute noch Firefox, greift @supports nicht und der
+ * Inhalt steht einfach da. Das ist der richtige Rueckfall: nichts blinkt,
+ * nichts fehlt.
+ */
+const BEWEGUNG = (() => {
+  if (typeof window === 'undefined') return 0;
+  const n = Number(new URLSearchParams(window.location.search).get('bew'));
+  return n === 2 || n === 3 ? n : 0;
+})();
 const schatten = (wert: string) => (OHNE_SCHATTEN ? '' : wert);
 /** Ueberschrift eines Kapitels: gross ab Fassung 2, mit Ziffer ab 4. */
 const H2_GROSS = STIL >= 2 ? 'clamp(40px,5.2vw,84px)' : null;
@@ -611,15 +635,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         h.style.borderBottomColor = tight ? 'rgba(250,75,163,.32)' : '';
         const inner = h.firstElementChild as HTMLElement | null;
         if (inner) inner.style.padding = tight ? '9px 32px' : '14px 32px';
-      }
-      const k = document.querySelector('[data-kinetic]') as HTMLElement | null;
-      if (k) {
-        const r = k.getBoundingClientRect();
-        const vh = window.innerHeight || 800;
-        if (r.top < vh && r.bottom > 0) {
-          const prog = 1 - (r.top + r.height / 2) / vh;
-          k.style.letterSpacing = (0.02 + Math.max(-0.01, Math.min(0.06, prog * 0.07))).toFixed(3) + 'em';
-        }
       }
     };
     window.addEventListener('scroll', this.onScroll, { passive: true });
@@ -2293,7 +2308,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
   render() {
     const L = this.T;
     return (
-      <div data-m="root" style={sx('min-height:100vh;background:#0A0814;width:100%')}>
+      <div data-m="root" data-bew={BEWEGUNG || undefined} style={sx('min-height:100vh;background:#0A0814;width:100%')}>
         <div aria-hidden="true" data-cw-grund=""></div>
         <style>{ONEPAGE_CSS}</style>
         {this.renderHeader()}
@@ -2307,8 +2322,23 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         {this.renderForm()}
         {/* Wolf am 2026-08-27: der Spruch steht jetzt am Schluss, nicht mehr
             als Zwischenzeile mitten im Scrollen. */}
-        <section style={sx('border-top:1px solid rgba(246,239,230,.10);overflow:hidden;background:#0A0814')}>
-          <div data-kinetic="" data-m="kin" style={sx("padding:66px 0;text-align:center;font-family:'League Spartan',sans-serif;font-size:clamp(26px,5vw,54px);font-weight:900;line-height:1.1;color:transparent;-webkit-text-stroke:1.2px rgba(250,75,163,.3);letter-spacing:.02em;white-space:nowrap;transition:letter-spacing .1s linear")}>{L.kinetic}</div>
+        {/* Wolf am 28.08.: der Spruch "geht unten etwas unter", er soll beim
+            Weiterscrollen wachsen, bis er einen Bildschirm fuellt. Also ein
+            eigener Halt statt einer Zeile am Rand: die Schrift steht auf ihrer
+            Endgroesse und wird ueber die Ansichts-Zeitleiste von 0,32 auf 1
+            hochgezogen, waehrend der Halt durchs Fenster faehrt.
+            Endgroesse und nicht Anfangsgroesse als Grundwert, damit ein
+            Browser ohne diese Zeitleiste den Spruch gross sieht und nicht
+            winzig. Die Umrandung ist jetzt creme statt pink, wie alles andere
+            in der Schrift auch. */}
+        {/* Kein overflow:hidden mehr: ein Vorfahre mit overflow:hidden ist ein
+            Scrollbehaelter, der nicht scrollt, und darin bleibt eine
+            Ansichts-Zeitleiste stehen. Gemessen war der Spruch vorher an
+            beiden Scrollstaenden exakt gleich gross. */}
+        <section data-halt="" style={sx('background:#0A0814')}>
+          <div data-kinetic="" data-m="kin" style={sx("width:100%;text-align:center;font-family:'League Spartan',sans-serif;"
+            + 'font-size:clamp(30px,7.2vw,124px);font-weight:900;line-height:1;color:transparent;'
+            + '-webkit-text-stroke:1.4px rgba(246,239,230,.42);letter-spacing:-.01em;white-space:nowrap')}>{L.kinetic}</div>
         </section>
         <footer style={sx('border-top:1px solid rgba(246,239,230,.10)')}>
           <div data-m="foot" data-shell="" style={sx('max-width:1180px;margin:0 auto;padding:30px 32px;display:flex;align-items:center;gap:20px;font-size:14px;font-weight:600;color:rgba(246,239,230,.62)')}>
