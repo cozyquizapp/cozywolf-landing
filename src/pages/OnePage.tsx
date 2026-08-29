@@ -1867,18 +1867,18 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         return {
           da, oben,
           style: `position:absolute;left:${links.toFixed(1)}%;top:50%;transform:translate(-50%,${oben ? '-100%' : '0'});`
-            + `display:flex;flex-direction:${oben ? 'column' : 'column-reverse'};align-items:center;gap:2px;`
+            + `display:flex;flex-direction:${oben ? 'column' : 'column-reverse'};align-items:center;gap:1px;`
             + `opacity:${da ? (revealed && !siegt ? .45 : 1) : 0};`
             + `transition:opacity .5s ${EASE}`,
-          markeStyle: teammarke(TEAMS[i].color, TEAMS[i].av, 22)
+          markeStyle: teammarke(TEAMS[i].color, TEAMS[i].av, 18)
             + `display:block;${siegt ? `box-shadow:0 0 0 2px ${q.col},0 0 18px ${q.col}88;` : ''}`
             + `transition:box-shadow .4s ${EASE}`,
-          stielStyle: `display:block;width:1.5px;height:8px;background:${siegt ? q.col : 'rgba(246,239,230,.34)'};transition:background .4s ${EASE}`,
+          stielStyle: `display:block;width:1.5px;height:7px;background:${siegt ? q.col : 'rgba(246,239,230,.34)'};transition:background .4s ${EASE}`,
           wert: v,
           abweichung: (ab > 0 ? '+' : '') + ab,
-          wertStyle: `font-family:'League Spartan',sans-serif;font-size:13px;font-weight:900;line-height:1;`
+          wertStyle: `font-family:'League Spartan',sans-serif;font-size:12px;font-weight:900;line-height:1;`
             + `color:${siegt ? q.col : '#F6EFE6'};font-variant-numeric:tabular-nums`,
-          abStyle: `font-size:10px;font-weight:800;line-height:1;color:rgba(246,239,230,.55)`,
+          abStyle: `font-size:9px;font-weight:800;line-height:1;color:rgba(246,239,230,.55)`,
         };
       });
     })() : null;
@@ -1888,7 +1888,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const teamDiscs = TEAMS.map((tm, k) => {
       const fertig = k < answered;
       return {
-        style: teammarke(tm.color, tm.av, 42)
+        style: teammarke(tm.color, tm.av, 38)
           + `filter:${fertig ? 'none' : 'saturate(.25) brightness(.55)'};`
           + `outline:${fertig ? `2px solid ${q.col}` : '2px solid transparent'};outline-offset:2px;`
           + `transition:filter .4s ${EASE},outline-color .4s ${EASE}`,
@@ -2101,13 +2101,17 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       // damit genau auf den aeusseren Kacheln. Jetzt haben sie eine eigene
       // Zeile unter dem Kasten.
       strahlRandStyle: 'font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:rgba(246,239,230,.38);white-space:nowrap',
-      schaetzStyle: `display:flex;align-items:baseline;justify-content:center;gap:10px;padding:10px 20px;border-radius:12px;box-sizing:border-box;`
+      schaetzStyle: `display:flex;align-items:baseline;justify-content:center;gap:8px;padding:5px 15px;border-radius:10px;box-sizing:border-box;`
         + `background:${revealed ? q.col + '1f' : 'rgba(0,0,0,.28)'};border:1px solid ${revealed ? q.col : 'rgba(246,239,230,.14)'};`
         + `box-shadow:${revealed ? `0 0 26px ${q.col}55` : 'none'};transition:background .4s ${EASE},border-color .4s ${EASE},box-shadow .4s ${EASE}`,
-      schaetzZahlStyle: `font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;line-height:1;color:${revealed ? q.col : 'rgba(246,239,230,.34)'};font-variant-numeric:tabular-nums;transition:color .4s ${EASE}`,
-      schaetzEinheitStyle: `font-size:14px;font-weight:900;color:${revealed ? '#F6EFE6' : 'rgba(246,239,230,.34)'};transition:color .4s ${EASE}`,
+      schaetzZahlStyle: `font-family:'League Spartan',sans-serif;font-size:26px;font-weight:900;line-height:1;color:${revealed ? q.col : 'rgba(246,239,230,.34)'};font-variant-numeric:tabular-nums;transition:color .4s ${EASE}`,
+      schaetzEinheitStyle: `font-size:12px;font-weight:900;color:${revealed ? '#F6EFE6' : 'rgba(246,239,230,.34)'};transition:color .4s ${EASE}`,
       // Wie weit die Runde ist: ein Zug von MOVES entspricht einer Frage.
-      fortschritt: Math.round(Math.min(1, (cycle + 1) / (ROUNDS.length + 1)) * 100),
+      // Wolf am 29.08.: "der zeitbalken oben ist eigentlich ein timer der
+      // ablaeuft". Stimmt, in der App laeuft der Streifen leer, waehrend die
+      // Frage laeuft. Hier stand stattdessen der Fortschritt der ganzen Folge,
+      // der Streifen wurde also immer laenger statt kuerzer.
+      uhrAnteil: phase === 'q' ? Math.max(0, Math.round((1 - t / Q_END) * 100)) : 0,
       showQuestion: phase !== 'b', showBoard: phase === 'b', showReveal: revealed, runde: cycle,
       statusLine: phase === 'b' ? `${active ? L.sim.teams[active.id] : ''} ${verb}` : (revealed ? L.sim.reveal : L.sim.answering),
       answeredLine: L.sim.answeredLine(answered, TEAMS.length),
@@ -2988,10 +2992,11 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                     + `background:radial-gradient(ellipse 120% 90% at 50% 0%,${g.catFarbe}1f,transparent 62%),`
                     + `linear-gradient(180deg,${g.catFarbe}14,#07060d 70%);`
                     + `transition:background .6s ${EASE}`)}>
-                    {/* Der Fortschritt der Runde, wie in der App als duenner
-                        Balken ueber der ganzen Breite. */}
+                    {/* Die Uhr der Frage, wie in der App als duenner Balken
+                        ueber der ganzen Breite. Er laeuft leer, solange die
+                        Frage laeuft, und ist in Aufloesung und Brett weg. */}
                     <span aria-hidden="true" style={sx('position:absolute;left:0;right:0;top:0;height:4px;z-index:10;background:rgba(246,239,230,.08)')}>
-                      <span style={sx(`display:block;height:100%;width:${g.fortschritt}%;background:${g.catFarbe};transition:width 1.2s ${EASE},background .6s ${EASE}`)}></span>
+                      <span style={sx(`display:block;height:100%;width:${g.uhrAnteil}%;background:${g.catFarbe};transition:width .2s linear,background .6s ${EASE}`)}></span>
                     </span>
                     {/* Die Begruessungsfolie der App, Stand 27.08., nach dem
                         Bildschirmfoto von Wolf: dunkler Grund mit warmem
@@ -3127,14 +3132,14 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                             Auswahlzeilen daneben waeren eine Behauptung ueber
                             ein Spiel, das es so nicht gibt. */}
                         {g.qArt === 'schaetz' ? (
-                          <div style={sx('flex:none;display:flex;flex-direction:column;align-items:center;gap:7px')}>
+                          <div style={sx('flex:none;display:flex;flex-direction:column;align-items:center;gap:5px')}>
                             {/* Die Antworttafel steht ueber dem Strahl, wie in
                                 der App. Vor der Aufloesung drei Striche. */}
                             <div style={sx(g.schaetzStyle)}>
                               <span style={sx(g.schaetzZahlStyle)}>{g.showReveal ? g.qLoesung : '– – –'}</span>
                               <span style={sx(g.schaetzEinheitStyle)}>{g.qEinheit}</span>
                             </div>
-                            <div style={sx('position:relative;width:100%;height:112px')}>
+                            <div style={sx('position:relative;width:100%;height:96px')}>
                               <span aria-hidden="true" style={sx(g.strahlSchieneStyle)}></span>
                               <span aria-hidden="true" style={sx(g.strahlDiamantStyle)}></span>
                               {g.strahl?.map((s, i) => (
@@ -3176,7 +3181,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                             ))}
                           </div>
                         )}
-                        <div style={sx('margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:8px;flex:none')}>
+                        <div style={sx('margin-top:10px;display:flex;flex-direction:column;align-items:center;gap:6px;flex:none')}>
                           <span style={sx('font-size:12.5px;font-weight:900;letter-spacing:.04em;color:rgba(246,239,230,.7);white-space:nowrap')}>{g.answeredLine}</span>
                           <div style={sx('display:flex;gap:10px')}>
                             {g.teamDiscs.map((d, i) => <span key={i} style={sx(d.style)}></span>)}
