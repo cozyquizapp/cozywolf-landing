@@ -409,6 +409,26 @@ const AV_TAKT = 620;
 /** Wie oft eine Fraktion punktet, und was so ein Treffer wert ist. */
 const FRAK_TAKT = 3600;
 const FRAK_PUNKTE = [40, 55, 70, 85, 100, 120];
+/**
+ * Wie stark alte Treffer verblassen, bevor ein neuer dazukommt.
+ *
+ * Wolf am 29.08.: "das team rennen bei crowdquiz passiert aktuell so selten,
+ * dass man es nicht mitbekommt, etwas schade".
+ *
+ * Der Grund war Arithmetik, nicht der Takt: die Staende wurden seit dem ersten
+ * Treffer aufaddiert, also lief das Feld immer weiter auseinander, und ein
+ * einzelner Treffer von 40 bis 120 Punkten reichte irgendwann fuer keinen
+ * Platzwechsel mehr. Gemessen ueber 400 Zuege bewegte sich anfangs jeder
+ * vierte, in den letzten hundert nur noch jeder zehnte -- eine Bewegung alle
+ * 36 Sekunden, und genau das hat Wolf gesehen.
+ *
+ * Mit dem Faktor bleibt das Feld beieinander: es zaehlen im Wesentlichen die
+ * letzten Runden, aeltere verblassen. Damit bewegt sich bei zwei Dritteln der
+ * Treffer etwas, also etwa alle fuenf Sekunden. Sichtbar ist der Faktor
+ * nirgends, die Staende stehen seit dem 28.08. auf keiner Tabelle mehr, sie
+ * bestimmen nur die Reihenfolge.
+ */
+const FRAK_ZERFALL = 0.82;
 
 const FRAK_LINKS = [
   { id: 'allwissen', x: 16, y: 14, gr: 86 },
@@ -978,6 +998,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         gruppe.slice().sort((a, b) => (q[b] ?? 0) - (q[a] ?? 0));
       const links = FRAK_LINKS.map(x => x.id), rechts = FRAK_RECHTS.map(x => x.id);
       const vor = [...platz(stand, links), ...platz(stand, rechts)];
+      for (const id of ids) stand[id] *= FRAK_ZERFALL;
       stand[wer] += p;
       const nach = [...platz(stand, links), ...platz(stand, rechts)];
       const zieht: Record<string, true> = {};
