@@ -166,11 +166,42 @@ const PRESET: [string, number][] = [
   ['d', 22],  // wird von b geklaut
 ];
 type Move = { t: string; c: number; k?: 'steal' };
-const MOVES: Move[] = [
-  { t: 'b', c: 15 }, { t: 's', c: 3 }, { t: 'd', c: 6 }, { t: 'b', c: 16 },
-  { t: 'd', c: 5, k: 'steal' }, { t: 's', c: 8 }, { t: 'b', c: 22, k: 'steal' },
-  { t: 'd', c: 10 }, { t: 's', c: 14 },
+/**
+ * Eine Runde ist eine Frage, und in einer Runde setzt JEDES Team, das richtig
+ * lag.
+ *
+ * Wolf am 29.08.: "alle teams die eine frage richtig beantworten duerfen ein
+ * feld setzen, wer zuerst richtig ist, darf zuerst, aber alle die richtig sind
+ * duerfen". Vorher setzte je Runde genau eines, das war schlicht falsch.
+ *
+ * Wer in welcher Runde setzt, steht nicht frei, sondern folgt der Frage, die
+ * die Leinwand gerade zeigt -- sonst setzt am Brett jemand, der eben noch
+ * danebenlag. Die Fragen wechseln im Dreitakt (Mu-Cho, 10 von 10,
+ * Schaetzchen), also auch die Reihen hier:
+ *
+ *   Mu-Cho    wahl [1,0,0], richtig ist 0 -> Erdbeere und Boot.
+ *   10 von 10 Punkte [[6,3,1],[2,2,6],[3,0,7]], richtig ist Frankreich, alle
+ *             drei haben Chips darauf -> alle drei.
+ *   Schaetzchen Tipps 90, 128, 155 auf 132 -> die Erdbeere ist am naechsten.
+ *
+ * Die Reihenfolge innerhalb einer Runde ist die Reihenfolge, in der die Teams
+ * geantwortet haben, und das ist am Beamer die Reihenfolge der Kacheln unten:
+ * Donut, Erdbeere, Boot. Wer zuerst richtig war, setzt zuerst.
+ *
+ * Geprueft: kein Feld ausserhalb, kein Zug auf ein schon belegtes Feld ausser
+ * beim Klauen, jeder Klau trifft fremdes Gebiet. Endstand 18 von 25 Feldern,
+ * Erdbeere 8, Boot 6, Donut 4.
+ */
+const ROUNDS: Move[][] = [
+  [{ t: 's', c: 3 }, { t: 'b', c: 15 }],                                  // Mu-Cho
+  [{ t: 'd', c: 6 }, { t: 's', c: 8 }, { t: 'b', c: 16 }],                // 10 von 10
+  [{ t: 's', c: 13 }],                                                    // Schaetzchen
+  [{ t: 's', c: 14 }, { t: 'b', c: 22, k: 'steal' }],                     // Mu-Cho
+  [{ t: 'd', c: 5, k: 'steal' }, { t: 's', c: 19 }, { t: 'b', c: 17 }],   // 10 von 10
+  [{ t: 's', c: 10 }],                                                    // Schaetzchen
 ];
+/** Dieselben Zuege am Stueck. Das Brett in 01 spielt sie einzeln ab. */
+const MOVES: Move[] = ROUNDS.flat();
 
 /* Wolf am 28.08.: "ich wuerde den loop des beamers nicht so lange machen,
    keiner schaut das so lange tbh". Stimmt, und nachgerechnet war es
@@ -194,7 +225,9 @@ const MOVES: Move[] = [
  * Aufloesung (3,4 s), in denen alles auf einmal erscheint, dann 14 Ticks
  * Brett (2,7 s). Die Aufloesung ist laenger als frueher, weil dort jetzt
  * auch etwas zu lesen steht. */
-const CYCLE = 58, Q_END = 26, R_END = 44;
+const CYCLE = 68, Q_END = 26, R_END = 44;
+/** Abstand zwischen zwei Zuegen einer Runde, in Ticks. */
+const SETZ_TAKT = 7;
 
 const FACTIONS = [
   { id: 'bauchgefuehl', color: '#F97316' },
@@ -634,7 +667,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     clearInterval(this.gameTimer);
     this.setState({ tick: 0 });
     this.gameTimer = setInterval(() => {
-      this.setState(st => ({ tick: ((st.tick ?? 0) + 1) % (CYCLE * (MOVES.length + 1)) }));
+      this.setState(st => ({ tick: ((st.tick ?? 0) + 1) % (CYCLE * (ROUNDS.length + 1)) }));
     }, 190);
   }
 
@@ -680,7 +713,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
    */
   brettPruefen() {
     if (this._b01Voll || this._reduziert) return;
-    const g = this.gameVals(((this.state.b01 ?? 0) ? CYCLE * ((this.state.b01 ?? 0) - 1) + R_END + 1 : 0), this.state.b01Hand);
+    const g = this.gameVals(((this.state.b01 ?? 0) ? CYCLE * ((this.state.b01 ?? 0) - 1) + R_END + 1 : 0), this.state.b01Hand, this.state.b01 ?? 0);
     if (g.cells.some(c => !c.owned)) return;
     this._b01Voll = true;
     this._b01Neu = setTimeout(() => {
@@ -1444,7 +1477,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     // gesetzt hat. Ein Tick der alten Uhr entspricht CYCLE Schritten, deshalb
     // die Umrechnung: so bleibt die gesamte Zeichenschicht unveraendert.
     const zuege = this.state.b01 ?? 0;
-    const g = this.gameVals(zuege ? CYCLE * (zuege - 1) + R_END + 1 : 0, this.state.b01Hand);
+    const g = this.gameVals(zuege ? CYCLE * (zuege - 1) + R_END + 1 : 0, this.state.b01Hand, zuege);
     this._b01Feld = g.cells.map(c => c.owned);
     const HAAR = 'rgba(246,239,230,.14)';
     const reihen = [
@@ -1721,15 +1754,20 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
    *   Minuten. So lange sieht niemand zu. Die laufende Runde steht weiter im
    *   Abschnitt Ablauf, dort gehoert sie hin, dort ist der Beamer.
    */
-  gameVals(festerStand?: number, hand?: Record<number, string>) {
+  gameVals(festerStand?: number, hand?: Record<number, string>, festeZuege?: number) {
     const L = this.T;
     const tick = festerStand ?? this.state.tick ?? 0;
     const cycle = Math.floor(tick / CYCLE);
     const t = tick % CYCLE;
     const phase = t < Q_END ? 'q' : (t < R_END ? 'r' : 'b');
     const q = L.sim.questions[cycle % L.sim.questions.length];
-    const idx = Math.min(MOVES.length, cycle + (phase === 'b' ? 1 : 0));
-    const played = MOVES.slice(0, idx);
+    // Alles, was vor dieser Runde liegt, plus die Zuege dieser Runde, einer
+    // nach dem anderen: erst setzt, wer zuerst richtig war.
+    let vorher = 0;
+    for (let i = 0; i < cycle && i < ROUNDS.length; i++) vorher += ROUNDS[i].length;
+    const runde = ROUNDS[cycle] ?? [];
+    const gelegt = phase === 'b' ? Math.min(runde.length, Math.floor((t - R_END) / SETZ_TAKT) + 1) : 0;
+    const played = MOVES.slice(0, festeZuege ?? (vorher + gelegt));
     // Die Uhr laeuft ueber die Fragephase und steht in der Aufloesung auf 0.
     const seconds = Math.max(0, Math.ceil((Q_END - t) * 0.19));
     // Die 6 stand hier fest, seit das Brett sechs Teams hatte. Mit drei Teams
@@ -2064,7 +2102,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       schaetzZahlStyle: `font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;line-height:1;color:${revealed ? q.col : 'rgba(246,239,230,.34)'};font-variant-numeric:tabular-nums;transition:color .4s ${EASE}`,
       schaetzEinheitStyle: `font-size:14px;font-weight:900;color:${revealed ? '#F6EFE6' : 'rgba(246,239,230,.34)'};transition:color .4s ${EASE}`,
       // Wie weit die Runde ist: ein Zug von MOVES entspricht einer Frage.
-      fortschritt: Math.round(Math.min(1, (cycle + 1) / (MOVES.length + 1)) * 100),
+      fortschritt: Math.round(Math.min(1, (cycle + 1) / (ROUNDS.length + 1)) * 100),
       showQuestion: phase !== 'b', showBoard: phase === 'b', showReveal: revealed, runde: cycle,
       statusLine: phase === 'b' ? `${active ? L.sim.teams[active.id] : ''} ${verb}` : (revealed ? L.sim.reveal : L.sim.answering),
       answeredLine: L.sim.answeredLine(answered, TEAMS.length),
@@ -3055,7 +3093,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                       <span style={sx(g.catPillStyle)}>{g.catName}</span>
                       <span style={sx('font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,239,230,.5);white-space:nowrap')}>{g.statusLine}</span>
                       <span style={sx('flex:1')}></span>
-                      <span style={sx(g.ringStyle)}>{g.seconds}</span>
+                      <span style={sx(g.ringStyle)}>{g.showQuestion ? g.seconds : ''}</span>
                     </div>
 
                     {/* Wolf am 28.08.: "die uebergaenge in der
