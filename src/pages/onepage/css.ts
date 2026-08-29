@@ -341,14 +341,30 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
    Subtiler heisst hier schmaler statt blasser: 180 statt 280 px Breite bei
    Deckkraft 0,28. Ein blasser breiter Streifen ist Dunst, ein schmaler
    heller ist eine Bewegung. */
+/* Der Streifen pendelt, er springt nicht zurueck.
+   Wolf am 28.08. zur Handy-Fassung: "hin und zurueck waere schoener als
+   wieder von links zu starten", danach "machs auch und minimal oefter".
+   Vorher lief er nach rechts, parkte dort 9,8 Sekunden und fing wieder links
+   an; der Sprung ist schnell, aber sichtbar, und er liest sich als Aussetzer.
+
+   Ein Zyklus dauert 9,2 Sekunden und enthaelt beide Richtungen: 1,0 Sekunde
+   nach rechts, 3,6 Sekunden Pause, 1,0 Sekunde zurueck, 3,6 Sekunden Pause.
+   Damit kommt alle 4,6 Sekunden ein Durchlauf statt alle 10,8, und keiner
+   davon ist ein Sprung.
+
+   Bewusst ruhiger als im Handy (dort alle 2,3 Sekunden): auf dem Desktop
+   liegt ein Zeiger, und die Fuellung darunter ist die Hauptsache. Der
+   Streifen ist hier Beiwerk und soll es bleiben. */
 @keyframes cwSpruchHuschen{
   0%{mask-position:-16% 50%;-webkit-mask-position:-16% 50%}
-  9.2%{mask-position:116% 50%;-webkit-mask-position:116% 50%}
-  100%{mask-position:116% 50%;-webkit-mask-position:116% 50%}
+  11%{mask-position:116% 50%;-webkit-mask-position:116% 50%}
+  50%{mask-position:116% 50%;-webkit-mask-position:116% 50%}
+  61%{mask-position:-16% 50%;-webkit-mask-position:-16% 50%}
+  100%{mask-position:-16% 50%;-webkit-mask-position:-16% 50%}
 }
 [data-spruchidle]{opacity:.28;transition:opacity .4s linear}
 @media (prefers-reduced-motion:no-preference){
-  [data-spruchidle]{animation:cwSpruchHuschen 10.8s linear infinite}
+  [data-spruchidle]{animation:cwSpruchHuschen 9.2s linear infinite}
 }
 @media (prefers-reduced-motion:reduce){[data-spruchidle]{opacity:0}}
 @media (hover:hover) and (pointer:fine){
