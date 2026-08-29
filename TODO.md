@@ -5,6 +5,25 @@ ist die Reihenfolge der Meldung, nicht die der Dringlichkeit.
 
 ## Offen, zur Entscheidung
 
+### Die Landing zeichnet Stapel anders als die App
+
+Aufgefallen am 28.08. beim Brainstorm zum Stapeln. Die App zeigt ein
+gestapeltes Feld als ANZAHL: zwei gleich grosse Avatare auf der Diagonalen,
+bei mehrfachem Stapeln drei oder vier (CozyQuizGridDisplay.tsx, avFactor
+0.54 bei zwei Kopien, gedeckelt bei vier). Man zaehlt die Motive, und
+deshalb ist sofort klar, dass das Feld doppelt zaehlt.
+
+Die Landing zeichnet stattdessen ein ABZEICHEN: ein grosser Avatar plus ein
+kleiner unten rechts, 34 Prozent gross. Das sagt "hier ist etwas anders",
+aber nicht "hier sind zwei". Es ist ein anderer Gedanke als der der App, und
+ein schwaecherer.
+
+Akut ist es nicht: das Stapeln ist am 28.08. aus dem Handy-Loop geflogen,
+gezeigt wird es also nirgends mehr. Der Zeichencode steht aber noch da
+(MobileOnePage.tsx, isStack). Wenn das Stapeln je zurueckkommt, gehoert es
+auf zwei gleich grosse Avatare umgestellt, sonst widerspricht die Website
+dem Abend.
+
 ### Mitte September: "Termine ab Mitte September" wird falsch
 
 Faelliger Termin, nicht von Wolf gemeldet, sondern beim Bauen aufgefallen
