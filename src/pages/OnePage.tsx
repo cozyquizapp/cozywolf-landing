@@ -1066,7 +1066,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     clearTimeout(this._weiterT);
     this.setState({
       probeCat: k, probePick: null, guessRaw: '', guessDone: false,
-      points: [4, 3, 3], pointsDone: false, ordSel: [], ordDone: false, weiterAn: false,
+      points: [0, 0, 0], pointsDone: false, ordSel: [], ordDone: false, weiterAn: false,
     });
   }
 
@@ -2339,9 +2339,9 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       footer = L.probe.guessFooter;
       const fmt = (x: number) => x.toLocaleString(this.locale);
       cardBody = (
-        <div style={sx('display:flex;flex-direction:column;gap:14px')}>
-          <div style={sx('display:flex;align-items:center;gap:16px;margin:12px 0 2px')}>
-            <img src="/assets/skelett.webp" alt="" style={sx('flex:none;height:176px;width:auto;display:block')} />
+        <div style={sx('display:flex;flex-direction:column;gap:12px')}>
+          <div style={sx('display:flex;align-items:center;gap:16px;margin:10px 0 2px')}>
+            <img src="/assets/skelett.webp" alt="" style={sx('flex:none;height:150px;width:auto;display:block')} />
             <div style={sx('flex:1;min-width:0;font-size:16px;font-weight:900;line-height:1.35;color:#F6EFE6;text-wrap:pretty')}>{p.q}</div>
           </div>
           <input type="text" inputMode="numeric" value={raw0}
@@ -2369,7 +2369,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     }
 
     if (p.kind === 'points') {
-      const pts = this.state.points || [4, 3, 3];
+      const pts = this.state.points || [0, 0, 0];
       const sum = pts.reduce((a, b) => a + b, 0);
       const done = !!this.state.pointsDone;
       const ready = sum === 10;
@@ -2379,12 +2379,12 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       cardBody = (
         <div style={sx('display:flex;flex-direction:column;gap:10px')}>
           {p.opts.map((label, i) => (
-            <div key={i} style={sx(`display:flex;align-items:center;gap:9px;padding:10px 11px;border-radius:14px;border:1px solid ${pts[i] > 0 ? col + '66' : 'rgba(246,239,230,.09)'};background:${pts[i] > 0 ? col + '14' : 'rgba(246,239,230,.03)'};box-sizing:border-box;transition:all .3s ${EASE}`)}>
+            <div key={i} style={sx(`display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:14px;border:1px solid ${pts[i] > 0 ? col + '66' : 'rgba(246,239,230,.09)'};background:${pts[i] > 0 ? col + '14' : 'rgba(246,239,230,.03)'};box-sizing:border-box;transition:all .3s ${EASE}`)}>
               <span style={sx('flex:1;font-size:13.5px;font-weight:800;color:#F6EFE6')}>{label}</span>
-              <button type="button" onClick={() => this.setState(st => { const nn = (st.points || [4, 3, 3]).slice(); if (nn[i] > 0) nn[i] -= 1; return { points: nn, pointsDone: false }; })}
+              <button type="button" onClick={() => this.setState(st => { const nn = (st.points || [0, 0, 0]).slice(); if (nn[i] > 0) nn[i] -= 1; return { points: nn, pointsDone: false }; })}
                 style={sx(`width:28px;height:28px;flex:none;border-radius:9px;cursor:pointer;font-family:inherit;font-size:15px;font-weight:900;border:1px solid ${col}59;background:${col}1f;color:${col}`)}>−</button>
               <span style={sx('width:26px;text-align:center;font-size:17px;font-weight:900;color:#22C55E')}>{pts[i]}</span>
-              <button type="button" onClick={() => this.setState(st => { const nn = (st.points || [4, 3, 3]).slice(); if (nn.reduce((a, b) => a + b, 0) < 10) nn[i] += 1; return { points: nn, pointsDone: false }; })}
+              <button type="button" onClick={() => this.setState(st => { const nn = (st.points || [0, 0, 0]).slice(); if (nn.reduce((a, b) => a + b, 0) < 10) nn[i] += 1; return { points: nn, pointsDone: false }; })}
                 style={sx(`width:28px;height:28px;flex:none;border-radius:9px;cursor:pointer;font-family:inherit;font-size:15px;font-weight:900;border:1px solid ${col}59;background:${col}1f;color:${col}`)}>+</button>
             </div>
           ))}
