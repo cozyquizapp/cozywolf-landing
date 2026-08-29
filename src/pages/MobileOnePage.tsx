@@ -61,9 +61,16 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
    Bildschirm einnimmt. Im Handy schaut man kurz hin und sieht in neun von
    zehn Faellen nichts.
 
-   Jetzt 3,4 Sekunden Zyklus, davon 28 Prozent Durchlauf: der Streifen
-   braucht knapp eine Sekunde wie vorher, die Pause dazwischen faellt von
-   9,8 auf 2,4 Sekunden. Also gut dreimal so oft.
+   Der Streifen pendelt, er springt nicht zurueck. Wolf am 28.08.: "hin und
+   zurueck waere schoener als wieder von links zu starten". Vorher lief er
+   nach rechts, parkte dort und fing dann wieder links an; dieser Sprung ist
+   zwar schnell, aber man sieht ihn, und er wirkt wie ein Aussetzer.
+
+   Ein Zyklus dauert 4,6 Sekunden und enthaelt beide Richtungen: 1,0 Sekunde
+   nach rechts, 1,3 Sekunden Pause, 1,0 Sekunde zurueck nach links, 1,3
+   Sekunden Pause. Damit kommt alle 2,3 Sekunden ein Durchlauf, also noch
+   etwas haeufiger als die 3,4 Sekunden davor, und keiner davon ist ein
+   Sprung.
 
    Ein Zwischenstand, der wieder raus ist: die Buchstaben beim Scrollen mit
    Creme zu fuellen. Das nimmt dem Streifen seinen Grund, denn auf gefuellter
@@ -71,8 +78,10 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 @keyframes mSpruchWaechst{from{transform:scale(.42);opacity:.4}to{transform:scale(1);opacity:1}}
 @keyframes mSpruchHuschen{
   0%{mask-position:-16% 50%;-webkit-mask-position:-16% 50%}
-  28%{mask-position:116% 50%;-webkit-mask-position:116% 50%}
-  100%{mask-position:116% 50%;-webkit-mask-position:116% 50%}
+  22%{mask-position:116% 50%;-webkit-mask-position:116% 50%}
+  50%{mask-position:116% 50%;-webkit-mask-position:116% 50%}
+  72%{mask-position:-16% 50%;-webkit-mask-position:-16% 50%}
+  100%{mask-position:-16% 50%;-webkit-mask-position:-16% 50%}
 }
 /* Der Spruch fuellt sich, waehrend man das Seitenende erreicht.
    Wolf am 28.08.: "der effekt muss anders animiert werden an mobile, sonst
@@ -87,7 +96,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
    Fleck wird breiter und heller, bis er die Worte ganz ausfuellt. Am Ende
    der Seite stehen sie gefuellt da statt hohl. Das Huschen laeuft weiter,
    es bewegt nur die Maske und stoert die Fuellung deshalb nicht. */
-[data-spruchidle]{opacity:.28;animation:mSpruchHuschen 3.4s linear infinite}
+[data-spruchidle]{opacity:.28;animation:mSpruchHuschen 4.6s linear infinite}
 @supports (animation-timeline: view()){
   @media (prefers-reduced-motion:no-preference){
     [data-spruch]{view-timeline-name:--mSpruch;view-timeline-axis:block}
