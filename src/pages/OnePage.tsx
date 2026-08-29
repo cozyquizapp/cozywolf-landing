@@ -180,25 +180,30 @@ type Move = { t: string; c: number; k?: 'steal' };
  * Schaetzchen), also auch die Reihen hier:
  *
  *   Mu-Cho    wahl [1,0,0], richtig ist 0 -> Erdbeere und Boot.
- *   10 von 10 Punkte [[6,3,1],[2,2,6],[3,0,7]], richtig ist Frankreich, alle
- *             drei haben Chips darauf -> alle drei.
- *   Schaetzchen Tipps 90, 128, 155 auf 132 -> die Erdbeere ist am naechsten.
+ *   10 von 10 Wolf am 29.08.: "gewinnt das team mit den meisten chips auf der
+ *             richtigen antwort, bei gleichstand alle mit gleichviel". Punkte
+ *             [[2,1,7],[3,1,6],[4,3,3]], richtig ist Frankreich, also 7 gegen
+ *             6 gegen 3 -> der Donut allein. Die Verteilung stand vorher
+ *             anders herum; so gewinnt jede Kategorie ein anderes Team, und
+ *             der Donut geht nicht leer durch die ganze Folge.
+ *   Schaetzchen Tipps 90, 128, 155 auf 132 -> die Erdbeere ist am naechsten,
+ *             und nur der naechste Tipp setzt.
  *
  * Die Reihenfolge innerhalb einer Runde ist die Reihenfolge, in der die Teams
  * geantwortet haben, und das ist am Beamer die Reihenfolge der Kacheln unten:
  * Donut, Erdbeere, Boot. Wer zuerst richtig war, setzt zuerst.
  *
  * Geprueft: kein Feld ausserhalb, kein Zug auf ein schon belegtes Feld ausser
- * beim Klauen, jeder Klau trifft fremdes Gebiet. Endstand 18 von 25 Feldern,
- * Erdbeere 8, Boot 6, Donut 4.
+ * beim Klauen, jeder Klau trifft fremdes Gebiet. Endstand 14 von 25 Feldern,
+ * Erdbeere 6, Donut 4, Boot 4.
  */
 const ROUNDS: Move[][] = [
-  [{ t: 's', c: 3 }, { t: 'b', c: 15 }],                                  // Mu-Cho
-  [{ t: 'd', c: 6 }, { t: 's', c: 8 }, { t: 'b', c: 16 }],                // 10 von 10
-  [{ t: 's', c: 13 }],                                                    // Schaetzchen
-  [{ t: 's', c: 14 }, { t: 'b', c: 22, k: 'steal' }],                     // Mu-Cho
-  [{ t: 'd', c: 5, k: 'steal' }, { t: 's', c: 19 }, { t: 'b', c: 17 }],   // 10 von 10
-  [{ t: 's', c: 10 }],                                                    // Schaetzchen
+  [{ t: 's', c: 3 }, { t: 'b', c: 15 }],                 // Mu-Cho: zwei richtig
+  [{ t: 'd', c: 6 }],                                    // 10 von 10: die meisten Chips
+  [{ t: 's', c: 13 }],                                   // Schaetzchen: der naechste Tipp
+  [{ t: 's', c: 14 }, { t: 'b', c: 22, k: 'steal' }],    // Mu-Cho
+  [{ t: 'd', c: 5, k: 'steal' }],                        // 10 von 10
+  [{ t: 's', c: 10 }],                                   // Schaetzchen
 ];
 /** Dieselben Zuege am Stueck. Das Brett in 01 spielt sie einzeln ab. */
 const MOVES: Move[] = ROUNDS.flat();
@@ -225,7 +230,7 @@ const MOVES: Move[] = ROUNDS.flat();
  * Aufloesung (3,4 s), in denen alles auf einmal erscheint, dann 14 Ticks
  * Brett (2,7 s). Die Aufloesung ist laenger als frueher, weil dort jetzt
  * auch etwas zu lesen steht. */
-const CYCLE = 68, Q_END = 26, R_END = 44;
+const CYCLE = 62, Q_END = 26, R_END = 44;
 /** Abstand zwischen zwei Zuegen einer Runde, in Ticks. */
 const SETZ_TAKT = 7;
 
