@@ -1703,23 +1703,103 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const answered = phase === 'q' ? Math.min(TEAMS.length, Math.floor(t / 4)) : TEAMS.length;
     const revealed = phase !== 'q';
 
+    /* Die Antwortkarten.
+     *
+     * Wolf am 28.08.: "bei 10 v 10 werden alle punkte aller teams auf alle 3
+     * antworten verteilt, das ergibt leider keinen sinn". Er hat recht, und der
+     * Fehler war eine Summe: die Anzeige addierte ueber alle Teams und zeigte
+     * damit bei drei Teams zu je zehn Punkten Werte wie 11, 5 und 14. Also 30
+     * Punkte auf einer Frage, die "10 von 10" heisst.
+     *
+     * Am Abend verteilt JEDES Team seine eigenen zehn Punkte, und unter jeder
+     * Antwort stehen die Teams, die darauf gesetzt haben, mit ihrem Einsatz.
+     * Genau das steht jetzt hier: je Antwort eine Liste aus Teamkachel und
+     * Zahl, absteigend sortiert, damit der groesste Einsatz oben liegt. Wer
+     * nichts auf eine Antwort gesetzt hat, taucht dort nicht auf.
+     *
+     * Bei Mu-Cho steht unter der Antwort, wer sie gewaehlt hat. Wolf: "auch bei
+     * mucho wird nicht gezeigt wer was gesetzt hat, danach kommt direkt das
+     * feld setzen". Beides erscheint waehrend der Frage, Team fuer Team, so wie
+     * die Abgaben am Abend eintrudeln.
+     */
     const qOptions = q.opts.map((label, k) => {
       const hit = revealed && k === q.correct;
-      // Bei 10 von 10 liegen auf jeder Antwort Punkte statt eines Kreuzes.
-      // Gezaehlt werden nur die Teams, die schon abgegeben haben -- so fuellt
-      // sich die Zeile waehrend der Frage, genau wie am Abend.
-      const punkte = q.art === 'zehn' && q.punkte
-        ? q.punkte.slice(0, answered).reduce((summe, team) => summe + (team[k] ?? 0), 0)
-        : 0;
+      const chips = q.art === 'zehn' && q.punkte
+        ? TEAMS.map((tm, ti) => ({ tm, wert: q.punkte?.[ti]?.[k] ?? 0, ti }))
+            .filter(x => x.ti < answered && x.wert > 0)
+            .sort((a, b) => b.wert - a.wert)
+            .map(x => ({
+              markeStyle: teammarke(x.tm.color, x.tm.av, 22) + 'display:block;flex:none',
+              wert: x.wert,
+              wertStyle: `font-family:'League Spartan',sans-serif;font-size:16px;font-weight:900;line-height:1;`
+                + `color:${hit ? q.col : 'rgba(246,239,230,.8)'};font-variant-numeric:tabular-nums;transition:color .4s ${EASE}`,
+            }))
+        : q.art === 'mucho' && q.wahl
+        ? TEAMS.map((tm, ti) => ({ tm, ti }))
+            .filter(x => x.ti < answered && q.wahl?.[x.ti] === k)
+            .map(x => ({
+              markeStyle: teammarke(x.tm.color, x.tm.av, 22) + 'display:block;flex:none',
+              wert: null as number | null, wertStyle: '',
+            }))
+        : [];
       return {
-        label, num: k + 1, punkte,
-        punkteStyle: `flex:none;min-width:30px;text-align:right;font-family:'League Spartan',sans-serif;font-size:22px;font-weight:900;line-height:1;`
-          + `color:${hit ? q.col : 'rgba(246,239,230,.72)'};font-variant-numeric:tabular-nums;`
-          + `opacity:${punkte > 0 ? 1 : 0};transition:opacity .35s ${EASE},color .4s ${EASE}`,
-        style: `flex:1;display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:10px;box-sizing:border-box;background:${hit ? q.col + '1f' : 'rgba(0,0,0,.28)'};border:1px solid ${hit ? q.col : 'rgba(246,239,230,.14)'};box-shadow:${hit ? `0 0 26px ${q.col}55` : 'none'};transition:background .4s ${EASE},border-color .4s ${EASE},box-shadow .4s ${EASE}`,
-        numStyle: `font-family:'League Spartan',sans-serif;font-size:32px;font-weight:900;line-height:1;color:${q.col}`,
+        label, num: k + 1, chips,
+        style: `flex:1;display:flex;flex-direction:column;gap:9px;padding:12px 14px;border-radius:10px;box-sizing:border-box;background:${hit ? q.col + '1f' : 'rgba(0,0,0,.28)'};border:1px solid ${hit ? q.col : 'rgba(246,239,230,.14)'};box-shadow:${hit ? `0 0 26px ${q.col}55` : 'none'};transition:background .4s ${EASE},border-color .4s ${EASE},box-shadow .4s ${EASE}`,
+        kopfStyle: 'display:flex;align-items:center;gap:12px',
+        // Die Zeile fuer die Chips haelt ihre Hoehe frei, auch wenn noch
+        // niemand gesetzt hat. Sonst waechst die Karte beim Eintrudeln und
+        // die ganze Reihe zuckt.
+        chipZeileStyle: 'display:flex;align-items:center;gap:8px;min-height:22px;flex-wrap:wrap',
+        numStyle: `font-family:'League Spartan',sans-serif;font-size:28px;font-weight:900;line-height:1;color:${q.col}`,
       };
     });
+
+    /* Der Zahlenstrahl fuer Schaetzchen.
+     *
+     * Wolf am 28.08.: "bei schaetzchen taucht nur das ergebnis auf ohne die
+     * schaetzungen zu zeigen". Stimmte: es stand eine Zahl da und sonst
+     * nichts, also gerade das Gegenteil dessen, was die Kategorie ausmacht.
+     *
+     * Aufbau uebernommen aus SchaetzchenReveal v4 der App ("NUR STRAHL"):
+     * eine waagerechte Schiene, die Wahrheit als Diamant in der Mitte, jedes
+     * Team mit seiner Kachel an seiner Tipp-Position, abwechselnd ueber und
+     * unter der Schiene, dazu Wert und vorzeichenbehaftete Abweichung. Der
+     * Naechste bekommt einen Ring, die anderen treten zurueck.
+     *
+     * Die Skala: die Wahrheit liegt bei 50 Prozent, der groesste Fehlschuss
+     * landet bei 6 beziehungsweise 94 Prozent. Damit steht immer der ganze
+     * Fehlerbereich im Bild, egal ob jemand um 4 oder um 400 danebenliegt,
+     * und die Abstaende bleiben untereinander im richtigen Verhaeltnis.
+     */
+    const wahrheit = Number(q.loesung);
+    const strahl = q.art === 'schaetz' && q.tipps && Number.isFinite(wahrheit) ? (() => {
+      const groesster = Math.max(...q.tipps.map(v => Math.abs(v - wahrheit)), 1);
+      const naechster = q.tipps.reduce((best, v, i) =>
+        Math.abs(v - wahrheit) < Math.abs(q.tipps![best] - wahrheit) ? i : best, 0);
+      return q.tipps.map((v, i) => {
+        const ab = v - wahrheit;
+        const links = 50 + (ab / groesster) * 44;
+        const oben = i % 2 === 1;
+        const da = i < answered;
+        const siegt = revealed && i === naechster;
+        return {
+          da, oben,
+          style: `position:absolute;left:${links.toFixed(1)}%;top:50%;transform:translate(-50%,${oben ? '-100%' : '0'});`
+            + `display:flex;flex-direction:${oben ? 'column' : 'column-reverse'};align-items:center;gap:3px;`
+            + `opacity:${da ? (revealed && !siegt ? .45 : 1) : 0};`
+            + `transition:opacity .5s ${EASE}`,
+          markeStyle: teammarke(TEAMS[i].color, TEAMS[i].av, 26)
+            + `display:block;${siegt ? `box-shadow:0 0 0 2px ${q.col},0 0 18px ${q.col}88;` : ''}`
+            + `transition:box-shadow .4s ${EASE}`,
+          stielStyle: `display:block;width:1.5px;height:9px;background:${siegt ? q.col : 'rgba(246,239,230,.34)'};transition:background .4s ${EASE}`,
+          wert: v,
+          abweichung: (ab > 0 ? '+' : '') + ab,
+          wertStyle: `font-family:'League Spartan',sans-serif;font-size:14px;font-weight:900;line-height:1;`
+            + `color:${siegt ? q.col : '#F6EFE6'};font-variant-numeric:tabular-nums`,
+          abStyle: `font-size:10.5px;font-weight:800;line-height:1;color:rgba(246,239,230,.55)`,
+        };
+      });
+    })() : null;
 
     // Wie in der App: wer geantwortet hat, leuchtet und traegt einen Ring in
     // der Kategoriefarbe; wer noch nicht dran ist, steht entsaettigt da.
@@ -1928,7 +2008,17 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       // der Frage fuer jede anders aus. Siehe die Anmerkung bei questions in
       // texts.ts.
       qArt: q.art,
-      qLoesung: q.loesung ?? '', qEinheit: q.einheit ?? '',
+      qLoesung: q.loesung ?? '', qEinheit: q.einheit ?? '', strahl,
+      strahlSchieneStyle: `position:absolute;left:0;right:0;top:50%;height:2px;`
+        + `background:linear-gradient(90deg,transparent,${revealed ? q.col : 'rgba(246,239,230,.28)'} 12%,${revealed ? q.col : 'rgba(246,239,230,.28)'} 88%,transparent);`
+        + `transition:background .5s ${EASE}`,
+      strahlDiamantStyle: `position:absolute;left:50%;top:50%;width:11px;height:11px;`
+        + `transform:translate(-50%,-50%) rotate(45deg);background:${q.col};`
+        + `box-shadow:0 0 16px ${q.col};opacity:${revealed ? 1 : 0};transition:opacity .45s ${EASE}`,
+      // Die beiden Randmarken standen frueher im Strahlkasten und lagen
+      // damit genau auf den aeusseren Kacheln. Jetzt haben sie eine eigene
+      // Zeile unter dem Kasten.
+      strahlRandStyle: 'font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:rgba(246,239,230,.38);white-space:nowrap',
       schaetzStyle: `display:flex;align-items:baseline;justify-content:center;gap:10px;padding:14px 22px;border-radius:12px;box-sizing:border-box;`
         + `background:${revealed ? q.col + '1f' : 'rgba(0,0,0,.28)'};border:1px solid ${revealed ? q.col : 'rgba(246,239,230,.14)'};`
         + `box-shadow:${revealed ? `0 0 26px ${q.col}55` : 'none'};transition:background .4s ${EASE},border-color .4s ${EASE},box-shadow .4s ${EASE}`,
@@ -2796,7 +2886,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                 die Ueberschrift, und ein dunkles Rechteck mit Haarlinie
                 behauptete stattdessen ein Geraet. Erst wenn die Lampe angeht,
                 bekommt sie eine Flaeche und eine Kante. */}
-            <div style={sx('position:relative;z-index:1;width:100%;aspect-ratio:16/9;border-radius:4px;overflow:hidden;'
+            <div data-m="leinwand" style={sx('position:relative;z-index:1;width:100%;aspect-ratio:16/9;border-radius:4px;overflow:hidden;'
               + `border:1px solid ${on ? 'rgba(246,239,230,.22)' : 'transparent'};`
               + `background:${on ? 'linear-gradient(180deg,#141024,#0a0714)' : 'transparent'};`
               + `box-shadow:${on ? '0 0 60px rgba(255,242,250,.06),inset 0 0 90px rgba(255,242,250,.03)' : 'none'};`
@@ -2955,21 +3045,51 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                             Auswahlzeilen daneben waeren eine Behauptung ueber
                             ein Spiel, das es so nicht gibt. */}
                         {g.qArt === 'schaetz' ? (
-                          <div style={sx('display:flex;justify-content:center;flex:none')}>
+                          <div style={sx('flex:none;display:flex;flex-direction:column;align-items:center;gap:10px')}>
+                            {/* Die Antworttafel steht ueber dem Strahl, wie in
+                                der App. Vor der Aufloesung drei Striche. */}
                             <div style={sx(g.schaetzStyle)}>
                               <span style={sx(g.schaetzZahlStyle)}>{g.showReveal ? g.qLoesung : '– – –'}</span>
                               <span style={sx(g.schaetzEinheitStyle)}>{g.qEinheit}</span>
+                            </div>
+                            <div style={sx('position:relative;width:100%;height:132px')}>
+                              <span aria-hidden="true" style={sx(g.strahlSchieneStyle)}></span>
+                              <span aria-hidden="true" style={sx(g.strahlDiamantStyle)}></span>
+                              {g.strahl?.map((s, i) => (
+                                <span key={i} style={sx(s.style)}>
+                                  <span style={sx('display:flex;flex-direction:column;align-items:center;gap:1px')}>
+                                    <span style={sx(s.wertStyle)}>{s.wert}</span>
+                                    <span style={sx(s.abStyle)}>{s.abweichung}</span>
+                                  </span>
+                                  <span style={sx(s.markeStyle)}></span>
+                                  <span aria-hidden="true" style={sx(s.stielStyle)}></span>
+                                </span>
+                              ))}
+                            </div>
+                            <div style={sx('display:flex;justify-content:space-between;width:100%')}>
+                              <span style={sx(g.strahlRandStyle)}>&larr; zu niedrig</span>
+                              <span style={sx(g.strahlRandStyle)}>zu hoch &rarr;</span>
                             </div>
                           </div>
                         ) : (
                           <div style={sx('display:flex;gap:12px;flex:none')}>
                             {g.qOptions.map((o, i) => (
                               <div key={i} style={sx(o.style)}>
-                                <span style={sx(o.numStyle)}>{o.num}</span>
-                                <span style={sx('flex:1;font-size:14px;font-weight:900;color:#F6EFE6;line-height:1.2')}>{o.label}</span>
-                                {/* Nur bei 10 von 10: die Punkte, die bisher auf
-                                    dieser Antwort liegen. */}
-                                {g.qArt === 'zehn' && <span style={sx(o.punkteStyle)}>{o.punkte}</span>}
+                                <div style={sx(o.kopfStyle)}>
+                                  <span style={sx(o.numStyle)}>{o.num}</span>
+                                  <span style={sx('flex:1;font-size:14px;font-weight:900;color:#F6EFE6;line-height:1.2')}>{o.label}</span>
+                                </div>
+                                {/* Wer auf diese Antwort gesetzt hat. Bei 10 von
+                                    10 mit dem Einsatz daneben, bei Mu-Cho nur
+                                    die Kachel. */}
+                                <div style={sx(o.chipZeileStyle)}>
+                                  {o.chips.map((c, j) => (
+                                    <span key={j} style={sx('display:flex;align-items:center;gap:5px')}>
+                                      <span style={sx(c.markeStyle)}></span>
+                                      {c.wert !== null && <span style={sx(c.wertStyle)}>{c.wert}</span>}
+                                    </span>
+                                  ))}
+                                </div>
                               </div>
                             ))}
                           </div>

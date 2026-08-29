@@ -41,7 +41,7 @@ export type OnePageDict = {
     teams: Record<string, string>;
     questions: {
       /** mucho: eine richtige Antwort. zehn: 10 Punkte verteilen. schaetz: eine Zahl raten. */
-      art: 'mucho' | 'zehn' | 'schaetz';
+      art: 'mucho' | 'zehn' | 'schaetz'; wahl?: number[]; tipps?: number[];
       cat: string; col: string; text: string; opts: string[]; correct: number;
       /** Nur bei schaetz: die Loesung und ihre Einheit. */
       loesung?: string; einheit?: string;
@@ -151,12 +151,12 @@ const de: OnePageDict = {
        hat gar keine Antworten, sondern eine Zahl. */
     questions: [
       { art: 'mucho', cat: 'Mu-Cho', col: '#3B82F6', text: 'Was verschickte Netflix, bevor es Streaming gab?',
-        opts: ['DVDs per Post', 'Videokassetten', 'Musik-CDs'], correct: 0 },
+        opts: ['DVDs per Post', 'Videokassetten', 'Musik-CDs'], correct: 0, wahl: [1, 0, 0] },
       { art: 'zehn', cat: '10 von 10', col: '#22C55E', text: 'Welches Land hat die meisten Zeitzonen?',
         opts: ['Russland', 'USA', 'Frankreich'], correct: 2,
         punkte: [[6, 3, 1], [2, 2, 6], [3, 0, 7]] },
       { art: 'schaetz', cat: 'Schätzchen', col: '#F59E0B', text: 'Wie hoch ist der Michel?',
-        opts: [], correct: 0, loesung: '132', einheit: 'Meter' },
+        opts: [], correct: 0, loesung: '132', einheit: 'Meter', tipps: [90, 128, 155] },
     ],
     welcomeKicker: 'Herzlich willkommen zum', welcomeTitle: 'COZYQUIZ',
     welcomeSub: 'Macht’s euch bequem, gleich geht’s los!',
@@ -359,12 +359,12 @@ const en: OnePageDict = {
     },
     questions: [
       { art: 'mucho', cat: 'Mu-Cho', col: '#3B82F6', text: 'What did Netflix ship before streaming existed?',
-        opts: ['DVDs by mail', 'VHS tapes', 'Music CDs'], correct: 0 },
+        opts: ['DVDs by mail', 'VHS tapes', 'Music CDs'], correct: 0, wahl: [1, 0, 0] },
       { art: 'zehn', cat: 'Ten Chips', col: '#22C55E', text: 'Which country has the most time zones?',
         opts: ['Russia', 'USA', 'France'], correct: 2,
         punkte: [[6, 3, 1], [2, 2, 6], [3, 0, 7]] },
       { art: 'schaetz', cat: 'Close Call', col: '#F59E0B', text: 'How tall is Hamburg’s Michel?',
-        opts: [], correct: 0, loesung: '132', einheit: 'metres' },
+        opts: [], correct: 0, loesung: '132', einheit: 'metres', tipps: [90, 128, 155] },
     ],
     welcomeKicker: 'A warm welcome to', welcomeTitle: 'COZYQUIZ',
     welcomeSub: 'Make yourselves comfortable, we’re about to start!',
