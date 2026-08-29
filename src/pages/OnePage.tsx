@@ -2282,9 +2282,25 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       footer = answeredNow ? p.fact : L.probe.tapAnswer;
       cardBody = (
         <>
-          {key === 'cheese' && (
-            <img src="/assets/kolosseum.webp" alt="" style={sx('display:block;width:100%;height:104px;margin-bottom:12px;object-fit:cover;border-radius:14px')} />
-          )}
+          {/* Wolf am 29.08.: "wenn man eine antwort abgegeben hat erscheint
+              das loesungsfeld im mockup halb abgeschnitten unten". Gemessen:
+              bei Schau mal! stand der Inhalt nach der Antwort 28 px unter der
+              Unterkante des Handys, die vierte Antwortzeile war halb weg. Die
+              Ursache war das Foto: es lag als eigener Streifen ueber der
+              Frage, kostete also 104 px plus Abstand zusaetzlich zur Frage,
+              und wenn nach der Antwort der Weiter-Knopf aufgeht, fehlen genau
+              die.
+
+              Dieselbe Loesung wie in der Handy-Fassung, wo das schon am 28.08.
+              so gebaut wurde: Foto NEBEN die Frage. Die Reihe kostet nur die
+              Hoehe des groesseren von beiden. Gemessen bleiben jetzt 16 px
+              Luft statt 28 px Ueberstand. */}
+          {key === 'cheese' ? (
+            <div style={sx('display:flex;align-items:center;gap:14px;margin:12px 0 14px')}>
+              <img src="/assets/kolosseum.webp" alt="" style={sx('flex:none;display:block;width:104px;height:104px;object-fit:cover;border-radius:14px')} />
+              <div style={sx("flex:1;min-width:0;font-family:'League Spartan',sans-serif;font-size:21px;font-weight:900;line-height:1.12;letter-spacing:-.018em;color:#F6EFE6;text-wrap:pretty")}>{p.q}</div>
+            </div>
+          ) : null}
           <div style={sx('display:flex;flex-direction:column;gap:9px')}>
             {p.opts.map((label, i) => {
               const chosen = sel === i;
@@ -2598,7 +2614,7 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                       <span style={sx(`display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;border:1px solid ${col}66;font-size:11px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:${col};flex:none`)}>{p.spiel}</span>
                     )}
                   </span>
-                  {p.kind !== 'guess' && (
+                  {p.kind !== 'guess' && key !== 'cheese' && (
                     <div style={sx("margin:14px 0 16px;font-family:'League Spartan',sans-serif;font-size:21px;font-weight:900;line-height:1.12;letter-spacing:-.018em;color:#F6EFE6;text-wrap:balance")}>{p.q}</div>
                   )}
                   {cardBody}
