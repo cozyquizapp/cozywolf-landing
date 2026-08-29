@@ -108,7 +108,6 @@ const de: MobileDict = {
     actions: [
       'Setzen, Glühbirnen erobern ein freies Feld',
       'Klauen, Pub-Crawl-Profis nehmen ein Feld ab',
-      'Stapeln, Glühbirnen verstärken ein eigenes Feld',
       'Joker, Quiz-Mafia dreht ein Feld um',
     ],
     arenaChip: 'Ab 40 Personen',
@@ -282,7 +281,6 @@ const en: MobileDict = {
     actions: [
       'Claim, Lightbulbs take a free tile',
       'Steal, Pub Crawl Pros take a tile away',
-      'Stack, Lightbulbs reinforce their own tile',
       'Joker, Quiz Mafia flips a tile',
     ],
     arenaChip: 'From 40 people',

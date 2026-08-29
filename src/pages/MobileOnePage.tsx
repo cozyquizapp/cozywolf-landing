@@ -46,15 +46,50 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 @keyframes mNetz{from{mask-position:-2000px -2000px;-webkit-mask-position:-2000px -2000px}to{mask-position:-2000px -1649.6px;-webkit-mask-position:-2000px -1649.6px}}
 @keyframes mFunke{0%,100%{opacity:.35}50%{opacity:1}}
 /* Der Spruch am Seitenende. Waechst, waehrend sein Abschnitt durchs Fenster
-   faehrt, und ein schmaler Streifen Licht huscht hin und wieder durch. Ohne
-   Fuellung unter dem Finger: die gibt es auf dem Desktop, weil dort ein
-   Zeiger liegt. */
-@keyframes mSpruchWaechst{from{transform:scale(.42);opacity:.4}to{transform:scale(1);opacity:1}}
+   faehrt, und fuellt sich dabei; ein schmaler Streifen Licht huscht danach
+   hin und wieder durch.
+
+   Wolf am 28.08.: "der effekt muss anders animiert werden an mobile, sonst
+   liegt das Standbild lange so da". Gemessen war nicht das Wachsen das
+   Problem, das lief sauber und stand am Seitenende bei Skala 1. Das Problem
+   war der Endzustand: die Buchstaben blieben hohl, mit einer Fuellung bei
+   28 Prozent, und das liest sich als unfertig statt als Gestaltung.
+
+   Auf dem Desktop sind sie ebenfalls hohl, dort fuellen sie sich aber unter
+   dem Zeiger, und deshalb ist das Hohle eine Einladung. Im Handy gibt es
+   keinen Zeiger. Was dort der Zeiger macht, macht hier das Scrollen: ueber
+   dieselbe Zeitleiste wie das Wachsen laeuft die Fuellung von durchsichtig
+   auf Creme, im letzten Abschnitt der Bewegung. Am Seitenende stehen die
+   Worte gefuellt da.
+
+   Erster Anlauf war, die Maske der Huschen-Ebene aufzuziehen. Das ging
+   nicht: das Huschen parkt die Maske bei 116 Prozent, also weit rechts
+   ausserhalb der Worte, und eine breitere Maske an dieser Stelle deckt sie
+   trotzdem nicht ab. Die Fuellung liegt deshalb auf der Schrift selbst und
+   nicht auf der Maskenebene. */
+@keyframes mSpruchWaechst{
+  from{transform:scale(.42);opacity:.4;color:transparent}
+  58%{color:transparent}
+  to{transform:scale(1);opacity:1;color:rgba(246,239,230,.9)}
+}
 @keyframes mSpruchHuschen{
   0%{mask-position:-16% 50%;-webkit-mask-position:-16% 50%}
   9.2%{mask-position:116% 50%;-webkit-mask-position:116% 50%}
   100%{mask-position:116% 50%;-webkit-mask-position:116% 50%}
 }
+/* Der Spruch fuellt sich, waehrend man das Seitenende erreicht.
+   Wolf am 28.08.: "der effekt muss anders animiert werden an mobile, sonst
+   liegt das Standbild lange so da". Gemessen: das Wachsen selbst laeuft
+   sauber und steht am Seitenende bei Skala 1. Das Problem ist der
+   Endzustand. Auf dem Desktop sind die Buchstaben hohl UND fuellen sich
+   unter dem Zeiger; das Hohle ist dort eine Einladung. Im Handy gibt es
+   keinen Zeiger, also bleiben sie hohl, fuer immer, mit einer Fuellung bei
+   28 Prozent Deckkraft. Das liest sich nicht als Gestaltung, sondern als
+   unfertig.
+   Was der Zeiger auf dem Desktop macht, macht hier das Scrollen: der helle
+   Fleck wird breiter und heller, bis er die Worte ganz ausfuellt. Am Ende
+   der Seite stehen sie gefuellt da statt hohl. Das Huschen laeuft weiter,
+   es bewegt nur die Maske und stoert die Fuellung deshalb nicht. */
 [data-spruchidle]{opacity:.28;animation:mSpruchHuschen 10.8s linear infinite}
 @supports (animation-timeline: view()){
   @media (prefers-reduced-motion:no-preference){
@@ -193,11 +228,17 @@ const BOARD = [
 
 type BoardAction = { i: number; id: string; kind: 'set' | 'steal' | 'stack' | 'joker' };
 // Auf 6x6 uebertragen: setzen neben eigenem Gebiet, klauen beim Nachbarn,
-// stapeln auf dem eigenen Feld, Joker als letzter Zug.
+// Joker als letzter Zug.
+//
+// Kein Stapeln mehr. Wolf am 28.08.: "im grid das stapeln wird im quiz anders
+// gemacht, ich wuerde es hier tatsaechlich rausnehmen aus dem loop". Der
+// Desktop hatte es aus demselben Grund schon nicht mehr, die Handy-Fassung
+// war die letzte Stelle, an der die Website etwas zeigte, das es im Spiel so
+// nicht gibt. Die Zeichenschicht kann weiter stapeln (kind 'stack'), sie
+// bekommt nur nichts mehr zu stapeln.
 const ACTIONS: BoardAction[] = [
   { i: 10, id: 'p', kind: 'set' },
   { i: 19, id: 'o', kind: 'steal' },
-  { i: 16, id: 'p', kind: 'stack' },
   { i: 2, id: 'g', kind: 'joker' },
 ];
 
