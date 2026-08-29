@@ -154,6 +154,31 @@ const TEAMS = [
 ];
 const GRID = qqGridSize(TEAMS.length);
 
+/**
+ * Die beiden Gegner im Handy in Abschnitt 03.
+ *
+ * Wolf am 29.08.: "schaetzchen und 10 v 10 macht ohne gegner halt nicht sooo
+ * viel sinn". Er hat recht: bei Mu-Cho ist die eigene Antwort richtig oder
+ * falsch und damit fertig, aber eine Schaetzung ohne andere Schaetzungen sagt
+ * nichts, und zehn Chips auch nicht. Also stehen nach der Abgabe zwei Teams
+ * daneben, mit festen Zahlen.
+ *
+ * Die Zahlen sind so gewaehlt, dass beides moeglich ist. Beim Skelett (206)
+ * liegen sie 16 und 48 daneben, wer also halbwegs zielt, gewinnt. Bei den
+ * Chips haben sie 6 und 3 auf Frankreich, es braucht also sieben, um vorne zu
+ * stehen -- genau die Regel, die Wolf am 29.08. nennt: "die logik bei 10 v 10
+ * ist eben die meisten punkte auf der richtigen antwort zu haben".
+ *
+ * Die Kacheln kommen aus TEAMS, aber ohne den Donut: der ist violett wie das
+ * eigene Team im Kopf des Handys.
+ */
+const RIVALEN = [
+  { id: 's', tipp: 190, chips: 6 },
+  { id: 'b', tipp: 254, chips: 3 },
+];
+/** Das eigene Team im Handy, dasselbe wie in der Kopfzeile. */
+const ICH = { farbe: '#A855F7', av: '/assets/av-qq-crystal-ball.webp' };
+
 // Vorbelegung und Zuege auf 5x5. Kein Stapeln mehr: Wolf wollte "keine
 // doppelavatar kacheln", und der Stapel war der einzige Zug, der zwei Motive
 // auf ein Feld legt. Setzen und Klauen bleiben, das Stapeln steht weiter im
@@ -2260,6 +2285,33 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     );
   }
 
+  /**
+   * Die kleine Rangliste im Handy, nach der Abgabe.
+   *
+   * Zeilen kommen schon sortiert herein, die erste ist die beste. Sie traegt
+   * den Rahmen in der Kategoriefarbe, die anderen stehen ruhig daneben. Mehr
+   * braucht es nicht: der Wert steht rechts, bei Schaetzchen zusaetzlich die
+   * vorzeichenbehaftete Abweichung, damit man sieht, in welche Richtung
+   * jemand danebenlag.
+   */
+  rangliste(zeilen: { name: string; farbe: string; av: string; wert: number; ab?: number }[], col: string) {
+    return (
+      <div style={sx('display:flex;flex-direction:column;gap:6px')}>
+        {zeilen.map((z, i) => (
+          <div key={i} style={sx('display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:12px;box-sizing:border-box;'
+            + `border:1px solid ${i === 0 ? col + '99' : 'rgba(246,239,230,.09)'};background:${i === 0 ? col + '14' : 'rgba(246,239,230,.03)'}`)}>
+            <span style={sx(teammarke(z.farbe, z.av, 22) + 'flex:none;display:block')}></span>
+            <span style={sx(`flex:1;min-width:0;font-size:12.5px;font-weight:800;color:${i === 0 ? '#F6EFE6' : 'rgba(246,239,230,.62)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>{z.name}</span>
+            {z.ab !== undefined && (
+              <span style={sx('flex:none;font-size:11px;font-weight:800;color:rgba(246,239,230,.45)')}>{(z.ab > 0 ? '+' : '') + z.ab}</span>
+            )}
+            <span style={sx(`flex:none;font-family:'League Spartan',sans-serif;font-size:17px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;color:${i === 0 ? col : '#F6EFE6'}`)}>{z.wert}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   renderProbe() {
     const L = this.T;
     const key = this.state.probeCat || 'mucho';
@@ -2335,22 +2387,41 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       const done = !!this.state.guessDone;
       const diff = Math.abs(g - p.target);
       const near = diff <= p.target * 0.1;
-      const gc = near ? '#22C55E' : col;
-      footer = L.probe.guessFooter;
       const fmt = (x: number) => x.toLocaleString(this.locale);
+      // Nach der Abgabe traegt die Fusszeile die Wahrheit. Der Kasten, in
+      // dem sie vorher stand, ist weg: an seiner Stelle steht jetzt die
+      // Rangliste, und beides zusammen passt nicht ins Geraet.
+      footer = done
+        ? (near ? L.probe.guessNear(fmt(p.target), p.unit, fmt(diff)) : L.probe.guessFar(fmt(p.target), p.unit, fmt(diff)))
+        : L.probe.guessFooter;
+      // Die eigene Schaetzung und die der beiden Gegner, nach Abstand zur
+      // Wahrheit sortiert. Wer am naechsten dran ist, steht oben.
+      const rang = [
+        { name: L.hero.phoneTeamA, farbe: ICH.farbe, av: ICH.av, wert: g, ab: g - p.target },
+        ...RIVALEN.map(r => {
+          const tm = TEAMS.find(t => t.id === r.id) as typeof TEAMS[number];
+          return { name: L.sim.teams[r.id], farbe: tm.color, av: tm.av, wert: r.tipp, ab: r.tipp - p.target };
+        }),
+      ].sort((a, b) => Math.abs(a.ab) - Math.abs(b.ab));
       cardBody = (
         <div style={sx('display:flex;flex-direction:column;gap:12px')}>
           <div style={sx('display:flex;align-items:center;gap:16px;margin:10px 0 2px')}>
             <img src="/assets/skelett.webp" alt="" style={sx('flex:none;height:150px;width:auto;display:block')} />
             <div style={sx('flex:1;min-width:0;font-size:16px;font-weight:900;line-height:1.35;color:#F6EFE6;text-wrap:pretty')}>{p.q}</div>
           </div>
-          <input type="text" inputMode="numeric" value={raw0}
-            onChange={e => {
-              const raw = e.target.value.replace(/[^\d]/g, '').slice(0, 9);
-              this.setState({ guessRaw: raw, guessDone: false });
-            }}
-            placeholder={L.probe.guessPlaceholder} aria-label={L.probe.guessPlaceholder}
-            style={sx("width:100%;box-sizing:border-box;padding:14px 16px;border-radius:14px;background:rgba(246,239,230,.05);border:1.5px solid rgba(243,195,103,.45);color:#F59E0B;font-family:'League Spartan',sans-serif;font-size:32px;font-weight:900;text-align:center;outline:none")} />
+          {/* Vor der Abgabe das Eingabefeld, danach die Rangliste an
+              derselben Stelle. Die eigene Zahl steht dann in der Liste, das
+              Feld waere also doppelt -- und der Platz im Geraet reicht nicht
+              fuer beides. */}
+          {done ? this.rangliste(rang, col) : (
+            <input type="text" inputMode="numeric" value={raw0}
+              onChange={e => {
+                const raw = e.target.value.replace(/[^\d]/g, '').slice(0, 9);
+                this.setState({ guessRaw: raw, guessDone: false });
+              }}
+              placeholder={L.probe.guessPlaceholder} aria-label={L.probe.guessPlaceholder}
+              style={sx("width:100%;box-sizing:border-box;padding:14px 16px;border-radius:14px;background:rgba(246,239,230,.05);border:1.5px solid rgba(243,195,103,.45);color:#F59E0B;font-family:'League Spartan',sans-serif;font-size:32px;font-weight:900;text-align:center;outline:none")} />
+          )}
           <button type="button"
             onClick={() => {
               if (done) { clearTimeout(this._weiterT); this.setState({ guessDone: false, guessRaw: '', weiterAn: false }); return; }
@@ -2361,9 +2432,6 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
             style={sx(`width:100%;padding:13px;border-radius:14px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;border:none;background:${done ? 'rgba(246,239,230,.06)' : col};color:${done ? 'rgba(246,239,230,.78)' : '#0A0814'};box-shadow:0 4px 0 rgba(0,0,0,.4);transition:all .3s ${EASE}`)}>
             {done ? L.probe.guessAgain : L.probe.guessBtn}
           </button>
-          <div style={sx(`overflow:hidden;box-sizing:border-box;text-align:center;font-size:13px;line-height:1.5;font-weight:800;color:#F6EFE6;max-height:${done ? '120px' : '0px'};padding:${done ? '13px' : '0 13px'};border-radius:14px;border:1px solid ${done ? gc + '80' : 'transparent'};background:${gc}14;opacity:${done ? 1 : 0};transition:max-height .5s ${EASE},padding .5s ${EASE},opacity .35s ease`)}>
-            {done ? (near ? L.probe.guessNear(fmt(p.target), p.unit, fmt(diff)) : L.probe.guessFar(fmt(p.target), p.unit, fmt(diff))) : ' '}
-          </div>
         </div>
       );
     }
@@ -2375,10 +2443,22 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       const ready = sum === 10;
       const gained = pts[p.correct];
       const pc = gained >= 5 ? '#22C55E' : col;
-      footer = done ? L.probe.pointsFooterDone : L.probe.pointsFooterIdle;
+      footer = done ? L.probe.rangChips(p.correctLabel) : L.probe.pointsFooterIdle;
+      // Wolf am 29.08.: "die logik bei 10 v 10 ist eben die meisten punkte auf
+      // der richtigen antwort zu haben". Also zaehlt hier nur die eine Spalte,
+      // und die Rangliste steht nach der Abgabe an der Stelle der drei
+      // Verteilzeilen: die eigene Zahl ist darin enthalten, und fuer beides
+      // zusammen ist im Geraet kein Platz.
+      const rang = [
+        { name: L.hero.phoneTeamA, farbe: ICH.farbe, av: ICH.av, wert: gained },
+        ...RIVALEN.map(r => {
+          const tm = TEAMS.find(t => t.id === r.id) as typeof TEAMS[number];
+          return { name: L.sim.teams[r.id], farbe: tm.color, av: tm.av, wert: r.chips };
+        }),
+      ].sort((a, b) => b.wert - a.wert);
       cardBody = (
         <div style={sx('display:flex;flex-direction:column;gap:10px')}>
-          {p.opts.map((label, i) => (
+          {done ? this.rangliste(rang, col) : p.opts.map((label, i) => (
             <div key={i} style={sx(`display:flex;align-items:center;gap:9px;padding:8px 11px;border-radius:14px;border:1px solid ${pts[i] > 0 ? col + '66' : 'rgba(246,239,230,.09)'};background:${pts[i] > 0 ? col + '14' : 'rgba(246,239,230,.03)'};box-sizing:border-box;transition:all .3s ${EASE}`)}>
               <span style={sx('flex:1;font-size:13.5px;font-weight:800;color:#F6EFE6')}>{label}</span>
               <button type="button" onClick={() => this.setState(st => { const nn = (st.points || [0, 0, 0]).slice(); if (nn[i] > 0) nn[i] -= 1; return { points: nn, pointsDone: false }; })}

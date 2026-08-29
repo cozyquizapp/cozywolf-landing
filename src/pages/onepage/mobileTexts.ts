@@ -43,6 +43,10 @@ export type MobileDict = {
     pointsHint: string;
     pointsResult: (g: number) => string;
     pointsLeft: (n: number) => string; pointsAllSet: string;
+    /* Wolf am 29.08.: "schaetzchen und 10 v 10 macht ohne gegner halt nicht
+       sooo viel sinn". Nach der Abgabe stehen zwei erfundene Teams daneben,
+       ihre Zahlen liegen in RIVALEN in MobileOnePage.tsx. */
+    rangChips: (label: string) => string;
   };
   anlaesse: {
     label: string; h2: string; sub: string; cta: string;
@@ -175,6 +179,7 @@ const de: MobileDict = {
     pointsResult: g => `Deutschland war richtig. Ihr habt ${g} von 10 Punkten daraufgesetzt.`,
     pointsLeft: n => `Noch ${n} ${n === 1 ? 'Punkt' : 'Punkte'} zu verteilen`,
     pointsAllSet: 'Alle 10 Punkte gesetzt',
+    rangChips: label => `Chips auf ${label}`,
   },
   anlaesse: {
     label: 'Anlässe', h2: 'Für welchen Anlass?',
@@ -349,6 +354,7 @@ const en: MobileDict = {
     pointsResult: g => `Germany was correct. You put ${g} of 10 points on it.`,
     pointsLeft: n => `${n} ${n === 1 ? 'point' : 'points'} left to spread`,
     pointsAllSet: 'All 10 points placed',
+    rangChips: label => `Chips on ${label}`,
   },
   anlaesse: {
     label: 'Occasions', h2: 'What’s the occasion?',

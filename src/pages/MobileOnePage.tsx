@@ -211,6 +211,22 @@ const FRAK_LAGE = [
 // Motiv und Farbe getrennt. Die Zuordnung folgt den Farb-Slots der App: die
 // ersten acht Motive in COZYQUIZ_AVATARS sind index-gleich zu den acht Slots,
 // also erbt jedes Team das Motiv seiner Farbe.
+/**
+ * Die beiden Gegner in der Demo in 03.
+ *
+ * Wolf am 29.08.: "schaetzchen und 10 v 10 macht ohne gegner halt nicht sooo
+ * viel sinn". Dieselben Zahlen wie in der Desktop-Fassung: beim Skelett (206)
+ * liegen sie 16 und 48 daneben, bei den Chips haben sie 6 und 3 auf der
+ * richtigen Antwort. Es braucht also sieben, um vorne zu stehen -- die Regel
+ * lautet "die meisten Punkte auf der richtigen Antwort".
+ *
+ * Das eigene Team der Demo ist p (Gluehbirnen), also stehen hier o und y.
+ */
+const RIVALEN = [
+  { id: 'o', tipp: 190, chips: 6 },
+  { id: 'y', tipp: 254, chips: 3 },
+];
+
 const TEAMS = [
   { id: 'g', color: '#22C55E', av: '/assets/av-qq-mushroom.webp' },
   { id: 'p', color: '#A855F7', av: '/assets/av-qq-crystal-ball.webp' },
@@ -906,6 +922,30 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
     );
   }
 
+  /**
+   * Die kleine Rangliste in der Demo, nach der Abgabe. Zeilen kommen sortiert
+   * herein, die erste ist die beste und traegt den Rahmen in der Farbe der
+   * Kategorie. Bei Schaetzchen steht zusaetzlich die vorzeichenbehaftete
+   * Abweichung dabei, damit man sieht, in welche Richtung jemand danebenlag.
+   */
+  rangliste(zeilen: { name: string; farbe: string; av: string; wert: number; ab?: number }[], col: string) {
+    return (
+      <div style={sx('display:flex;flex-direction:column;gap:8px')}>
+        {zeilen.map((z, i) => (
+          <div key={i} style={sx('display:flex;align-items:center;gap:11px;padding:9px 12px;border-radius:15px;box-sizing:border-box;'
+            + `border:1.5px solid ${i === 0 ? col + '99' : 'rgba(246,239,230,.1)'};background:${i === 0 ? col + '1f' : 'rgba(246,239,230,.04)'}`)}>
+            <span style={sx(teammarke(z.farbe, z.av, 26) + 'flex:none;display:block')}></span>
+            <span style={sx(`flex:1;min-width:0;font-size:14px;font-weight:800;color:${i === 0 ? '#F6EFE6' : 'rgba(246,239,230,.62)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>{z.name}</span>
+            {z.ab !== undefined && (
+              <span style={sx('flex:none;font-size:12px;font-weight:800;color:rgba(246,239,230,.45)')}>{(z.ab > 0 ? '+' : '') + z.ab}</span>
+            )}
+            <span style={sx(`flex:none;font-family:'League Spartan',sans-serif;font-size:19px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums;color:${i === 0 ? col : '#F6EFE6'}`)}>{z.wert}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   renderProbe() {
     const L = this.T;
     const s = this.state;
@@ -974,13 +1014,30 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
             <img src="/assets/skelett.webp" loading="lazy" decoding="async" alt="" style={sx('flex:none;height:150px;width:auto;display:block')} />
             <div style={sx('flex:1;min-width:0;font-size:17px;font-weight:900;line-height:1.35;text-wrap:pretty')}>{C.q}</div>
           </div>
-          <div style={sx('margin-top:16px;display:flex;align-items:baseline;justify-content:center;gap:8px')}>
-            <span style={sx(`font-family:'League Spartan',sans-serif;font-size:42px;font-weight:900;line-height:1;color:${done ? (near ? '#34D399' : '#F59E0B') : '#F59E0B'}`)}>{g}</span>
-            <span style={sx('font-size:14px;font-weight:800;color:rgba(246,239,230,.62)')}>{L.probe.bones}</span>
-          </div>
-          <input type="range" min={80} max={400} step={1} value={g} aria-label={C.q}
-            onChange={e => { if (done) return; clearTimeout(this._catT); this.setState({ guess: +e.target.value }); }}
-            style={sx('width:100%;margin:14px 0 0;accent-color:#F59E0B;height:34px')} />
+          {/* Vor der Abgabe die eigene Zahl und der Regler, danach an
+              derselben Stelle die Rangliste: die eigene Zahl steht darin, und
+              der Regler hat nichts mehr zu regeln. */}
+          {done ? (
+            <div style={sx('margin-top:16px')}>
+              {this.rangliste([
+                { name: L.teams.p, farbe: '#A855F7', av: '/assets/av-qq-crystal-ball.webp', wert: g, ab: g - C.target },
+                ...RIVALEN.map(r => {
+                  const tm = TEAMS.find(t => t.id === r.id) as typeof TEAMS[number];
+                  return { name: L.teams[r.id], farbe: tm.color, av: tm.av, wert: r.tipp, ab: r.tipp - C.target };
+                }),
+              ].sort((a, b) => Math.abs(a.ab) - Math.abs(b.ab)), C.col)}
+            </div>
+          ) : (
+            <>
+              <div style={sx('margin-top:16px;display:flex;align-items:baseline;justify-content:center;gap:8px')}>
+                <span style={sx("font-family:'League Spartan',sans-serif;font-size:42px;font-weight:900;line-height:1;color:#F59E0B")}>{g}</span>
+                <span style={sx('font-size:14px;font-weight:800;color:rgba(246,239,230,.62)')}>{L.probe.bones}</span>
+              </div>
+              <input type="range" min={80} max={400} step={1} value={g} aria-label={C.q}
+                onChange={e => { clearTimeout(this._catT); this.setState({ guess: +e.target.value }); }}
+                style={sx('width:100%;margin:14px 0 0;accent-color:#F59E0B;height:34px')} />
+            </>
+          )}
           <button type="button" onClick={() => { if (done) return; this.setState({ guessDone: true }); this.nextCat(4200); }}
             style={sx(`width:100%;min-height:50px;margin-top:10px;border:0;border-radius:15px;cursor:pointer;font-size:15.5px;font-weight:900;background:${done ? 'rgba(246,239,230,.06)' : '#F59E0B'};color:${done ? 'rgba(246,239,230,.78)' : '#0A0814'}`)}>
             {done ? L.probe.guessNext : L.probe.guessBtn}
@@ -999,6 +1056,24 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
       body = (
         <>
           <div style={sx('font-size:17px;font-weight:900;line-height:1.35;text-wrap:pretty')}>{C.q}</div>
+          {/* Wolf am 29.08.: "die logik bei 10 v 10 ist eben die meisten punkte
+              auf der richtigen antwort zu haben". Nach der Abgabe zaehlt also
+              nur noch die eine Spalte, und die drei Verteilzeilen weichen der
+              Rangliste. */}
+          {s.ptsDone ? (
+            <div style={sx('margin-top:16px')}>
+              {this.rangliste([
+                { name: L.teams.p, farbe: '#A855F7', av: '/assets/av-qq-crystal-ball.webp', wert: pts[C.correct] },
+                ...RIVALEN.map(r => {
+                  const tm = TEAMS.find(t => t.id === r.id) as typeof TEAMS[number];
+                  return { name: L.teams[r.id], farbe: tm.color, av: tm.av, wert: r.chips };
+                }),
+              ].sort((a, b) => b.wert - a.wert), C.col)}
+              <div style={sx('margin-top:12px;text-align:center;font-size:13px;font-weight:900;letter-spacing:.06em;color:rgba(246,239,230,.62)')}>
+                {L.probe.rangChips(C.correctLabel)}
+              </div>
+            </div>
+          ) : (
           <div style={sx('margin-top:16px;display:flex;flex-direction:column;gap:10px')}>
             {C.opts.map((o, i) => (
               <div key={i} style={sx(`display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:15px;background:${s.ptsDone && i === C.correct ? 'rgba(52,211,153,.14)' : 'rgba(246,239,230,.04)'};border:1.5px solid ${s.ptsDone && i === C.correct ? 'rgba(52,211,153,.5)' : 'rgba(246,239,230,.1)'};transition:background .4s ease,border-color .4s ease`)}>
@@ -1022,9 +1097,12 @@ class MobileOnePageInner extends Component<{ lang: Lang }, MOPState> {
               </div>
             ))}
           </div>
-          <div style={sx(`margin-top:12px;text-align:center;font-size:13px;font-weight:900;letter-spacing:.06em;color:${left > 0 ? 'rgba(246,239,230,.62)' : '#22C55E'}`)}>
-            {left > 0 ? L.probe.pointsLeft(left) : L.probe.pointsAllSet}
-          </div>
+          )}
+          {!s.ptsDone && (
+            <div style={sx(`margin-top:12px;text-align:center;font-size:13px;font-weight:900;letter-spacing:.06em;color:${left > 0 ? 'rgba(246,239,230,.62)' : '#22C55E'}`)}>
+              {left > 0 ? L.probe.pointsLeft(left) : L.probe.pointsAllSet}
+            </div>
+          )}
         </>
       );
     }

@@ -75,6 +75,11 @@ export type OnePageDict = {
     pointsFooterIdle: string; pointsFooterDone: string;
     ordHint: string; ordAgain: string; ordResult: (richtig: number, ges: number) => string;
     weiterZu: (name: string) => string;
+    /* Wolf am 29.08.: "schaetzchen und 10 v 10 macht ohne gegner halt nicht
+       sooo viel sinn". Stimmt: beide Kategorien leben davon, dass man die
+       Zahlen der anderen sieht. Also stehen nach der Abgabe zwei erfundene
+       Teams daneben, ihre Zahlen liegen in RIVALEN in OnePage.tsx. */
+    rangChips: (label: string) => string;
   };
   ablauf: { label: string; h2: string; sub: string; wandHint: string; duo0Title: string; duo0: string[]; duo1Title: string; duo1: string[] };
   johannes: {
@@ -247,6 +252,7 @@ const de: OnePageDict = {
     ordAgain: 'Nochmal sortieren',
     ordResult: (richtig, ges) => `${richtig} von ${ges} an der richtigen Stelle.`,
     weiterZu: name => `Weiter zu ${name}`,
+    rangChips: label => `Chips auf ${label}`,
   },
   ablauf: {
     label: 'Ablauf', h2: G.de.ablaufH2,
@@ -451,6 +457,7 @@ const en: OnePageDict = {
     ordAgain: 'Sort again',
     ordResult: (richtig, ges) => `${richtig} of ${ges} in the right spot.`,
     weiterZu: name => `Next: ${name}`,
+    rangChips: label => `Chips on ${label}`,
   },
   ablauf: {
     label: 'How it works', h2: G.en.ablaufH2,
