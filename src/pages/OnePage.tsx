@@ -182,7 +182,19 @@ const MOVES: Move[] = [
    lesbar (drei Teams haben nach 2,3 s geantwortet), und das Brett kommt
    viermal so oft dran wie vorher, gemessen an der Zeit, die jemand
    tatsaechlich hinsieht. */
-const CYCLE = 44, Q_END = 22, R_END = 30;
+/* Der Takt der Beamer-Runde, in Ticks zu 190 ms.
+ *
+ * Wolf am 29.08.: "du musst die phasen trennen, frage active und danach
+ * erst reveal, sonst wuerde es bedeuten waehrend die frage laeuft sehen
+ * alle teams was die anderen waehlen. also erst frage active (mach nur so
+ * 5 sekunden in dem loop) dann reveal".
+ *
+ * Also: 26 Ticks Frage (4,9 s), in denen nur der Zaehler hochlaeuft und
+ * niemand sieht, was ein anderes Team gewaehlt hat, danach 18 Ticks
+ * Aufloesung (3,4 s), in denen alles auf einmal erscheint, dann 14 Ticks
+ * Brett (2,7 s). Die Aufloesung ist laenger als frueher, weil dort jetzt
+ * auch etwas zu lesen steht. */
+const CYCLE = 58, Q_END = 26, R_END = 44;
 
 const FACTIONS = [
   { id: 'bauchgefuehl', color: '#F97316' },
@@ -1697,10 +1709,11 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
     const q = L.sim.questions[cycle % L.sim.questions.length];
     const idx = Math.min(MOVES.length, cycle + (phase === 'b' ? 1 : 0));
     const played = MOVES.slice(0, idx);
-    const seconds = Math.max(1, Math.ceil((R_END - t) * 0.2));
+    // Die Uhr laeuft ueber die Fragephase und steht in der Aufloesung auf 0.
+    const seconds = Math.max(0, Math.ceil((Q_END - t) * 0.19));
     // Die 6 stand hier fest, seit das Brett sechs Teams hatte. Mit drei Teams
     // stand darunter "6/3 Teams haben geantwortet".
-    const answered = phase === 'q' ? Math.min(TEAMS.length, Math.floor(t / 4)) : TEAMS.length;
+    const answered = phase === 'q' ? Math.min(TEAMS.length, Math.floor(t / 7)) : TEAMS.length;
     const revealed = phase !== 'q';
 
     /* Die Antwortkarten.
@@ -1724,7 +1737,10 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
      */
     const qOptions = q.opts.map((label, k) => {
       const hit = revealed && k === q.correct;
-      const chips = q.art === 'zehn' && q.punkte
+      // Erst zur Aufloesung. Waehrend die Frage laeuft, sieht am Beamer
+      // niemand, worauf ein anderes Team gesetzt hat -- sonst waere die Frage
+      // fuer alle, die noch tippen, keine mehr.
+      const chips = !revealed ? [] : q.art === 'zehn' && q.punkte
         ? TEAMS.map((tm, ti) => ({ tm, wert: q.punkte?.[ti]?.[k] ?? 0, ti }))
             .filter(x => x.ti < answered && x.wert > 0)
             .sort((a, b) => b.wert - a.wert)
@@ -1780,23 +1796,25 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
         const ab = v - wahrheit;
         const links = 50 + (ab / groesster) * 44;
         const oben = i % 2 === 1;
-        const da = i < answered;
+        // Genau wie bei den Antwortkarten: die Tipps stehen erst in der
+        // Aufloesung am Strahl, vorher zaehlt unten nur mit, wer schon dran war.
+        const da = revealed;
         const siegt = revealed && i === naechster;
         return {
           da, oben,
           style: `position:absolute;left:${links.toFixed(1)}%;top:50%;transform:translate(-50%,${oben ? '-100%' : '0'});`
-            + `display:flex;flex-direction:${oben ? 'column' : 'column-reverse'};align-items:center;gap:3px;`
+            + `display:flex;flex-direction:${oben ? 'column' : 'column-reverse'};align-items:center;gap:2px;`
             + `opacity:${da ? (revealed && !siegt ? .45 : 1) : 0};`
             + `transition:opacity .5s ${EASE}`,
-          markeStyle: teammarke(TEAMS[i].color, TEAMS[i].av, 26)
+          markeStyle: teammarke(TEAMS[i].color, TEAMS[i].av, 22)
             + `display:block;${siegt ? `box-shadow:0 0 0 2px ${q.col},0 0 18px ${q.col}88;` : ''}`
             + `transition:box-shadow .4s ${EASE}`,
-          stielStyle: `display:block;width:1.5px;height:9px;background:${siegt ? q.col : 'rgba(246,239,230,.34)'};transition:background .4s ${EASE}`,
+          stielStyle: `display:block;width:1.5px;height:8px;background:${siegt ? q.col : 'rgba(246,239,230,.34)'};transition:background .4s ${EASE}`,
           wert: v,
           abweichung: (ab > 0 ? '+' : '') + ab,
-          wertStyle: `font-family:'League Spartan',sans-serif;font-size:14px;font-weight:900;line-height:1;`
+          wertStyle: `font-family:'League Spartan',sans-serif;font-size:13px;font-weight:900;line-height:1;`
             + `color:${siegt ? q.col : '#F6EFE6'};font-variant-numeric:tabular-nums`,
-          abStyle: `font-size:10.5px;font-weight:800;line-height:1;color:rgba(246,239,230,.55)`,
+          abStyle: `font-size:10px;font-weight:800;line-height:1;color:rgba(246,239,230,.55)`,
         };
       });
     })() : null;
@@ -2019,11 +2037,11 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
       // damit genau auf den aeusseren Kacheln. Jetzt haben sie eine eigene
       // Zeile unter dem Kasten.
       strahlRandStyle: 'font-size:10px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:rgba(246,239,230,.38);white-space:nowrap',
-      schaetzStyle: `display:flex;align-items:baseline;justify-content:center;gap:10px;padding:14px 22px;border-radius:12px;box-sizing:border-box;`
+      schaetzStyle: `display:flex;align-items:baseline;justify-content:center;gap:10px;padding:10px 20px;border-radius:12px;box-sizing:border-box;`
         + `background:${revealed ? q.col + '1f' : 'rgba(0,0,0,.28)'};border:1px solid ${revealed ? q.col : 'rgba(246,239,230,.14)'};`
         + `box-shadow:${revealed ? `0 0 26px ${q.col}55` : 'none'};transition:background .4s ${EASE},border-color .4s ${EASE},box-shadow .4s ${EASE}`,
-      schaetzZahlStyle: `font-family:'League Spartan',sans-serif;font-size:40px;font-weight:900;line-height:1;color:${revealed ? q.col : 'rgba(246,239,230,.34)'};font-variant-numeric:tabular-nums;transition:color .4s ${EASE}`,
-      schaetzEinheitStyle: `font-size:15px;font-weight:900;color:${revealed ? '#F6EFE6' : 'rgba(246,239,230,.34)'};transition:color .4s ${EASE}`,
+      schaetzZahlStyle: `font-family:'League Spartan',sans-serif;font-size:34px;font-weight:900;line-height:1;color:${revealed ? q.col : 'rgba(246,239,230,.34)'};font-variant-numeric:tabular-nums;transition:color .4s ${EASE}`,
+      schaetzEinheitStyle: `font-size:14px;font-weight:900;color:${revealed ? '#F6EFE6' : 'rgba(246,239,230,.34)'};transition:color .4s ${EASE}`,
       // Wie weit die Runde ist: ein Zug von MOVES entspricht einer Frage.
       fortschritt: Math.round(Math.min(1, (cycle + 1) / (MOVES.length + 1)) * 100),
       showQuestion: phase !== 'b', showBoard: phase === 'b', showReveal: revealed, runde: cycle,
@@ -3045,14 +3063,14 @@ class OnePageInner extends Component<{ lang: Lang }, OPState> {
                             Auswahlzeilen daneben waeren eine Behauptung ueber
                             ein Spiel, das es so nicht gibt. */}
                         {g.qArt === 'schaetz' ? (
-                          <div style={sx('flex:none;display:flex;flex-direction:column;align-items:center;gap:10px')}>
+                          <div style={sx('flex:none;display:flex;flex-direction:column;align-items:center;gap:7px')}>
                             {/* Die Antworttafel steht ueber dem Strahl, wie in
                                 der App. Vor der Aufloesung drei Striche. */}
                             <div style={sx(g.schaetzStyle)}>
                               <span style={sx(g.schaetzZahlStyle)}>{g.showReveal ? g.qLoesung : '– – –'}</span>
                               <span style={sx(g.schaetzEinheitStyle)}>{g.qEinheit}</span>
                             </div>
-                            <div style={sx('position:relative;width:100%;height:132px')}>
+                            <div style={sx('position:relative;width:100%;height:112px')}>
                               <span aria-hidden="true" style={sx(g.strahlSchieneStyle)}></span>
                               <span aria-hidden="true" style={sx(g.strahlDiamantStyle)}></span>
                               {g.strahl?.map((s, i) => (
